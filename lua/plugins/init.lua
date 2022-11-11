@@ -18,6 +18,9 @@ local ensure_packer
 function plugins.setup()
   --NOTE: make sure the packer.nvim is available, if not, install it
   local packer = ensure_packer()
+  if packer == nil then
+    return
+  end
 
   --NOTE: add all the required plugins with the packer
 
@@ -169,30 +172,31 @@ end
 
 ---Ensure that packer.nvim package exists, if it does
 ---not, install it.
----@return packer
+---@return table?
 ensure_packer = function()
   vim.api.nvim_exec("packadd packer.nvim", false)
 
   local ok, packer = pcall(require, "packer")
-
-  if ok == false then
-    local install_path = vim.fn.stdpath "data"
-      .. "/site/pack/packer/start/packer.nvim"
-    vim.notify("Installing packer.nvim", vim.log.levels.INFO)
-    local ok, e = pcall(vim.fn.system, {
-      "git",
-      "clone",
-      "--depth",
-      "1",
-      "https://github.com/wbthomason/packer.nvim",
-      install_path,
-    })
-    if ok == false then
-      vim.notify(e, vim.log.levels.ERROR)
-      return
-    end
-    vim.api.nvim_exec("packadd packer.nvim", false)
+  if ok == true then
+    return packer
   end
+
+  local install_path = vim.fn.stdpath "data"
+    .. "/site/pack/packer/start/packer.nvim"
+  vim.notify("Installing packer.nvim", vim.log.levels.INFO)
+  ok, packer = pcall(vim.fn.system, {
+    "git",
+    "clone",
+    "--depth",
+    "1",
+    "https://github.com/wbthomason/packer.nvim",
+    install_path,
+  })
+  if ok == false then
+    vim.notify(packer, vim.log.levels.ERROR)
+    return nil
+  end
+  vim.api.nvim_exec("packadd packer.nvim", false)
   return require "packer"
 end
 
