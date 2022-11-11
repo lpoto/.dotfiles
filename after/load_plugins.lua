@@ -2,6 +2,10 @@
 -------------------------------------------------------------------------------
 --                                                                 LOAD PLUGINS
 --=============================================================================
--- Load the plugins defined in lua/plugins/, they are loaded here so 
--- all the default settings are loaded before plugins.
+-- Loaded plugins here so all the default settings are loaded before plugins.
 --_____________________________________________________________________________
+
+
+-- NOTE: plugins are defined in lua/plugins/, call the setup
+-- function that configures them.
+require('plugins').setup()
