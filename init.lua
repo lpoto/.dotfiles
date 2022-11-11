@@ -21,14 +21,14 @@ vim.opt.exrc = false -- do not source local .nvimrc files
 vim.opt.splitbelow = true -- open new window below in normal split
 vim.opt.splitright = true --open new window on the right in vertical split
 
------------------------------------------------------------------ SAVE / UNDO
+------------------------------------------------------------------- SAVE / UNDO
 
 vim.opt.swapfile = false -- load buffers without creating swap files
 vim.opt.backup = false -- do not automatically save
 vim.opt.undofile = true -- allow undo after reoppening the file
 vim.opt.undodir = vim.fn.stdpath "config" .. "/.undo" -- change undodir path
 
-------------------------------------------------------------------- INDENTING
+--------------------------------------------------------------------- INDENTING
 
 vim.opt.tabstop = 4 -- set the width of a tab to 4
 vim.opt.softtabstop = 4 -- set the number of spaces that a tab counts for
@@ -36,12 +36,12 @@ vim.opt.shiftwidth = 4 -- number of spaces used for each step of indent
 vim.opt.smartindent = true -- smart indent the next line
 vim.opt.expandtab = true -- use spaces in tabs
 
----------------------------------------------------------------- AUTOCOMPLETE
+------------------------------------------------------------------ AUTOCOMPLETE
 
 vim.opt.shortmess = vim.opt.shortmess + "c" -- don't give ins-completion-menu
 vim.opt.completeopt = "menu,menuone,noselect"
 
-------------------------------------------------------------------- SEARCHING
+--------------------------------------------------------------------- SEARCHING
 
 vim.opt.smartcase = true -- override ignorecase option
 vim.opt.hlsearch = false -- stop highlighting for hlsearch option
@@ -49,7 +49,7 @@ vim.opt.incsearch = true
 vim.opt.path = ".,,**" -- search down into subfolders
 vim.opt.wildmenu = true -- display matching files with tab completion
 
--------------------------------------------------------------------------- UI
+---------------------------------------------------------------------------- UI
 
 vim.opt.background = "dark"
 vim.opt.number = true
