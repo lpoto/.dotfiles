@@ -1,0 +1,8 @@
+--=============================================================================
+-------------------------------------------------------------------------------
+--                                                                   REMAPPINGS
+--=============================================================================
+-- This file contains all the default remappings and custom commands.
+-- NOTE: plugins and special configs such as the config for netrw, have
+-- remappings defined in their own configs.
+-------------------------------------------------------------------------------

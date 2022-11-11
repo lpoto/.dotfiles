@@ -1,0 +1,10 @@
+--=============================================================================
+-------------------------------------------------------------------------------
+--                                                                      PLUGINS
+--=============================================================================
+-- All plugins are required in this module's setup function.
+-- The plugins are instealled with Packer.nvim:
+-- https://github.com/wbthomason/packer.nvim
+-- Most of them are lazily loaded and define ways to load them
+-- dynamicly when needed.
+--_____________________________________________________________________________
