@@ -11,19 +11,6 @@
 ---(renaming file, scrolling popups, window managing, visual mode, jumping,
 ---undoing breakpoints, moving text, writing,...)
 
-vim.g["mapleader"] = " " -- map <leader> to space
-
-------------------------------------------------------------------- RENAME file
--- Rename current file with :Rename <new_name>
-
-vim.api.nvim_create_user_command(
-  "Rename",
-  "lua require('util.rename')(<q-args>)",
-  {
-    nargs = "*",
-  }
-)
-
 --------------------------------------------------------------- SCROLLING POPUP
 -- down with tab, up with shift-tab, select with enter
 

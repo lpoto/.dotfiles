@@ -10,6 +10,8 @@
 -- of the config file.
 -------------------------------------------------------------------------------
 
+vim.g["mapleader"] = " " -- map <leader> to space
+
 ---Set the default global options for the editor
 ---(save/undo, indenting, autocomplete, searching, ui)
 vim.opt.filetype = "on" -- enable filetype detection
