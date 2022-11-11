@@ -1,0 +1,6 @@
+.undo/
+
+vim.log
+packer_compiled.lua
+
+nvim.appimage

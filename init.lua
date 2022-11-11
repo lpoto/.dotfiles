@@ -1,0 +1,9 @@
+--=============================================================================
+-------------------------------------------------------------------------------
+--                                                                    INIT NVIM
+--=============================================================================
+-- This file is sources first and sets general neovim configs such as
+-- default vim options, netrw file explorer config, plugins, general
+-- remappings and sources local configs. This is all executed before the
+-- plugin/, ftplugin/ and after/ directories are sources.
+-------------------------------------------------------------------------------
