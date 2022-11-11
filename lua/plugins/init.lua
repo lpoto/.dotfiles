@@ -177,13 +177,16 @@ ensure_packer = function()
   vim.api.nvim_exec("packadd packer.nvim", false)
 
   local ok, packer = pcall(require, "packer")
+
   if ok == true then
     return packer
   end
 
   local install_path = vim.fn.stdpath "data"
     .. "/site/pack/packer/start/packer.nvim"
+
   vim.notify("Installing packer.nvim", vim.log.levels.INFO)
+
   ok, packer = pcall(vim.fn.system, {
     "git",
     "clone",

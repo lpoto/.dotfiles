@@ -8,11 +8,9 @@
 ----------------------------------------------------------------------- OPTIONS
 -- NOTE: set default tab width for lua
 
-require("general.options").distinct_setup("lua", function()
-  vim.opt.tabstop = 2 -- set the width of a tab to 2
-  vim.opt.softtabstop = 2 -- set the number of spaces that a tab counts for
-  vim.opt.shiftwidth = 2 -- number of spaces used for each step of indent
-end)
+vim.opt.tabstop = 2 -- set the width of a tab to 2
+vim.opt.softtabstop = 2 -- set the number of spaces that a tab counts for
+vim.opt.shiftwidth = 2 -- number of spaces used for each step of indent
 
 --------------------------------------------------------------------- LSPCONFIG
 -- NOTE: set sumneko_lua the default lsp server for lua
