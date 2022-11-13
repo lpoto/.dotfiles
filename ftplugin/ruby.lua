@@ -84,13 +84,7 @@ require("plugins.actions").distinct_setup("ruby", {
       return {
         filetypes = { "ruby" },
         steps = {
-          {
-            name = "Run current Ruby file",
-            exe = "ruby",
-            args = {
-              vim.fn.expand "%:p",
-            },
-          },
+          { "ruby", vim.fn.expand "%:p" },
         },
       }
     end,

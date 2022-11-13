@@ -51,6 +51,8 @@ vim.opt.incsearch = true
 vim.opt.path = ".,,**" -- search down into subfolders
 vim.opt.wildmenu = true -- display matching files with tab completion
 
+vim.opt.jumpoptions="stack" -- make jumplist behave like stack
+
 ---------------------------------------------------------------------------- UI
 
 vim.opt.background = "dark"

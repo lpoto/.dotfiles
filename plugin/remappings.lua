@@ -171,3 +171,15 @@ vim.api.nvim_create_user_command("WQ", "wq", {
   bang = true,
   complete = "file",
 })
+
+---------------------------------------------------------------------- TERMINAL
+-- return to normal mode with <Esc>
+
+vim.api.nvim_set_keymap(
+  "t",
+  "<Esc>",
+  "<C-\\><C-N>",
+  {
+    noremap = true,
+  }
+)

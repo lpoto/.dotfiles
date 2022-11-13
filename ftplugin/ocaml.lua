@@ -51,27 +51,23 @@ require("plugins.actions").distinct_setup("ocaml", {
       return {
         steps = {
           {
-            name = "Compile current OCaml file",
-            exe = "ocamlopt",
-            args = {
-              vim.fn.expand "%:p",
-              "-o",
-              vim.fn.expand "%:p:r" .. ".nvim",
-            },
+            --compile the current file
+            "ocamlopt",
+            vim.fn.expand "%:p",
+            "-o",
+            vim.fn.expand "%:p:r" .. ".nvim",
           },
           {
-            name = "Execute compiled OCaml file",
-            exe = (vim.fn.expand "%:p:r") .. ".nvim",
+            --run the compiled file
+            (vim.fn.expand "%:p:r") .. ".nvim",
           },
           {
-            name = "Clean up",
-            exe = "rm",
-            args = {
-              (vim.fn.expand "%:p:r") .. ".nvim",
-              (vim.fn.expand "%:p:r") .. ".cmi",
-              (vim.fn.expand "%:p:r") .. ".cmx",
-              (vim.fn.expand "%:p:r") .. ".o",
-            },
+            --clean up
+            "rm",
+            (vim.fn.expand "%:p:r") .. ".nvim",
+            (vim.fn.expand "%:p:r") .. ".cmi",
+            (vim.fn.expand "%:p:r") .. ".cmx",
+            (vim.fn.expand "%:p:r") .. ".o",
           },
         },
       }
