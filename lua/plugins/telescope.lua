@@ -12,14 +12,46 @@ telescope.keymaps = {
   "<C-x>", -- grep string
   "<leader>g", -- live grep
   "<C-g>", -- git files
+  "<C-n>", -- file browser
 }
 
 ---Default setup for the telescope, sets default pickers and mappings
 ---for finding files(<leader>n), grep string(<C-x>), live grep (<leader>g)
 ---and git files(<C-g>)
 function telescope.setup()
-  telescope.defaults()
-  telescope.pickers()
+  require("telescope").setup {
+    defaults = {
+      file_sorter = require("telescope.sorters").get_fzy_sorter,
+      prompt_prefix = "🔍",
+      color_devicons = true,
+      file_previewer = require("telescope.previewers").vim_buffer_cat.new,
+      grep_previewer = require("telescope.previewers").vim_buffer_vimgrep.new,
+      qflist_previewer = require("telescope.previewers").vim_buffer_qflist.new,
+    },
+    pickers = {
+      find_files = {
+        find_command = {
+          "rg",
+          "--files",
+          "--iglob",
+          "!.git",
+          "--hidden",
+          "-u",
+        },
+        theme = "ivy",
+        hidden = true,
+        previewer = false,
+        file_ignore_patterns = telescope.pickers_ignore_patterns(),
+      },
+    },
+    extensions = {
+      file_browser = {
+        theme = "ivy",
+        hijack_netrw = true,
+      },
+    },
+  }
+  require("telescope").load_extension "file_browser"
   telescope.remappings()
 end
 
@@ -63,22 +95,15 @@ function telescope.remappings()
       noremap = true,
     }
   )
-end
-function telescope.defaults()
-  require("telescope").setup {
-    defaults = {
-      file_sorter = require("telescope.sorters").get_fzy_sorter,
-      prompt_prefix = "🔍",
-      color_devicons = true,
-      file_previewer = require("telescope.previewers").vim_buffer_cat.new,
-      grep_previewer = require("telescope.previewers").vim_buffer_vimgrep.new,
-      qflist_previewer = require("telescope.previewers").vim_buffer_qflist.new,
-    },
-    extensions = {},
-  }
+  vim.api.nvim_set_keymap(
+    "n",
+    "<C-n>",
+    "<cmd>lua require('telescope').extensions.file_browser.file_browser()<CR>",
+    { noremap = true }
+  )
 end
 
-function telescope.pickers()
+function telescope.pickers_ignore_patterns()
   local fi_patterns = {
     "plugged/",
     ".undo/",
@@ -90,39 +115,7 @@ function telescope.pickers()
     ".angular/",
     "__pycache__",
   }
-  local t_previewer = false
-  if vim.fn.exists "g:telescope_ignore_patterns" == 1 then
-    fi_patterns = vim.g["telescope_ignore_patterns"]
-  end
-  if vim.fn.exists "g:telescope_previewer" == 1 then
-    if
-      vim.g["telescope_previewer"] == 1
-      or vim.g["telescope_previewer"] == true
-    then
-      t_previewer = true
-    end
-  end
-  require("telescope").setup {
-    pickers = {
-      find_files = {
-        find_command = {
-          "rg",
-          "--files",
-          "--iglob",
-          "!.git",
-          "--hidden",
-          "-u",
-        },
-        theme = "ivy",
-        hidden = true,
-        previewer = t_previewer,
-        file_ignore_patterns = fi_patterns,
-      },
-      file_browser = {
-        hidden = true,
-      },
-    },
-  }
+  return fi_patterns
 end
 
 return telescope

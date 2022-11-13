@@ -112,8 +112,12 @@ function plugins.setup()
       keys = require("plugins.telescope").keymaps,
       config = function()
         require("plugins.telescope").setup()
+        --NOTE: this requires plenary.nvim
       end,
-      --NOTE: this requires plenary.nvim
+      requires = {
+        module_pattern = "telescope",
+        "nvim-telescope/telescope-file-browser.nvim",
+      },
     }
     ------------------------------------------------------------ FORMATTER.NVIM
     -- A format runner for Neovim.
