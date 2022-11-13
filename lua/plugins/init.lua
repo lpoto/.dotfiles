@@ -36,7 +36,6 @@ function plugins.setup()
         require("plugins.gruvbox").setup()
       end,
     }
-
     use {
       "lpoto/actions.nvim",
       opt = true,
@@ -95,7 +94,7 @@ function plugins.setup()
         },
       },
     }
-
+    -------------------------------------------------------------------- NEOGIT
     use {
       "TimUntersberger/neogit",
       opt = true,

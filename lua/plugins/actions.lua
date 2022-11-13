@@ -16,23 +16,7 @@ actions.commands = { "A", "Action", "Actions" }
 ---to open the actions window, use <leader>e to toggle last output
 ---Use Ctrl-c to kill the action running in the oppened output window.
 function actions.setup()
-  require("actions").setup {
-    before_displaying_output = function()
-      vim.cmd "silent vsplit"
-    end,
-    after_displaying_output = function(bufnr)
-      -- Exmaple: to set remappings for the output buffer:
-      -- Kill action running in the output buffer with CTRL + c
-      vim.api.nvim_buf_set_keymap(
-        bufnr,
-        "n",
-        "<C-c>",
-        "<CMD>lua require('actions.executor')"
-          .. ".kill(vim.fn.expand('%:t:r'))<CR>",
-        {}
-      )
-    end,
-  }
+  require("actions").setup {}
   for _, config in ipairs(setups) do
     require("actions").setup(config)
   end

@@ -44,20 +44,13 @@ require("plugins.formatter").distinct_setup("go", {
 
 require("plugins.actions").distinct_setup("go", {
   actions = {
-    run_current_go_file = {
-      filetypes = { "go" },
-      steps = {
-        {
-          name = "Run current Go file",
-          exe = "go",
-          args = {
-            "run",
-            function()
-              return vim.fn.expand "%:p"
-            end,
-          },
+    run_current_go_file = function()
+      return {
+        filetypes = { "go" },
+        steps = {
+          { "go", "run", vim.fn.expand "%:p" },
         },
-      },
-    },
+      }
+    end,
   },
 })
