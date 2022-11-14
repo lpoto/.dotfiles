@@ -9,6 +9,8 @@
 -- dynamicly when needed.
 --_____________________________________________________________________________
 
+local log = require "util.log"
+
 local plugins = {}
 
 local ensure_packer
@@ -202,7 +204,7 @@ ensure_packer = function()
   local install_path = vim.fn.stdpath "data"
     .. "/site/pack/packer/start/packer.nvim"
 
-  vim.notify("Installing packer.nvim", vim.log.levels.INFO)
+  log.info "Installing packer.nvim"
 
   ok, packer = pcall(vim.fn.system, {
     "git",
@@ -213,7 +215,7 @@ ensure_packer = function()
     install_path,
   })
   if ok == false then
-    vim.notify(packer, vim.log.levels.ERROR)
+    log.error(packer)
     return nil
   end
   vim.api.nvim_exec("packadd packer.nvim", false)
