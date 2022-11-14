@@ -11,6 +11,14 @@ local setup_functions = {}
 
 local dap = {}
 
+dap.commands = {
+  "Dap",
+  "DapContinue",
+  "DapuiOpen",
+  "DapuiClose",
+  "DapToggleBreakpoint",
+}
+
 ---dap defualt setup function called when the plugin is
 ---loaded. Calls all setups added with dap.add_setup().
 function dap.setup()
@@ -23,6 +31,9 @@ function dap.setup()
   for _, f in ipairs(setup_functions) do
     f(dap_module)
   end
+  vim.api.nvim_create_user_command("Dap", function()
+    dap_module.continue()
+  end, {})
 
   dap.ui_commands()
 

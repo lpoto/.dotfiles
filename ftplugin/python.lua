@@ -78,13 +78,7 @@ require("plugins.actions").distinct_setup("python", {
       return {
         filetypes = { "python" },
         steps = {
-          {
-            name = "Run current Python file",
-            exe = "python3",
-            args = {
-              vim.fn.expand "%:p",
-            },
-          },
+          { "python3", vim.fn.expand "%:p" },
         },
       }
     end,
