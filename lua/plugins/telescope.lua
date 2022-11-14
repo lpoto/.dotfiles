@@ -107,6 +107,7 @@ function telescope.pickers_ignore_patterns()
   local fi_patterns = {
     "plugged/",
     ".undo/",
+    ".local/",
     ".git/",
     "node_modules/",
     "target/",
