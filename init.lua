@@ -14,8 +14,6 @@ vim.g["mapleader"] = " " -- map <leader> to space
 
 ---Set the default global options for the editor
 ---(save/undo, indenting, autocomplete, searching, ui)
-vim.opt.filetype = "on" -- enable filetype detection
-vim.opt.syntax = "on" -- enable syntax highlighting
 vim.opt.errorbells = false -- disable error sounds
 vim.opt.updatetime = 50 -- shorten updatetime from 4s to 50ms
 vim.opt.timeoutlen = 500 -- shorten timeout for key combinations
@@ -73,20 +71,21 @@ vim.opt.termguicolors = true
 vim.cmd 'let &t_8f = "\\<Esc>[38;2;%lu;%lu;%lum"'
 vim.cmd 'let &t_8b = "\\<Esc>[48;2;%lu;%lu;%lum"'
 
-------------------------------------------------------------------------- NETRW
--- disable NETRW file explorer, as other file browser plugins may be used
-
-vim.g["loaded_netrw"] = 1
-vim.g["loaded_netrwPlugin"] = 1
-
 -------------------------------------------------------------------- STATUSLINE
 -- disable statusline by default, it is then enables by the lualine plugin
 
 vim.opt.laststatus = 0
 vim.opt.statusline = ""
 
+------------------------------------------------------------------------- NETRW
+-- disable NETRW file explorer, as other file browser plugins may be used
+
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+vim.g.loaded_netrwSettings = 1
+vim.g.loaded_netrwFileHandlers = 1
+
 ----------------------------------------------------------------------- PLUGINS
 -- NOTE: plugins are defined in lua/plugins/, call the setup
 -- function that configures them.
-
 require("plugins").setup()

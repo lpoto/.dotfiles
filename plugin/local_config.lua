@@ -10,9 +10,11 @@
 -- Remove them with :RemoveLocalConfig <filetype>  (filetype is optional)
 --_____________________________________________________________________________
 
+local log = require "util.log"
+
 ---The root of the currently oppened project
 ---@type string
-local root = require "util.root"()
+local root = require("util").get_root()
 ---The defult path for the local config files
 ---@type string
 local local_configs_path = vim.fn.stdpath "config" .. "/.local"
@@ -53,19 +55,15 @@ local function open_local_config(filetype)
   file_escaped = file_escaped .. ".lua"
   if vim.fn.filereadable(file) ~= 1 then
     if filetype ~= nil and string.len(filetype) > 0 then
-      vim.notify(
+      log.warn(
         "Local config for '"
           .. root
           .. "' ("
           .. filetype
-          .. ") does not yet exist!",
-        vim.log.levels.WARN
+          .. ") does not yet exist!"
       )
     else
-      vim.notify(
-        "Local config for '" .. root .. "' does not yet exist!",
-        vim.log.levels.WARN
-      )
+      log.warn("Local config for '" .. root .. "' does not yet exist!")
     end
     local choice = vim.fn.confirm("Do you want to create it?", "&Yes\n&No", 2)
     if choice == 1 then
@@ -101,7 +99,7 @@ local function remove_local_config(filetype)
       txt = txt .. " (" .. filetype .. ")"
     end
     txt = txt .. " does not exist!"
-    vim.notify(txt, vim.log.levels.WARN)
+    log.warn(txt)
     return
   end
   local txt = "Are you sure you want to delete local config for: '"
@@ -121,9 +119,9 @@ local function remove_local_config(filetype)
       txt = txt .. " (" .. filetype .. ")"
     end
     txt = txt .. " deleted."
-    vim.notify(txt, vim.log.levels.INFO)
+    log.info(txt)
   else
-    vim.notify("Could not delete the local config!", vim.log.levels.WARN)
+    log.warn "Could not delete the local config!"
   end
 end
 
@@ -142,19 +140,15 @@ local function source_local_configs()
   if sourced[file] == nil then
     if vim.fn.filereadable(file) == 1 then
       vim.fn.execute("source " .. file_escaped, false)
-      vim.notify("Sourced local config for: " .. require "util.root"())
+      log.debug("Sourced local config for: " .. root)
     end
     sourced[file] = true
   end
   if sourced[file_ft] == nil then
     if vim.fn.filereadable(file_ft) == 1 then
       vim.fn.execute("source " .. file_escaped_ft, false)
-      vim.notify(
-        "Sourced local config for: "
-          .. require "util.root"()
-          .. " ("
-          .. vim.o.filetype
-          .. ")"
+      log.debug(
+        "Sourced local config for: " .. root .. " (" .. vim.o.filetype .. ")"
       )
       sourced[file_ft] = true
     end

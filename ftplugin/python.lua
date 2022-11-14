@@ -11,7 +11,7 @@
 require("plugins.lspconfig").distinct_setup("python", function()
   require("lspconfig").pylsp.setup {
     capabilities = require("plugins.cmp").default_capabilities(),
-    root_dir = require "util.root",
+    root_dir = require("util").get_root,
   }
 
   vim.fn.execute("LspStart", true)

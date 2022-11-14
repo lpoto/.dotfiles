@@ -6,6 +6,8 @@
 -- Open cheat sheet for the provided keywords
 --_____________________________________________________________________________
 
+local log = require "util.log"
+
 local open_cht_sh
 
 ---Default setup for cheat sheet, create Command :Cht <args>
@@ -14,7 +16,7 @@ local open_cht_sh
 ---Where args' whitespaces are replaced with '+'
 vim.api.nvim_create_user_command("Cht", function(o)
   if next(o.fargs) == nil then
-    vim.notify("Missing arguments to :Cht command!", vim.log.levels.WARN)
+    log.warn "Missing argument to :Cht command!"
     return
   end
   local n = table.remove(o.fargs, 1)
@@ -61,12 +63,12 @@ open_cht_sh = function(args1, args2)
   )
   --NOTE: make sure it was successful
   if ok == false then
-    vim.notify(v, vim.log.levels.WARN)
+    log.warn(v)
     return
   end
   ok, v = pcall(vim.fn.bufnr)
   if ok == false then
-    vim.notify(v, vim.log.levels.WARN)
+    log.warn(v)
     return
   end
   pcall(vim.api.nvim_buf_set_lines, v, 0, 4, false, {})

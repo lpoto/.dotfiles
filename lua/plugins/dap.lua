@@ -11,14 +11,6 @@ local setup_functions = {}
 
 local dap = {}
 
-dap.commands = {
-  "Dap",
-  "DapContinue",
-  "DapuiOpen",
-  "DapuiClose",
-  "DapToggleBreakpoint",
-}
-
 ---dap defualt setup function called when the plugin is
 ---loaded. Calls all setups added with dap.add_setup().
 function dap.setup()

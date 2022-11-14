@@ -1,16 +1,18 @@
 --=============================================================================
 -------------------------------------------------------------------------------
---                                                                         ROOT
+--                                                                         UTIL
 --=============================================================================
--- Config for finding a project's root directory
+-- Utility lua functions
 --_____________________________________________________________________________
+
+local util = {}
 
 ---Find the root directory of the current project.
 ---Searches for the first directory in the path that contains one
 ---provided patterns.
 ---@param root_dir_patterns table?: (default: {'.git', '.nvim.root'})
----@param max_depth number:  max depth to check for root (default: 10)
-local function get_root(root_dir_patterns, max_depth)
+---@param max_depth number?:  max depth to check for root (default: 10)
+function util.get_root(root_dir_patterns, max_depth)
   if type(root_dir_patterns) ~= "table" or next(root_dir_patterns) == nil then
     root_dir_patterns = { ".git", ".nvim.root", ".nvim" }
   end
@@ -40,4 +42,4 @@ local function get_root(root_dir_patterns, max_depth)
   return vim.fn.expand(default_path_maker)
 end
 
-return get_root
+return util

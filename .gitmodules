@@ -1,3 +1,4 @@
 [submodule ".local"]
 	path = .local
 	url = git@github.com:lpoto/nvim-local-configs.git
+	branch = main

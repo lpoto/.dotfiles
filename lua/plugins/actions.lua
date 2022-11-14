@@ -9,9 +9,6 @@ local setups = {}
 
 local actions = {}
 
----Commands used to open the actions window
-actions.commands = { "A", "Action", "Actions" }
-
 ---Setup the actions plugin, use :Actions command
 ---to open the actions window, use <leader>e to toggle last output
 ---Use Ctrl-c to kill the action running in the oppened output window.

@@ -12,7 +12,7 @@ require("plugins.lspconfig").distinct_setup("ruby", function()
   -- gem install solargraph
   require("lspconfig").solargraph.setup {
     capabilities = require("plugins.cmp").default_capabilities(),
-    root_dir = require "util.root",
+    root_dir = require("util").get_root,
   }
   -- NOTE: Start the lsp server
   vim.fn.execute("LspStart", true)
