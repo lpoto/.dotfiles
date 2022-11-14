@@ -81,7 +81,7 @@ function plugins.setup()
     use {
       "mfussenegger/nvim-dap",
       opt = true,
-      module_pattern = { "nvim-dap", "dapui", "nvim-dap-virtual-text" },
+      cmd = require("plugins.dap").commands,
       config = function()
         require("plugins.dap").setup()
       end,
