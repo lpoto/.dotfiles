@@ -29,19 +29,12 @@ function plugins.setup()
     -- add packer as it's own package, so it is in opt not start directory,
     -- otherwise it tried to remove itself
     use { "wbthomason/packer.nvim", opt = true }
-    -- colorscheme
+    -------------------------------------------------------------- GRUVBOX.NVIM
+    -- gruvbox colorscheme
     use {
       "ellisonleao/gruvbox.nvim",
       config = function()
         require("plugins.gruvbox").setup()
-      end,
-    }
-    use {
-      "lpoto/actions.nvim",
-      opt = true,
-      cmd = require("plugins.actions").commands,
-      config = function()
-        require("plugins.actions").setup()
       end,
     }
     ----------------------------------------------------------- NVIM-TREESITTER
@@ -55,10 +48,22 @@ function plugins.setup()
       end,
       run = { ":TSUpdate" },
     }
+    -------------------------------------------------------------- ACTIONS.NVIM
+    -- manage and synchronously run actions
+    use {
+      "lpoto/actions.nvim",
+      opt = true,
+      cmd = require("plugins.actions").commands,
+      config = function()
+        require("plugins.actions").setup()
+      end,
+    }
     -------------------------------------------------------------- LUALINE.NVIM
     -- An easy way to configure neovim's statusline.
     use {
       "nvim-lualine/lualine.nvim",
+      opt = true,
+      event = "BufNewFile,BufReadPre",
       config = function()
         require "plugins.lualine"
       end,
@@ -68,6 +73,8 @@ function plugins.setup()
     -- for code indented with spaces.
     use {
       "lukas-reineke/indent-blankline.nvim",
+      opt = true,
+      event = "BufNewFile,BufReadPre",
       config = function()
         require "plugins.indentline"
       end,
@@ -77,7 +84,7 @@ function plugins.setup()
     use {
       "mfussenegger/nvim-dap",
       opt = true,
-      module_pattern = { "nvim-dap", "dapui", "nvim-dap-virtual-text" },
+      cmd = require("plugins.dap").commands,
       config = function()
         require("plugins.dap").setup()
       end,
@@ -95,6 +102,7 @@ function plugins.setup()
       },
     }
     -------------------------------------------------------------------- NEOGIT
+    -- Neovim Git intergration
     use {
       "TimUntersberger/neogit",
       opt = true,
@@ -112,8 +120,13 @@ function plugins.setup()
       keys = require("plugins.telescope").keymaps,
       config = function()
         require("plugins.telescope").setup()
+        --NOTE: this requires plenary.nvim
       end,
-      --NOTE: this requires plenary.nvim
+      requires = {
+        -- File browser extension for the telescope
+        module_pattern = "telescope",
+        "nvim-telescope/telescope-file-browser.nvim",
+      },
     }
     ------------------------------------------------------------ FORMATTER.NVIM
     -- A format runner for Neovim.
@@ -137,6 +150,7 @@ function plugins.setup()
       end,
       requires = {
         -------------------------------------------------------------- NVIM-CMP
+        -- autocompletion
         {
           "hrsh7th/nvim-cmp",
           config = function()
@@ -146,11 +160,15 @@ function plugins.setup()
             "hrsh7th/cmp-nvim-lsp",
             "hrsh7th/cmp-buffer",
             {
+              ----------------------------------------------------------- VSNIP
+              -- autocompletion with snippers
               "hrsh7th/cmp-vsnip",
               requires = {
                 "hrsh7th/vim-vsnip",
               },
             },
+            ---------------------------------------------------- NVIM-AUTOPAIRS
+            -- autocomplete matching parentheses etc.
             {
               "windwp/nvim-autopairs",
               module_pattern = { "cmp.*", "nvim-autopairs.*" },

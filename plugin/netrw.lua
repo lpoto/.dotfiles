@@ -24,9 +24,9 @@ vim.api.nvim_create_user_command("ToggleNetrw", function()
 end, {})
 
 ---Toggle the netrw explorer with Ctrl + n
-vim.api.nvim_set_keymap("n", "<C-n>", "<cmd>ToggleNetrw<CR>", {
-  silent = true,
-})
+--vim.api.nvim_set_keymap("n", "<C-n>", "<cmd>ToggleNetrw<CR>", {
+  --silent = true,
+--})
 
 ---Open vertical Netrw
 open_netrw = function()
