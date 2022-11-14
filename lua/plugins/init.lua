@@ -59,6 +59,8 @@ function plugins.setup()
     -- An easy way to configure neovim's statusline.
     use {
       "nvim-lualine/lualine.nvim",
+      opt = true,
+      event = "BufNewFile,BufReadPre",
       config = function()
         require "plugins.lualine"
       end,
@@ -68,6 +70,8 @@ function plugins.setup()
     -- for code indented with spaces.
     use {
       "lukas-reineke/indent-blankline.nvim",
+      opt = true,
+      event = "BufNewFile,BufReadPre",
       config = function()
         require "plugins.indentline"
       end,
