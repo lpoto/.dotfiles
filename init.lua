@@ -84,3 +84,9 @@ vim.g["loaded_netrwPlugin"] = 1
 
 vim.opt.laststatus = 0
 vim.opt.statusline = ""
+
+----------------------------------------------------------------------- PLUGINS
+-- NOTE: plugins are defined in lua/plugins/, call the setup
+-- function that configures them.
+
+require('plugins').setup()
