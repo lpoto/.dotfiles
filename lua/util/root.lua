@@ -10,8 +10,15 @@ local function get_root(root_dir_patterns)
     if vim.fn.exists "g:root_dir_patterns" == 1 then
       root_dir_patterns = vim.g["root_dir_patterns"]
     else
-      root_dir_patterns =
-        { ".git", ".nvim", "package.json", "mvnw", ".opam", "GemFile" }
+      root_dir_patterns = {
+        ".git",
+        ".nvim",
+        "package.json",
+        "mvnw",
+        ".opam",
+        "GemFile",
+        ".nvim.root",
+      }
     end
   end
   local max_depth = 30
