@@ -73,17 +73,17 @@ vim.opt.termguicolors = true
 vim.cmd 'let &t_8f = "\\<Esc>[38;2;%lu;%lu;%lum"'
 vim.cmd 'let &t_8b = "\\<Esc>[48;2;%lu;%lu;%lum"'
 
-------------------------------------------------------------------------- NETRW
--- disable NETRW file explorer, as other file browser plugins may be used
-
-vim.g["loaded_netrw"] = 1
-vim.g["loaded_netrwPlugin"] = 1
-
 -------------------------------------------------------------------- STATUSLINE
 -- disable statusline by default, it is then enables by the lualine plugin
 
 vim.opt.laststatus = 0
 vim.opt.statusline = ""
+
+------------------------------------------------------------------------- NETRW
+-- disable NETRW file explorer, as other file browser plugins may be used
+
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
 
 ----------------------------------------------------------------------- PLUGINS
 -- NOTE: plugins are defined in lua/plugins/, call the setup

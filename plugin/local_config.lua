@@ -12,7 +12,7 @@
 
 ---The root of the currently oppened project
 ---@type string
-local root = require "util.root"()
+local root = require("util").get_root()
 ---The defult path for the local config files
 ---@type string
 local local_configs_path = vim.fn.stdpath "config" .. "/.local"
@@ -142,7 +142,7 @@ local function source_local_configs()
   if sourced[file] == nil then
     if vim.fn.filereadable(file) == 1 then
       vim.fn.execute("source " .. file_escaped, false)
-      vim.notify("Sourced local config for: " .. require "util.root"())
+      vim.notify("Sourced local config for: " .. root)
     end
     sourced[file] = true
   end
@@ -150,11 +150,7 @@ local function source_local_configs()
     if vim.fn.filereadable(file_ft) == 1 then
       vim.fn.execute("source " .. file_escaped_ft, false)
       vim.notify(
-        "Sourced local config for: "
-          .. require "util.root"()
-          .. " ("
-          .. vim.o.filetype
-          .. ")"
+        "Sourced local config for: " .. root .. " (" .. vim.o.filetype .. ")"
       )
       sourced[file_ft] = true
     end
