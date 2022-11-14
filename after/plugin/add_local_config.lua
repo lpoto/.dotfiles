@@ -6,102 +6,174 @@
 -- current project, if there is, source it.
 --_____________________________________________________________________________
 
-DEFAULT = "default"
-INIT = "init"
-PLUGIN = "plugin"
-FTPLUGIN = "ftplugin"
-AFTER = "after"
-
-local config_path = {} -- init, plugin, ftplugin, after
-local loaded_scripts = {}
-
--- Start the search at the current working directory,
--- then search down the path, until `.nvim` directory is found.
-local depth = 10
-local path = vim.fn.getcwd()
-
-while depth >= 0 do
-  if path == nil then
-    break
-  end
-  local default_ok = false
-  local ok, e = vim.fs.dir(path .. "/.nvim")
-  if ok ~= false and e ~= nil then
-    for _, k in ipairs { PLUGIN, AFTER, FTPLUGIN } do
-      local ok2, e2 = vim.fs.dir(path .. "/.nvim/" .. k)
-      if ok2 ~= false and e2 ~= nil then
-        default_ok = true
-        config_path[k] = path .. "/.nvim/" .. k
-      end
-    end
-    if vim.fn.filereadable(path .. "/.nvim/init.lua") then
-      default_ok = true
-      config_path[INIT] = path .. "/.nvim/init.lua"
-    elseif vim.fn.filereadable(path .. "/.nvim/init.vim") then
-      default_ok = true
-      config_path[INIT] = path .. "/.nvim/init.vim"
-    end
-    if default_ok == true then
-      config_path[DEFAULT] = path .. "/.nvim"
-    end
-    break
-  end
-  if path == "." then
-    break
-  end
-  path = vim.fs.dirname(path)
-  depth = depth - 1
+---Gets the base of the path for the local config based on the root
+---of the currently oppened project.
+---The returned path is missing .<filetype>.lua or just .lua at the end.
+---
+---@return string: base of the path
+---@return string: escaped base of the path
+local function get_local_config_path_base()
+  local local_configs_path = vim.fn.stdpath "config" .. "/.local"
+  local root = require "util.root"()
+  local base = local_configs_path .. "/" .. vim.fn.hostname() .. "/"
+  local path_escaped = base
+    .. vim.fn.substitute(
+      vim.fn.substitute(root, "\\", "\\\\%", "g"),
+      "/",
+      "\\\\%",
+      "g"
+    )
+  local path = base
+    .. vim.fn.substitute(
+      vim.fn.substitute(root, "\\", "\\%", "g"),
+      "/",
+      "\\%",
+      "g"
+    )
+  return path, path_escaped
 end
 
--- sources all the files in the directory provided with the 'path'
--- parameter. If ftplugin is true, instead of sourcing, a one-time
--- autocmds are created for the filetypes matching the names of
--- the files in the path. When those autocmds are triggered, the files
--- are sourced (1 file for each autocmd).
-local function source_dir(path, ftplugin)
-  if path == nil then
+---Opens local config for the currently oppened project.
+---If it does not exist, it prompts the option to create it.
+---If a filetype is provided, it creates a project local config for
+---the filetype.
+local function open_local_config(filetype)
+  local root = require "util.root"()
+  local file, file_escaped = get_local_config_path_base()
+  if filetype ~= nil and string.len(filetype) > 0 then
+    file = file .. "." .. filetype
+    file_escaped = file_escaped .. "." .. filetype
+  end
+  file = file .. ".lua"
+  file_escaped = file_escaped .. ".lua"
+  if vim.fn.filereadable(file) ~= 1 then
+    if filetype ~= nil and string.len(filetype) > 0 then
+      vim.notify(
+        "Local config for '"
+          .. root
+          .. "' ("
+          .. filetype
+          .. ") does not yet exist!",
+        vim.log.levels.WARN
+      )
+    else
+      vim.notify(
+        "Local config for '" .. root .. "' does not yet exist!",
+        vim.log.levels.WARN
+      )
+    end
+    local choice = vim.fn.confirm("Do you want to create it?", "&Yes\n&No", 2)
+    if choice == 1 then
+      local dirname = vim.fs.dirname(file_escaped)
+      vim.fn.mkdir(dirname, "p")
+      vim.fn.execute("keepjumps tabe " .. file_escaped)
+      vim.api.nvim_buf_set_option(vim.fn.bufnr(), "bufhidden", "wipe")
+    end
+    return
+  else
+    vim.fn.execute("keepjumps tabe " .. file_escaped)
+    vim.api.nvim_buf_set_option(vim.fn.bufnr(), "bufhidden", "wipe")
+  end
+end
+
+---Opens local config for the currently oppened project.
+---If it does not exist, it prompts the option to create it.
+---If a filetype is provided, it creates a project local config for
+---the filetype.
+local function remove_local_config(filetype)
+  local root = require "util.root"()
+  local file, file_escaped = get_local_config_path_base()
+  if filetype ~= nil and string.len(filetype) > 0 then
+    file = file .. "." .. filetype
+    file_escaped = file_escaped .. "." .. filetype
+  end
+  file = file .. ".lua"
+  file_escaped = file_escaped .. ".lua"
+  if vim.fn.filereadable(file) ~= 1 then
+    local txt = "Local config for '" .. root .. "'"
+    if filetype ~= nil and string.len(filetype) > 0 then
+      txt = txt .. " (" .. filetype .. ")"
+    end
+    txt = txt .. " does not exist!"
+    vim.notify(txt, vim.log.levels.WARN)
     return
   end
-  local ok, e = vim.fs.dir(path)
-  if ok == false or e == nil then
+  local txt = "Are you sure you want to delete local config for: '"
+    .. root
+    .. "'"
+  if filetype ~= nil and string.len(filetype) > 0 then
+    txt = txt .. " (" .. filetype .. ")"
+  end
+  txt = txt .. "?"
+  local choice = vim.fn.confirm(txt, "&Yes\n&No", 2)
+  if choice == 2 then
     return
   end
-  if ftplugin == true then
-    vim.api.nvim_create_augroup("LocalConfigAutogroup", { clear = true })
+  if vim.fn.delete(file) ~= -1 then
+    txt = "Local config for '" .. root .. "'"
+    if filetype ~= nil and string.len(filetype) > 0 then
+      txt = txt .. " (" .. filetype .. ")"
+    end
+    txt = txt .. " deleted."
+    vim.notify(txt, vim.log.levels.INFO)
+  else
+    vim.notify("Could not delete the local config!", vim.log.levels.WARN)
   end
-  for name, t in vim.fs.dir(path) do
-    if t == "file" and loaded_scripts[path .. "/" .. name] == nil then
-      if ftplugin == true then
-        local ft = name:gsub("%.lua", ""):gsub("%.vim", "")
-        vim.api.nvim_create_autocmd("FileType", {
-          pattern = ft,
-          group = "LocalConfigAutogroup",
-          once = true,
-          command = "source " .. path .. "/" .. name,
-        })
-      else
-        vim.cmd("source " .. path .. "/" .. name)
-      end
-      loaded_scripts[path .. "/" .. name] = true
+end
+
+local sourced = {}
+
+local function source_local_configs()
+  local file, file_escaped = get_local_config_path_base()
+  local file_ft = file .. "." .. vim.o.filetype .. ".lua"
+  local file_escaped_ft = file_escaped .. "." .. vim.o.filetype .. ".lua"
+  file = file .. ".lua"
+  file_escaped = file_escaped .. ".lua"
+  if sourced[file] == nil then
+    if vim.fn.filereadable(file) == 1 then
+      vim.fn.execute("source " .. file_escaped, false)
+      vim.notify("Sourced local config for: " .. require "util.root"())
+    end
+    sourced[file] = true
+  end
+  if sourced[file_ft] == nil then
+    if vim.fn.filereadable(file_ft) == 1 then
+      vim.fn.execute("source " .. file_escaped_ft, false)
+      vim.notify(
+        "Sourced local config for: "
+          .. require "util.root"()
+          .. " ("
+          .. vim.o.filetype
+          .. ")"
+      )
+      sourced[file_ft] = true
     end
   end
 end
 
--- Source .nvim directory found with find_config().
--- NOTE: first source .nvim/init.lua OR .nvim/init.vim,
--- then files in .nvim/plugin/, then creates autocmds for files in .nvim/ftplugin/
--- (when a file with filetype matching the filename in .nvim/ftplugin/ is oppened for the first time,
--- the file is sourced.), then source files in .nvim/after.
--- NOTE: find_config() should be called before using this function.
-if config_path ~= nil and config_path[DEFAULT] then
-  vim.notify(
-    "Sourcing `" .. config_path[DEFAULT] .. "`",
-    vim.log.levels.DEBUG
-  )
-  if config_path[INIT] ~= nil then
-    vim.api.nvim_exec("source " .. config_path[INIT], false)
+vim.api.nvim_create_user_command("LocalConfig", function(o)
+  if o.fargs ~= nil and next(o.fargs) ~= nil then
+    open_local_config(o.fargs[1])
+  else
+    open_local_config()
   end
-  source_dir(config_path[PLUGIN])
-  source_dir(config_path[FTPLUGIN], true)
-  source_dir(config_path[AFTER])
-end
+end, {
+  nargs = "*",
+})
+vim.api.nvim_create_user_command("RemoveLocalConfig", function(o)
+  if o.fargs ~= nil and next(o.fargs) ~= nil then
+    remove_local_config(o.fargs[1])
+  else
+    remove_local_config()
+  end
+end, {
+  nargs = "*",
+})
+
+vim.api.nvim_create_augroup("LocalConfig", { clear = true })
+vim.api.nvim_create_autocmd("FileType", {
+  group = "LocalConfig",
+  callback = source_local_configs,
+})
+
+source_local_configs()
