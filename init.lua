@@ -89,4 +89,4 @@ vim.opt.statusline = ""
 -- NOTE: plugins are defined in lua/plugins/, call the setup
 -- function that configures them.
 
-require('plugins').setup()
+require("plugins").setup()
