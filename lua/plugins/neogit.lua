@@ -7,9 +7,6 @@
 
 local neogit = {}
 
----Commands used to open the neogit tab
-neogit.commands = { "Neogit", "Git", "G" }
-
 ---Setup neogit plugin, add :Git command for neogit
 ---:Git command is exactly the same as :Neogit
 function neogit.setup()

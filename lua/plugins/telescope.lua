@@ -7,14 +7,6 @@
 
 local telescope = {}
 
-telescope.keymaps = {
-  "<leader>n", -- find files
-  "<C-x>", -- grep string
-  "<leader>g", -- live grep
-  "<C-g>", -- git files
-  "<C-n>", -- file browser
-}
-
 ---Default setup for the telescope, sets default pickers and mappings
 ---for finding files(<leader>n), grep string(<C-x>), live grep (<leader>g)
 ---and git files(<C-g>)
@@ -61,7 +53,7 @@ end
 function telescope.remappings()
   vim.api.nvim_set_keymap(
     "n",
-    telescope.keymaps[1],
+    "<leader>n",
     "<cmd>lua require('telescope.builtin').find_files()<CR>",
     {
       silent = true,
@@ -70,7 +62,7 @@ function telescope.remappings()
   )
   vim.api.nvim_set_keymap(
     "n",
-    telescope.keymaps[2],
+    "<C-x>",
     "<cmd>lua require('telescope.builtin').grep_string()<CR>",
     {
       silent = true,
@@ -79,7 +71,7 @@ function telescope.remappings()
   )
   vim.api.nvim_set_keymap(
     "n",
-    telescope.keymaps[3],
+    "<leader>g",
     "<cmd>lua require('telescope.builtin').live_grep()<CR>",
     {
       silent = true,
@@ -88,7 +80,7 @@ function telescope.remappings()
   )
   vim.api.nvim_set_keymap(
     "n",
-    telescope.keymaps[4],
+    "<C-g>",
     "<cmd>lua require('telescope.builtin').git_files()<CR>",
     {
       silent = true,

@@ -53,7 +53,7 @@ function plugins.setup()
     use {
       "lpoto/actions.nvim",
       opt = true,
-      cmd = require("plugins.actions").commands,
+      cmd = { "A", "Action", "Actions" },
       config = function()
         require("plugins.actions").setup()
       end,
@@ -84,7 +84,7 @@ function plugins.setup()
     use {
       "mfussenegger/nvim-dap",
       opt = true,
-      cmd = require("plugins.dap").commands,
+      cmd = { "Dap", "DapContinue", "DapToggleBreakpoint" },
       config = function()
         require("plugins.dap").setup()
       end,
@@ -106,7 +106,7 @@ function plugins.setup()
     use {
       "TimUntersberger/neogit",
       opt = true,
-      cmd = require("plugins.neogit").commands,
+      cmd = { "Git", "Neogit" },
       config = function()
         require("plugins.neogit").setup()
       end,
@@ -117,7 +117,7 @@ function plugins.setup()
     use {
       "nvim-telescope/telescope.nvim",
       opt = true,
-      keys = require("plugins.telescope").keymaps,
+      keys = { "<leader>n", "<C-x>", "<leader>g", "<C-g>", "<C-n>" },
       config = function()
         require("plugins.telescope").setup()
         --NOTE: this requires plenary.nvim
@@ -133,8 +133,8 @@ function plugins.setup()
     use {
       "mhartington/formatter.nvim",
       opt = true,
-      cmd = require("plugins.formatter").commands,
-      keys = require("plugins.formatter").keymaps,
+      cmd = { "Format", "FormatWrite", "FormatLock", "FormatWriteLock" },
+      keys = { "<leader>f" },
       config = function()
         require("plugins.formatter").setup()
       end,

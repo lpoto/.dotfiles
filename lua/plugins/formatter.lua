@@ -9,13 +9,6 @@ local setups = {}
 
 local formatter = {}
 
----Keymaps used to format
-formatter.keymaps = { "<leader>f" }
-
----Commands used to format
-formatter.commands =
-  { "Format", "FormatWrite", "FormatLock", "FormatWriteLock" }
-
 ---Format on save, remove trailing whitespace when formatter is not set
 ---@param autocmd boolean?: when true, format on save
 function formatter.setup(autocmd)
@@ -44,14 +37,9 @@ end
 
 -- format with "<leader>f""
 function formatter.remappings()
-  vim.api.nvim_set_keymap(
-    "n",
-    formatter.keymaps[1],
-    "<cmd>FormatWriteLock<CR>",
-    {
-      noremap = true,
-    }
-  )
+  vim.api.nvim_set_keymap("n", "<leader>f", "<cmd>FormatWriteLock<CR>", {
+    noremap = true,
+  })
 end
 
 ---add a setup call to a table instead of calling it
