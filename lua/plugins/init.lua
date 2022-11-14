@@ -29,19 +29,12 @@ function plugins.setup()
     -- add packer as it's own package, so it is in opt not start directory,
     -- otherwise it tried to remove itself
     use { "wbthomason/packer.nvim", opt = true }
-    -- colorscheme
+    -------------------------------------------------------------- GRUVBOX.NVIM
+    -- gruvbox colorscheme
     use {
       "ellisonleao/gruvbox.nvim",
       config = function()
         require("plugins.gruvbox").setup()
-      end,
-    }
-    use {
-      "lpoto/actions.nvim",
-      opt = true,
-      cmd = require("plugins.actions").commands,
-      config = function()
-        require("plugins.actions").setup()
       end,
     }
     ----------------------------------------------------------- NVIM-TREESITTER
@@ -54,6 +47,16 @@ function plugins.setup()
         require "plugins.treesitter"
       end,
       run = { ":TSUpdate" },
+    }
+    -------------------------------------------------------------- ACTIONS.NVIM
+    -- manage and synchronously run actions
+    use {
+      "lpoto/actions.nvim",
+      opt = true,
+      cmd = require("plugins.actions").commands,
+      config = function()
+        require("plugins.actions").setup()
+      end,
     }
     -------------------------------------------------------------- LUALINE.NVIM
     -- An easy way to configure neovim's statusline.
@@ -99,6 +102,7 @@ function plugins.setup()
       },
     }
     -------------------------------------------------------------------- NEOGIT
+    -- Neovim Git intergration
     use {
       "TimUntersberger/neogit",
       opt = true,
@@ -119,6 +123,7 @@ function plugins.setup()
         --NOTE: this requires plenary.nvim
       end,
       requires = {
+        -- File browser extension for the telescope
         module_pattern = "telescope",
         "nvim-telescope/telescope-file-browser.nvim",
       },
@@ -145,6 +150,7 @@ function plugins.setup()
       end,
       requires = {
         -------------------------------------------------------------- NVIM-CMP
+        -- autocompletion
         {
           "hrsh7th/nvim-cmp",
           config = function()
@@ -154,11 +160,15 @@ function plugins.setup()
             "hrsh7th/cmp-nvim-lsp",
             "hrsh7th/cmp-buffer",
             {
+              ----------------------------------------------------------- VSNIP
+              -- autocompletion with snippers
               "hrsh7th/cmp-vsnip",
               requires = {
                 "hrsh7th/vim-vsnip",
               },
             },
+            ---------------------------------------------------- NVIM-AUTOPAIRS
+            -- autocomplete matching parentheses etc.
             {
               "windwp/nvim-autopairs",
               module_pattern = { "cmp.*", "nvim-autopairs.*" },
