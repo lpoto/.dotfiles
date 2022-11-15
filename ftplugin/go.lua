@@ -28,11 +28,7 @@ require("plugins.formatter").distinct_setup("go", {
       function()
         return {
           exe = "goimports",
-          args = {
-            "-w",
-            vim.fn.fnameescape(vim.api.nvim_buf_get_name(0)),
-          },
-          stdin = false,
+          stdin = true,
         }
       end,
     },
