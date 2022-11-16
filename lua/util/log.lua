@@ -10,7 +10,7 @@ local log = {}
 ---@type boolean
 log.silent = false
 ---@type number
-log.level = vim.log.levels.INFO
+log.level = vim.log.levels.DEBUG
 
 ---@param m any: Text to log
 ---@param level number: A vim.log.levels value
