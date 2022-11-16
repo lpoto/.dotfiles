@@ -20,34 +20,55 @@ local local_configs_path = vim.fn.stdpath "config" .. "/.local"
 ---The base of the local config files for the current host
 ---@type string
 local base = local_configs_path .. "/" .. vim.fn.hostname() .. "/"
----The escaped base of the current local project file
----@type string
-local path_escaped = base
-  .. vim.fn.substitute(
-    vim.fn.substitute(root, "\\", "\\\\%", "g"),
+
+---@type number: Number of levels to check the local config for
+local DEPTH = 3
+
+---@param level number?: When 0 root is checked, else #level levels up
+---@return string escaped path
+---@return string unescaped path
+---@return string root used for the path
+local function get_path(level)
+  local r = root
+  for _ = 0, level - 1 do
+    local l = vim.fs.dirname(r)
+    if l == r then
+      break
+    end
+    r = l
+  end
+  return base .. vim.fn.substitute(
+    vim.fn.substitute(r, "\\", "\\\\%", "g"),
     "/",
     "\\\\%",
     "g"
-  )
----The uneescaped base of the current local project file
----@type string
-local path = base
-  .. vim.fn.substitute(
-    vim.fn.substitute(root, "\\", "\\%", "g"),
-    "/",
-    "\\%",
-    "g"
-  )
+  ),
+    base .. vim.fn.substitute(
+      vim.fn.substitute(r, "\\", "\\%", "g"),
+      "/",
+      "\\%",
+      "g"
+    ),
+    r
+end
 
 ---Opens local config for the currently oppened project.
 ---If it does not exist, it prompts the option to create it.
 local function open_local_config()
-  local file, file_escaped = path, path_escaped
+  local file_escaped, file, r = get_path(0)
   file = file .. ".lua"
   file_escaped = file_escaped .. ".lua"
   if vim.fn.filereadable(file) ~= 1 then
-    log.warn("Local config for '" .. root .. "' does not yet exist!")
-    local choice = vim.fn.confirm("Do you want to create it?", "&Yes\n&No", 2)
+    for i = 1, DEPTH - 1 do
+      local _, f_h, r2 = get_path(i)
+      if vim.fn.filereadable(f_h .. ".lua") == 1 then
+        log.info("Local config for '" .. r2 .. "' found ...")
+        break
+      end
+    end
+    log.warn("Local config for '" .. r .. "' does not yet exist!")
+    local choice =
+      vim.fn.confirm("Do you want to create it?", "&Yes\n&No\n&maybe", 2)
     if choice == 1 then
       local dirname = vim.fs.dirname(file_escaped)
       vim.fn.mkdir(dirname, "p")
@@ -55,26 +76,25 @@ local function open_local_config()
       vim.api.nvim_buf_set_option(vim.fn.bufnr(), "bufhidden", "wipe")
     end
     return
-  else
-    vim.fn.execute("keepjumps tabe " .. file_escaped)
-    vim.api.nvim_buf_set_option(vim.fn.bufnr(), "bufhidden", "wipe")
   end
+  vim.fn.execute("keepjumps tabe " .. file_escaped)
+  vim.api.nvim_buf_set_option(vim.fn.bufnr(), "bufhidden", "wipe")
 end
 
 ---Removes local config for the currently oppened project.
 ---If it does not exist, it sends a warning.
 ---This prompts for confirmation before removing the file.
 local function remove_local_config()
-  local file, file_escaped = path, path_escaped
+  local file_escaped, file, r = get_path(0)
   file = file .. ".lua"
   file_escaped = file_escaped .. ".lua"
   if vim.fn.filereadable(file) ~= 1 then
-    local txt = "Local config for '" .. root .. "' does not exist!"
+    local txt = "Local config for '" .. r .. "' does not exist!"
     log.warn(txt)
     return
   end
   local txt = "Are you sure you want to delete local config for: '"
-    .. root
+    .. r
     .. "'"
   txt = txt .. "?"
   local choice = vim.fn.confirm(txt, "&Yes\n&No", 2)
@@ -82,7 +102,7 @@ local function remove_local_config()
     return
   end
   if vim.fn.delete(file) ~= -1 then
-    txt = "Local config for '" .. root .. "' deleted"
+    txt = "Local config for '" .. r .. "' deleted"
     log.info(txt)
   else
     log.warn "Could not delete the local config!"
@@ -98,17 +118,20 @@ local sourced = {}
 ---NOTE: if config not found for current root, check two levels
 ---up aswell.
 local function source_local_configs()
-  local file, file_escaped = path, path_escaped
-  file = file .. ".lua"
-  file_escaped = file_escaped .. ".lua"
+  for i = 0, DEPTH - 1 do
+    local file_escaped, file, r = get_path(i)
+    file = file .. ".lua"
+    file_escaped = file_escaped .. ".lua"
 
-  if sourced[file] == nil then
+    if sourced[file] ~= nil then
+      return
+    end
     if vim.fn.filereadable(file) == 1 then
       vim.fn.execute("source " .. file_escaped, false)
-      log.debug("Sourced local config for: " .. root)
+      log.debug("Sourced local config for: " .. r)
+      sourced[file] = true
     end
   end
-  sourced[file] = true
 end
 
 ---NOTE: use :LocalConfig  command to open or create new
@@ -123,7 +146,7 @@ vim.api.nvim_create_user_command("RemoveLocalConfig", function()
 end, {})
 ---NOTE: use :SourceLocalConfig  command to source the local configs.
 vim.api.nvim_create_user_command("LocalConfig", function()
-  source_local_configs()
+  open_local_config()
 end, {})
 
 -- NOTE: source local configs on start
