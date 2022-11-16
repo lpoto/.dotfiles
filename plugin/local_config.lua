@@ -59,20 +59,36 @@ local function open_local_config()
   file = file .. ".lua"
   file_escaped = file_escaped .. ".lua"
   if vim.fn.filereadable(file) ~= 1 then
+    local f_h, f_he = nil, nil
     for i = 1, DEPTH - 1 do
-      local _, f_h, r2 = get_path(i)
+      local r2
+      f_he, f_h, r2 = get_path(i)
       if vim.fn.filereadable(f_h .. ".lua") == 1 then
         log.info("Local config for '" .. r2 .. "' found ...")
         break
       end
+      f_h, f_he = nil, nil
     end
     log.warn("Local config for '" .. r .. "' does not yet exist!")
-    local choice =
-      vim.fn.confirm("Do you want to create it?", "&Yes\n&No\n&maybe", 2)
+    local choice
+    if f_he == nil then
+      choice = vim.fn.confirm("Do you want to create it?", "&Yes\n&No", 2)
+    else
+      choice = vim.fn.confirm(
+        "Do you want to create it?",
+        "&Yes\n&No\n&Open Found",
+        3
+      )
+    end
     if choice == 1 then
       local dirname = vim.fs.dirname(file_escaped)
       vim.fn.mkdir(dirname, "p")
       vim.fn.execute("keepjumps tabe " .. file_escaped)
+      vim.api.nvim_buf_set_option(vim.fn.bufnr(), "bufhidden", "wipe")
+    elseif choice == 3 then
+      local dirname = vim.fs.dirname(f_he .. ".lua")
+      vim.fn.mkdir(dirname, "p")
+      vim.fn.execute("keepjumps tabe " .. f_he .. ".lua")
       vim.api.nvim_buf_set_option(vim.fn.bufnr(), "bufhidden", "wipe")
     end
     return
