@@ -16,7 +16,7 @@ jobs:
           submodules: true
           token: ${{ secrets.PRIVATE_TOKEN_GITHUB }}
 
-      - name: Pull & update submodules recursively
+      - name: Pull & update nvim submodule recursively
         run: |
           git submodule update --init nvim
           git submodule update --remote nvim
@@ -25,5 +25,5 @@ jobs:
           git config user.email "actions@github.com"
           git config user.name "GitHub Actions - update submodules"
           git add --all
-          git commit -m "Update submodules" || echo "No changes to commit"
+          git commit -m "Update nvim submodule" || echo "No changes to commit"
           git push
