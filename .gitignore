@@ -1,6 +1,13 @@
+# the undo directory
 .undo/
 
-vim.log
+# project local configs
+.local/
+
+# compiler packer.nvim plugins
 packer_compiled.lua
 
+# If nvim is built as an appimage
 nvim.appimage
+
+vim.log
