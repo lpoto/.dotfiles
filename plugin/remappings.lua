@@ -15,7 +15,7 @@
 -- down with tab, up with shift-tab, select with enter
 
 vim.api.nvim_set_keymap(
-  "i",
+  "",
   "<expr><Tab>",
   "pumvisible() ? '\\<C-n>' : '\\<TAB>'",
   {
@@ -23,7 +23,7 @@ vim.api.nvim_set_keymap(
   }
 )
 vim.api.nvim_set_keymap(
-  "i",
+  "",
   "<expr><S-Tab>",
   "pumvisible() ? '\\<C-p>' : '\\<S-TAB>'",
   {
@@ -31,7 +31,7 @@ vim.api.nvim_set_keymap(
   }
 )
 vim.api.nvim_set_keymap(
-  "i",
+  "",
   "<expr><CR>",
   "pumvisible() ? '\\<C-y>' : '\\<CR>'",
   {

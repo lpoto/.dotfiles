@@ -86,7 +86,8 @@ function plugins.setup()
     use {
       "mfussenegger/nvim-dap",
       opt = true,
-      cmd = { "D", "Dap", "DapContinue", "DapToggleBreakpoint" },
+      cmd = { "DapContinue", "DapToggleBreakpoint" },
+      keys = {"<C-c>", "<C-b>"},
       config = function()
         require("plugins.dap").setup()
       end,
