@@ -7,11 +7,11 @@
 
 local setups = {}
 
-local formatter = {}
+local M = {}
 
 ---Format on save, remove trailing whitespace when formatter is not set
 ---@param autocmd boolean?: when true, format on save
-function formatter.setup(autocmd)
+function M.init(autocmd)
   require("formatter").setup {
     logging = true,
     log_level = vim.log.levels.INFO,
@@ -32,11 +32,11 @@ function formatter.setup(autocmd)
   for _, config in ipairs(setups) do
     require("formatter").setup(config)
   end
-  formatter.remappings()
+  M.remappings()
 end
 
 -- format with "<leader>f""
-function formatter.remappings()
+function M.remappings()
   vim.api.nvim_set_keymap("n", "<leader>f", "<cmd>FormatWriteLock<CR>", {
     noremap = true,
   })
@@ -66,7 +66,7 @@ local distinct_setups = {}
 ---@param key string: A string to identify the setup
 ---@param config table: A formatter config
 ---@param override boolean?: Override existing config.
-function formatter.distinct_setup(key, config, override)
+function M.distinct_setup(key, config, override)
   if override ~= true and distinct_setups[key] ~= nil then
     return
   end
@@ -75,4 +75,4 @@ function formatter.distinct_setup(key, config, override)
   distinct_setups[key] = true
 end
 
-return formatter
+return M

@@ -18,25 +18,22 @@ vim.opt.shiftwidth = 2 -- number of spaces used for each step of indent
 require("plugins.lspconfig").distinct_setup("lua", function()
   -- 1. Install lua-language-server and add it to path
   -- https://github.com/sumneko/lua-language-server
+  local runtime_path = vim.split(package.path, ";")
+  table.insert(runtime_path, "lua/?.lua")
+  table.insert(runtime_path, "lua/?/init.lua")
   require("lspconfig").sumneko_lua.setup {
     settings = {
       Lua = {
         runtime = {
           version = "LuaJIT",
-          path = vim.split(
-            table.concat({
-              package.path,
-              "lua/?.lua",
-              "lua/?/init.lua",
-            }, ";"),
-            ";"
-          ),
+          path = runtime_path,
         },
         diagnostics = {
           globals = { "vim" },
         },
         workspace = {
           library = vim.api.nvim_get_runtime_file("", true),
+          checkThirdParty = false,
         },
         telemetry = {
           enable = false,
@@ -44,7 +41,6 @@ require("plugins.lspconfig").distinct_setup("lua", function()
       },
     },
     capabilities = require("plugins.cmp").default_capabilities(),
-    root_dir = require("util").get_root,
   }
   vim.fn.execute("LspStart", true)
 end)

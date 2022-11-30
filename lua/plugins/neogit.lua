@@ -5,11 +5,11 @@
 -- https://github.com/TimUntersberger/neogit
 --_____________________________________________________________________________
 
-local neogit = {}
+local M = {}
 
 ---Setup neogit plugin, add :Git command for neogit
 ---:Git command is exactly the same as :Neogit
-function neogit.setup()
+function M.init()
   require("neogit").setup {
     disable_signs = true,
   }
@@ -29,4 +29,4 @@ function neogit.setup()
   })
 end
 
-return neogit
+return M
