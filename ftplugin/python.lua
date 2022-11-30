@@ -41,25 +41,25 @@ require("plugins.formatter").distinct_setup("python", {
 --------------------------------------------------------------------- DEBUGGER
 -- NOTE: set debugpy as default python debugger
 
-require("plugins.dap").distinct_setup("python", function(dap)
-  -- Install Debugpy (https://github.com/microsoft/debugpy)
-  -- (pip install debugpy)
-  -- Options below are for debugpy, see:
-  -- https://github.com/microsoft/debugpy/wiki/Debug-configuration-settings
-  -- for supported options
+-- [[ pip install debugpy ]]
+require("plugins.dap").distinct_setup("python_adapter", function(dap)
   dap.adapters.python = {
     type = "executable",
     command = vim.fn.exepath "python",
     args = { "-m", "debugpy.adapter" },
   }
-  -- NOTE: debug currently oppened file with debugpy
+end)
 
+-- debug currently oppened file with debugpy
+require("plugins.dap").distinct_setup("python_config", function(dap)
+  -- Options below are for debugpy, see:
+  -- https://github.com/microsoft/debugpy/wiki/Debug-configuration-settings
+  -- for supported options
   dap.configurations.python = {
     {
       type = "python",
       request = "launch",
       name = "Launch file",
-      -- This configuration will launch the current file if used.
       program = "${file}",
       pythonPath = function()
         return vim.fn.exepath "python"

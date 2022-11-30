@@ -53,7 +53,7 @@ function plugins.setup()
     -------------------------------------------------------------- ACTIONS.NVIM
     -- manage and synchronously run actions
     use {
-      "lpoto/actions.nvim",
+      "~/personal/actions.nvim",
       opt = true,
       cmd = { "A", "Action", "Actions" },
       config = function()
@@ -86,17 +86,11 @@ function plugins.setup()
     use {
       "mfussenegger/nvim-dap",
       opt = true,
-      cmd = { "Dap", "DapContinue", "DapToggleBreakpoint" },
+      cmd = { "D", "Dap", "DapContinue", "DapToggleBreakpoint" },
       config = function()
         require("plugins.dap").setup()
       end,
       requires = {
-        -- A UI for nvim-dap which provides a good out of the box configuration
-        -- A Neovim git wrapper
-        {
-          "rcarriga/nvim-dap-ui",
-          module = "dapui",
-        },
         {
           "theHamsta/nvim-dap-virtual-text", -- requires treesitter
           module = "nvim-dap-virtual-text",

@@ -11,3 +11,5 @@ packer_compiled.lua
 nvim.appimage
 
 vim.log
+
+.luarc.json

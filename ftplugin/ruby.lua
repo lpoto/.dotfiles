@@ -51,18 +51,17 @@ require("plugins.formatter").distinct_setup("ruby", {
 --------------------------------------------------------------------- DEBUGGER
 -- NOTE: set readapt as default ruby debugger
 
-require("plugins.dap").distinct_setup("ruby", function(dap)
-  -- gem install readapt
-
+--[[  gem install readapt ]]
+require("plugins.dap").distinct_setup("ruby_adapter", function(dap)
   dap.adapters.ruby = {
     type = "executable",
     command = "readapt",
     args = { "stdio" },
   }
-  -- this config launches the currently oppened ruby file
+end)
 
-  -- NOTE: debug currently oppened file with readapt
-
+-- this config launches the currently oppened ruby file
+require("plugins.dap").distinct_setup("ruby_config", function(dap)
   dap.configurations.ruby = {
     {
       type = "ruby",
