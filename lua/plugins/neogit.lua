@@ -9,7 +9,7 @@ local M = {}
 
 ---Setup neogit plugin, add :Git command for neogit
 ---:Git command is exactly the same as :Neogit
-function M.setup()
+function M.init()
   require("neogit").setup {
     disable_signs = true,
   }

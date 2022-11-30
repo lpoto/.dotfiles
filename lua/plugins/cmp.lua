@@ -18,7 +18,7 @@ end
 
 ---Default setup for cmp plugin.
 ---Cmp is mostly used with lspconfig
-function M.setup()
+function M.init()
   local cmp = require "cmp"
   cmp.setup {
     snippet = {

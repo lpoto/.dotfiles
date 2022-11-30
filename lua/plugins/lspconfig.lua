@@ -10,7 +10,7 @@ local lspconfig = {}
 ---Definition of word under the cursor with "shift + K"
 ---Jump to definition with "gd"
 ---Open current line's diagnostic with <leader> + d
-function lspconfig.setup()
+function lspconfig.init()
   vim.api.nvim_set_keymap("n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>", {
     silent = true,
     noremap = true,

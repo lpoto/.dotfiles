@@ -11,7 +11,7 @@ local M = {}
 
 ---Format on save, remove trailing whitespace when formatter is not set
 ---@param autocmd boolean?: when true, format on save
-function M.setup(autocmd)
+function M.init(autocmd)
   require("formatter").setup {
     logging = true,
     log_level = vim.log.levels.INFO,

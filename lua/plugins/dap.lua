@@ -24,7 +24,7 @@ local M = {}
 ---dap defualt setup function called when the plugin is
 ---loaded. Calls all setups added with M.add_setup().
 ---Sets `D` user commands that opens 12 different dap options.
-function M.setup()
+function M.init()
   local dap = require "dap"
 
   -- NOTE: load virtual text extension

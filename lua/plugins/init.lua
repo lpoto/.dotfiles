@@ -36,7 +36,7 @@ function plugins.setup()
     use {
       "ellisonleao/gruvbox.nvim",
       config = function()
-        require("plugins.gruvbox").setup()
+        require("plugins.gruvbox").init()
       end,
     }
     ----------------------------------------------------------- NVIM-TREESITTER
@@ -46,7 +46,7 @@ function plugins.setup()
     use {
       "nvim-treesitter/nvim-treesitter",
       config = function()
-        require "plugins.treesitter"
+        require("plugins.treesitter").init()
       end,
       run = { ":TSUpdate" },
     }
@@ -57,7 +57,7 @@ function plugins.setup()
       opt = true,
       cmd = { "A", "Action", "Actions" },
       config = function()
-        require("plugins.actions").setup()
+        require("plugins.actions").init()
       end,
     }
     -------------------------------------------------------------- LUALINE.NVIM
@@ -67,7 +67,7 @@ function plugins.setup()
       opt = true,
       event = "BufNewFile,BufReadPre",
       config = function()
-        require "plugins.lualine"
+        require("plugins.lualine").init()
       end,
     }
     ----------------------------------------------------- INDENT-BLANKLINE.NVIM
@@ -78,7 +78,7 @@ function plugins.setup()
       opt = true,
       event = "BufNewFile,BufReadPre",
       config = function()
-        require "plugins.indentline"
+        require("plugins.indentline").init()
       end,
     }
     ------------------------------------------------------------------ NVIM-DAP
@@ -87,9 +87,9 @@ function plugins.setup()
       "mfussenegger/nvim-dap",
       opt = true,
       cmd = { "DapContinue", "DapToggleBreakpoint" },
-      keys = {"<C-c>", "<C-b>"},
+      keys = { "<C-c>", "<C-b>" },
       config = function()
-        require("plugins.dap").setup()
+        require("plugins.dap").init()
       end,
       requires = {
         {
@@ -105,7 +105,7 @@ function plugins.setup()
       opt = true,
       cmd = { "Git", "Neogit" },
       config = function()
-        require("plugins.neogit").setup()
+        require("plugins.neogit").init()
       end,
       --NOTE: this requires plenary.nvim
     }
@@ -116,7 +116,7 @@ function plugins.setup()
       opt = true,
       keys = { "<leader>n", "<C-x>", "<leader>g", "<C-g>", "<C-n>" },
       config = function()
-        require("plugins.telescope").setup()
+        require("plugins.telescope").init()
         --NOTE: this requires plenary.nvim
       end,
       requires = {
@@ -133,7 +133,7 @@ function plugins.setup()
       cmd = { "Format", "FormatWrite", "FormatLock", "FormatWriteLock" },
       keys = { "<leader>f" },
       config = function()
-        require("plugins.formatter").setup()
+        require("plugins.formatter").init()
       end,
     }
     ------------------------------------------------------------ NVIM-LSPCONFIG
@@ -143,7 +143,7 @@ function plugins.setup()
       opt = true,
       module_pattern = "lspconfig*",
       config = function()
-        require("plugins.lspconfig").setup()
+        require("plugins.lspconfig").init()
       end,
       requires = {
         -------------------------------------------------------------- NVIM-CMP
@@ -151,7 +151,7 @@ function plugins.setup()
         {
           "hrsh7th/nvim-cmp",
           config = function()
-            require("plugins.cmp").setup()
+            require("plugins.cmp").init()
           end,
           requires = {
             "hrsh7th/cmp-nvim-lsp",

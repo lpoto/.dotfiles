@@ -12,7 +12,7 @@ local M = {}
 ---Setup the actions plugin, use :Actions command
 ---to open the actions window, use <leader>e to toggle last output
 ---Use Ctrl-c to kill the action running in the oppened output window.
-function M.setup()
+function M.init()
   require("actions").setup {}
   for _, config in ipairs(setups) do
     require("actions").setup(config)
