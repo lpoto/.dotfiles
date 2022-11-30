@@ -37,6 +37,7 @@ require("plugins.lspconfig").distinct_setup("lua", function()
         },
         workspace = {
           library = vim.api.nvim_get_runtime_file("", true),
+          checkThirdParty = false,
         },
         telemetry = {
           enable = false,
