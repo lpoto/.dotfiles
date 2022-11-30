@@ -53,7 +53,7 @@ function plugins.setup()
     -------------------------------------------------------------- ACTIONS.NVIM
     -- manage and synchronously run actions
     use {
-      "~/personal/actions.nvim",
+      "lpoto/actions.nvim",
       opt = true,
       cmd = { "A", "Action", "Actions" },
       config = function()
