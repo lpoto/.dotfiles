@@ -29,9 +29,23 @@ function dap.setup()
     f(dap_module)
   end
 
-  vim.api.nvim_create_user_command("D", function()
-    dap.dap()
-  end, {})
+  vim.api.nvim_create_user_command("D", function(o)
+    local _, v = next(o.fargs)
+    dap.dap(v)
+  end, {
+    nargs = "*",
+    complete = function()
+      local t = {}
+      for _, v in ipairs(dap.choices(dap_module)) do
+        table.insert(t, v[2] .. " (" .. v[1] .. ")")
+      end
+      return t
+    end,
+  })
+
+  dap_module.listeners.after.event_initialized["custom"] = function()
+    dap.open_repl()
+  end
 end
 
 ---add a setup call to a table instead of calling it
@@ -68,41 +82,64 @@ function dap.distinct_setup(key, f, override)
   distinct_setups[key] = true
 end
 
-function dap.dap()
+dap.choices = function(dap_module)
+  return {
+    { "c", "Continue", dap_module.continue },
+    { "b", "ToggleBreakpoint", dap_module.toggle_breakpoint },
+    { "o", "StepOver", dap_module.step_over },
+    { "i", "StepInto", dap_module.step_into },
+    { "u", "StepOut", dap_module.step_out },
+    { "k", "StepBack", dap_module.step_back },
+    { "l", "ListBreakpoints", dap.list_breakpoints },
+    { "x", "ClearBreakpoints", dap_module.clear_breakpoints },
+    { "r", "OpenRepl", dap.open_repl },
+    { "s", "ShowScopes", dap.open_scopes },
+    { "e", "EvalExpression", dap.eval_expression },
+    { "t", "Terminate", dap_module.terminate },
+  }
+end
+
+---@param arg string?
+function dap.dap(arg)
   local dap_module = require "dap"
-  local choice = vim.fn.confirm(
-    "Select a dap action:",
-    "&c-Continue\n&b-ToggleBreakpoint\n&o-StepOver\n&i-StepInto\n"
-      .. "&t-StepOut\n&k-StepBack\n&l-ListBreakpoints\nx-ClearBreakpoints"
-      .. "\n&r-OpenRepl\n&s-ShowScopes\n&e-EvalExpression"
-      .. "\n&t-Terminate"
-  )
-  if choice == 1 then
-    dap_module.continue()
-  elseif choice == 2 then
-    dap_module.toggle_breakpoint()
-  elseif choice == 3 then
-    dap_module.step_over()
-  elseif choice == 4 then
-    dap_module.step_into()
-  elseif choice == 5 then
-    dap_module.step_out()
-  elseif choice == 6 then
-    dap_module.step_back()
-  elseif choice == 7 then
-    dap_module.list_breakpoints()
-    vim.fn.execute "copen"
-  elseif choice == 8 then
-    dap_module.clear_breakpoints()
-  elseif choice == 9 then
-    dap_module.repl.open()
-  elseif choice == 10 then
-    dap.open_scopes()
-  elseif choice == 11 then
-    dap.eval_expression()
-  elseif choice == 12 then
-    dap_module.terminate()
+  local choices = dap.choices(dap_module)
+  if type(arg) == "string" and string.len(arg) > 0 then
+    arg = string.lower(arg)
+    for _, v in pairs(choices) do
+      if arg == v[1] or arg == string.lower(v[2]) then
+        v[3]()
+        return
+      end
+    end
   end
+
+  local s = ""
+  for _, v in ipairs(choices) do
+    if string.len(s) > 0 then
+      s = s .. "\n"
+    end
+    s = s .. "&" .. v[1] .. "-" .. v[2]
+  end
+
+  local choice = vim.fn.confirm("Select a dap action:", s)
+  if choices[choice] ~= nil then
+    choices[choice][3]()
+  end
+end
+
+function dap.open_repl()
+  local dap_module = require "dap"
+  local s = {}
+  if vim.o.columns > 200 then
+    s.width = 100
+  end
+  dap_module.repl.open(s, "vsplit")
+end
+
+function dap.list_breakpoints()
+  local dap_module = require "dap"
+  dap_module.list_breakpoints()
+  vim.fn.execute "vertical copen"
 end
 
 function dap.open_scopes()
