@@ -7,17 +7,21 @@
 
 local setups = {}
 
-local actions = {}
+local M = {}
 
 ---Setup the actions plugin, use :Actions command
 ---to open the actions window, use <leader>e to toggle last output
 ---Use Ctrl-c to kill the action running in the oppened output window.
-function actions.setup()
+function M.setup()
   require("actions").setup {}
   for _, config in ipairs(setups) do
     require("actions").setup(config)
   end
-  vim.api.nvim_create_user_command("Actions", require("actions").open, {})
+  vim.api.nvim_create_user_command(
+    "Actions",
+    require("actions").available_actions,
+    {}
+  )
   vim.api.nvim_set_keymap(
     "n",
     "<leader>e",
@@ -50,7 +54,7 @@ local distinct_setups = {}
 ---@param key string: A string to identify the setup
 ---@param config table: An actions config
 ---@param override boolean?: Override existing config.
-function actions.distinct_setup(key, config, override)
+function M.distinct_setup(key, config, override)
   if override ~= true and distinct_setups[key] ~= nil then
     return
   end
@@ -59,4 +63,4 @@ function actions.distinct_setup(key, config, override)
   distinct_setups[key] = true
 end
 
-return actions
+return M

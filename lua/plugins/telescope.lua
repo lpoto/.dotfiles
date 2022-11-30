@@ -5,12 +5,12 @@
 -- https://github.com/nvim-telescope/telescope.nvim
 --_____________________________________________________________________________
 
-local telescope = {}
+local M = {}
 
 ---Default setup for the telescope, sets default pickers and mappings
 ---for finding files(<leader>n), grep string(<C-x>), live grep (<leader>g)
 ---and git files(<C-g>)
-function telescope.setup()
+function M.setup()
   require("telescope").setup {
     defaults = {
       file_sorter = require("telescope.sorters").get_fzy_sorter,
@@ -33,7 +33,7 @@ function telescope.setup()
         theme = "ivy",
         hidden = true,
         previewer = false,
-        file_ignore_patterns = telescope.pickers_ignore_patterns(),
+        file_ignore_patterns = M.pickers_ignore_patterns(),
       },
     },
     extensions = {
@@ -44,13 +44,13 @@ function telescope.setup()
     },
   }
   require("telescope").load_extension "file_browser"
-  telescope.remappings()
+  M.remappings()
 end
 
 ---fuzzy find files with "<leader> + n"
 ---search word under cursor with "Ctrl + x"
 ---live grep with "<leader> + g" (REQUIRES 'ripgrep')
-function telescope.remappings()
+function M.remappings()
   vim.api.nvim_set_keymap(
     "n",
     "<leader>n",
@@ -95,7 +95,7 @@ function telescope.remappings()
   )
 end
 
-function telescope.pickers_ignore_patterns()
+function M.pickers_ignore_patterns()
   local fi_patterns = {
     "plugged/",
     ".undo/",
@@ -111,4 +111,4 @@ function telescope.pickers_ignore_patterns()
   return fi_patterns
 end
 
-return telescope
+return M
