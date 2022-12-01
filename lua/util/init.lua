@@ -14,7 +14,7 @@ local util = {}
 ---@param max_depth number?:  max depth to check for root (default: 10)
 function util.get_root(root_dir_patterns, max_depth)
   if type(root_dir_patterns) ~= "table" or next(root_dir_patterns) == nil then
-    root_dir_patterns = { ".git", ".nvim.root", ".nvim"}
+    root_dir_patterns = { ".git", ".nvim.root", ".nvim" }
   end
   if type(max_depth) ~= "number" then
     max_depth = 20
