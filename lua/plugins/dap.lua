@@ -159,11 +159,6 @@ set_user_commands = function()
     "<CMD>lua require('dap').toggle_breakpoint()<CR>",
     { noremap = true, silent = true }
   )
-
-  vim.api.nvim_create_autocmd("FileType", {
-    pattern = "dap-repl",
-    command = "lua require('dap.ext.autocompl').attach()",
-  })
 end
 
 return M
