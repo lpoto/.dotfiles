@@ -6,13 +6,16 @@
 --_____________________________________________________________________________
 
 --------------------------------------------------------------------- LSPCONFIG
--- NOTE: set rust-analyzer the default lsp server for rust
+--github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#rust_analyzer
 
---[[ rustup update ]]
---[[ rustup component add rust-analyzer ]]
--- make sure to export path to rust-analyzer so command "rust-analyzer" exists.
+-- NOTE: set rust-analyzer the default lsp server for rust
 require("plugins.lspconfig").distinct_setup("rust", function()
+  --[[
+      rustup component add rust-analyzer
+  ]]
   require("lspconfig").rust_analyzer.setup {
+    -- NOTE: because installed with rustup
+    cmd = { "rustup", "run", "stable", "rust-analyzer" },
     capabilities = require("plugins.cmp").default_capabilities(),
     root_dir = function()
       return require("util").get_root { ".git", ".gitignore", "Cargo.toml" }
@@ -23,14 +26,19 @@ require("plugins.lspconfig").distinct_setup("rust", function()
 end)
 
 --------------------------------------------------------------------- FORMATTER
--- NOTE: set rust as the default formatter for rust
+--github.com/mhartington/formatter.nvim/blob/master/lua/formatter/filetypes/rust.lua
 
+-- NOTE: set rust as the default formatter for rust
 require("plugins.formatter").distinct_setup("rust", {
+  --[[
+      rustup component add rustfmt
+  ]]
   filetype = {
     rust = {
       function()
         return {
-          exe = "rustfmt",
+          -- NOTE: ye rustup
+          exe = "rustup run stable rustfmt",
           stdin = true,
         }
       end,
