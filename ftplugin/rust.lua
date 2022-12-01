@@ -44,11 +44,11 @@ require("plugins.formatter").distinct_setup("rust", {
 require("plugins.actions").distinct_setup("rust", {
   actions = {
     -- Run currently oppened rust file
-    ["Run current Rust file"] = function()
+    ["Run current Cargo binary"] = function()
       return {
         filetypes = { "rust" },
         steps = {
-          { "rustc", vim.fn.expand "%:p" },
+          { "cargo", "run", "--bin", vim.fn.expand "%:p:t:r" },
         },
       }
     end,
