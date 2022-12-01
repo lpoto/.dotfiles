@@ -6,10 +6,13 @@
 --_____________________________________________________________________________
 
 --------------------------------------------------------------------- LSPCONFIG
--- NOTE: set solargraph the default lsp server for ruby
+--github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#solargraph
 
+-- NOTE: set solargraph the default lsp server for ruby
 require("plugins.lspconfig").distinct_setup("ruby", function()
-  -- gem install solargraph
+  --[[
+      gem install solargraph
+  ]]
   require("lspconfig").solargraph.setup {
     capabilities = require("plugins.cmp").default_capabilities(),
     root_dir = require("util").get_root,
@@ -19,8 +22,9 @@ require("plugins.lspconfig").distinct_setup("ruby", function()
 end)
 
 --------------------------------------------------------------------- FORMATTER
--- NOTE: set rubocop as the default formatter for ruby
+--github.com/mhartington/formatter.nvim/blob/master/lua/formatter/filetypes/ruby.lua
 
+-- NOTE: set rubocop as the default formatter for ruby
 require("plugins.formatter").distinct_setup("ruby", {
   filetype = {
     ruby = {
@@ -49,14 +53,20 @@ require("plugins.formatter").distinct_setup("ruby", {
 })
 
 --------------------------------------------------------------------- DEBUGGER
+--https://github.com/mfussenegger/nvim-dap/wiki/Debug-Adapter-installation#Ruby
 -- NOTE: set readapt as default ruby debugger
 
---[[  gem install readapt ]]
 require("plugins.dap").distinct_setup("ruby_adapter", function(dap)
+  --[[  
+      gem install readapt
+  ]]
   dap.adapters.ruby = {
     type = "executable",
     command = "readapt",
     args = { "stdio" },
+    options = {
+      detach = false,
+    },
   }
 end)
 
@@ -79,7 +89,7 @@ end)
 require("plugins.actions").distinct_setup("ruby", {
   actions = {
     -- Run currently oppened ruby file
-    run_current_ruby_file = function()
+    ["Run current Ruby file"] = function()
       return {
         filetypes = { "ruby" },
         steps = {

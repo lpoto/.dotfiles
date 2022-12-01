@@ -6,11 +6,13 @@
 --_____________________________________________________________________________
 
 --------------------------------------------------------------------- LSPCONFIG
+--github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#ocamllsp
+
 -- NOTE: set ocamllsp the default lsp server for OCaml
-
 require("plugins.lspconfig").distinct_setup("ocaml", function()
-  -- Install ocamllsp, make sure it is in path
-
+  --[[
+      opam install ocaml-lsp-server
+  ]]
   require("lspconfig").ocamllsp.setup {
     capabilities = require("plugins.cmp").default_capabilities(),
     root_dir = require("util").get_root,
@@ -20,11 +22,13 @@ require("plugins.lspconfig").distinct_setup("ocaml", function()
 end)
 
 --------------------------------------------------------------------- FORMATTER
--- NOTE: set ocamlformat as the default formatter for OCaml
+--github.com/mhartington/formatter.nvim/blob/master/lua/formatter/filetypes/ocaml.lua
 
+-- NOTE: set ocamlformat as the default formatter for OCaml
 require("plugins.formatter").distinct_setup("ocaml", {
-  -- opam install ocamlformat
-  -- run eval $(opam config env) before ocamlformat if ocamlformat not found
+  --[[
+      opam install ocamlformat
+  ]]
   filetype = {
     ocaml = {
       function()
@@ -47,7 +51,7 @@ require("plugins.formatter").distinct_setup("ocaml", {
 require("plugins.actions").distinct_setup("ocaml", {
   actions = {
     -- Compile and run current ocaml file with ocamlopt
-    run_current_ocaml_file = function()
+    ["Run current file with ocamlopt"] = function()
       return {
         steps = {
           {

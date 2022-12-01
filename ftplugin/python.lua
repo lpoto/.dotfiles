@@ -6,9 +6,13 @@
 --_____________________________________________________________________________
 
 --------------------------------------------------------------------- LSPCONFIG
--- NOTE: start pylsp language server for python
+--github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#pylsp
 
+-- NOTE: start pylsp language server for python
 require("plugins.lspconfig").distinct_setup("python", function()
+  --[[
+      pip install pylsp
+  ]]
   require("lspconfig").pylsp.setup {
     capabilities = require("plugins.cmp").default_capabilities(),
     root_dir = require("util").get_root,
@@ -18,11 +22,13 @@ require("plugins.lspconfig").distinct_setup("python", function()
 end)
 
 --------------------------------------------------------------------- FORMATTER
--- NOTE: set autopep8 as default python formatter
+--github.com/mhartington/formatter.nvim/blob/master/lua/formatter/filetypes/python.lua
 
+-- NOTE: set autopep8 as default python formatter
 require("plugins.formatter").distinct_setup("python", {
-  -- install python3, python3-pip and python3-venv
-  -- install autopep8 with pip
+  --[[
+      pip install autopep8
+  ]]
   filetype = {
     python = {
       function()
@@ -39,22 +45,25 @@ require("plugins.formatter").distinct_setup("python", {
 })
 
 --------------------------------------------------------------------- DEBUGGER
--- NOTE: set debugpy as default python debugger
+--github.com/mfussenegger/nvim-dap/wiki/Debug-Adapter-installation#python
 
--- [[ pip install debugpy ]]
+-- NOTE: set debugpy as default python debugger
 require("plugins.dap").distinct_setup("python_adapter", function(dap)
+  --[[
+      pip install debugpy
+  ]]
   dap.adapters.python = {
     type = "executable",
     command = vim.fn.exepath "python",
     args = { "-m", "debugpy.adapter" },
+    options = {
+      detach = false,
+    },
   }
 end)
 
--- debug currently oppened file with debugpy
+-- NOTE: debug currently oppened python file with debugpy
 require("plugins.dap").distinct_setup("python_config", function(dap)
-  -- Options below are for debugpy, see:
-  -- https://github.com/microsoft/debugpy/wiki/Debug-configuration-settings
-  -- for supported options
   dap.configurations.python = {
     {
       type = "python",
@@ -73,8 +82,7 @@ end)
 
 require("plugins.actions").distinct_setup("python", {
   actions = {
-    -- Run currently oppened python file
-    run_current_python_file = function()
+    ["Run current Python file"] = function()
       return {
         filetypes = { "python" },
         steps = {
