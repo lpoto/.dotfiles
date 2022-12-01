@@ -47,7 +47,7 @@ require("plugins.formatter").distinct_setup("ocaml", {
 require("plugins.actions").distinct_setup("ocaml", {
   actions = {
     -- Compile and run current ocaml file with ocamlopt
-    run_current_ocaml_file = function()
+    ["Run current file with ocamlopt"] = function()
       return {
         steps = {
           {

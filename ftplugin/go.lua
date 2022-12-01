@@ -40,7 +40,7 @@ require("plugins.formatter").distinct_setup("go", {
 
 require("plugins.actions").distinct_setup("go", {
   actions = {
-    run_current_go_file = function()
+    ["Run current Go file"] = function()
       return {
         filetypes = { "go" },
         steps = {

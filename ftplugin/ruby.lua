@@ -57,6 +57,9 @@ require("plugins.dap").distinct_setup("ruby_adapter", function(dap)
     type = "executable",
     command = "readapt",
     args = { "stdio" },
+    options = {
+      detach = false,
+    },
   }
 end)
 
@@ -79,7 +82,7 @@ end)
 require("plugins.actions").distinct_setup("ruby", {
   actions = {
     -- Run currently oppened ruby file
-    run_current_ruby_file = function()
+    ["Run current Ruby file"] = function()
       return {
         filetypes = { "ruby" },
         steps = {

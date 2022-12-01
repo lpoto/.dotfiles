@@ -47,6 +47,9 @@ require("plugins.dap").distinct_setup("python_adapter", function(dap)
     type = "executable",
     command = vim.fn.exepath "python",
     args = { "-m", "debugpy.adapter" },
+    options = {
+      detach = false,
+    },
   }
 end)
 
@@ -74,7 +77,7 @@ end)
 require("plugins.actions").distinct_setup("python", {
   actions = {
     -- Run currently oppened python file
-    run_current_python_file = function()
+    ["Run current Python file"] = function()
       return {
         filetypes = { "python" },
         steps = {
