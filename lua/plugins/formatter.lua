@@ -26,7 +26,12 @@ function M.init(autocmd)
     vim.api.nvim_create_autocmd("BufWritePost", {
       pattern = "*",
       group = "FormatAutoGroup",
-      command = "FormatWriteLock",
+      callback = function()
+        local ok, e = pcall(vim.cmd, 'FormatWriteLock')
+        if ok == false then
+          log.warn("formatter.nvim: " .. e)
+        end
+      end
     })
   end
   for _, config in ipairs(setups) do
