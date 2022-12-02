@@ -21,6 +21,15 @@ require("plugins.lspconfig").distinct_setup("python", function()
   vim.fn.execute("LspStart", true)
 end)
 
+------------------------------------------------------------------------ LINTER
+--https://github.com/mfussenegger/nvim-lint
+
+--NOTE: lint python with flake8
+--[[
+    pip install flake8
+]]
+require("plugins.lint").add_linters("python", { "flake8" }, true)
+
 --------------------------------------------------------------------- FORMATTER
 --github.com/mhartington/formatter.nvim/blob/master/lua/formatter/filetypes/python.lua
 
