@@ -136,6 +136,16 @@ function plugins.setup()
         require("plugins.formatter").init()
       end,
     }
+    ----------------------------------------------------------------- NVIM-LINT
+    -- A format runner for Neovim.
+    use {
+      "mfussenegger/nvim-lint",
+      opt = true,
+      module = "lint",
+      config = function()
+        require("plugins.lint").init(true)
+      end,
+    }
     ------------------------------------------------------------ NVIM-LSPCONFIG
     -- Configs for the Nvim LSP client
     use {

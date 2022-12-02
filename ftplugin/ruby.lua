@@ -21,11 +21,23 @@ require("plugins.lspconfig").distinct_setup("ruby", function()
   vim.fn.execute("LspStart", true)
 end)
 
+------------------------------------------------------------------------ LINTER
+--https://github.com/mfussenegger/nvim-lint
+
+--NOTE: lint ruby with rubocop
+--[[
+    gem install rubocop
+]]
+require("plugins.lint").add_linters("ruby", { "rubocop" }, true)
+
 --------------------------------------------------------------------- FORMATTER
 --github.com/mhartington/formatter.nvim/blob/master/lua/formatter/filetypes/ruby.lua
 
 -- NOTE: set rubocop as the default formatter for ruby
 require("plugins.formatter").distinct_setup("ruby", {
+  --[[
+      gem install rubocop
+  ]]
   filetype = {
     ruby = {
       function()
