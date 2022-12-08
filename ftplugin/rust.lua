@@ -51,12 +51,24 @@ require("plugins.formatter").distinct_setup("rust", {
 
 require("plugins.actions").distinct_setup("rust", {
   actions = {
-    -- Run currently oppened rust file
     ["Run current Cargo binary"] = function()
       return {
         filetypes = { "rust" },
+        patterns = { ".*/src/bin/[^/]+.rs" },
+        cwd = require("util").get_root { ".git", "cargo.toml" },
         steps = {
           { "cargo", "run", "--bin", vim.fn.expand "%:p:t:r" },
+        },
+      }
+    end,
+    ["Run current Cargo project"] = function()
+      return {
+        filetypes = { "rust" },
+        patterns = { ".*/src/.*.rs" },
+        ignore_patterns = { ".*/src/bin/[^/]+.rs" },
+        cwd = require("util").get_root { ".git", "cargo.toml" },
+        steps = {
+          { "cargo", "run" },
         },
       }
     end,
