@@ -85,6 +85,15 @@ function M.remappings()
   )
   vim.api.nvim_set_keymap(
     "n",
+    "<leader>d",
+    "<cmd>lua require('telescope.builtin').diagnostics()<CR>",
+    {
+      silent = true,
+      noremap = true,
+    }
+  )
+  vim.api.nvim_set_keymap(
+    "n",
     "<C-x>",
     "<cmd>lua require('telescope.builtin').grep_string()<CR>",
     {

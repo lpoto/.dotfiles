@@ -136,10 +136,10 @@ extend_repl = function()
 end
 
 set_user_commands = function()
-  -- toggle repl vertical split with <leader> + d
+  -- toggle repl vertical split with <leader> + r
   vim.api.nvim_set_keymap(
     "n",
-    "<leader>d",
+    "<leader>r",
     "<CMD>lua require('plugins.dap').toggle_repl()<CR>",
     { noremap = true, silent = true }
   )

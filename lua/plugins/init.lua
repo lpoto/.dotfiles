@@ -114,7 +114,15 @@ function plugins.setup()
     use {
       "nvim-telescope/telescope.nvim",
       opt = true,
-      keys = { "<leader>n", "<C-x>", "<leader>g", "<C-g>", "<C-n>" },
+      keys = {
+        "<leader>n",
+        "<C-x>",
+        "<leader>g",
+        "<C-g>",
+        "<C-n>",
+        "<leader>d",
+        "<leader>q",
+      },
       config = function()
         require("plugins.telescope").init()
         --NOTE: this requires plenary.nvim
