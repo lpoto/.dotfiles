@@ -10,6 +10,7 @@ local M = {}
 ---Default setup for the telescope, sets default pickers and mappings
 ---for finding files(<leader>n), grep string(<C-x>), live grep (<leader>g)
 ---and git files(<C-g>)
+---Send found elements to quickfix with <C-q>
 function M.init()
   require("telescope").setup {
     defaults = {
