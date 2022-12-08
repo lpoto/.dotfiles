@@ -11,7 +11,7 @@ local lspconfig = {}
 ---Definition of word under the cursor with "shift + K"
 ---If there are diagnostics on line the "shit + K " will display
 ---diagnostics instead.
----"Ctrl + d" will show only definition.
+---"Ctrl + k" will show only definition.
 function lspconfig.init()
   vim.api.nvim_set_keymap(
     "n",
@@ -22,7 +22,7 @@ function lspconfig.init()
       noremap = true,
     }
   )
-  vim.api.nvim_set_keymap("n", "<C-d>", "<cmd>lua vim.lsp.buf.hover()<CR>", {
+  vim.api.nvim_set_keymap("n", "<C-k>", "<cmd>lua vim.lsp.buf.hover()<CR>", {
     silent = true,
     noremap = true,
   })
