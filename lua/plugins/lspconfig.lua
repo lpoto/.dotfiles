@@ -12,6 +12,7 @@ local lspconfig = {}
 ---If there are diagnostics on line the "shit + K " will display
 ---diagnostics instead.
 ---"Ctrl + k" will show only definition.
+---"Ctrl + d" will show only diagnostics.
 function lspconfig.init()
   vim.api.nvim_set_keymap(
     "n",
@@ -26,6 +27,15 @@ function lspconfig.init()
     silent = true,
     noremap = true,
   })
+  vim.api.nvim_set_keymap(
+    "n",
+    "<C-d>",
+    "<cmd>lua vim.diagnostic.open_float()<CR>",
+    {
+      silent = true,
+      noremap = true,
+    }
+  )
   vim.api.nvim_set_keymap("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", {
     silent = true,
     noremap = true,
