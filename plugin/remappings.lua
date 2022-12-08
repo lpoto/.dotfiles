@@ -70,6 +70,7 @@ vim.api.nvim_set_keymap(
 ----------------------------------------------------------------------- JUMPING
 -- center cursor when jumping, jump forward with tab, backward with shift-tab
 -- count j and k commands with a number larger than 5 as jumps
+-- Navigate quickfix with <leader>l and <leader>h
 
 vim.api.nvim_set_keymap("n", "n", "nzzzv", {
   noremap = true,
@@ -83,7 +84,7 @@ vim.api.nvim_set_keymap("n", "J", "mzJ'z", {
 vim.api.nvim_set_keymap("n", "<leader>l", "<cmd>cnext<CR>zzzv", {
   noremap = true,
 })
-vim.api.nvim_set_keymap("n", "<leader>j", "<cmd>cprev<CR>zzzv", {
+vim.api.nvim_set_keymap("n", "<leader>h", "<cmd>cprev<CR>zzzv", {
   noremap = true,
 })
 vim.api.nvim_set_keymap("n", "<S-TAB>", "<C-O>zzzv", {
