@@ -14,6 +14,22 @@ local log = require "util.log"
 local plugins = {}
 
 local ensure_packer
+local disabled_plugins = {}
+
+---Disable plugin identified by the provided name.
+---NOTE: This will only work for lazily loaded plugins.
+---@param name string
+function plugins.disable(name)
+  disabled_plugins[name] = true
+end
+
+---Check if plugin identified by the provided name is enabled.
+function plugins.enabled(name)
+  if disabled_plugins[name] then
+    return false
+  end
+  return true
+end
 
 ---Manually load the packer.nvim package and use it
 ---to load all the required plugins.
@@ -55,6 +71,8 @@ function plugins.setup()
     -- entire functions in real-time right from your editor.
     use {
       "github/copilot.vim",
+      as = "copilot",
+      cond = 'require("plugins").enabled("copilot")',
       opt = true,
       cmd = { "Copilot" },
       setup = function()
@@ -65,6 +83,8 @@ function plugins.setup()
     -- manage and synchronously run actions
     use {
       "lpoto/actions.nvim",
+      as = "actions",
+      cond = 'require("plugins").enabled("actions")',
       opt = true,
       cmd = { "A", "Action", "Actions" },
       config = function()
@@ -75,6 +95,8 @@ function plugins.setup()
     -- An easy way to configure neovim's statusline.
     use {
       "nvim-lualine/lualine.nvim",
+      as = "lualine",
+      cond = 'require("plugins").enabled("lualine")',
       opt = true,
       event = "BufNewFile,BufReadPre",
       config = function()
@@ -86,6 +108,8 @@ function plugins.setup()
     -- for code indented with spaces.
     use {
       "lukas-reineke/indent-blankline.nvim",
+      as = "indent-blankline",
+      cond = 'require("plugins").enabled("indent-blankline")',
       opt = true,
       event = "BufNewFile,BufReadPre",
       config = function()
@@ -96,6 +120,8 @@ function plugins.setup()
     -- A Debug Adapter Protocol client implementation for Neovim.
     use {
       "mfussenegger/nvim-dap",
+      as = "dap",
+      cond = 'require("plugins").enabled("dap")',
       opt = true,
       cmd = { "DapContinue", "DapToggleBreakpoint" },
       keys = { "<C-c>", "<C-b>" },
@@ -113,6 +139,8 @@ function plugins.setup()
     -- Neovim Git intergration
     use {
       "TimUntersberger/neogit",
+      as = "neogit",
+      cond = 'require("plugins").enabled("neogit")',
       opt = true,
       cmd = { "Git", "Neogit" },
       config = function()
@@ -124,6 +152,8 @@ function plugins.setup()
     -- A highly extendable fuzzy finder over lists.
     use {
       "nvim-telescope/telescope.nvim",
+      as = "telescope",
+      cond = 'require("plugins").enabled("telescope")',
       opt = true,
       keys = {
         "<leader>n",
@@ -148,6 +178,8 @@ function plugins.setup()
     -- A format runner for Neovim.
     use {
       "mhartington/formatter.nvim",
+      as = "formatter",
+      cond = 'require("plugins").enabled("formatter")',
       opt = true,
       cmd = { "Format", "FormatWrite", "FormatLock", "FormatWriteLock" },
       keys = { "<leader>f" },
@@ -159,6 +191,8 @@ function plugins.setup()
     -- A format runner for Neovim.
     use {
       "mfussenegger/nvim-lint",
+      as = "lint",
+      cond = 'require("plugins").enabled("lint")',
       opt = true,
       module = "lint",
       config = function()
@@ -169,6 +203,8 @@ function plugins.setup()
     -- Configs for the Nvim LSP client
     use {
       "neovim/nvim-lspconfig",
+      as = "lspconfig",
+      cond = 'require("plugins").enabled("lspconfig")',
       opt = true,
       module_pattern = "lspconfig*",
       config = function()
