@@ -50,6 +50,11 @@ function plugins.setup()
       end,
       run = { ":TSUpdate" },
     }
+    use {
+      "github/copilot.vim",
+      cmd = { "Copilot" },
+      opt = true,
+    }
     -------------------------------------------------------------- ACTIONS.NVIM
     -- manage and synchronously run actions
     use {
