@@ -50,10 +50,16 @@ function plugins.setup()
       end,
       run = { ":TSUpdate" },
     }
+    ------------------------------------------------------------ GITHUB COPILOT
+    -- GitHub Copilot uses OpenAI Codex to suggest code and
+    -- entire functions in real-time right from your editor.
     use {
       "github/copilot.vim",
-      cmd = { "Copilot" },
       opt = true,
+      cmd = { "Copilot" },
+      setup = function()
+        require("plugins.copilot").init()
+      end,
     }
     -------------------------------------------------------------- ACTIONS.NVIM
     -- manage and synchronously run actions
