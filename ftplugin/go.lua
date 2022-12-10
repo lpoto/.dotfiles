@@ -87,3 +87,8 @@ require("plugins.actions").distinct_setup("go", {
     end,
   },
 })
+
+----------------------------------------------------------------------- COPILOT
+-- NOTE: enable copilot for go
+
+require("plugins.copilot").enable()
