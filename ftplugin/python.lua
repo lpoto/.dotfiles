@@ -101,3 +101,8 @@ require("plugins.actions").distinct_setup("python", {
     end,
   },
 })
+
+----------------------------------------------------------------------- COPILOT
+-- NOTE: enable github copilot if it is not already enabled
+
+require("plugins.copilot").enable()

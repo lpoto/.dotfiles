@@ -74,3 +74,8 @@ require("plugins.actions").distinct_setup("rust", {
     end,
   },
 })
+
+----------------------------------------------------------------------- COPILOT
+-- NOTE: enable copilot for rust
+
+require("plugins.copilot").enable()

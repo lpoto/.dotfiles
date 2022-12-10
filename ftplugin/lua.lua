@@ -69,3 +69,8 @@ require("plugins.formatter").distinct_setup("lua", {
     },
   },
 })
+
+----------------------------------------------------------------------- COPILOT
+-- NOTE: enable copilot for lua
+
+require("plugins.copilot").enable()

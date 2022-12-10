@@ -111,3 +111,8 @@ require("plugins.actions").distinct_setup("ruby", {
     end,
   },
 })
+
+----------------------------------------------------------------------- COPILOT
+-- NOTE: enable copilot for ruby
+
+require("plugins.copilot").enable()

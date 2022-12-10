@@ -115,32 +115,6 @@ vim.api.nvim_set_keymap("i", ".", ".<c-g>u", { noremap = true })
 vim.api.nvim_set_keymap("i", "!", "!<c-g>u", { noremap = true })
 vim.api.nvim_set_keymap("i", "?", "?<c-g>u", { noremap = true })
 
-------------------------------------------------------------------- MOVING TEXT
--- switch lines in normal mode with leader-j or leader-k
--- switch lines in insert mode with ctrl-j or ctrl-k
--- switch selected text in visual mode with J or K
-
-vim.api.nvim_set_keymap("v", "K", "<cmd>m '>+1<CR>gv=gv", { noremap = true })
-vim.api.nvim_set_keymap("v", "J", "<cmd>m '<-2<CR>gv=gv", { noremap = true })
-vim.api.nvim_set_keymap("i", "<C-k>", "<esc><cmd>m .-2<CR>==", {
-  noremap = true,
-})
-vim.api.nvim_set_keymap("i", "<C-J>", "<esc><cmd>m .+1<CR>==", {
-  noremap = true,
-})
-vim.api.nvim_set_keymap(
-  "n",
-  "<leader>k",
-  "<cmd>m .-2<CR>==",
-  { noremap = true }
-)
-vim.api.nvim_set_keymap(
-  "n",
-  "<leader>j",
-  "<cmd>m .+1<CR>==",
-  { noremap = true }
-)
-
 ----------------------------------------------------------------------- WRITING
 
 vim.api.nvim_create_user_command(

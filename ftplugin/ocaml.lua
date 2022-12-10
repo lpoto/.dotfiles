@@ -78,3 +78,9 @@ require("plugins.actions").distinct_setup("ocaml", {
     end,
   },
 })
+
+
+----------------------------------------------------------------------- COPILOT
+-- NOTE: enable copilot for OCaml
+
+require("plugins.copilot").enable()
