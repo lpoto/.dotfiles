@@ -61,7 +61,12 @@ end
 ---If the copilot is not already running, run it.
 ---NOTE: by default copilot is disabled for all filetypes
 ---so it will not work for filetype until this is called.
+---NOTE: this will be a noop if the :Copilot command is not available.
+---Meaning, disabling the plugin will also disable this function.
 function M.enable()
+  if vim.fn.exists ":Copilot" == 0 then
+    return
+  end
   if vim.g.copilot_filetypes == nil then
     vim.g.copilot_filetypes = { [vim.o.filetype] = true }
   else
