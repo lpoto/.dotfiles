@@ -17,11 +17,16 @@ function M.init()
   for _, config in ipairs(setups) do
     require("actions").setup(config)
   end
-  vim.api.nvim_create_user_command(
-    "Actions",
-    require("actions").available_actions,
-    {}
-  )
+  vim.api.nvim_create_user_command("Actions", function()
+    pcall(require, "telescope")
+    if package.loaded["telescope"] then
+      require("actions.telescope").available_actions(
+        require("telescope.themes").get_ivy()
+      )
+    else
+      require("actions").available_actions()
+    end
+  end, {})
   vim.api.nvim_set_keymap(
     "n",
     "<leader>e",
