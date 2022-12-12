@@ -18,9 +18,14 @@ function M.init()
     require("actions").setup(config)
   end
   vim.api.nvim_create_user_command("Actions", function()
-    require("actions.telescope").available_actions(
-      require("telescope.themes").get_ivy()
-    )
+    pcall(require, "telescope")
+    if package.loaded["telescope"] then
+      require("actions.telescope").available_actions(
+        require("telescope.themes").get_ivy()
+      )
+    else
+      require("actions").available_actions()
+    end
   end, {})
   vim.api.nvim_set_keymap(
     "n",
