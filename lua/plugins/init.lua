@@ -155,6 +155,7 @@ function plugins.setup()
       as = "telescope",
       cond = 'require("plugins").enabled("telescope")',
       opt = true,
+      module_pattern = "telescope.*",
       keys = {
         "<leader>n",
         "<C-x>",
