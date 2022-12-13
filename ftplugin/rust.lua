@@ -18,7 +18,7 @@ require("plugins.lspconfig").distinct_setup("rust", function()
     cmd = { "rustup", "run", "stable", "rust-analyzer" },
     capabilities = require("plugins.cmp").default_capabilities(),
     root_dir = function()
-      return require("util").get_root { ".git", ".gitignore", "Cargo.toml" }
+      return require "util.root" { ".git", ".gitignore", "Cargo.toml" }
     end,
   }
   -- NOTE: Start the lsp server
@@ -55,7 +55,7 @@ require("plugins.actions").distinct_setup("rust", {
       return {
         filetypes = { "rust" },
         patterns = { ".*/src/bin/[^/]+.rs" },
-        cwd = require("util").get_root { ".git", "cargo.toml" },
+        cwd = require "util.root" { ".git", "cargo.toml" },
         steps = {
           { "cargo", "run", "--bin", vim.fn.expand "%:p:t:r" },
         },
@@ -66,7 +66,7 @@ require("plugins.actions").distinct_setup("rust", {
         filetypes = { "rust" },
         patterns = { ".*/src/.*.rs" },
         ignore_patterns = { ".*/src/bin/[^/]+.rs" },
-        cwd = require("util").get_root { ".git", "cargo.toml" },
+        cwd = require "util.root" { ".git", "cargo.toml" },
         steps = {
           { "cargo", "run" },
         },

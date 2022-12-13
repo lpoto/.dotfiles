@@ -8,10 +8,11 @@
 
 local log = require "util.log"
 
+local M = {}
+
 local open_cht_sh
 
----Default setup for cheat sheet, create Command :Cht <args>
----that displays cheat sheet in a new tab.
+---create Command :Cht <args> that displays cheat sheet in a new tab.
 ---`curl cht.sh/{args[1]}/{concat{args[i], '+' | i > 1}}\?T `
 ---Where args' whitespaces are replaced with '+'
 vim.api.nvim_create_user_command("Cht", function(o)
@@ -24,6 +25,8 @@ vim.api.nvim_create_user_command("Cht", function(o)
 end, {
   nargs = "*",
 })
+
+-------------------------------------------------------------------------------
 
 ---Pipe the output of curl cht.sh command
 ---to a new scratch tab.
@@ -83,3 +86,5 @@ open_cht_sh = function(args1, args2)
   pcall(vim.api.nvim_buf_set_option, v, "buftype", "nofile")
   pcall(vim.api.nvim_buf_set_option, v, "swapfile", false)
 end
+
+return M

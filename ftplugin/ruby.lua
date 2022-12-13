@@ -15,7 +15,7 @@ require("plugins.lspconfig").distinct_setup("ruby", function()
   ]]
   require("lspconfig").solargraph.setup {
     capabilities = require("plugins.cmp").default_capabilities(),
-    root_dir = require("util").get_root,
+    root_dir = require("util.root"),
   }
   -- NOTE: Start the lsp server
   vim.fn.execute("LspStart", true)

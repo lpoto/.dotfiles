@@ -15,7 +15,7 @@ require("plugins.lspconfig").distinct_setup("ocaml", function()
   ]]
   require("lspconfig").ocamllsp.setup {
     capabilities = require("plugins.cmp").default_capabilities(),
-    root_dir = require("util").get_root,
+    root_dir = require("util.root"),
   }
 
   vim.fn.execute("LspStart", true)
