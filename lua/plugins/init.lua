@@ -43,7 +43,7 @@ function plugins.setup()
     -- such as highlighting based on it
     Plugin:new(use, {
       "nvim-treesitter/nvim-treesitter",
-      as = "treesitter",
+      as = "nvim-treesitter",
       run = { ":TSUpdate" },
     })
     ------------------------------------------------------------ GITHUB COPILOT
@@ -167,7 +167,7 @@ function plugins.setup()
             -- autocomplete matching parentheses etc.
             {
               "windwp/nvim-autopairs",
-              module_pattern = { "cmp", "cmp.*", "nvim-autopairs.*" },
+              module_pattern = { "cmp.*", "nvim-autopairs.*" },
             },
           },
         },

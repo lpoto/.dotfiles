@@ -5,7 +5,7 @@
 -- https://github.com/nvim-treesitter/nvim-treesitter
 --_____________________________________________________________________________
 
-local treesitter = require("util.packer_wrapper").get "treesitter"
+local treesitter = require("util.packer_wrapper").get "nvim-treesitter"
 
 ---Default setup for the treesitter
 treesitter:config(function()
