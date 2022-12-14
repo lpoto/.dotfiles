@@ -27,7 +27,7 @@ lspconfig:config(function()
   vim.fn.execute("LspStart", true)
 end, "rust")
 
-lspconfig.data.start()
+vim.cmd "LspStart"
 
 --------------------------------------------------------------------- FORMATTER
 --github.com/mhartington/formatter.nvim/blob/master/lua/formatter/filetypes/rust.lua
@@ -92,4 +92,4 @@ end, "rust")
 
 local copilot = require("util.packer.wrapper").get "copilot"
 
-copilot.data.enable()
+copilot:get_field "enable"()

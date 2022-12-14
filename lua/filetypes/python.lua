@@ -123,4 +123,4 @@ end, "python")
 
 local copilot = require("util.packer.wrapper").get "copilot"
 
---copilot.data.enable()
+copilot:get_field "enable"()

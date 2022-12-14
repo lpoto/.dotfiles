@@ -23,7 +23,7 @@ lspconfig:config(function()
   vim.fn.execute("LspStart", true)
 end, "ocaml")
 
-lspconfig.data.start()
+vim.cmd "LspStart"
 
 --------------------------------------------------------------------- FORMATTER
 --github.com/mhartington/formatter.nvim/blob/master/lua/formatter/filetypes/ocaml.lua
@@ -96,4 +96,4 @@ end, "ocaml")
 
 local copilot = require("util.packer.wrapper").get "copilot"
 
-copilot.data.enable()
+copilot:get_field "enable"()

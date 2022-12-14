@@ -22,7 +22,7 @@ lspconfig:config(function()
   vim.cmd 'silent! exec "LspStart"'
 end, "go")
 
-lspconfig.data.start()
+vim.cmd "LspStart"
 
 --------------------------------------------------------------------- FORMATTER
 --github.com/mhartington/formatter.nvim/blob/master/lua/formatter/filetypes/go.lua
@@ -47,6 +47,7 @@ formatter:config(function()
     },
   }
 end, "go")
+
 ---------------------------------------------------------------------- DEBUGGER
 --https://github.com/mfussenegger/nvim-dap/wiki/Debug-Adapter-installation#Go
 
@@ -107,4 +108,4 @@ end, "go")
 
 local copilot = require("util.packer.wrapper").get "copilot"
 
-copilot.data.enable()
+copilot:get_field "enable"()
