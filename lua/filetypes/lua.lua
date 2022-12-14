@@ -15,7 +15,7 @@ vim.opt.shiftwidth = 2 -- number of spaces used for each step of indent
 --------------------------------------------------------------------- LSPCONFIG
 -- NOTE: set sumneko_lua the default lsp server for lua
 
-local lspconfig = require("util.packer_wrapper").get "lspconfig"
+local lspconfig = require("util.packer.wrapper").get "lspconfig"
 
 lspconfig:config(function()
   -- 1. Install lua-language-server and add it to path
@@ -46,12 +46,12 @@ lspconfig:config(function()
   }
 end, "lua")
 
-lspconfig:run "start"
+vim.cmd "LspStart"
 
 ----------------------------------------------------------------------- FORMATTER
 ---- NOTE: set stylua as the default formatter for lua
 
-local formatter = require("util.packer_wrapper").get "formatter"
+local formatter = require("util.packer.wrapper").get "formatter"
 
 formatter:config(function()
   require("formatter").setup {
@@ -76,10 +76,10 @@ formatter:config(function()
     },
   }
 end)
---
+
 ------------------------------------------------------------------------- COPILOT
 ---- NOTE: enable copilot for lua
 
-local copilot = require("util.packer_wrapper").get "copilot"
+local copilot = require("util.packer.wrapper").get "copilot"
 
-copilot:run "enable"
+copilot:get_field "enable"()

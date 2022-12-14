@@ -7,6 +7,7 @@
 --_____________________________________________________________________________
 
 local log = require "util.log"
+local mapper = require "util.mapper"
 
 local M = {}
 
@@ -15,7 +16,7 @@ local open_cht_sh
 ---create Command :Cht <args> that displays cheat sheet in a new tab.
 ---`curl cht.sh/{args[1]}/{concat{args[i], '+' | i > 1}}\?T `
 ---Where args' whitespaces are replaced with '+'
-vim.api.nvim_create_user_command("Cht", function(o)
+mapper.command("Cht", function(o)
   if next(o.fargs) == nil then
     log.warn "Missing argument to :Cht command!"
     return

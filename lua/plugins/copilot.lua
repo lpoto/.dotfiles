@@ -5,7 +5,7 @@
 -- https://github.com/github/copilot.vim
 --_____________________________________________________________________________
 
-local copilot = require("util.packer_wrapper").get "copilot"
+local copilot = require("util.packer.wrapper").get "copilot"
 
 ---The init function for the github copilot.
 ---This disables the default tab mapping for the plugin.
@@ -14,9 +14,7 @@ local copilot = require("util.packer_wrapper").get "copilot"
 ---  <C-Space> to select the next suggestion.
 ---  <C-k> to show the next suggestion.
 ---  <C-j> to show the previous suggestion.
-copilot:setup(function()
-  vim.g.copilot_no_tab_map = true
-  vim.g.copilot_assume_mapped = true
+copilot:config(function()
   -- NOTE: disable the copilot for all filetypes by default.
   local tbl = {
     ["*"] = false,
@@ -33,20 +31,17 @@ end)
 ---  <C-Space> to select the next suggestion.
 ---  <C-k> to show the next suggestion.
 ---  <C-j> to show the previous suggestion.
-copilot:setup(function()
-  vim.api.nvim_set_keymap(
+copilot:config(function()
+  local mapper = require "util.mapper"
+
+  mapper.map(
     "i",
     "<C-Space>",
     'copilot#Accept("<CR>")',
     { silent = true, expr = true }
   )
-  vim.api.nvim_set_keymap(
-    "i",
-    "<C-k>",
-    "copilot#Next()",
-    { silent = true, expr = true }
-  )
-  vim.api.nvim_set_keymap(
+  mapper.map("i", "<C-k>", "copilot#Next()", { silent = true, expr = true })
+  mapper.map(
     "i",
     "<C-j>",
     "copilot#Previous()",
@@ -63,14 +58,14 @@ end, "remappings")
 ---Meaning, disabling the plugin will also disable this function.
 ---@param filetype string?: the filetype to enable copilot for.
 ---If this is not provided, it is enabled for current filetype.
-copilot:action("enable", function(filetype)
+copilot:add_field("enable", function(filetype)
   if vim.fn.exists ":Copilot" == 0 then
     return
   end
   if filetype == nil then
     filetype = vim.bo.filetype
   end
-  local cp = require("util.packer_wrapper").get "copilot"
+  local cp = require("util.packer.wrapper").get "copilot"
   if cp.disabled_filetypes == nil then
     cp.disabled_filetypes = {}
   end
@@ -99,7 +94,7 @@ end)
 ---for the provided filetype.
 ---NOTE: this will be a noop if the :Copilot command is not available.
 ---@param filetype string?: the filetype to disable copilot for.
-copilot:action("disable", function(filetype)
+copilot:add_field("disable", function(filetype)
   if vim.fn.exists ":Copilot" == 0 then
     return
   end

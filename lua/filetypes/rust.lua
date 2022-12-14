@@ -9,7 +9,7 @@
 --github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#rust_analyzer
 
 -- NOTE: set rust-analyzer the default lsp server for rust
-local lspconfig = require("util.packer_wrapper").get "lspconfig"
+local lspconfig = require("util.packer.wrapper").get "lspconfig"
 
 lspconfig:config(function()
   --[[
@@ -27,12 +27,12 @@ lspconfig:config(function()
   vim.fn.execute("LspStart", true)
 end, "rust")
 
-lspconfig:run "start"
+lspconfig.data.start()
 
 --------------------------------------------------------------------- FORMATTER
 --github.com/mhartington/formatter.nvim/blob/master/lua/formatter/filetypes/rust.lua
 
-local formatter = require("util.packer_wrapper").get "formatter"
+local formatter = require("util.packer.wrapper").get "formatter"
 
 -- NOTE: set rust as the default formatter for rust
 formatter:config(function()
@@ -57,7 +57,7 @@ end, "rust")
 ----------------------------------------------------------------------- ACTIONS
 -- NOTE: set default actions
 
-local actions = require("util.packer_wrapper").get "actions"
+local actions = require("util.packer.wrapper").get "actions"
 
 actions:config(function()
   require("actions").setup {
@@ -90,6 +90,6 @@ end, "rust")
 ----------------------------------------------------------------------- COPILOT
 -- NOTE: enable copilot for rust
 
-local copilot = require("util.packer_wrapper").get "copilot"
+local copilot = require("util.packer.wrapper").get "copilot"
 
-copilot:run "enable"
+copilot.data.enable()

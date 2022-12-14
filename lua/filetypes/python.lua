@@ -9,7 +9,7 @@
 --github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#pylsp
 
 -- NOTE: start pylsp language server for python
-local lspconfig = require("util.packer_wrapper").get "lspconfig"
+local lspconfig = require("util.packer.wrapper").get "lspconfig"
 
 lspconfig:config(function()
   --[[
@@ -21,12 +21,12 @@ lspconfig:config(function()
   }
 end, "python")
 
-lspconfig:run "start"
+vim.fn.execute("LspStart", true)
 
 ------------------------------------------------------------------------ LINTER
 --https://github.com/mfussenegger/nvim-lint
 
-local lint = require("util.packer_wrapper").get "lint"
+local lint = require("util.packer.wrapper").get "lint"
 
 --NOTE: lint python with flake8
 --[[
@@ -39,7 +39,7 @@ end, "python")
 --------------------------------------------------------------------- FORMATTER
 --github.com/mhartington/formatter.nvim/blob/master/lua/formatter/filetypes/python.lua
 
-local formatter = require("util.packer_wrapper").get "formatter"
+local formatter = require("util.packer.wrapper").get "formatter"
 
 -- NOTE: set autopep8 as default python formatter
 formatter:config(function()
@@ -66,7 +66,7 @@ end, "python")
 --------------------------------------------------------------------- DEBUGGER
 --github.com/mfussenegger/nvim-dap/wiki/Debug-Adapter-installation#python
 
-local dap = require("util.packer_wrapper").get "dap"
+local dap = require("util.packer.wrapper").get "dap"
 
 -- NOTE: set debugpy as default python debugger
 dap:config(function()
@@ -101,7 +101,7 @@ end, "python_debugger")
 ----------------------------------------------------------------------- ACTIONS
 -- NOTE: set default actions
 
-local actions = require("util.packer_wrapper").get "actions"
+local actions = require("util.packer.wrapper").get "actions"
 
 actions:config(function()
   require("actions").setup {
@@ -121,6 +121,6 @@ end, "python")
 ----------------------------------------------------------------------- COPILOT
 -- NOTE: enable github copilot if it is not already enabled
 
-local copilot = require("util.packer_wrapper").get "copilot"
+local copilot = require("util.packer.wrapper").get "copilot"
 
-copilot:run "enable"
+--copilot.data.enable()

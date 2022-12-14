@@ -1,30 +1,23 @@
 --=============================================================================
 -------------------------------------------------------------------------------
---                                                                         HTML
+--                                                                     MARKDOWN
 --=============================================================================
--- Loaded when a html file is oppened.
+-- Loaded when a markdown file is oppened.
 --_____________________________________________________________________________
 
------------------------------------------------------------------------ OPTIONS
--- NOTE: set default tab width for xhtml
-
-vim.opt.tabstop = 2 -- set the width of a tab to 2
-vim.opt.softtabstop = 2 -- set the number of spaces that a tab counts for
-vim.opt.shiftwidth = 2 -- number of spaces used for each step of indent
-
 --------------------------------------------------------------------- FORMATTER
---github.com/mhartington/formatter.nvim/blob/master/lua/formatter/filetypes/html.lua
---
-local formatter = require("util.packer_wrapper").get "formatter"
+--github.com/mhartington/formatter.nvim/blob/master/lua/formatter/filetypes/markdown.lua
 
--- NOTE: set prettier as default html formatter
+local formatter = require("util.packer.wrapper").get "formatter"
+
+-- NOTE: set prettier as default markdown formatter
 formatter:config(function()
   --[[
       npm install -g prettier
   ]]
   require("formatter").setup {
     filetype = {
-      html = {
+      markdown = {
         function()
           return {
             exe = "prettier",
@@ -37,4 +30,4 @@ formatter:config(function()
       },
     },
   }
-end, "html")
+end, "markdown")

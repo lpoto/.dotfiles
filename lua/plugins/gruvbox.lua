@@ -5,7 +5,7 @@
 -- https://github.com/ellisonleao/gruvbox.nvim
 --_____________________________________________________________________________
 
-local gruvbox = require("util.packer_wrapper").get "gruvbox"
+local gruvbox = require("util.packer.wrapper").get "gruvbox"
 
 ---Default setup for the gruvbox plugin. This also takes
 ---care of all the additional higlight overrides and sets the

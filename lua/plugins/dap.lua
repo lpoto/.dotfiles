@@ -10,7 +10,7 @@
 --The repl may be toggled and then it's commands listed with `.help`.
 --_____________________________________________________________________________
 
-local dap = require("util.packer_wrapper").get "dap"
+local dap = require("util.packer.wrapper").get "dap"
 
 ---dap defualt setup function called when the plugin is
 ---loaded. Calls all setups added with M.add_setup().
@@ -45,7 +45,7 @@ dap:config(function()
 
   -- NOTE: open repl immediately when starting the debuggin
   dap_module.listeners.after.event_initialized["custom"] = function()
-    dap:run "toggle_repl"
+    dap:get_field "toggle_repl"()
   end
 
   -- NOTE: higlight the breakpoint better
@@ -64,33 +64,27 @@ end)
 
 ---Set custom keymaps for the dap plugin.
 dap:config(function()
+  local mapper = require "util.mapper"
   -- toggle repl vertical split with <leader> + r
-  vim.api.nvim_set_keymap(
+  mapper.map(
     "n",
     "<leader>r",
-    "<CMD>lua require('packer_wrapper').get('dap'):run('toggle_repl')<CR>",
-    { noremap = true, silent = true }
+    "<CMD>lua require('util.packer.wrapper').get('dap'):get_field('toggle_repl')()<CR>"
   )
 
   -- Continue with Ctrl + d
-  vim.api.nvim_set_keymap(
-    "n",
-    "<C-d>",
-    "<CMD>lua require('dap').continue()<CR>",
-    { noremap = true, silent = true }
-  )
+  mapper.map("n", "<leader>c", "<CMD>lua require('dap').continue()<CR>")
 
   -- Set breakpoint with Ctrl + b
-  vim.api.nvim_set_keymap(
+  mapper.map(
     "n",
-    "<C-b>",
-    "<CMD>lua require('dap').toggle_breakpoint()<CR>",
-    { noremap = true, silent = true }
+    "<leader>b",
+    "<CMD>lua require('dap').toggle_breakpoint()<CR>"
   )
 end, "remappings")
 
 ---Define the toggle_repl for dap plugin
-dap:action("toggle_repl", function()
+dap:add_field("toggle_repl", function()
   local dap_module = require "dap"
   local s = {}
   if vim.o.columns > 240 then

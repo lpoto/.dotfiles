@@ -9,7 +9,7 @@
 --github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#ocamllsp
 
 -- NOTE: set ocamllsp the default lsp server for OCaml
-local lspconfig = require("util.packer_wrapper").get "lspconfig"
+local lspconfig = require("util.packer.wrapper").get "lspconfig"
 
 lspconfig:config(function()
   --[[
@@ -23,12 +23,12 @@ lspconfig:config(function()
   vim.fn.execute("LspStart", true)
 end, "ocaml")
 
-lspconfig:run "start"
+lspconfig.data.start()
 
 --------------------------------------------------------------------- FORMATTER
 --github.com/mhartington/formatter.nvim/blob/master/lua/formatter/filetypes/ocaml.lua
 
-local formatter = require("util.packer_wrapper").get "formatter"
+local formatter = require("util.packer.wrapper").get "formatter"
 
 -- NOTE: set ocamlformat as the default formatter for OCaml
 formatter:config(function()
@@ -56,7 +56,7 @@ end, "ocaml")
 ----------------------------------------------------------------------- ACTIONS
 -- NOTE: set default actions
 
-local actions = require("util.packer_wrapper").get "actions"
+local actions = require("util.packer.wrapper").get "actions"
 
 actions:config(function()
   require("actions").setup {
@@ -94,6 +94,6 @@ end, "ocaml")
 ----------------------------------------------------------------------- COPILOT
 -- NOTE: enable copilot for OCaml
 
-local copilot = require("util.packer_wrapper").get "copilot"
+local copilot = require("util.packer.wrapper").get "copilot"
 
-copilot:run "enable"
+copilot.data.enable()

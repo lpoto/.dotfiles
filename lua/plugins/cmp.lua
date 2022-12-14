@@ -5,7 +5,7 @@
 -- https://github.com/hrsh7th/nvim-cmp
 --_____________________________________________________________________________
 
-local cmp = require("util.packer_wrapper").get "cmp"
+local cmp = require("util.packer.wrapper").get "cmp"
 
 ---Default setup for cmp plugin.
 ---Cmp is mostly used with lspconfig
@@ -35,7 +35,6 @@ cmp:config(function()
       { name = "buffer" },
     },
   }
-
   local npairs = require "nvim-autopairs"
   local cmp_autopairs = require "nvim-autopairs.completion.cmp"
   local ts_conds = require "nvim-autopairs.ts-conds"

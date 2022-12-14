@@ -11,24 +11,25 @@
 
 local log = require "util.log"
 local root = require "util.root"()
+local mapper = require "util.mapper"
 
 local open_local_config
 local remove_local_config
 
 ---NOTE: use :LocalConfig  command to open or create new
 ---project local config files, that will be saved in the .local directory.
-vim.api.nvim_create_user_command("LocalConfig", function()
+mapper.command("LocalConfig", function()
   open_local_config()
-end, {})
+end)
 ---NOTE: use :RemoveLocalConfig  command to remove existing
 ---project local config files, be saved in the .local directory.
-vim.api.nvim_create_user_command("RemoveLocalConfig", function()
+mapper.command("RemoveLocalConfig", function()
   remove_local_config()
-end, {})
+end)
 ---NOTE: use :SourceLocalConfig  command to source the local configs.
-vim.api.nvim_create_user_command("LocalConfig", function()
+mapper.command("SourceLocalConfig", function()
   open_local_config()
-end, {})
+end)
 
 -------------------------------------------------------------------------------
 
@@ -162,7 +163,19 @@ local function source_local_config()
       return
     end
     if vim.fn.filereadable(file) == 1 then
-      vim.fn.execute("source " .. file_escaped, false)
+      local ok, e = pcall(vim.secure.read, file)
+      if ok == false then
+        log.warn(e)
+        return
+      end
+      if e == nil then
+        return
+      end
+      ok, e = pcall(vim.fn.execute, "luado " .. e, false)
+      if ok == false then
+        log.warn(e)
+        return
+      end
       log.debug("Sourced local config for: " .. r)
       sourced[file] = true
       return
