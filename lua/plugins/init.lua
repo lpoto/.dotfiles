@@ -35,7 +35,6 @@ function plugins.setup()
     Plugin:new(use, {
       "ellisonleao/gruvbox.nvim",
       as = "gruvbox",
-      cond = "require('util.packer_wrapper').get('gruvbox'):enabled()",
     })
     ----------------------------------------------------------- NVIM-TREESITTER
     -- provide a simple and easy way to use the interface for
