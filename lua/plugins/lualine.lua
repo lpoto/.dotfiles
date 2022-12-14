@@ -5,7 +5,7 @@
 -- https://github.com/nvim-lualine/lualine.nvim
 --_____________________________________________________________________________
 
-local lualine = require("util.packer_wrapper").get "lualine"
+local lualine = require("util.packer.wrapper").get "lualine"
 
 ---Default setup for the lualine plugin.
 lualine:config(function()

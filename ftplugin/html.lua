@@ -15,7 +15,7 @@ vim.opt.shiftwidth = 2 -- number of spaces used for each step of indent
 --------------------------------------------------------------------- FORMATTER
 --github.com/mhartington/formatter.nvim/blob/master/lua/formatter/filetypes/html.lua
 --
-local formatter = require("util.packer_wrapper").get "formatter"
+local formatter = require("util.packer.wrapper").get "formatter"
 
 -- NOTE: set prettier as default html formatter
 formatter:config(function()

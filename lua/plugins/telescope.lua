@@ -5,7 +5,7 @@
 -- https://github.com/nvim-telescope/telescope.nvim
 --_____________________________________________________________________________
 
-local telescope = require("util.packer_wrapper").get "telescope"
+local telescope = require("util.packer.wrapper").get "telescope"
 
 ---Default setup for the telescope, sets default pickers and mappings
 ---for finding files(<leader>n), grep string(<C-x>), live grep (<leader>g)

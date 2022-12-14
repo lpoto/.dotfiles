@@ -11,8 +11,9 @@ local Plugin = {
   ---@field after_load_functions table: Functions to run after loading the plugin.
   __meta = {},
   ---@type table: A table for defining custom fields
-  data = {}
+  data = {},
 }
+Plugin.__index = Plugin
 
 ---Returns the Plugin object for the given plugin name.
 ---
@@ -28,6 +29,10 @@ local Plugin = {
 ---@param name string: The name of the plugin.
 ---@return Plugin: The Plugin object for the given plugin name.
 function Plugin.get(name)
+  if plugins[name] == nil then
+    plugins[name] = { name = name, __meta = {}, data = {} }
+    setmetatable(plugins[name], Plugin)
+  end
   return plugins[name]
 end
 
@@ -55,18 +60,14 @@ local plugin_before_load
 ---
 ---@param use function?: Packer.nvim's use function (may be nill for sub-plugins).
 ---@param packer_config table: Packer.nvim's plugin config.
-function Plugin:new(use, packer_config)
+function Plugin.new(use, packer_config)
   local log = require "util.log"
 
-  local plugin = {
-    __meta = {},
-    data = {},
-  }
-  setmetatable(plugin, self)
-  self.__index = self
-
-  plugin.name = packer_config.as
-  plugins[plugin.name] = plugin
+  if packer_config.as == nil then
+    log.warn "Plugin config should have an 'as' field"
+    return
+  end
+  local plugin = Plugin.get(packer_config.as)
 
   if packer_config.setup == nil then
     packer_config.setup = plugin_before_load
@@ -100,7 +101,7 @@ function Plugin:new(use, packer_config)
     end
   end
 
-  packer_config.cond = "require('util.packer_wrapper').get('"
+  packer_config.cond = "require('util.packer.wrapper').get('"
     .. plugin.name
     .. "'):enabled()"
 
@@ -119,7 +120,7 @@ function Plugin:new(use, packer_config)
   if packer_config.requires ~= nil then
     for _, v in ipairs(packer_config.requires) do
       if type(v) == "table" and v.as ~= nil then
-        Plugin:new(nil, v)
+        Plugin.new(nil, v)
       end
     end
   end
@@ -273,7 +274,7 @@ end
 plugin_after_load = function(name)
   local log = require "util.log"
 
-  local p = require("util.packer_wrapper").get(name)
+  local p = require("util.packer.wrapper").get(name)
   if p == nil then
     log.warn("Plugin not fonud: " .. name)
     return {}
@@ -293,7 +294,7 @@ end
 plugin_before_load = function(name)
   local log = require "util.log"
 
-  local p = require("util.packer_wrapper").get(name)
+  local p = require("util.packer.wrapper").get(name)
   if p == nil then
     log.warn(e)
     return

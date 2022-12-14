@@ -9,7 +9,7 @@
 --github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#solargraph
 
 -- NOTE: set solargraph the default lsp server for ruby
-local lspconfig = require("util.packer_wrapper").get "lspconfig"
+local lspconfig = require("util.packer.wrapper").get "lspconfig"
 
 lspconfig:config(function()
   --[[
@@ -28,7 +28,7 @@ lspconfig.data.start()
 ------------------------------------------------------------------------ LINTER
 --https://github.com/mfussenegger/nvim-lint
 --
-local lint = require("util.packer_wrapper").get "lint"
+local lint = require("util.packer.wrapper").get "lint"
 
 --NOTE: lint ruby with rubocop
 --[[
@@ -41,7 +41,7 @@ end, "ruby")
 --------------------------------------------------------------------- FORMATTER
 --github.com/mhartington/formatter.nvim/blob/master/lua/formatter/filetypes/ruby.lua
 --
-local formatter = require("util.packer_wrapper").get "formatter"
+local formatter = require("util.packer.wrapper").get "formatter"
 
 -- NOTE: set rubocop as the default formatter for ruby
 formatter:config(function()
@@ -79,7 +79,7 @@ end, "ruby")
 --------------------------------------------------------------------- DEBUGGER
 --https://github.com/mfussenegger/nvim-dap/wiki/Debug-Adapter-installation#Ruby
 
-local dap = require("util.packer_wrapper").get "dap"
+local dap = require("util.packer.wrapper").get "dap"
 
 -- NOTE: set readapt as default ruby debugger
 
@@ -113,7 +113,7 @@ end, "ruby_debugger")
 ----------------------------------------------------------------------- ACTIONS
 -- NOTE: set default actions
 
-local actions = require("util.packer_wrapper").get "actions"
+local actions = require("util.packer.wrapper").get "actions"
 
 actions:config(function()
   require("actions").setup {
@@ -134,6 +134,6 @@ end, "ruby")
 ----------------------------------------------------------------------- COPILOT
 -- NOTE: enable copilot for ruby
 
-local copilot = require("util.packer_wrapper").get "copilot"
+local copilot = require("util.packer.wrapper").get "copilot"
 
 copilot.data.enable()

@@ -163,7 +163,19 @@ local function source_local_config()
       return
     end
     if vim.fn.filereadable(file) == 1 then
-      vim.fn.execute("source " .. file_escaped, false)
+      local ok, e = pcall(vim.secure.read, file)
+      if ok == false then
+        log.warn(e)
+        return
+      end
+      if e == nil then
+        return
+      end
+      ok, e = pcall(vim.fn.execute, "luado " .. e, false)
+      if ok == false then
+        log.warn(e)
+        return
+      end
       log.debug("Sourced local config for: " .. r)
       sourced[file] = true
       return

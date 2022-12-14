@@ -8,7 +8,7 @@
 --------------------------------------------------------------------- FORMATTER
 --github.com/mhartington/formatter.nvim/blob/master/lua/formatter/filetypes/markdown.lua
 
-local formatter = require("util.packer_wrapper").get "formatter"
+local formatter = require("util.packer.wrapper").get "formatter"
 
 -- NOTE: set prettier as default markdown formatter
 formatter:config(function()

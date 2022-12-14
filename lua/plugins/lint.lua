@@ -5,7 +5,7 @@
 -- https://github.com/mfussenegger/nvim-lint
 --_____________________________________________________________________________
 
-local lint = require("util.packer_wrapper").get "lint"
+local lint = require("util.packer.wrapper").get "lint"
 
 ---Default setup for nvim-lint.
 ---Create autocmd that lints on save.

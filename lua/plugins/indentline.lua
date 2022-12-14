@@ -5,7 +5,7 @@
 -- https://github.com/lukas-reineke/indent-blankline.nvim
 --_____________________________________________________________________________
 
-local indentline = require("util.packer_wrapper").get "indentline"
+local indentline = require("util.packer.wrapper").get "indentline"
 
 ---Default setup for the indent blankline plugin
 ---User '│' sign for indentline and show the current context.

@@ -5,7 +5,7 @@
 -- https://github.com/github/copilot.vim
 --_____________________________________________________________________________
 
-local copilot = require("util.packer_wrapper").get "copilot"
+local copilot = require("util.packer.wrapper").get "copilot"
 
 ---The init function for the github copilot.
 ---This disables the default tab mapping for the plugin.
@@ -67,7 +67,7 @@ copilot.data.enable = function(filetype)
   if filetype == nil then
     filetype = vim.bo.filetype
   end
-  local cp = require("util.packer_wrapper").get "copilot"
+  local cp = require("util.packer.wrapper").get "copilot"
   if cp.disabled_filetypes == nil then
     cp.disabled_filetypes = {}
   end

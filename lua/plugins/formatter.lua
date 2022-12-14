@@ -5,7 +5,7 @@
 -- https://github.com/mhartington/formatter.nvim
 --_____________________________________________________________________________
 
-local formatter = require("util.packer_wrapper").get "formatter"
+local formatter = require("util.packer.wrapper").get "formatter"
 
 ---Format on save, remove trailing whitespace when formatter is not set
 formatter:config(function()

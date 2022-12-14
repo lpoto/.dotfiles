@@ -10,7 +10,7 @@
 --The repl may be toggled and then it's commands listed with `.help`.
 --_____________________________________________________________________________
 
-local dap = require("util.packer_wrapper").get "dap"
+local dap = require("util.packer.wrapper").get "dap"
 
 ---dap defualt setup function called when the plugin is
 ---loaded. Calls all setups added with M.add_setup().
@@ -69,7 +69,7 @@ dap:config(function()
   mapper.map(
     "n",
     "<leader>r",
-    "<CMD>lua require('util.packer_wrapper').get('dap').data.toggle_repl()<CR>"
+    "<CMD>lua require('util.packer.wrapper').get('dap').data.toggle_repl()<CR>"
   )
 
   -- Continue with Ctrl + d

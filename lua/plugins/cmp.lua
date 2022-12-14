@@ -5,7 +5,7 @@
 -- https://github.com/hrsh7th/nvim-cmp
 --_____________________________________________________________________________
 
-local cmp = require("util.packer_wrapper").get "cmp"
+local cmp = require("util.packer.wrapper").get "cmp"
 
 ---Default setup for cmp plugin.
 ---Cmp is mostly used with lspconfig

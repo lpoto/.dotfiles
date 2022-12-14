@@ -9,7 +9,7 @@
 --github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#gopls
 
 -- NOTE: set gopls the default lsp server for Go
-local lspconfig = require("util.packer_wrapper").get "lspconfig"
+local lspconfig = require("util.packer.wrapper").get "lspconfig"
 
 lspconfig:config(function()
   --[[
@@ -27,7 +27,7 @@ lspconfig.data.start()
 --------------------------------------------------------------------- FORMATTER
 --github.com/mhartington/formatter.nvim/blob/master/lua/formatter/filetypes/go.lua
 
-local formatter = require("util.packer_wrapper").get "formatter"
+local formatter = require("util.packer.wrapper").get "formatter"
 
 -- NOTE: set goimports as the default formatter for Go
 formatter:config(function()
@@ -50,7 +50,7 @@ end, "go")
 ---------------------------------------------------------------------- DEBUGGER
 --https://github.com/mfussenegger/nvim-dap/wiki/Debug-Adapter-installation#Go
 
-local dap = require("util.packer_wrapper").get "dap"
+local dap = require("util.packer.wrapper").get "dap"
 
 -- NOTE: set delve as default golang dap adapter
 dap:config(function()
@@ -85,7 +85,7 @@ end, "go_debugger")
 ----------------------------------------------------------------------- ACTIONS
 -- NOTE: set default actions
 
-local actions = require("util.packer_wrapper").get "actions"
+local actions = require("util.packer.wrapper").get "actions"
 
 actions:config(function()
   require("actions").setup {
@@ -105,6 +105,6 @@ end, "go")
 ----------------------------------------------------------------------- COPILOT
 -- NOTE: enable copilot for go
 
-local copilot = require("util.packer_wrapper").get "copilot"
+local copilot = require("util.packer.wrapper").get "copilot"
 
 copilot.data.enable()

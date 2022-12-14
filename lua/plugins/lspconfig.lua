@@ -5,7 +5,7 @@
 -- https://github.com/neovim/nvim-lspconfig
 --_____________________________________________________________________________
 
-local lspconfig = require("util.packer_wrapper").get "lspconfig"
+local lspconfig = require("util.packer.wrapper").get "lspconfig"
 
 ---Jump to definition with "gd"
 ---Definition of word under the cursor with "shift + K"
@@ -19,7 +19,7 @@ lspconfig:config(function()
   mapper.map(
     "n",
     "K",
-    "<cmd>lua require('util.packer_wrapper')"
+    "<cmd>lua require('util.packer.wrapper')"
       .. ".get('lspconfig').data.show_definition()<CR>"
   )
   mapper.map("n", "<C-k>", "<cmd>lua vim.lsp.buf.hover()<CR>")

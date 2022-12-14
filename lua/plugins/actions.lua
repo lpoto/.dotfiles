@@ -5,7 +5,7 @@
 -- https://github.com/lpoto/actions.nvim
 --_____________________________________________________________________________
 
-local actions = require("util.packer_wrapper").get "actions"
+local actions = require("util.packer.wrapper").get "actions"
 
 ---Setup the actions plugin, use :Actions command
 ---to open the actions window, use <leader>e to toggle last output

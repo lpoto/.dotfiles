@@ -5,7 +5,7 @@
 -- https://github.com/TimUntersberger/neogit
 --_____________________________________________________________________________
 
-local neogit = require("util.packer_wrapper").get "neogit"
+local neogit = require("util.packer.wrapper").get "neogit"
 
 ---Setup neogit plugin, add :Git command for neogit
 ---:Git command is exactly the same as :Neogit
