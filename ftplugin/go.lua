@@ -9,45 +9,55 @@
 --github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#gopls
 
 -- NOTE: set gopls the default lsp server for Go
-require("plugins.lspconfig").distinct_setup("go", function()
+local lspconfig = require("util.packer_wrapper").get "lspconfig"
+
+lspconfig:config(function()
   --[[
       go install golang.org/x/tools/gopls@latest
   ]]
   require("lspconfig").gopls.setup {
-    capabilities = require("plugins.cmp").default_capabilities(),
+    capabilities = require("cmp_nvim_lsp").default_capabilities(),
   }
 
   vim.cmd 'silent! exec "LspStart"'
-end)
+end, "go")
+
+lspconfig:run "start"
 
 --------------------------------------------------------------------- FORMATTER
 --github.com/mhartington/formatter.nvim/blob/master/lua/formatter/filetypes/go.lua
 
+local formatter = require("util.packer_wrapper").get "formatter"
+
 -- NOTE: set goimports as the default formatter for Go
-require("plugins.formatter").distinct_setup("go", {
+formatter:config(function()
   --[[
       go install golang.org/x/tools/cmd/goimports@latest
   ]]
-  filetype = {
-    go = {
-      function()
-        return {
-          exe = "goimports",
-          stdin = true,
-        }
-      end,
+  require("formatter").setup {
+    filetype = {
+      go = {
+        function()
+          return {
+            exe = "goimports",
+            stdin = true,
+          }
+        end,
+      },
     },
-  },
-})
+  }
+end, "go")
 ---------------------------------------------------------------------- DEBUGGER
 --https://github.com/mfussenegger/nvim-dap/wiki/Debug-Adapter-installation#Go
 
+local dap = require("util.packer_wrapper").get "dap"
+
 -- NOTE: set delve as default golang dap adapter
-require("plugins.dap").distinct_setup("go_adapter", function(dap)
+dap:config(function()
   --[[
       go install github.com/go-delve/delve/cmd/dlv@latest
   ]]
-  dap.adapters.delve = {
+  require("dap").adapters.delve = {
     type = "server",
     port = "${port}",
     executable = {
@@ -58,11 +68,11 @@ require("plugins.dap").distinct_setup("go_adapter", function(dap)
       detach = false,
     },
   }
-end)
+end, "go_adapter")
 
 -- NOTE: debug currently oppened file with delve
-require("plugins.dap").distinct_setup("go_config", function(dap)
-  dap.configurations.go = {
+dap:config(function()
+  require("dap").configurations.go = {
     {
       type = "delve",
       name = "Debug",
@@ -70,25 +80,31 @@ require("plugins.dap").distinct_setup("go_config", function(dap)
       program = "${file}",
     },
   }
-end)
+end, "go_debugger")
 
 ----------------------------------------------------------------------- ACTIONS
 -- NOTE: set default actions
 
-require("plugins.actions").distinct_setup("go", {
-  actions = {
-    ["Run current Go file"] = function()
-      return {
-        filetypes = { "go" },
-        steps = {
-          { "go", "run", vim.fn.expand "%:p" },
-        },
-      }
-    end,
-  },
-})
+local actions = require("util.packer_wrapper").get "actions"
+
+actions:config(function()
+  require("actions").setup {
+    actions = {
+      ["Run current Go file"] = function()
+        return {
+          filetypes = { "go" },
+          steps = {
+            { "go", "run", vim.fn.expand "%:p" },
+          },
+        }
+      end,
+    },
+  }
+end, "go")
 
 ----------------------------------------------------------------------- COPILOT
 -- NOTE: enable copilot for go
 
-require("plugins.copilot").enable()
+local copilot = require("util.packer_wrapper").get "copilot"
+
+copilot:run "enable"

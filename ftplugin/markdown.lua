@@ -8,22 +8,26 @@
 --------------------------------------------------------------------- FORMATTER
 --github.com/mhartington/formatter.nvim/blob/master/lua/formatter/filetypes/markdown.lua
 
+local formatter = require("util.packer_wrapper").get "formatter"
+
 -- NOTE: set prettier as default markdown formatter
-require("plugins.formatter").distinct_setup("markdown", {
+formatter:config(function()
   --[[
       npm install -g prettier
   ]]
-  filetype = {
-    markdown = {
-      function()
-        return {
-          exe = "prettier",
-          args = {
-            vim.fn.expand "%:p",
-          },
-          stdin = true,
-        }
-      end,
+  require("formatter").setup {
+    filetype = {
+      markdown = {
+        function()
+          return {
+            exe = "prettier",
+            args = {
+              vim.fn.expand "%:p",
+            },
+            stdin = true,
+          }
+        end,
+      },
     },
-  },
-})
+  }
+end, "markdown")

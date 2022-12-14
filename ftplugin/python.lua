@@ -9,59 +9,71 @@
 --github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#pylsp
 
 -- NOTE: start pylsp language server for python
-require("plugins.lspconfig").distinct_setup("python", function()
+local lspconfig = require("util.packer_wrapper").get "lspconfig"
+
+lspconfig:config(function()
   --[[
       pip install pylsp
   ]]
   require("lspconfig").pylsp.setup {
-    capabilities = require("plugins.cmp").default_capabilities(),
+    capabilities = require("cmp_nvim_lsp").default_capabilities(),
     root_dir = require "util.root",
   }
+end, "python")
 
-  vim.fn.execute("LspStart", true)
-end)
+lspconfig:run "start"
 
 ------------------------------------------------------------------------ LINTER
 --https://github.com/mfussenegger/nvim-lint
+
+local lint = require("util.packer_wrapper").get "lint"
 
 --NOTE: lint python with flake8
 --[[
     pip install flake8
 ]]
-require("plugins.lint").add_linters("python", { "flake8" }, true)
+lint:config(function()
+  require("lint").linters_by_ft["python"] = { "flake8" }
+end, "python")
 
 --------------------------------------------------------------------- FORMATTER
 --github.com/mhartington/formatter.nvim/blob/master/lua/formatter/filetypes/python.lua
 
+local formatter = require("util.packer_wrapper").get "formatter"
+
 -- NOTE: set autopep8 as default python formatter
-require("plugins.formatter").distinct_setup("python", {
+formatter:config(function()
   --[[
       pip install autopep8
   ]]
-  filetype = {
-    python = {
-      function()
-        return {
-          exe = "python3 -m autopep8",
-          args = {
-            "--aggressive --aggressive --aggressive -",
-          },
-          stdin = true,
-        }
-      end,
+  require("formatter").setup {
+    filetype = {
+      python = {
+        function()
+          return {
+            exe = "python3 -m autopep8",
+            args = {
+              "--aggressive --aggressive --aggressive -",
+            },
+            stdin = true,
+          }
+        end,
+      },
     },
-  },
-})
+  }
+end, "python")
 
 --------------------------------------------------------------------- DEBUGGER
 --github.com/mfussenegger/nvim-dap/wiki/Debug-Adapter-installation#python
 
+local dap = require("util.packer_wrapper").get "dap"
+
 -- NOTE: set debugpy as default python debugger
-require("plugins.dap").distinct_setup("python_adapter", function(dap)
+dap:config(function()
   --[[
       pip install debugpy
   ]]
-  dap.adapters.python = {
+  require("dap").adapters.python = {
     type = "executable",
     command = vim.fn.exepath "python",
     args = { "-m", "debugpy.adapter" },
@@ -69,11 +81,11 @@ require("plugins.dap").distinct_setup("python_adapter", function(dap)
       detach = false,
     },
   }
-end)
+end, "python_adapter")
 
 -- NOTE: debug currently oppened python file with debugpy
-require("plugins.dap").distinct_setup("python_config", function(dap)
-  dap.configurations.python = {
+dap:config(function()
+  require("dap").configurations.python = {
     {
       type = "python",
       request = "launch",
@@ -84,25 +96,31 @@ require("plugins.dap").distinct_setup("python_config", function(dap)
       end,
     },
   }
-end)
+end, "python_debugger")
 
 ----------------------------------------------------------------------- ACTIONS
 -- NOTE: set default actions
 
-require("plugins.actions").distinct_setup("python", {
-  actions = {
-    ["Run current Python file"] = function()
-      return {
-        filetypes = { "python" },
-        steps = {
-          { "python3", vim.fn.expand "%:p" },
-        },
-      }
-    end,
-  },
-})
+local actions = require("util.packer_wrapper").get "actions"
+
+actions:config(function()
+  require("actions").setup {
+    actions = {
+      ["Run current Python file"] = function()
+        return {
+          filetypes = { "python" },
+          steps = {
+            { "python3", vim.fn.expand "%:p" },
+          },
+        }
+      end,
+    },
+  }
+end, "python")
 
 ----------------------------------------------------------------------- COPILOT
 -- NOTE: enable github copilot if it is not already enabled
 
-require("plugins.copilot").enable()
+local copilot = require("util.packer_wrapper").get "copilot"
+
+copilot:run "enable"

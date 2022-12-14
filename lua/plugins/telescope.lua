@@ -5,14 +5,14 @@
 -- https://github.com/nvim-telescope/telescope.nvim
 --_____________________________________________________________________________
 
-local M = {}
+local telescope = require("util.packer_wrapper").get "telescope"
 
 ---Default setup for the telescope, sets default pickers and mappings
 ---for finding files(<leader>n), grep string(<C-x>), live grep (<leader>g)
 ---and git files(<C-g>)
 ---Send found elements to quickfix with <C-q>
 ---Open quickfix with <leader>q
-function M.init()
+telescope:config(function()
   require("telescope").setup {
     defaults = {
       file_sorter = require("telescope.sorters").get_fzy_sorter,
@@ -46,7 +46,18 @@ function M.init()
         theme = "ivy",
         hidden = true,
         previewer = false,
-        file_ignore_patterns = M.pickers_ignore_patterns(),
+        file_ignore_patterns = {
+          "plugged/",
+          ".undo/",
+          ".local/",
+          ".git/",
+          "node_modules/",
+          "target/",
+          ".settings/",
+          "dist/",
+          ".angular/",
+          "__pycache__",
+        },
       },
     },
     extensions = {
@@ -57,14 +68,13 @@ function M.init()
     },
   }
   require("telescope").load_extension "file_browser"
-  M.remappings()
-end
+end)
 
 ---fuzzy find files with "<leader> + n"
 ---search word under cursor with "Ctrl + x"
 ---live grep with "<leader> + g" (REQUIRES 'ripgrep')
 ---open quickfix with "<leader> + q"
-function M.remappings()
+telescope:config(function()
   vim.api.nvim_set_keymap(
     "n",
     "<leader>n",
@@ -125,22 +135,4 @@ function M.remappings()
     "<cmd>lua require('telescope').extensions.file_browser.file_browser()<CR>",
     { noremap = true }
   )
-end
-
-function M.pickers_ignore_patterns()
-  local fi_patterns = {
-    "plugged/",
-    ".undo/",
-    ".local/",
-    ".git/",
-    "node_modules/",
-    "target/",
-    ".settings/",
-    "dist/",
-    ".angular/",
-    "__pycache__",
-  }
-  return fi_patterns
-end
-
-return M
+end, "remappings")

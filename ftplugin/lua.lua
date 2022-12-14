@@ -15,7 +15,9 @@ vim.opt.shiftwidth = 2 -- number of spaces used for each step of indent
 --------------------------------------------------------------------- LSPCONFIG
 -- NOTE: set sumneko_lua the default lsp server for lua
 
-require("plugins.lspconfig").distinct_setup("lua", function()
+local lspconfig = require("util.packer_wrapper").get "lspconfig"
+
+lspconfig:config(function()
   -- 1. Install lua-language-server and add it to path
   -- https://github.com/sumneko/lua-language-server
   local runtime_path = vim.split(package.path, ";")
@@ -40,37 +42,44 @@ require("plugins.lspconfig").distinct_setup("lua", function()
         },
       },
     },
-    capabilities = require("plugins.cmp").default_capabilities(),
+    capabilities = require("cmp_nvim_lsp").default_capabilities(),
   }
-  vim.fn.execute("LspStart", true)
-end)
+end, "lua")
 
---------------------------------------------------------------------- FORMATTER
--- NOTE: set stylua as the default formatter for lua
+lspconfig:run "start"
 
-require("plugins.formatter").distinct_setup("lua", {
-  filetype = {
-    lua = {
-      -- npm install -g lua-fmt
-      function()
-        local util = require "formatter.util"
-        return {
-          exe = "stylua",
-          args = {
-            "--search-parent-directories",
-            "--stdin-filepath",
-            util.escape_path(util.get_current_buffer_file_path()),
-            "--",
-            "-",
-          },
-          stdin = true,
-        }
-      end,
+----------------------------------------------------------------------- FORMATTER
+---- NOTE: set stylua as the default formatter for lua
+
+local formatter = require("util.packer_wrapper").get "formatter"
+
+formatter:config(function()
+  require("formatter").setup {
+    filetype = {
+      lua = {
+        -- npm install -g lua-fmt
+        function()
+          local util = require "formatter.util"
+          return {
+            exe = "stylua",
+            args = {
+              "--search-parent-directories",
+              "--stdin-filepath",
+              util.escape_path(util.get_current_buffer_file_path()),
+              "--",
+              "-",
+            },
+            stdin = true,
+          }
+        end,
+      },
     },
-  },
-})
+  }
+end)
+--
+------------------------------------------------------------------------- COPILOT
+---- NOTE: enable copilot for lua
 
------------------------------------------------------------------------ COPILOT
--- NOTE: enable copilot for lua
+local copilot = require("util.packer_wrapper").get "copilot"
 
-require("plugins.copilot").enable()
+copilot:run "enable"

@@ -9,70 +9,85 @@
 --github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#solargraph
 
 -- NOTE: set solargraph the default lsp server for ruby
-require("plugins.lspconfig").distinct_setup("ruby", function()
+local lspconfig = require("util.packer_wrapper").get "lspconfig"
+
+lspconfig:config(function()
   --[[
       gem install solargraph
   ]]
   require("lspconfig").solargraph.setup {
-    capabilities = require("plugins.cmp").default_capabilities(),
-    root_dir = require("util.root"),
+    capabilities = require("cmp_nvim_lsp").default_capabilities(),
+    root_dir = require "util.root",
   }
   -- NOTE: Start the lsp server
   vim.fn.execute("LspStart", true)
-end)
+end, "ruby")
+
+lspconfig:run "start"
 
 ------------------------------------------------------------------------ LINTER
 --https://github.com/mfussenegger/nvim-lint
+--
+local lint = require("util.packer_wrapper").get "lint"
 
 --NOTE: lint ruby with rubocop
 --[[
     gem install rubocop
 ]]
-require("plugins.lint").add_linters("ruby", { "rubocop" }, true)
+lint:config(function()
+  require("lint").linters_by_ft["ruby"] = { "rubocop" }
+end, "ruby")
 
 --------------------------------------------------------------------- FORMATTER
 --github.com/mhartington/formatter.nvim/blob/master/lua/formatter/filetypes/ruby.lua
+--
+local formatter = require("util.packer_wrapper").get "formatter"
 
 -- NOTE: set rubocop as the default formatter for ruby
-require("plugins.formatter").distinct_setup("ruby", {
+formatter:config(function()
   --[[
       gem install rubocop
   ]]
-  filetype = {
-    ruby = {
-      function()
-        -- gem install rubocop
-        local util = require "formatter.util"
-        return {
-          exe = "rubocop",
-          args = {
-            "--fix-layout",
-            "--stdin",
-            util.escape_path(util.get_current_buffer_file_name()),
-            "--format",
-            "files",
-          },
-          stdin = true,
-          transform = function(text)
-            table.remove(text, 1)
-            table.remove(text, 1)
-            return text
-          end,
-        }
-      end,
+  require("formatter").setup {
+    filetype = {
+      ruby = {
+        function()
+          -- gem install rubocop
+          local util = require "formatter.util"
+          return {
+            exe = "rubocop",
+            args = {
+              "--fix-layout",
+              "--stdin",
+              util.escape_path(util.get_current_buffer_file_name()),
+              "--format",
+              "files",
+            },
+            stdin = true,
+            transform = function(text)
+              table.remove(text, 1)
+              table.remove(text, 1)
+              return text
+            end,
+          }
+        end,
+      },
     },
-  },
-})
+  }
+end, "ruby")
 
 --------------------------------------------------------------------- DEBUGGER
 --https://github.com/mfussenegger/nvim-dap/wiki/Debug-Adapter-installation#Ruby
+
+local dap = require("util.packer_wrapper").get "dap"
+
 -- NOTE: set readapt as default ruby debugger
 
-require("plugins.dap").distinct_setup("ruby_adapter", function(dap)
+dap:config(function()
   --[[  
       gem install readapt
   ]]
-  dap.adapters.ruby = {
+  require("dap").adapters.ruby = {
     type = "executable",
     command = "readapt",
     args = { "stdio" },
@@ -80,11 +95,11 @@ require("plugins.dap").distinct_setup("ruby_adapter", function(dap)
       detach = false,
     },
   }
-end)
+end, "ruby_adapter")
 
 -- this config launches the currently oppened ruby file
-require("plugins.dap").distinct_setup("ruby_config", function(dap)
-  dap.configurations.ruby = {
+dap:config(function()
+  require("dap").configurations.ruby = {
     {
       type = "ruby",
       request = "launch",
@@ -93,26 +108,32 @@ require("plugins.dap").distinct_setup("ruby_config", function(dap)
       useBundler = false,
     },
   }
-end)
+end, "ruby_debugger")
 
 ----------------------------------------------------------------------- ACTIONS
 -- NOTE: set default actions
 
-require("plugins.actions").distinct_setup("ruby", {
-  actions = {
-    -- Run currently oppened ruby file
-    ["Run current Ruby file"] = function()
-      return {
-        filetypes = { "ruby" },
-        steps = {
-          { "ruby", vim.fn.expand "%:p" },
-        },
-      }
-    end,
-  },
-})
+local actions = require("util.packer_wrapper").get "actions"
+
+actions:config(function()
+  require("actions").setup {
+    actions = {
+      -- Run currently oppened ruby file
+      ["Run current Ruby file"] = function()
+        return {
+          filetypes = { "ruby" },
+          steps = {
+            { "ruby", vim.fn.expand "%:p" },
+          },
+        }
+      end,
+    },
+  }
+end, "ruby")
 
 ----------------------------------------------------------------------- COPILOT
 -- NOTE: enable copilot for ruby
 
-require("plugins.copilot").enable()
+local copilot = require("util.packer_wrapper").get "copilot"
+
+copilot:run "enable"

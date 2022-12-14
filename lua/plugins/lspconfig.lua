@@ -5,7 +5,7 @@
 -- https://github.com/neovim/nvim-lspconfig
 --_____________________________________________________________________________
 
-local lspconfig = {}
+local lspconfig = require("util.packer_wrapper").get "lspconfig"
 
 ---Jump to definition with "gd"
 ---Definition of word under the cursor with "shift + K"
@@ -13,11 +13,12 @@ local lspconfig = {}
 ---diagnostics instead.
 ---"Ctrl + k" will show only definition.
 ---"Ctrl + d" will show only diagnostics.
-function lspconfig.init()
+lspconfig:config(function()
   vim.api.nvim_set_keymap(
     "n",
     "K",
-    "<cmd>lua require('plugins.lspconfig').show_definition()<CR>",
+    "<cmd>lua require('util.packer_wrapper')"
+      .. ".get('lspconfig'):run('show_definition')<CR>",
     {
       silent = true,
       noremap = true,
@@ -40,36 +41,23 @@ function lspconfig.init()
     silent = true,
     noremap = true,
   })
-end
+end, "remappings")
 
 ---Show definition of symbol under cursor, unless
 ---there are any diagnostics on the current line.
 ---Then display those diagnostics instead.
-function lspconfig.show_definition()
+lspconfig:action("show_definition", function()
   if vim.diagnostic.open_float() then
     return
   end
   vim.lsp.buf.hover()
-end
+end)
 
-local distinct_setups = {}
-
----Create a distinct setup, identifies by the provided key.
----Once this is called, calling it again with the same key will
----be a no-op, unless override is true.
----
----NOTE: this is useful for setting local configs and ignoring
----the default distinct configs.
----
----@param key string: A string to identify the setup
----@param f function: A lspconfig setup function
----@param override boolean?: Override existing config.
-function lspconfig.distinct_setup(key, f, override)
-  if override ~= true and distinct_setups[key] ~= nil then
+lspconfig:action("start", function()
+  local ok, e = require "lspconfig"
+  if ok == false then
+    require("util.log").warn(e)
     return
   end
-  f()
-  distinct_setups[key] = true
-end
-
-return lspconfig
+  vim.cmd("LspStart", true)
+end)

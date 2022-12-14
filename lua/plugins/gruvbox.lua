@@ -5,12 +5,12 @@
 -- https://github.com/ellisonleao/gruvbox.nvim
 --_____________________________________________________________________________
 
-local M = {}
+local gruvbox = require("util.packer_wrapper").get "gruvbox"
 
 ---Default setup for the gruvbox plugin. This also takes
 ---care of all the additional higlight overrides and sets the
 ---gruvbox as the editor's colorscheme.
-function M.init()
+gruvbox:config(function()
   require("gruvbox").setup {
     undercurl = true,
     underline = true,
@@ -54,6 +54,4 @@ function M.init()
   }
 
   vim.cmd "colorscheme gruvbox"
-end
-
-return M
+end)
