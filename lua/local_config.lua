@@ -9,7 +9,7 @@
 -- Remove them with :RemoveLocalConfig
 --_____________________________________________________________________________
 
-local log = require "util.log"
+local log = require "log"
 
 ---The root of the currently oppened project
 ---@type string
