@@ -2,10 +2,10 @@
 -------------------------------------------------------------------------------
 --                                                                 LOCAL CONFIG
 --=============================================================================
--- Store local project configs in .local/ directory.
+-- Store local project configs in neovim data's local_configs/ directory.
 -- Configs are saved based on the root of the currently oppened project and
 -- the current machine's hostname.
--- Open/ add local configs with :LocalConfig
+-- Open or add local configs with :LocalConfig
 -- Remove them with :RemoveLocalConfig
 --_____________________________________________________________________________
 
@@ -13,10 +13,10 @@ local log = require "log"
 
 ---The root of the currently oppened project
 ---@type string
-local root = require("util").get_root()
+local root = require("root")()
 ---The defult path for the local config files
 ---@type string
-local local_configs_path = vim.fn.stdpath "config" .. "/.local"
+local local_configs_path = vim.fn.stdpath "data" .. "/local_configs"
 ---The base of the local config files for the current host
 ---@type string
 local base = local_configs_path .. "/" .. vim.fn.hostname() .. "/"
