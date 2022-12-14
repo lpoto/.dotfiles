@@ -22,7 +22,6 @@ end)
 
 -- format with "<leader>f""
 formatter:config(function()
-  vim.api.nvim_set_keymap("n", "<leader>f", "<cmd>FormatWriteLock<CR>", {
-    noremap = true,
-  })
+  local mapper = require "util.mapper"
+  mapper.map("n", "<leader>f", "<cmd>FormatWriteLock<CR>")
 end, "remappings")

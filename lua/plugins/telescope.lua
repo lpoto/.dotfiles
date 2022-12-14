@@ -75,64 +75,41 @@ end)
 ---live grep with "<leader> + g" (REQUIRES 'ripgrep')
 ---open quickfix with "<leader> + q"
 telescope:config(function()
-  vim.api.nvim_set_keymap(
+  local mapper = require "util.mapper"
+
+  mapper.map(
     "n",
     "<leader>n",
-    "<cmd>lua require('telescope.builtin').find_files()<CR>",
-    {
-      silent = true,
-      noremap = true,
-    }
+    "<cmd>lua require('telescope.builtin').find_files()<CR>"
   )
-  vim.api.nvim_set_keymap(
+  mapper.map(
     "n",
     "<leader>q",
-    "<cmd>lua require('telescope.builtin').quickfix()<CR>",
-    {
-      silent = true,
-      noremap = true,
-    }
+    "<cmd>lua require('telescope.builtin').quickfix()<CR>"
   )
-  vim.api.nvim_set_keymap(
+  mapper.map(
     "n",
     "<leader>d",
-    "<cmd>lua require('telescope.builtin').diagnostics()<CR>",
-    {
-      silent = true,
-      noremap = true,
-    }
+    "<cmd>lua require('telescope.builtin').diagnostics()<CR>"
   )
-  vim.api.nvim_set_keymap(
+  mapper.map(
     "n",
     "<C-x>",
-    "<cmd>lua require('telescope.builtin').grep_string()<CR>",
-    {
-      silent = true,
-      noremap = true,
-    }
+    "<cmd>lua require('telescope.builtin').grep_string()<CR>"
   )
-  vim.api.nvim_set_keymap(
+  mapper.map(
     "n",
     "<leader>g",
-    "<cmd>lua require('telescope.builtin').live_grep()<CR>",
-    {
-      silent = true,
-      noremap = true,
-    }
+    "<cmd>lua require('telescope.builtin').live_grep()<CR>"
   )
-  vim.api.nvim_set_keymap(
+  mapper.map(
     "n",
     "<C-g>",
-    "<cmd>lua require('telescope.builtin').git_files()<CR>",
-    {
-      silent = true,
-      noremap = true,
-    }
+    "<cmd>lua require('telescope.builtin').git_files()<CR>"
   )
-  vim.api.nvim_set_keymap(
+  mapper.map(
     "n",
     "<C-n>",
-    "<cmd>lua require('telescope').extensions.file_browser.file_browser()<CR>",
-    { noremap = true }
+    "<cmd>lua require('telescope').extensions.file_browser.file_browser()<CR>"
   )
 end, "remappings")

@@ -76,7 +76,7 @@ formatter:config(function()
     },
   }
 end)
---
+
 ------------------------------------------------------------------------- COPILOT
 ---- NOTE: enable copilot for lua
 

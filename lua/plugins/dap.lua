@@ -64,28 +64,22 @@ end)
 
 ---Set custom keymaps for the dap plugin.
 dap:config(function()
+  local mapper = require "util.mapper"
   -- toggle repl vertical split with <leader> + r
-  vim.api.nvim_set_keymap(
+  mapper.map(
     "n",
     "<leader>r",
-    "<CMD>lua require('packer_wrapper').get('dap')data.toggle_repl()<CR>",
-    { noremap = true, silent = true }
+    "<CMD>lua require('util.packer_wrapper').get('dap').data.toggle_repl()<CR>"
   )
 
   -- Continue with Ctrl + d
-  vim.api.nvim_set_keymap(
-    "n",
-    "<C-d>",
-    "<CMD>lua require('dap').continue()<CR>",
-    { noremap = true, silent = true }
-  )
+  mapper.map("n", "<leader>c", "<CMD>lua require('dap').continue()<CR>")
 
   -- Set breakpoint with Ctrl + b
-  vim.api.nvim_set_keymap(
+  mapper.map(
     "n",
-    "<C-b>",
-    "<CMD>lua require('dap').toggle_breakpoint()<CR>",
-    { noremap = true, silent = true }
+    "<leader>b",
+    "<CMD>lua require('dap').toggle_breakpoint()<CR>"
   )
 end, "remappings")
 

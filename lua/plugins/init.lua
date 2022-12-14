@@ -86,7 +86,7 @@ function plugins.setup()
       as = "dap",
       opt = true,
       cmd = { "DapContinue", "DapToggleBreakpoint" },
-      keys = { "<C-c>", "<C-b>" },
+      keys = { "<leader>c", "<leader>b" },
       requires = {
         {
           "theHamsta/nvim-dap-virtual-text", -- requires treesitter

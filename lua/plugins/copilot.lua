@@ -34,19 +34,16 @@ end)
 ---  <C-k> to show the next suggestion.
 ---  <C-j> to show the previous suggestion.
 copilot:setup(function()
-  vim.api.nvim_set_keymap(
+  local mapper = require "util.mapper"
+
+  mapper.map(
     "i",
     "<C-Space>",
     'copilot#Accept("<CR>")',
     { silent = true, expr = true }
   )
-  vim.api.nvim_set_keymap(
-    "i",
-    "<C-k>",
-    "copilot#Next()",
-    { silent = true, expr = true }
-  )
-  vim.api.nvim_set_keymap(
+  mapper.map("i", "<C-k>", "copilot#Next()", { silent = true, expr = true })
+  mapper.map(
     "i",
     "<C-j>",
     "copilot#Previous()",
@@ -99,7 +96,7 @@ end
 ---for the provided filetype.
 ---NOTE: this will be a noop if the :Copilot command is not available.
 ---@param filetype string?: the filetype to disable copilot for.
-copilot.data.disable =  function(filetype)
+copilot.data.disable = function(filetype)
   if vim.fn.exists ":Copilot" == 0 then
     return
   end
