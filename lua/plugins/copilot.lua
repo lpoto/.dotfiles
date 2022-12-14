@@ -63,7 +63,7 @@ end, "remappings")
 ---Meaning, disabling the plugin will also disable this function.
 ---@param filetype string?: the filetype to enable copilot for.
 ---If this is not provided, it is enabled for current filetype.
-copilot:action("enable", function(filetype)
+copilot.data.enable = function(filetype)
   if vim.fn.exists ":Copilot" == 0 then
     return
   end
@@ -91,7 +91,7 @@ copilot:action("enable", function(filetype)
   if vim.g.loaded_copilot ~= 1 then
     vim.cmd "Copilot enable"
   end
-end)
+end
 
 ---Disable copilot for the provided filetype, or the
 ---current filetype if none is provided.
@@ -99,7 +99,7 @@ end)
 ---for the provided filetype.
 ---NOTE: this will be a noop if the :Copilot command is not available.
 ---@param filetype string?: the filetype to disable copilot for.
-copilot:action("disable", function(filetype)
+copilot.data.disable =  function(filetype)
   if vim.fn.exists ":Copilot" == 0 then
     return
   end
@@ -125,4 +125,4 @@ copilot:action("disable", function(filetype)
         [filetype] = false,
       })
   end
-end)
+end

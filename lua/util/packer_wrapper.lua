@@ -9,9 +9,27 @@ local Plugin = {
   ---@field disabled boolean: Whether the plugin is disabled.
   ---@field before_load_functions table: Functions to run before loading the plugin.
   ---@field after_load_functions table: Functions to run after loading the plugin.
-  ---@field custom_actions table: A table of custom functions used by `Plugin:run(key)`
   __meta = {},
+  ---@type table: A table for defining custom fields
+  data = {}
 }
+
+---Returns the Plugin object for the given plugin name.
+---
+---Note that the Packer.nvim's plugin config should be wrapped
+---with `workspace.plugin.new` function, otherwise this will
+---return nil.
+---
+---Example:
+---<code>
+---  local lspconfig = packer_wrapper.get("lspconfig")
+---</code>
+---
+---@param name string: The name of the plugin.
+---@return Plugin: The Plugin object for the given plugin name.
+function Plugin.get(name)
+  return plugins[name]
+end
 
 local plugin_after_load
 local plugin_before_load
@@ -42,6 +60,7 @@ function Plugin:new(use, packer_config)
 
   local plugin = {
     __meta = {},
+    data = {},
   }
   setmetatable(plugin, self)
   self.__index = self
@@ -104,23 +123,6 @@ function Plugin:new(use, packer_config)
       end
     end
   end
-end
-
----Returns the Plugin object for the given plugin name.
----
----Note that the Packer.nvim's plugin config should be wrapped
----with `workspace.plugin.new` function, otherwise this will
----return nil.
----
----Example:
----<code>
----  local lspconfig = packer_wrapper.get("lspconfig")
----</code>
----
----@param name string: The name of the plugin.
----@return Plugin: The Plugin object for the given plugin name.
-function Plugin.get(name)
-  return plugins[name]
 end
 
 ---Adds a function that is called before the plugin is loaded.
@@ -198,31 +200,6 @@ end
 ---Returns true if the plugin is enabled, false otherwise.
 function Plugin:enabled()
   return self.__meta.disabled ~= true
-end
-
----Add a custom action to the plugin, that may be run with
----`Plugin:run(key)`.
----@param key string: Key to identify the action
----@param f function: The function to call when running `Plugin:run(key)`.
-function Plugin:action(key, f)
-  if self.__meta.custom_actions == nil then
-    self.__meta.custom_actions = {}
-  end
-  self.__meta.custom_actions[key] = f
-end
-
----Run the custom action defined for the plugin.
----@param key string: Key to identify the action
-function Plugin:run(key, arg)
-  local log = require "util.log"
-  if
-    self.__meta.custom_actions == nil
-    or self.__meta.custom_actions[key] == nil
-  then
-    log.warn("No plugin action defined for key: " .. key)
-    return
-  end
-  self.__meta.custom_actions[key](arg)
 end
 
 ---Filters the plugin's setup functions with the provided function,

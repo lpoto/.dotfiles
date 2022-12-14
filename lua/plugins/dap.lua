@@ -45,7 +45,7 @@ dap:config(function()
 
   -- NOTE: open repl immediately when starting the debuggin
   dap_module.listeners.after.event_initialized["custom"] = function()
-    dap:run "toggle_repl"
+    dap.data.toggle_repl()
   end
 
   -- NOTE: higlight the breakpoint better
@@ -68,7 +68,7 @@ dap:config(function()
   vim.api.nvim_set_keymap(
     "n",
     "<leader>r",
-    "<CMD>lua require('packer_wrapper').get('dap'):run('toggle_repl')<CR>",
+    "<CMD>lua require('packer_wrapper').get('dap')data.toggle_repl()<CR>",
     { noremap = true, silent = true }
   )
 
@@ -90,7 +90,7 @@ dap:config(function()
 end, "remappings")
 
 ---Define the toggle_repl for dap plugin
-dap:action("toggle_repl", function()
+dap.data.toggle_repl = function()
   local dap_module = require "dap"
   local s = {}
   if vim.o.columns > 240 then
@@ -103,4 +103,4 @@ dap:action("toggle_repl", function()
       vim.fn.execute("keepjumps wincmd w ", v)
     end
   end
-end)
+end

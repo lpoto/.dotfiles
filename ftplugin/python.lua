@@ -21,7 +21,7 @@ lspconfig:config(function()
   }
 end, "python")
 
-lspconfig:run "start"
+lspconfig.data.start()
 
 ------------------------------------------------------------------------ LINTER
 --https://github.com/mfussenegger/nvim-lint
@@ -123,4 +123,4 @@ end, "python")
 
 local copilot = require("util.packer_wrapper").get "copilot"
 
-copilot:run "enable"
+copilot.data.enable()

@@ -18,7 +18,7 @@ lspconfig:config(function()
     "n",
     "K",
     "<cmd>lua require('util.packer_wrapper')"
-      .. ".get('lspconfig'):run('show_definition')<CR>",
+      .. ".get('lspconfig').data.show_definition()<CR>",
     {
       silent = true,
       noremap = true,
@@ -46,18 +46,18 @@ end, "remappings")
 ---Show definition of symbol under cursor, unless
 ---there are any diagnostics on the current line.
 ---Then display those diagnostics instead.
-lspconfig:action("show_definition", function()
+lspconfig.data.show_definition = function()
   if vim.diagnostic.open_float() then
     return
   end
   vim.lsp.buf.hover()
-end)
+end
 
-lspconfig:action("start", function()
+lspconfig.data.start = function()
   local ok, e = require "lspconfig"
   if ok == false then
     require("util.log").warn(e)
     return
   end
   vim.cmd("LspStart", true)
-end)
+end

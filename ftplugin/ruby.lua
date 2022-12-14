@@ -23,7 +23,7 @@ lspconfig:config(function()
   vim.fn.execute("LspStart", true)
 end, "ruby")
 
-lspconfig:run "start"
+lspconfig.data.start()
 
 ------------------------------------------------------------------------ LINTER
 --https://github.com/mfussenegger/nvim-lint
@@ -136,4 +136,4 @@ end, "ruby")
 
 local copilot = require("util.packer_wrapper").get "copilot"
 
-copilot:run "enable"
+copilot.data.enable()
