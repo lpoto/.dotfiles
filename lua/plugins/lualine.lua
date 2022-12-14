@@ -5,10 +5,10 @@
 -- https://github.com/nvim-lualine/lualine.nvim
 --_____________________________________________________________________________
 
-local M = {}
+local lualine = require("util.packer_wrapper").get "lualine"
 
 ---Default setup for the lualine plugin.
-function M.init()
+lualine:config(function()
   require("lualine").setup {
     options = {
       theme = "gruvbox-material",
@@ -35,6 +35,4 @@ function M.init()
       lualine_z = { { "tabs", mode = 2 } },
     },
   }
-end
-
-return M
+end)

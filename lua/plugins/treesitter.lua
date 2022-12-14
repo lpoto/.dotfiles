@@ -5,10 +5,10 @@
 -- https://github.com/nvim-treesitter/nvim-treesitter
 --_____________________________________________________________________________
 
-local M = {}
+local treesitter = require("util.packer_wrapper").get "treesitter"
 
 ---Default setup for the treesitter
-function M.init()
+treesitter:config(function()
   require("nvim-treesitter.configs").setup {
     ensure_installed = "all",
     highlight = {
@@ -20,6 +20,4 @@ function M.init()
       enable = false,
     },
   }
-end
-
-return M
+end)

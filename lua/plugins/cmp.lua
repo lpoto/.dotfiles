@@ -5,37 +5,28 @@
 -- https://github.com/hrsh7th/nvim-cmp
 --_____________________________________________________________________________
 
-local M = {}
-
----Return default capabilities that include cmp capabilities
----to use in the lspconfig's server configs
----@return table
-function M.default_capabilities()
-  local capabilities = vim.lsp.protocol.make_client_capabilities()
-  capabilities.textDocument.completion.completionItem.snippetSupport = true
-  return require("cmp_nvim_lsp").default_capabilities(capabilities)
-end
+local cmp = require("util.packer_wrapper").get "cmp"
 
 ---Default setup for cmp plugin.
 ---Cmp is mostly used with lspconfig
-function M.init()
-  local cmp = require "cmp"
-  cmp.setup {
+cmp:config(function()
+  local cmp_module = require "cmp"
+  cmp_module.setup {
     snippet = {
       expand = function(args)
         vim.fn["vsnip#anonymous"](args.body)
       end,
     },
     mapping = {
-      ["<CR>"] = cmp.mapping.confirm {
-        behavior = cmp.ConfirmBehavior.Replace,
+      ["<CR>"] = cmp_module.mapping.confirm {
+        behavior = cmp_module.ConfirmBehavior.Replace,
         select = true,
       },
-      ["<TAB>"] = cmp.mapping.select_next_item {
-        behavior = cmp.SelectBehavior.Select,
+      ["<TAB>"] = cmp_module.mapping.select_next_item {
+        behavior = cmp_module.SelectBehavior.Select,
       },
-      ["<S-TAB>"] = cmp.mapping.select_prev_item {
-        behavior = cmp.SelectBehavior.Select,
+      ["<S-TAB>"] = cmp_module.mapping.select_prev_item {
+        behavior = cmp_module.SelectBehavior.Select,
       },
     },
     sources = {
@@ -49,7 +40,7 @@ function M.init()
   local cmp_autopairs = require "nvim-autopairs.completion.cmp"
   local ts_conds = require "nvim-autopairs.ts-conds"
   local Rule = require "nvim-autopairs.rule"
-  cmp.event:on(
+  cmp_module.event:on(
     "confirm_done",
     cmp_autopairs.on_confirm_done { map_char = { tex = "" } }
   )
@@ -68,6 +59,4 @@ function M.init()
     ),
     Rule("$", "$", "lua"):with_pair(ts_conds.is_not_ts_node { "function" }),
   }
-end
-
-return M
+end)

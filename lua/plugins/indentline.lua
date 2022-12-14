@@ -5,11 +5,11 @@
 -- https://github.com/lukas-reineke/indent-blankline.nvim
 --_____________________________________________________________________________
 
-local M = {}
+local indentline = require("util.packer_wrapper").get "indentline"
 
 ---Default setup for the indent blankline plugin
 ---User '│' sign for indentline and show the current context.
-function M.init()
+indentline:config(function()
   require("indent_blankline").setup {
     --use │ for indentline
     char = "│",
@@ -20,6 +20,4 @@ function M.init()
       "IndentBlanklineIndent",
     },
   }
-end
-
-return M
+end)

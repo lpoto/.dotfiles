@@ -5,11 +5,11 @@
 -- https://github.com/TimUntersberger/neogit
 --_____________________________________________________________________________
 
-local M = {}
+local neogit = require("util.packer_wrapper").get "neogit"
 
 ---Setup neogit plugin, add :Git command for neogit
 ---:Git command is exactly the same as :Neogit
-function M.init()
+neogit:config(function()
   require("neogit").setup {
     disable_signs = true,
   }
@@ -27,6 +27,4 @@ function M.init()
       return ng.complete(arglead)
     end,
   })
-end
-
-return M
+end)

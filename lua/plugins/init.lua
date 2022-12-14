@@ -10,31 +10,14 @@
 --_____________________________________________________________________________
 
 local log = require "util.log"
+local Plugin = require "util.packer_wrapper"
 
 local plugins = {}
-
 local ensure_packer
-local disabled_plugins = {}
-
----Disable plugin identified by the provided name.
----NOTE: This will only work for lazily loaded plugins.
----@param name string
-function plugins.disable(name)
-  disabled_plugins[name] = true
-end
-
----Check if plugin identified by the provided name is enabled.
-function plugins.enabled(name)
-  if disabled_plugins[name] then
-    return false
-  end
-  return true
-end
 
 ---Manually load the packer.nvim package and use it
----to load all the required plugins.
+---to load all the required plugins with the help of packer wrapper.
 function plugins.setup()
-  --NOTE: make sure the packer.nvim is available, if not, install it
   local packer = ensure_packer()
   if packer == nil then
     return
@@ -49,113 +32,86 @@ function plugins.setup()
     use { "wbthomason/packer.nvim", opt = true }
     -------------------------------------------------------------- GRUVBOX.NVIM
     -- gruvbox colorscheme
-    use {
+    Plugin:new(use, {
       "ellisonleao/gruvbox.nvim",
-      config = function()
-        require("plugins.gruvbox").init()
-      end,
-    }
+      as = "gruvbox",
+      cond = "require('util.packer_wrapper').get('gruvbox'):enabled()",
+    })
     ----------------------------------------------------------- NVIM-TREESITTER
     -- provide a simple and easy way to use the interface for
     -- tree-sitter in Neovim and provide some basic functionality
     -- such as highlighting based on it
-    use {
+    Plugin:new(use, {
       "nvim-treesitter/nvim-treesitter",
-      config = function()
-        require("plugins.treesitter").init()
-      end,
+      as = "treesitter",
       run = { ":TSUpdate" },
-    }
+    })
     ------------------------------------------------------------ GITHUB COPILOT
     -- GitHub Copilot uses OpenAI Codex to suggest code and
     -- entire functions in real-time right from your editor.
-    use {
+    Plugin:new(use, {
       "github/copilot.vim",
       as = "copilot",
-      cond = 'require("plugins").enabled("copilot")',
       opt = true,
       cmd = { "Copilot" },
-      setup = function()
-        require("plugins.copilot").init()
-      end,
-    }
+    })
     -------------------------------------------------------------- ACTIONS.NVIM
     -- manage and synchronously run actions
-    use {
+    Plugin:new(use, {
       "lpoto/actions.nvim",
       as = "actions",
-      cond = 'require("plugins").enabled("actions")',
       opt = true,
       cmd = { "A", "Action", "Actions" },
-      config = function()
-        require("plugins.actions").init()
-      end,
-    }
+    })
     -------------------------------------------------------------- LUALINE.NVIM
     -- An easy way to configure neovim's statusline.
-    use {
+    Plugin:new(use, {
       "nvim-lualine/lualine.nvim",
       as = "lualine",
-      cond = 'require("plugins").enabled("lualine")',
       opt = true,
       event = "BufNewFile,BufReadPre",
-      config = function()
-        require("plugins.lualine").init()
-      end,
-    }
+    })
     ----------------------------------------------------- INDENT-BLANKLINE.NVIM
     -- Display thin vertical lines at each indentation level
     -- for code indented with spaces.
-    use {
+    Plugin:new(use, {
       "lukas-reineke/indent-blankline.nvim",
-      as = "indent-blankline",
-      cond = 'require("plugins").enabled("indent-blankline")',
+      as = "indentline",
       opt = true,
       event = "BufNewFile,BufReadPre",
-      config = function()
-        require("plugins.indentline").init()
-      end,
-    }
+    })
     ------------------------------------------------------------------ NVIM-DAP
     -- A Debug Adapter Protocol client implementation for Neovim.
-    use {
+    Plugin:new(use, {
       "mfussenegger/nvim-dap",
       as = "dap",
-      cond = 'require("plugins").enabled("dap")',
       opt = true,
       cmd = { "DapContinue", "DapToggleBreakpoint" },
       keys = { "<C-c>", "<C-b>" },
-      config = function()
-        require("plugins.dap").init()
-      end,
       requires = {
         {
           "theHamsta/nvim-dap-virtual-text", -- requires treesitter
+          as = "dap-virtual-text",
           module = "nvim-dap-virtual-text",
         },
       },
-    }
+    })
     -------------------------------------------------------------------- NEOGIT
     -- Neovim Git intergration
-    use {
+    Plugin:new(use, {
       "TimUntersberger/neogit",
       as = "neogit",
-      cond = 'require("plugins").enabled("neogit")',
       opt = true,
       cmd = { "Git", "Neogit" },
-      config = function()
-        require("plugins.neogit").init()
-      end,
       --NOTE: this requires plenary.nvim
-    }
+    })
     ------------------------------------------------------------ TELESCOPE.NVIM
     -- A highly extendable fuzzy finder over lists.
-    use {
+    Plugin:new(use, {
       "nvim-telescope/telescope.nvim",
       as = "telescope",
-      cond = 'require("plugins").enabled("telescope")',
       opt = true,
-      module_pattern = "telescope.*",
+      module = "telescope",
       keys = {
         "<leader>n",
         "<C-x>",
@@ -165,88 +121,66 @@ function plugins.setup()
         "<leader>d",
         "<leader>q",
       },
-      config = function()
-        require("plugins.telescope").init()
-        --NOTE: this requires plenary.nvim
-      end,
       requires = {
         -- File browser extension for the telescope
-        module_pattern = "telescope",
         "nvim-telescope/telescope-file-browser.nvim",
+        as = "telescope-fzf-native",
+        module_pattern = "telescope*",
       },
-    }
+    })
     ------------------------------------------------------------ FORMATTER.NVIM
     -- A format runner for Neovim.
-    use {
+    Plugin:new(use, {
       "mhartington/formatter.nvim",
       as = "formatter",
-      cond = 'require("plugins").enabled("formatter")',
       opt = true,
       cmd = { "Format", "FormatWrite", "FormatLock", "FormatWriteLock" },
       keys = { "<leader>f" },
-      config = function()
-        require("plugins.formatter").init()
-      end,
-    }
+    })
     ----------------------------------------------------------------- NVIM-LINT
     -- A format runner for Neovim.
-    use {
+    Plugin:new(use, {
       "mfussenegger/nvim-lint",
       as = "lint",
-      cond = 'require("plugins").enabled("lint")',
       opt = true,
       module = "lint",
-      config = function()
-        require("plugins.lint").init(true)
-      end,
-    }
+    })
     ------------------------------------------------------------ NVIM-LSPCONFIG
     -- Configs for the Nvim LSP client
-    use {
+    Plugin:new(use, {
       "neovim/nvim-lspconfig",
       as = "lspconfig",
-      cond = 'require("plugins").enabled("lspconfig")',
       opt = true,
       module_pattern = "lspconfig*",
-      config = function()
-        require("plugins.lspconfig").init()
-      end,
       requires = {
         -------------------------------------------------------------- NVIM-CMP
         -- autocompletion
         {
           "hrsh7th/nvim-cmp",
-          config = function()
-            require("plugins.cmp").init()
-          end,
+          as = "cmp",
           requires = {
             "hrsh7th/cmp-nvim-lsp",
             "hrsh7th/cmp-buffer",
-            {
-              ----------------------------------------------------------- VSNIP
-              -- autocompletion with snippers
-              "hrsh7th/cmp-vsnip",
-              requires = {
-                "hrsh7th/vim-vsnip",
-              },
-            },
+            "hrsh7th/cmp-vsnip",
+            "hrsh7th/vim-vsnip",
             ---------------------------------------------------- NVIM-AUTOPAIRS
             -- autocomplete matching parentheses etc.
             {
               "windwp/nvim-autopairs",
-              module_pattern = { "cmp.*", "nvim-autopairs.*" },
+              module_pattern = { "cmp", "cmp.*", "nvim-autopairs.*" },
             },
           },
         },
       },
-    }
+    })
     -------------------------------------------------------------- PLENARY.NVIM
     -- used as dependency for some plugins
-    use {
+    Plugin:new(use, {
       "nvim-lua/plenary.nvim",
+      as = "plenary",
       opt = true,
       module_pattern = { "plenary.*" },
-    }
+    })
   end)
 end
 
