@@ -46,7 +46,7 @@ lspconfig:config(function()
   }
 end, "lua")
 
-lspconfig.data.start()
+vim.cmd "LspStart"
 
 ----------------------------------------------------------------------- FORMATTER
 ---- NOTE: set stylua as the default formatter for lua
@@ -82,4 +82,4 @@ end)
 
 local copilot = require("util.packer.wrapper").get "copilot"
 
-copilot.data.enable()
+copilot:get_field "enable"()

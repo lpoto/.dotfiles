@@ -59,11 +59,7 @@ mapper.map("i", "?", "?<c-g>u")
 
 ----------------------------------------------------------------------- WRITING
 
-mapper.command(
-  "W",
-  "w",
-  { nargs = "*", bang = true, complete = "file" }
-)
+mapper.command("W", "w", { nargs = "*", bang = true, complete = "file" })
 
 mapper.command("Q", "q", {
   bang = true,

@@ -35,7 +35,6 @@ cmp:config(function()
       { name = "buffer" },
     },
   }
-
   local npairs = require "nvim-autopairs"
   local cmp_autopairs = require "nvim-autopairs.completion.cmp"
   local ts_conds = require "nvim-autopairs.ts-conds"

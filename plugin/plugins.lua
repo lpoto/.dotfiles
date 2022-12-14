@@ -35,15 +35,17 @@ packer.startup(function(use)
   Plugin.new(use, {
     "github/copilot.vim",
     as = "copilot",
-    opt = true,
     cmd = "Copilot",
+    setup = function()
+      vim.g.copilot_no_tab_map = true
+      vim.g.copilot_assume_mapped = true
+    end,
   })
   ---------------------------------------------------------------- ACTIONS.NVIM
   -- manage and synchronously run actions
   Plugin.new(use, {
     "lpoto/actions.nvim",
     as = "actions",
-    opt = true,
     cmd = { "A", "Action", "Actions" },
   })
   ---------------------------------------------------------------- LUALINE.NVIM
@@ -51,7 +53,6 @@ packer.startup(function(use)
   Plugin.new(use, {
     "nvim-lualine/lualine.nvim",
     as = "lualine",
-    opt = true,
     event = "BufNewFile,BufReadPre",
   })
   ------------------------------------------------------- INDENT-BLANKLINE.NVIM
@@ -60,7 +61,6 @@ packer.startup(function(use)
   Plugin.new(use, {
     "lukas-reineke/indent-blankline.nvim",
     as = "indentline",
-    opt = true,
     event = "BufNewFile,BufReadPre",
   })
   -------------------------------------------------------------------- NVIM-DAP
@@ -68,7 +68,6 @@ packer.startup(function(use)
   Plugin.new(use, {
     "mfussenegger/nvim-dap",
     as = "dap",
-    opt = true,
     cmd = { "DapContinue", "DapToggleBreakpoint" },
     keys = { "<leader>c", "<leader>b" },
     requires = {
@@ -84,7 +83,6 @@ packer.startup(function(use)
   Plugin.new(use, {
     "TimUntersberger/neogit",
     as = "neogit",
-    opt = true,
     cmd = { "Git", "Neogit" },
     --NOTE: this requires plenary.nvim
   })
@@ -93,7 +91,6 @@ packer.startup(function(use)
   Plugin.new(use, {
     "nvim-telescope/telescope.nvim",
     as = "telescope",
-    opt = true,
     module = "telescope",
     keys = {
       "<leader>n",
@@ -116,7 +113,6 @@ packer.startup(function(use)
   Plugin.new(use, {
     "mhartington/formatter.nvim",
     as = "formatter",
-    opt = true,
     cmd = { "Format", "FormatWrite", "FormatLock", "FormatWriteLock" },
     keys = { "<leader>f" },
   })
@@ -125,7 +121,6 @@ packer.startup(function(use)
   Plugin.new(use, {
     "mfussenegger/nvim-lint",
     as = "lint",
-    opt = true,
     module = "lint",
   })
   -------------------------------------------------------------- NVIM-LSPCONFIG
@@ -133,27 +128,19 @@ packer.startup(function(use)
   Plugin.new(use, {
     "neovim/nvim-lspconfig",
     as = "lspconfig",
-    opt = true,
-    module_pattern = "lspconfig*",
+    cmd = "LspStart",
+    requires = {},
+  })
+  -------------------------------------------------------------------- NVIM-CMP
+  -- autocompletion
+  Plugin.new(use, {
+    "hrsh7th/nvim-cmp",
+    as = "cmp",
     requires = {
-      ---------------------------------------------------------------- NVIM-CMP
-      -- autocompletion
-      {
-        "hrsh7th/nvim-cmp",
-        as = "cmp",
-        requires = {
-          "hrsh7th/cmp-nvim-lsp",
-          "hrsh7th/cmp-buffer",
-          "hrsh7th/cmp-vsnip",
-          "hrsh7th/vim-vsnip",
-          ------------------------------------------------------ NVIM-AUTOPAIRS
-          -- autocomplete matching parentheses etc.
-          {
-            "windwp/nvim-autopairs",
-            module_pattern = { "cmp.*", "nvim-autopairs.*" },
-          },
-        },
-      },
+      "hrsh7th/cmp-nvim-lsp",
+      "hrsh7th/cmp-vsnip",
+      "hrsh7th/vim-vsnip",
+      "windwp/nvim-autopairs",
     },
   })
   ---------------------------------------------------------------- PLENARY.NVIM
@@ -161,7 +148,6 @@ packer.startup(function(use)
   Plugin.new(use, {
     "nvim-lua/plenary.nvim",
     as = "plenary",
-    opt = true,
-    module_pattern = "plenary.*"
+    module_pattern = "plenary.*",
   })
 end)

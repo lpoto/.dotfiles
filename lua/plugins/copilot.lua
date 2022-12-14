@@ -14,9 +14,7 @@ local copilot = require("util.packer.wrapper").get "copilot"
 ---  <C-Space> to select the next suggestion.
 ---  <C-k> to show the next suggestion.
 ---  <C-j> to show the previous suggestion.
-copilot:setup(function()
-  vim.g.copilot_no_tab_map = true
-  vim.g.copilot_assume_mapped = true
+copilot:config(function()
   -- NOTE: disable the copilot for all filetypes by default.
   local tbl = {
     ["*"] = false,
@@ -33,7 +31,7 @@ end)
 ---  <C-Space> to select the next suggestion.
 ---  <C-k> to show the next suggestion.
 ---  <C-j> to show the previous suggestion.
-copilot:setup(function()
+copilot:config(function()
   local mapper = require "util.mapper"
 
   mapper.map(
@@ -60,7 +58,7 @@ end, "remappings")
 ---Meaning, disabling the plugin will also disable this function.
 ---@param filetype string?: the filetype to enable copilot for.
 ---If this is not provided, it is enabled for current filetype.
-copilot.data.enable = function(filetype)
+copilot:add_field("enable", function(filetype)
   if vim.fn.exists ":Copilot" == 0 then
     return
   end
@@ -88,7 +86,7 @@ copilot.data.enable = function(filetype)
   if vim.g.loaded_copilot ~= 1 then
     vim.cmd "Copilot enable"
   end
-end
+end)
 
 ---Disable copilot for the provided filetype, or the
 ---current filetype if none is provided.
@@ -96,7 +94,7 @@ end
 ---for the provided filetype.
 ---NOTE: this will be a noop if the :Copilot command is not available.
 ---@param filetype string?: the filetype to disable copilot for.
-copilot.data.disable = function(filetype)
+copilot:add_field("disable", function(filetype)
   if vim.fn.exists ":Copilot" == 0 then
     return
   end
@@ -122,4 +120,4 @@ copilot.data.disable = function(filetype)
         [filetype] = false,
       })
   end
-end
+end)

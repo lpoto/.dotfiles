@@ -7,14 +7,12 @@ local Plugin = {
   ---@class PluginMetadata
   ---@field loaded boolean: Whether the plugin is loaded.
   ---@field disabled boolean: Whether the plugin is disabled.
-  ---@field before_load_functions table: Functions to run before loading the plugin.
   ---@field after_load_functions table: Functions to run after loading the plugin.
-  __meta = {},
-  ---@type table: A table for defining custom fields
-  data = {},
+  ---@field data table: A table for custom actions.
+  __meta = {data={}},
+  __plugins = {}
 }
 Plugin.__index = Plugin
-
 ---Returns the Plugin object for the given plugin name.
 ---
 ---Note that the Packer.nvim's plugin config should be wrapped
@@ -30,18 +28,38 @@ Plugin.__index = Plugin
 ---@return Plugin: The Plugin object for the given plugin name.
 function Plugin.get(name)
   if plugins[name] == nil then
-    plugins[name] = { name = name, __meta = {}, data = {} }
-    setmetatable(plugins[name], Plugin)
+    local plugin = {name=name, __meta = {data={}}}
+    setmetatable(plugin, Plugin)
+    plugins[name] = plugin
   end
   return plugins[name]
 end
 
+
+---Adds a field to the plugin object.
+---It may be then fetched with `Plugin:get_field(k)`
+---
+---@param k string: field's key
+---@param v any: field's value
+function Plugin:add_field(k, v)
+  self.__meta.data[k] = v
+end
+
+---Fetch the field created with `Plugin:add_field(k, v)`
+---
+---@return any
+function Plugin:get_field(k)
+  return self.__meta.data[k]
+end
+
 local plugin_after_load
-local plugin_before_load
 
 ---This is a wrapper function for the Packer.nvim's use function,
 ---that created a new Plugin object that handles the plugin's
----config functions, setup functions and enablement.
+---config functions and enablement.
+---
+---Note, using this will disable packer.nvim's `config` field
+---for the plugin.
 ---
 ---If a lua 'plugins.plugin_name' exists, it will be loaded.
 ---
@@ -67,55 +85,14 @@ function Plugin.new(use, packer_config)
     log.warn "Plugin config should have an 'as' field"
     return
   end
+
   local plugin = Plugin.get(packer_config.as)
 
-  if packer_config.setup == nil then
-    packer_config.setup = plugin_before_load
-  else
-    packer_config.setup = function(name)
-      local ok, e = pcall(packer_config.config, name)
-      if ok == false then
-        log.warn(e)
-        return
-      end
-      ok, e = pcall(plugin_before_load, name)
-      if ok == false then
-        log.warn(e)
-      end
-    end
-  end
-
-  if packer_config.config == nil then
-    packer_config.config = plugin_after_load
-  else
-    packer_config.config = function(name)
-      local ok, e = pcall(packer_config.config, name)
-      if ok == false then
-        log.warn(e)
-        return
-      end
-      ok, e = pcall(plugin_after_load, name)
-      if ok == false then
-        log.warn(e)
-      end
-    end
-  end
+  packer_config.config = plugin_after_load()
 
   packer_config.cond = "require('util.packer.wrapper').get('"
     .. plugin.name
     .. "'):enabled()"
-
-  if use ~= nil then
-    local ok, e = pcall(use, packer_config)
-    if ok == false then
-      log.warn("Error when creating " .. plugin.name .. " plugin: " .. e)
-    end
-  end
-
-  local config_module = "plugins." .. plugin.name
-  if not package.loaded[config_module] then
-    pcall(require, config_module)
-  end
 
   if packer_config.requires ~= nil then
     for _, v in ipairs(packer_config.requires) do
@@ -124,32 +101,15 @@ function Plugin.new(use, packer_config)
       end
     end
   end
-end
 
----Adds a function that is called before the plugin is loaded.
----This does not override other setup functions.
----Optionally the key can be provided, so the plugin's setup functions
----may be filtered with `Plugin:filter_setup`.
----
----Example that echoes a message before the plugin is loaded:
----<code>
----  local lspconfig = packer_wrapper.get('lspconfig')
----  lspconfig:add_setup(function()
----    print('lspconfig plugin is about to be loaded')
----  end, 'echo_loaded')
----</code>
----
----@param setup function: The function to call before the plugin is loaded.
----@param key string?: Optional key to identify the setup function.
-function Plugin:setup(setup, key)
-  local o = {
-    f = setup,
-    key = key,
-  }
-  if self.__meta.before_load_functions == nil then
-    self.__meta.before_load_functions = {}
+  if use ~= nil then
+    local ok, e = pcall(use, packer_config)
+    if ok == false then
+      log.warn("Error when creating " .. plugin.name .. " plugin: " .. e)
+    end
   end
-  table.insert(self.__meta.before_load_functions, o)
+
+  plugin:__load_module()
 end
 
 ---Adds a function that is called after the plugin is loaded.
@@ -160,7 +120,7 @@ end
 ---Example that configures `pylsp` server after the lspconfig plugin is loaded:
 ---<code>
 ---  local lspconfig = packer_wrapper.get('lspconfig')
----  lspconfig:add_setup(function()
+---  lspconfig:config(function()
 ---    require('lspconfig').pylsp.setup{}
 ---  end)
 ---</code>
@@ -203,48 +163,14 @@ function Plugin:enabled()
   return self.__meta.disabled ~= true
 end
 
----Filters the plugin's setup functions with the provided function,
----that recieves a setup function's key as an argument
----and returns a boolean. The functions that were removed will
----not be called before the plugin is loaded.
----
----Note that the keys may also be nil.
----
----Example that removes all setups with nil keys:
----<code>
----  local lspconfig = packer_wrapper.get('lspconfig')
----  lspconfig:filter_setup(function(key)
----    return key ~= nil
----  end)
----</code>
----
----@param filter function: The filter function
-function Plugin:filter_setup(filter)
-  local log = require "util.log"
-
-  if self.__meta.before_load_functions == nil then
-    return
-  end
-
-  local ok, e = pcall(vim.tbl_filter, function(o)
-    return filter(o.key)
-  end, self.__meta.before_load_functions)
-
-  if ok == false then
-    log.warn(e)
-  else
-    self.__meta.before_load_functions = e
-  end
-end
-
 ---Filters the plugin's config functions with the provided function,
----that recieves a setup function's key as an argument
+---that recieves a config function's key as an argument
 ---and returns a boolean. The functions that were removed will
 ---not be called after the plugin is loaded.
 ---
 ---Note that the keys may also be nil.
 ---
----Example that removes all setups with keys equal to 'pylsp':
+---Example that removes all configs with keys equal to 'pylsp':
 ---<code>
 ---  local lspconfig = packer_wrapper.get('lspconfig')
 ---  lspconfig:filter_config(function(key)
@@ -271,42 +197,29 @@ function Plugin:filter_config(filter)
   end
 end
 
-plugin_after_load = function(name)
-  local log = require "util.log"
+plugin_after_load = function()
+  return function(name)
+    local log = require "util.log"
+    local p = require("util.packer.wrapper").get(name)
 
-  local p = require("util.packer.wrapper").get(name)
-  if p == nil then
-    log.warn("Plugin not fonud: " .. name)
-    return {}
-  end
-  if p.__meta.after_load_functions ~= nil then
-    for _, o in ipairs(p.__meta.after_load_functions) do
-      local ok, e = pcall(o.f)
-      if ok == false then
-        log.warn(e)
+    if p.__meta.after_load_functions ~= nil then
+      for _, o in ipairs(p.__meta.after_load_functions) do
+        local ok, e = pcall(o.f)
+        if ok == false then
+          log.warn(e)
+        end
       end
+       p.__meta.after_load_functions = nil
     end
-    p.__meta.after_load_functions = nil
+    p.__meta.loaded = true
   end
-  p.__meta.loaded = true
 end
 
-plugin_before_load = function(name)
-  local log = require "util.log"
-
-  local p = require("util.packer.wrapper").get(name)
-  if p == nil then
-    log.warn(e)
-    return
-  end
-  if p.__meta.before_load_functions ~= nil then
-    for _, o in ipairs(p.__meta.before_load_functions) do
-      local ok, e = pcall(o.f)
-      if ok == false then
-        log.warn(e)
-      end
+function Plugin:__load_module()
+    local module = "plugins." .. self.name
+    if package.loaded[module] == nil then
+      pcall(require, module)
     end
-  end
 end
 
 return Plugin
