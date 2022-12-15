@@ -2,7 +2,7 @@
 -------------------------------------------------------------------------------
 --                                                                       PLUGIN
 --=============================================================================
---  A plugin object that stores plugin configs that are parsed by Packer.nvim.
+--  A Plugin object that stores plugin configs that are parsed by Packer.nvim.
 --  This allows dynamic definition of plugins, adding configs and disabling
 --  the plugins.
 --  NOTE: Once the plugin is loaded, it may not be disabled. Configs and may
@@ -11,13 +11,14 @@
 
 local log = require "log"
 
-local plugins = {}
-
 ---@class Plugin
 ---@field __packer table
 ---@field __meta table
+---@field __actions table
 local Plugin = {}
 Plugin.__index = Plugin
+
+local plugins = {}
 
 ---Run the packer.nvim's use function on all the
 ---enabled plugins.
@@ -38,9 +39,8 @@ end
 function Plugin.new(o)
   local plugin = {
     __packer = {},
-    __meta = {
-      actions = {},
-    },
+    __meta = {},
+    __actions = {},
   }
   setmetatable(plugin, Plugin)
 
@@ -74,14 +74,15 @@ function Plugin.new(o)
         end
         local module
         ok, module = pcall(require, name)
-        if ok == false then
-          l.warn("plugin module not found: " .. name)
-          return
-        end
         for _, config in ipairs(pl.__meta.configs) do
+          local ok2
           local e
-          ok, e = pcall(config, module)
           if ok == false then
+            ok2, e = pcall(config)
+          else
+            ok2, e = pcall(config, module)
+          end
+          if ok2 == false then
             l.warn(e)
           end
         end
@@ -92,6 +93,15 @@ function Plugin.new(o)
     end
   end
   return plugin
+end
+
+---Returns true if a plugin identified with the
+---provided name exists, false otherwise.
+---
+---@param name string
+---@return boolean
+function Plugin.exists(name)
+  return plugins[name] ~= nil
 end
 
 ---Get the plugin identified by the provided name.
@@ -131,7 +141,7 @@ end
 ---@param key string: Key to identify the action by
 ---@param f function: The action's function
 function Plugin:action(key, f)
-  self.__meta.actions[key] = f
+  self.__actions[key] = f
 end
 
 ---Run the action identified by the provided key.
@@ -139,14 +149,17 @@ end
 ---
 ---@param key string: Action's key
 function Plugin:run(key, ...)
-  if self.__meta.actions[key] then
-    self.__meta.actions[key](...)
+  if self.__actions[key] then
+    self.__actions[key](...)
   end
 end
 
 ---Disable the plugin.
 ---The plugin then won't be passed to Packer.nvim.
 function Plugin:disable()
+  if not self.__meta then
+    self.__meta = {}
+  end
   self.__meta.disabled = true
 end
 

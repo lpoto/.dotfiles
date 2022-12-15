@@ -17,6 +17,7 @@ local plugin = require("plugin").new {
     "<C-x>", -- Open the Telescope Live Grep For symbol under cursor
     "<C-g>", -- Open the Telescope Git Files
   },
+  module = "telescope",
   requires = {
     { "nvim-lua/plenary.nvim", module_pattern = { "plenary.*" } },
     {

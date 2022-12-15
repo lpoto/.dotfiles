@@ -34,9 +34,6 @@ local plugin = require("plugin").new {
   end,
 }
 
----@type table: A table of disabled filetypes
-plugin.__meta.disabled_filetypes = {}
-
 plugin:config(function()
   vim.api.nvim_set_keymap(
     "i",
@@ -69,17 +66,12 @@ end)
 ---with `require('plugins.copilot').disable()`.
 ---@param filetype string?: the filetype to enable copilot for.
 ---If this is not provided, it is enabled for current filetype.
-plugin:action("enable", function()
+plugin:action("enable", function(filetype)
   if vim.fn.exists ":Copilot" == 0 then
     return
   end
   if filetype == nil then
     filetype = vim.bo.filetype
-  end
-  -- NOTE: if the copilot is disabled for the current filetype,
-  -- return early.
-  if self.__meta.disabled_filetypes[filetype] == true then
-    return
   end
   -- NOTE: make sure the copilot is enabled for the current filetype.
   if vim.g.copilot_filetypes == nil then
