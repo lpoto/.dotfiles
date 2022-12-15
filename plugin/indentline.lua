@@ -5,21 +5,20 @@
 -- https://github.com/lukas-reineke/indent-blankline.nvim
 --_____________________________________________________________________________
 
-local M = {}
-
----Default setup for the indent blankline plugin
----User '│' sign for indentline and show the current context.
-function M.init()
-  require("indent_blankline").setup {
-    --use │ for indentline
-    char = "│",
-    buftype_exclude = { "terminal" },
-    show_current_context = true,
-    --show_current_context_start = true,
-    char_highlight_list = {
-      "IndentBlanklineIndent",
-    },
-  }
-end
-
-return M
+require("plugin").new {
+  "lukas-reineke/indent-blankline.nvim",
+  as = "indent_blankline",
+  event = "BufNewFile,BufReadPre",
+  config = function(indentline)
+    indentline.setup {
+      --use │ for indentline
+      char = "│",
+      buftype_exclude = { "terminal" },
+      show_current_context = true,
+      --show_current_context_start = true,
+      char_highlight_list = {
+        "IndentBlanklineIndent",
+      },
+    }
+  end,
+}

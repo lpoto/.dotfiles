@@ -2,21 +2,22 @@
 -------------------------------------------------------------------------------
 --                                                                 LOCAL CONFIG
 --=============================================================================
--- Store local project configs in .local/ directory.
+-- Store local project configs in neovim data's local_configs/ directory.
 -- Configs are saved based on the root of the currently oppened project and
 -- the current machine's hostname.
--- Open/ add local configs with :LocalConfig
+-- Open or add local configs with :LocalConfig
 -- Remove them with :RemoveLocalConfig
 --_____________________________________________________________________________
 
-local log = require "util.log"
+local log = require "log"
+local mapper = require "mapper"
 
 ---The root of the currently oppened project
 ---@type string
-local root = require("util").get_root()
+local root = require "root"()
 ---The defult path for the local config files
 ---@type string
-local local_configs_path = vim.fn.stdpath "config" .. "/.local"
+local local_configs_path = vim.fn.stdpath "data" .. "/local_configs"
 ---The base of the local config files for the current host
 ---@type string
 local base = local_configs_path .. "/" .. vim.fn.hostname() .. "/"
@@ -152,18 +153,18 @@ end
 
 ---NOTE: use :LocalConfig  command to open or create new
 ---project local config files, that will be saved in the .local directory.
-vim.api.nvim_create_user_command("LocalConfig", function()
+mapper.command("LocalConfig", function()
   open_local_config()
-end, {})
+end)
 ---NOTE: use :RemoveLocalConfig  command to remove existing
 ---project local config files, be saved in the .local directory.
-vim.api.nvim_create_user_command("RemoveLocalConfig", function()
+mapper.command("RemoveLocalConfig", function()
   remove_local_config()
-end, {})
+end)
 ---NOTE: use :SourceLocalConfig  command to source the local configs.
-vim.api.nvim_create_user_command("LocalConfig", function()
-  open_local_config()
-end, {})
+mapper.command("SourceLocalConfig", function()
+  source_local_configs()
+end)
 
 -- NOTE: source local configs on start
 source_local_configs()
