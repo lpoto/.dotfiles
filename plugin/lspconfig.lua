@@ -16,33 +16,17 @@ local plugin = require("plugin").new {
   as = "lspconfig",
   cmd = "LspStart",
   config = function()
-    vim.api.nvim_set_keymap(
+    local mapper = require "mapper"
+
+    mapper.map(
       "n",
       "K",
       "<cmd>lua require('plugin')"
-        .. ".get('lspconfig'):run('show_definition')<CR>",
-      {
-        silent = true,
-        noremap = true,
-      }
+        .. ".get('lspconfig'):run('show_definition')<CR>"
     )
-    vim.api.nvim_set_keymap("n", "<C-k>", "<cmd>lua vim.lsp.buf.hover()<CR>", {
-      silent = true,
-      noremap = true,
-    })
-    vim.api.nvim_set_keymap(
-      "n",
-      "<C-d>",
-      "<cmd>lua vim.diagnostic.open_float()<CR>",
-      {
-        silent = true,
-        noremap = true,
-      }
-    )
-    vim.api.nvim_set_keymap("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", {
-      silent = true,
-      noremap = true,
-    })
+    mapper.map("n", "<C-k>", "<cmd>lua vim.lsp.buf.hover()<CR>")
+    mapper.map("n", "<C-d>", "<cmd>lua vim.diagnostic.open_float()<CR>")
+    mapper.map("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>")
   end,
 }
 

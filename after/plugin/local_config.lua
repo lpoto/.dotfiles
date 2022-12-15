@@ -10,10 +10,11 @@
 --_____________________________________________________________________________
 
 local log = require "log"
+local mapper = require "mapper"
 
 ---The root of the currently oppened project
 ---@type string
-local root = require("root")()
+local root = require "root"()
 ---The defult path for the local config files
 ---@type string
 local local_configs_path = vim.fn.stdpath "data" .. "/local_configs"
@@ -152,18 +153,18 @@ end
 
 ---NOTE: use :LocalConfig  command to open or create new
 ---project local config files, that will be saved in the .local directory.
-vim.api.nvim_create_user_command("LocalConfig", function()
+mapper.command("LocalConfig", function()
   open_local_config()
-end, {})
+end)
 ---NOTE: use :RemoveLocalConfig  command to remove existing
 ---project local config files, be saved in the .local directory.
-vim.api.nvim_create_user_command("RemoveLocalConfig", function()
+mapper.command("RemoveLocalConfig", function()
   remove_local_config()
-end, {})
+end)
 ---NOTE: use :SourceLocalConfig  command to source the local configs.
-vim.api.nvim_create_user_command("LocalConfig", function()
-  open_local_config()
-end, {})
+mapper.command("SourceLocalConfig", function()
+  source_local_configs()
+end)
 
 -- NOTE: source local configs on start
 source_local_configs()

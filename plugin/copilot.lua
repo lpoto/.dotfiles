@@ -35,19 +35,16 @@ local plugin = require("plugin").new {
 }
 
 plugin:config(function()
-  vim.api.nvim_set_keymap(
+  local mapper = require "mapper"
+
+  mapper.map(
     "i",
     "<C-Space>",
     'copilot#Accept("<CR>")',
     { silent = true, expr = true }
   )
-  vim.api.nvim_set_keymap(
-    "i",
-    "<C-k>",
-    "copilot#Next()",
-    { silent = true, expr = true }
-  )
-  vim.api.nvim_set_keymap(
+  mapper.map("i", "<C-k>", "copilot#Next()", { silent = true, expr = true })
+  mapper.map(
     "i",
     "<C-j>",
     "copilot#Previous()",

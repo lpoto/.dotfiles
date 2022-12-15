@@ -25,7 +25,7 @@ local plugin = require("plugin").new {
 
 -- format with "<leader>f""
 plugin:config(function()
-  vim.api.nvim_set_keymap("n", "<leader>f", "<cmd>FormatWriteLock<CR>", {
-    noremap = true,
-  })
+  local mapper = require "mapper"
+
+  mapper.map("n", "<leader>f", "<cmd>FormatWriteLock<CR>")
 end)

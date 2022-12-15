@@ -10,7 +10,7 @@
 ---provided patterns.
 ---@param root_dir_patterns table?: (default: {'.git', '.nvim.root'})
 ---@param max_depth number?:  max depth to check for root (default: 10)
-return function (root_dir_patterns, max_depth)
+return function(root_dir_patterns, max_depth)
   if type(root_dir_patterns) ~= "table" or next(root_dir_patterns) == nil then
     root_dir_patterns = { ".git", ".nvim.root", ".nvim" }
   end

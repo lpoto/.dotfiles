@@ -81,29 +81,20 @@ plugin:config(function(dap)
 end)
 
 plugin:config(function()
+  local mapper = require "mapper"
+
   -- toggle repl vertical split with <leader> + r
-  vim.api.nvim_set_keymap(
+  mapper.map(
     "n",
     "<leader>r",
-    "<CMD>lua require('plugin').get('dap'):run('toggle_repl')<CR>",
-    { noremap = true, silent = true }
+    "<CMD>lua require('plugin').get('dap'):run('toggle_repl')<CR>"
   )
 
   -- Continue with Ctrl + d
-  vim.api.nvim_set_keymap(
-    "n",
-    "<C-d>",
-    "<CMD>lua require('dap').continue()<CR>",
-    { noremap = true, silent = true }
-  )
+  mapper.map("n", "<C-d>", "<CMD>lua require('dap').continue()<CR>")
 
   -- Set breakpoint with Ctrl + b
-  vim.api.nvim_set_keymap(
-    "n",
-    "<C-b>",
-    "<CMD>lua require('dap').toggle_breakpoint()<CR>",
-    { noremap = true, silent = true }
-  )
+  mapper.map("n", "<C-b>", "<CMD>lua require('dap').toggle_breakpoint()<CR>")
 end)
 
 plugin:action("toggle_repl", function()
