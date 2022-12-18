@@ -19,7 +19,7 @@ require("filetype")
         args = {
           "--fix-layout",
           "--stdin",
-          vim.fn.expand "%:p",
+          vim.api.nvim_buf_get_name(0),
           "--format",
           "files",
         },
@@ -36,7 +36,7 @@ require("filetype")
         return {
           filetypes = { "ruby" },
           steps = {
-            { "ruby", vim.fn.expand "%:p" },
+            { "ruby", vim.api.nvim_buf_get_name(0) },
           },
         }
       end,

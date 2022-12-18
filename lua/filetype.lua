@@ -5,7 +5,7 @@
 -- matches the current filetype, so this works best in ftplugin/ .
 --
 -- If the Filetype object's config was already loaded, it will not be loaded
--- again, except it's `always` function.
+-- again, except the values in `buffer_options`.
 --
 -- Filetype objects may then be fetches, and disabled or overriden. Useful
 -- for project-local configs.
@@ -18,7 +18,7 @@ local created = {}
 local disabled = {}
 
 ---@class Filetype
----@field always function?: A function run every time the filetype is oppened.
+---@field buffer_options table?: A table of buffer options to set.
 ---@field init function?: A config run the first time the filetype is oppened.
 ---@field formatter function|table|nil: Formatter.nvim's formatter config function
 ---or a table of functions.
@@ -28,6 +28,8 @@ local disabled = {}
 ---@field linter string|table|nil: A nvim-lint linter name or a table of liner names.
 ---@field copilot boolean?: Whether to start copilot or not.
 ---@field actions table?: A table of Actions.nvim actions
+---@field debugger table?: A table for a dap.nvim debugger config, with fields `adapters`
+---and `configurations` (see dap.nvim's docs).
 local Filetype = {
   __loaded = false,
   __disabled = false,
@@ -69,9 +71,9 @@ function Filetype.new(o, filetype)
     if k == "init" then
       assert(type(v) == "function")
       cfg.init = v
-    elseif k == "always" then
-      assert(type(v) == "function")
-      cfg.always = v
+    elseif k == "buffer_options" then
+      assert(type(v) == "table")
+      cfg.buffer_options = v
     elseif k == "formatter" then
       assert(
         type(v) == "function"
@@ -102,8 +104,18 @@ function Filetype.new(o, filetype)
     elseif k == "actions" then
       assert(type(v) == "table")
       cfg.actions = v
+    elseif k == "debugger" then
+      assert(type(v) == "table")
+      assert(type(v.adapters) == "table" or v.adapters == nil)
+      assert(type(v.configurations) == "table")
+      cfg.debugger = v
     else
-      log.warn("Invalid filetype field: " .. k)
+      log.warn(
+        "Invalid filetype field: "
+          .. k
+          .. " (valid fields: init, buffer_options, "
+          .. "formatter, copilot, linter, lsp_server, actions)"
+      )
     end
   end
 
@@ -112,15 +124,22 @@ end
 
 ---Load the Filetype config. If the filetype is disabled, this
 ---will be a no-op.
----Similar id the config was already loaded, except that
----the `always` function will run.
+---Similar if the config was already loaded, except that
+---the `buffer_options` will be set.
 function Filetype:load()
   if self.__disabled == true then
     return
   end
 
-  if self.always ~= nil then
-    self.always()
+  local l = require "log"
+
+  if self.buffer_options ~= nil then
+    for k, v in pairs(self.buffer_options) do
+      local ok, e = pcall(vim.api.nvim_buf_set_option, 0, k, v)
+      if ok == false then
+        l.warn("Failed to set buffer option: " .. e)
+      end
+    end
   end
 
   if self.__loaded == true then
@@ -130,7 +149,10 @@ function Filetype:load()
   self.__loaded = true
 
   if self.init ~= nil then
-    self.init()
+    local ok, e = pcall(self.init)
+    if ok == false then
+      l.warn("Failed to run filetype init: " .. e)
+    end
   end
 
   if self.formatter ~= nil and Plugin.exists "formatter" then
@@ -161,7 +183,7 @@ function Filetype:load()
   if self.lsp_server ~= nil and Plugin.exists "lspconfig" then
     Plugin.get("lspconfig"):config(function()
       local lspconfig = require "lspconfig"
-      local log = require "log"
+      local lg = require "log"
 
       local server
       local opt = {}
@@ -175,17 +197,20 @@ function Filetype:load()
         opt.capabilities = require("cmp_nvim_lsp").default_capabilities()
       end
       if lspconfig[server] == nil then
-        log.warn("LSP server not found: " .. server)
+        lg.warn("LSP server not found: " .. server)
         return
       end
-      local l = lspconfig[server]
-      if l == nil then
-        log.warn("LSP server not found: " .. server)
+      local lsp = lspconfig[server]
+      if lsp == nil then
+        lg.warn("LSP server not found: " .. server)
         return
       end
-      l.setup(opt)
+      lsp.setup(opt)
     end)
-    vim.fn.execute("LspStart", true)
+    local ok, e = pcall(vim.fn.execute, "LspStart", true)
+    if ok == false then
+      l.warn("Failed to start LSP: " .. e)
+    end
   end
 
   if self.actions ~= nil and Plugin.exists "actions" then
@@ -194,6 +219,24 @@ function Filetype:load()
       actions.setup {
         actions = self.actions,
       }
+    end)
+  end
+
+  if self.debugger ~= nil and Plugin.exists "dap" then
+    Plugin.get("dap"):config(function()
+      local dap = require "dap"
+      if self.debugger.adapters ~= nil then
+        for k, v in pairs(self.debugger.adapters) do
+          dap.adapters[k] = v
+        end
+      end
+      if self.debugger.configurations[1] == nil then
+        for k, v in pairs(self.debugger.configurations) do
+          dap.configurations[k] = v
+        end
+      else
+        dap.configurations[self.__filetype] = self.debugger.configurations
+      end
     end)
   end
 end

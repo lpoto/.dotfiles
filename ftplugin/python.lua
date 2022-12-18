@@ -27,10 +27,35 @@ require("filetype")
         return {
           filetypes = { "python" },
           steps = {
-            { "python3", vim.fn.expand "%:p" },
+            { "python3", vim.api.nvim_buf_get_name(0) },
           },
         }
       end,
+    },
+    debugger = {
+      adapters = {
+        python = {
+          -- pip install debugpy
+          type = "executable",
+          command = vim.fn.exepath "python",
+          args = { "-m", "debugpy.adapter" },
+          options = {
+            detached = true,
+          },
+        },
+      },
+      configurations = {
+        {
+          -- Debug current Python file
+          type = "python",
+          request = "launch",
+          name = "Launch file",
+          program = "${file}",
+          pythonPath = function()
+            return vim.fn.exepath "python"
+          end,
+        },
+      },
     },
   })
   :load()

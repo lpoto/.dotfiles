@@ -35,7 +35,16 @@ local plugin = require("plugin").new {
 
     -- NOTE: open repl immediately when starting the debuggin
     dap.listeners.after.event_initialized["custom"] = function()
-      require("plugin").get("dap"):run "toggle_repl"
+      local toggle = true
+      for _, v in ipairs(vim.api.nvim_list_wins()) do
+        local b = vim.api.nvim_win_get_buf(v)
+        if vim.api.nvim_buf_get_option(b, "filetype") == "dap-repl" then
+          toggle = false
+        end
+      end
+      if toggle == true then
+        require("plugin").get("dap"):run("toggle_repl", true)
+      end
     end
 
     -- NOTE: higlight the breakpoint better
@@ -96,6 +105,7 @@ end)
 
 plugin:action("toggle_repl", function()
   local dap = require "dap"
+
   local s = {}
   if vim.o.columns > 240 then
     s.width = 120

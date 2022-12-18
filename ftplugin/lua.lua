@@ -7,11 +7,11 @@
 
 require("filetype")
   .new({
-    always = function()
-      vim.bo.tabstop = 2
-      vim.bo.softtabstop = 2
-      vim.bo.shiftwidth = 2
-    end,
+    buffer_options = {
+      tabstop = 2,
+      softtabstop = 2,
+      shiftwidth = 2,
+    },
     copilot = true,
     formatter = function()
       return {
@@ -19,7 +19,7 @@ require("filetype")
         args = {
           "--search-parent-directories",
           "--stdin-filepath",
-          vim.fn.expand "%:p",
+          vim.api.nvim_buf_get_name(0),
           "--",
           "-",
         },

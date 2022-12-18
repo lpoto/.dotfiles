@@ -7,18 +7,18 @@
 
 require("filetype")
   .new({
-    always = function()
-      vim.opt.tabstop = 2
-      vim.opt.softtabstop = 2
-      vim.opt.shiftwidth = 2
-    end,
+    buffer_options = {
+      tabstop = 2,
+      softtabstop = 2,
+      shiftwidth = 2,
+    },
     copilot = true,
     -- npm install -g prettier
     formatter = function()
       return {
         exe = "prettier",
         args = {
-          vim.fn.expand "%:p",
+          vim.api.nvim_buf_get_name(0),
         },
         stdin = true,
       }

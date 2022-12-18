@@ -13,7 +13,7 @@ require("filetype")
       return {
         exe = "prettier",
         args = {
-          vim.fn.expand "%:p",
+          vim.api.nvim_buf_get_name(0),
         },
         stdin = true,
       }
