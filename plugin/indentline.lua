@@ -9,7 +9,8 @@ require("plugin").new {
   "lukas-reineke/indent-blankline.nvim",
   as = "indent_blankline",
   event = "BufNewFile,BufReadPre",
-  config = function(indentline)
+  config = function()
+    local indentline = require "indent_blankline"
     indentline.setup {
       --use │ for indentline
       char = "│",

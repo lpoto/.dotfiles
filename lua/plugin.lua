@@ -27,6 +27,43 @@ local plugins = {}
 function Plugin.use(use)
   for _, plugin in pairs(plugins) do
     if plugin.__meta.disabled ~= true then
+      if plugin.__packer.required_executables ~= nil then
+        if type(plugin.__packer.required_executables) == "string" then
+          plugin.__packer.required_executables =
+            { plugin.__packer.required_executables }
+        end
+        for _, executable in ipairs(plugin.__packer.required_executables) do
+          local executable_name = ""
+          local executable_desc = ""
+          if type(executable) == "string" then
+            executable_name = executable
+          elseif type(executable) == "table" then
+            local x = executable[1]
+            if type(x) == "string" then
+              executable_name = x
+            end
+            if type(executable[2]) == "string" then
+              executable_desc = "(" .. executable[2] .. ")"
+            end
+          end
+          if
+            string.len(executable_name) > 0
+            and vim.fn.executable(executable_name) == 0
+          then
+            -- NOTE: make sure all required executables are installed
+            -- for those that are not, warn
+            log.warn(
+              "Plugin '"
+                .. plugin.__packer.as
+                .. "' requires '"
+                .. executable_name
+                .. "' executable "
+                .. executable_desc
+                .. " to be installed."
+            )
+          end
+        end
+      end
       use(plugin.__packer)
     end
   end
@@ -72,16 +109,8 @@ function Plugin.new(o)
         if pl.__meta == nil or pl.__meta.configs == nil then
           return
         end
-        local module
-        ok, module = pcall(require, name)
         for _, config in ipairs(pl.__meta.configs) do
-          local ok2
-          local e
-          if ok == false then
-            ok2, e = pcall(config)
-          else
-            ok2, e = pcall(config, module)
-          end
+          local ok2, e = pcall(config, name)
           if ok2 == false then
             l.warn(e)
           end

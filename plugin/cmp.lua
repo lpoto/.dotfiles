@@ -15,7 +15,8 @@ require("plugin").new {
     "hrsh7th/vim-vsnip",
     "windwp/nvim-autopairs",
   },
-  config = function(cmp)
+  config = function()
+    local cmp = require "cmp"
     cmp.setup {
       snippet = {
         expand = function(args)

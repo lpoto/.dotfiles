@@ -12,7 +12,7 @@ require("filetype")
     lsp_server = "solargraph",
     -- gem install rubocop
     linter = "robocop",
-    -- pip install rubocop
+    -- gem install rubocop
     formatter = function()
       return {
         exe = "rubocop",

@@ -24,7 +24,8 @@ local plugin = require("plugin").new {
       module = "nvim-dap-virtual-text",
     },
   },
-  config = function(dap)
+  config = function()
+    local dap = require "dap"
     local log = require "log"
 
     local ok, _ = pcall(require("nvim-dap-virtual-text").setup, {})
@@ -32,17 +33,9 @@ local plugin = require("plugin").new {
       log.warn "Failed loading dap extension: nvim-dap-virtual-text"
     end
 
-    -- NOTE: add all other distinct setups
-    for _, f in ipairs(setup_functions) do
-      f(dap)
-    end
-
-    -- NOTE: set the user commands and remappings
-    set_user_commands()
-
     -- NOTE: open repl immediately when starting the debuggin
     dap.listeners.after.event_initialized["custom"] = function()
-      M.toggle_repl()
+      require("plugin").get("dap"):run "toggle_repl"
     end
 
     -- NOTE: higlight the breakpoint better
@@ -90,11 +83,15 @@ plugin:config(function()
     "<CMD>lua require('plugin').get('dap'):run('toggle_repl')<CR>"
   )
 
-  -- Continue with Ctrl + d
-  mapper.map("n", "<C-d>", "<CMD>lua require('dap').continue()<CR>")
+  -- Continue with <leader>c
+  mapper.map("n", "<leader>c", "<CMD>lua require('dap').continue()<CR>")
 
-  -- Set breakpoint with Ctrl + b
-  mapper.map("n", "<C-b>", "<CMD>lua require('dap').toggle_breakpoint()<CR>")
+  -- Set breakpoint with <leader>b
+  mapper.map(
+    "n",
+    "<leader>b",
+    "<CMD>lua require('dap').toggle_breakpoint()<CR>"
+  )
 end)
 
 plugin:action("toggle_repl", function()

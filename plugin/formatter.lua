@@ -10,7 +10,8 @@ local plugin = require("plugin").new {
   as = "formatter",
   cmd = { "Format", "FormatWrite", "FormatLock", "FormatWriteLock" },
   keys = { "<leader>f" },
-  config = function(formatter)
+  config = function()
+    local formatter = require "formatter"
     formatter.setup {
       logging = true,
       log_level = vim.log.levels.INFO,

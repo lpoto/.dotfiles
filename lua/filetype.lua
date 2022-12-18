@@ -1,5 +1,4 @@
---=============================================================================
--------------------------------------------------------------------------------
+--============================================================================= -----------------------------------------------------------------------------
 --                                                                     FILETYPE
 --=============================================================================
 -- A Filetype object that stores config for the filetype. The config's filetype
@@ -135,7 +134,8 @@ function Filetype:load()
   end
 
   if self.formatter ~= nil and Plugin.exists "formatter" then
-    Plugin.get("formatter"):config(function(formatter)
+    Plugin.get("formatter"):config(function()
+      local formatter = require "formatter"
       formatter.setup {
         filetype = {
           [self.__filetype] = self.formatter,
@@ -149,7 +149,8 @@ function Filetype:load()
   end
 
   if self.linter ~= nil and Plugin.exists "lint" then
-    Plugin.get("lint"):config(function(lint)
+    Plugin.get("lint"):config(function()
+      local lint = require "lint"
       if lint.linters_by_ft == nil then
         lint.linters_by_ft = {}
       end
@@ -158,7 +159,10 @@ function Filetype:load()
   end
 
   if self.lsp_server ~= nil and Plugin.exists "lspconfig" then
-    Plugin.get("lspconfig"):config(function(lspconfig)
+    Plugin.get("lspconfig"):config(function()
+      local lspconfig = require "lspconfig"
+      local log = require "log"
+
       local server
       local opt = {}
       if type(self.lsp_server) == "table" then
@@ -170,13 +174,23 @@ function Filetype:load()
       if opt.capabilities == nil and Plugin.exists "cmp" then
         opt.capabilities = require("cmp_nvim_lsp").default_capabilities()
       end
-      lspconfig[server].setup(opt)
+      if lspconfig[server] == nil then
+        log.warn("LSP server not found: " .. server)
+        return
+      end
+      local l = lspconfig[server]
+      if l == nil then
+        log.warn("LSP server not found: " .. server)
+        return
+      end
+      l.setup(opt)
     end)
     vim.fn.execute("LspStart", true)
   end
 
   if self.actions ~= nil and Plugin.exists "actions" then
-    Plugin.get("actions"):config(function(actions)
+    Plugin.get("actions"):config(function()
+      local actions = require "actions"
       actions.setup {
         actions = self.actions,
       }

@@ -8,7 +8,8 @@
 require("plugin").new {
   "ellisonleao/gruvbox.nvim",
   as = "gruvbox",
-  config = function(gruvbox)
+  config = function()
+    local gruvbox = require "gruvbox"
     gruvbox.setup {
       undercurl = true,
       underline = true,

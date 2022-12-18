@@ -8,7 +8,7 @@
 require("filetype")
   .new({
     copilot = true,
-    -- pip install pylsp
+    -- pip install python-lsp-server
     lsp_server = "pylsp",
     -- pip install flake8
     linter = "flake8",

@@ -4,73 +4,98 @@
 --=============================================================================
 -- https://github.com/wbthomason/packer.nvim
 --_____________________________________________________________________________
+-- This loads all the plugins defined in other config files,
+-- example  in /plugin.
+--
+-- If packer is not installed, this will install it and compile plugins.
+------------------------------------------------------------------------------
 
 local log = require "log"
 
-local plugins = {}
+---Ensure that packer.nvim package exists, if it does
+---not, install it.
+---@return function?: Function to run on startup
+---@return boolean: Whether packer is available
+local function ensure_packer()
+  local install_path = vim.fn.stdpath "data"
+    .. "/site/pack/packer/opt/packer.nvim"
 
-local ensure_packer
+  if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
+    log.warn "Packer.nvim not found!"
+    local choice =
+      vim.fn.confirm("Do you want to install it?", "&Yes\n&No", 2)
 
----Manually load the packer.nvim package and use it
----to load all the required plugins.
-function plugins.setup()
-  --NOTE: make sure the packer.nvim is available, if not, install it
-  local packer = ensure_packer()
-  if packer == nil then
+    if choice ~= 1 then
+      return nil, false
+    end
+
+    log.debug "Installing Packer.nvim ..."
+
+    local args = {
+      "git",
+      "clone",
+      "--depth",
+      "1",
+      "https://github.com/wbthomason/packer.nvim",
+      install_path,
+    }
+
+    log.info("Running: " .. table.concat(args, " "))
+
+    vim.fn.system(args)
+
+    log.info "Packer.nvim installed"
+
+    return function()
+      require("packer").sync()
+    end, true
+  end
+  return nil, true
+end
+
+---Load all plugins with Packer.nvim. Make sure that Packer.nvim
+---is installed before loading plugins.
+---If it is not installed, install it and compile plugins.
+local function packer_startup()
+  local packer_bootstrap, ok = ensure_packer()
+  if not ok then
+    log.warn "Packer.nvim not available, not loading plugins"
     return
   end
 
-  local util = require "packer.util"
-  packer.init {
-    compile_path = util.join_paths(
-      vim.fn.stdpath "config",
-      "after",
-      "plugin",
-      "packer_compiled.lua"
-    ),
-  }
+  vim.api.nvim_exec("packadd packer.nvim", true)
 
   --NOTE: add all the required plugins with the packer
-  packer.startup(function(use)
-    -- add packer as it's own package, so it is in opt not start directory,
-    -- otherwise it tried to remove itself
-    use { "wbthomason/packer.nvim", opt = true }
+  require("packer").startup {
+    function(use)
+      -- add packer as it's own package, so it is in opt not start directory,
+      -- otherwise it tried to remove itself
+      use { "wbthomason/packer.nvim", opt = true }
 
-    require("plugin").use(use)
-  end)
+      -- Add all the plugins defined in other config files.
+      require("plugin").use(use)
+
+      if packer_bootstrap ~= nil then
+        packer_bootstrap()
+      end
+    end,
+    config = {
+      -- NOTE: compile packer to after, so plugins
+      -- are loaded after other default configs
+      compile_path = require("packer.util").join_paths(
+        vim.fn.stdpath "config",
+        "after",
+        "plugin",
+        "packer_compiled.lua"
+      ),
+      -- Display packer actions in a float
+      display = {
+        open_fn = function()
+          return require("packer.util").float { border = "single" }
+        end,
+      },
+    },
+  }
 end
 
----Ensure that packer.nvim package exists, if it does
----not, install it.
----@return table?
-ensure_packer = function()
-  vim.api.nvim_exec("packadd packer.nvim", false)
-
-  local ok, packer = pcall(require, "packer")
-
-  if ok == true then
-    return packer
-  end
-
-  local install_path = vim.fn.stdpath "data"
-    .. "/site/pack/packer/start/packer.nvim"
-
-  log.info "Installing packer.nvim"
-
-  ok, packer = pcall(vim.fn.system, {
-    "git",
-    "clone",
-    "--depth",
-    "1",
-    "https://github.com/wbthomason/packer.nvim",
-    install_path,
-  })
-  if ok == false then
-    log.error(packer)
-    return nil
-  end
-  vim.api.nvim_exec("packadd packer.nvim", false)
-  return require "packer"
-end
-
-plugins.setup()
+packer_startup()

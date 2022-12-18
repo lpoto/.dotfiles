@@ -9,7 +9,8 @@ require("plugin").new {
   "mfussenegger/nvim-lint",
   as = "lint",
   module = "lint",
-  config = function(lint)
+  config = function()
+    local lint = require "lint"
     vim.api.nvim_create_autocmd({ "BufWritePost" }, {
       callback = function()
         local log = require "log"

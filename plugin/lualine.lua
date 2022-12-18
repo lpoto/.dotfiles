@@ -9,7 +9,8 @@ require("plugin").new {
   "nvim-lualine/lualine.nvim",
   as = "lualine",
   event = "BufNewFile,BufReadPre",
-  config = function(lualine)
+  config = function()
+    local lualine = require "lualine"
     lualine.setup {
       options = {
         theme = "gruvbox-material",

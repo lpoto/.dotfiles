@@ -9,7 +9,8 @@ require("plugin").new {
   "lpoto/actions.nvim",
   as = "actions",
   cmd = "Actions", -- Open available actions window
-  config = function(actions)
+  config = function()
+    local actions = require "actions"
     local mapper = require "mapper"
 
     actions.setup {}

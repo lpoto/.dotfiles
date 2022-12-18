@@ -25,7 +25,9 @@ local plugin = require("plugin").new {
       module_pattern = "telescope",
     },
   },
-  config = function(telescope)
+  required_executables = { { "rg", "ripgrep" }, { "fd", "fd-find" } },
+  config = function()
+    local telescope = require "telescope"
     telescope.setup {
       defaults = {
         file_sorter = require("telescope.sorters").get_fzy_sorter,

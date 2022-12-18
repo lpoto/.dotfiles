@@ -9,7 +9,8 @@ require("plugin").new {
   "TimUntersberger/neogit",
   as = "neogit",
   cmd = { "Git", "Neogit" }, -- Open the Neogit tab
-  config = function(neogit)
+  config = function()
+    local neogit = require "neogit"
     local mapper = require "mapper"
 
     neogit.setup {
