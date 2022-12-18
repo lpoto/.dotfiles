@@ -5,18 +5,21 @@
 -- Loaded when a xhtml file is oppened.
 --_____________________________________________________________________________
 
-require("filetype")
-  .new({
-    copilot = true,
-    -- npm install -g prettier
-    formatter = function()
-      return {
-        exe = "prettier",
-        args = {
-          vim.api.nvim_buf_get_name(0),
-        },
-        stdin = true,
-      }
-    end,
-  })
-  :load()
+local filetype = require "filetype"
+
+filetype.config {
+  filetype = "xhtml",
+  priority = 0,
+  copilot = true,
+  formatter = function() -- npm install -g prettier
+    return {
+      exe = "prettier",
+      args = {
+        vim.api.nvim_buf_get_name(0),
+      },
+      stdin = true,
+    }
+  end,
+}
+
+filetype.load "xhtml"
