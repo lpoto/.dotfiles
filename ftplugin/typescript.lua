@@ -15,7 +15,7 @@ filetype.config {
   linter = "eslint", -- npm install -g eslint
   formatter = function()
     return {
-      exe = "prettier",
+      exe = "prettier", -- npm install -g prettier
       args = { vim.api.nvim_buf_get_name(0) },
       stdin = true,
     }
