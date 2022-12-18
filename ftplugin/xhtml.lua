@@ -7,11 +7,6 @@
 
 require("filetype")
   .new({
-    buffer_options = {
-      tabstop = 2,
-      softtabstop = 2,
-      shiftwidth = 2,
-    },
     copilot = true,
     -- npm install -g prettier
     formatter = function()
