@@ -3,7 +3,7 @@
 --                                                                 LOCAL CONFIG
 --=============================================================================
 -- Store local project configs in neovim data's local_configs/ directory.
--- Configs are saved based on the root of the currently oppened project and
+-- Configs are saved based on the root of the currently opened project and
 -- the current machine's hostname.
 -- Open or add local configs with :LocalConfig
 -- Remove them with :RemoveLocalConfig
@@ -12,7 +12,7 @@
 local log = require "log"
 local mapper = require "mapper"
 
----The root of the currently oppened project
+---The root of the currently opened project
 ---@type string
 local root = require "root"()
 ---The defult path for the local config files
@@ -53,7 +53,7 @@ local function get_path(level)
     r
 end
 
----Opens local config for the currently oppened project.
+---Opens local config for the currently opened project.
 ---If it does not exist, it prompts the option to create it.
 local function open_local_config()
   local file_escaped, file, r = get_path(0)
@@ -98,7 +98,7 @@ local function open_local_config()
   vim.api.nvim_buf_set_option(vim.fn.bufnr(), "bufhidden", "wipe")
 end
 
----Removes local config for the currently oppened project.
+---Removes local config for the currently opened project.
 ---If it does not exist, it sends a warning.
 ---This prompts for confirmation before removing the file.
 local function remove_local_config()
@@ -129,7 +129,7 @@ end
 local sourced = {}
 
 ---Check if there is a local config file matching the root
----of the currently oppened project. Also source the file matching
+---of the currently opened project. Also source the file matching
 ---both the root and the current filetype.
 ---Do not source if the file has already been sourced.
 ---NOTE: if config not found for current root, check two levels

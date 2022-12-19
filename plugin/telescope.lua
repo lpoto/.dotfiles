@@ -57,7 +57,7 @@ local plugin = require("plugin").new {
         qflist_previewer = require("telescope.previewers").vim_buffer_qflist.new,
         mappings = {
           i = {
-            -- NOTE: when a telescope window is oppened, use ctrl + q to
+            -- NOTE: when a telescope window is opened, use ctrl + q to
             -- send the current results to a quickfix window, then immediately
             -- open quickfix in a telescope window
             ["<C-q>"] = function()
