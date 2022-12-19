@@ -5,6 +5,12 @@
 -- https://github.com/lukas-reineke/indent-blankline.nvim
 --_____________________________________________________________________________
 
+--[[
+Indent guides for Neovim.
+
+Provides vertical indentation lines for code.
+--]]
+
 require("plugin").new {
   "lukas-reineke/indent-blankline.nvim",
   as = "indent_blankline",

@@ -5,6 +5,16 @@
 -- https://github.com/mhartington/formatter.nvim
 --_____________________________________________________________________________
 
+--[[
+A format runner for neovim.
+
+See github.com/mhartington/formatter.nvim/tree/master/lua/formatter/filetypes
+for configurations for specific filetypes.
+
+Keymaps:
+  - <leader>f - Format the current buffer
+--]]
+
 local plugin = require("plugin").new {
   "mhartington/formatter.nvim",
   as = "formatter",

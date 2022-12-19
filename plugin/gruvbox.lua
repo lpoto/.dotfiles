@@ -5,6 +5,11 @@
 -- https://github.com/ellisonleao/gruvbox.nvim
 --_____________________________________________________________________________
 
+--[[
+A gruvbox colorscheme for Neovim.
+This also sets some custom colors.
+--]]
+
 require("plugin").new {
   "ellisonleao/gruvbox.nvim",
   as = "gruvbox",

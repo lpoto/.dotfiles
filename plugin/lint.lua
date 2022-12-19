@@ -5,6 +5,11 @@
 -- https://github.com/mfussenegger/nvim-lint
 --_____________________________________________________________________________
 
+--[[
+An asynchronous linter plugin. Lints the current buffer on save.
+See github.com/mfussenegger/nvim-lint for the available linters.
+--]]
+
 require("plugin").new {
   "mfussenegger/nvim-lint",
   as = "lint",

@@ -5,17 +5,36 @@
 -- https://github.com/nvim-telescope/telescope.nvim
 --_____________________________________________________________________________
 
+--[[
+
+Telescope is a highly extendable fuzzy finder over lists.
+Items are shown in a popup with a prompt to search over.
+
+Keymaps:
+ - "<leader>n"   - find files
+ - "<leader>g"   - live grep
+ - "<leader>d"   - show diagnostics
+ - "<leader>q"   - quickfix
+ - "<C-n>"       - file explorer
+ - "<C-x>"       - live grem for symbol under cursor
+ - "<C-g>"       - git files
+
+ Use <C-q> in a telescope prompt to send the results to quickfix.
+
+NOTE:  telescope required rg (Ripgrep) and fd (Find) to be installed.
+--]]
+
 local plugin = require("plugin").new {
   "nvim-telescope/telescope.nvim",
   as = "telescope",
   keys = {
-    "<leader>n", -- Open the Telescope Find Files
-    "<leader>q", -- Open the Telescope Quickfix
-    "<leader>d", -- Open the Telescope Diagnostics
-    "<leader>g", -- Open the Telescope Live Grep
-    "<C-n>", -- Open the Telescope File Explorer
-    "<C-x>", -- Open the Telescope Live Grep For symbol under cursor
-    "<C-g>", -- Open the Telescope Git Files
+    "<leader>n",
+    "<leader>q",
+    "<leader>d",
+    "<leader>g",
+    "<C-n>",
+    "<C-x>",
+    "<C-g>",
   },
   module = "telescope",
   requires = {

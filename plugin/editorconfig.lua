@@ -4,13 +4,10 @@
 --=============================================================================
 -- https://github.com/gpanders/editorconfig.nvim
 --_____________________________________________________________________________
+--[[
+  EditorConfig plugin for Neovim.
+  Reads .editorconfig files and applies settings to the current buffer.
 
-require("plugin").new {
-  "gpanders/editorconfig.nvim",
-  as = "editorconfig",
-
-  --[[
-  
   Supported properties:
   
     charset
@@ -21,8 +18,13 @@ require("plugin").new {
     max_line_length
     tab_width
     trim_trailing_whitespace
+--]]
 
-  Add custom with:
+require("plugin").new {
+  "gpanders/editorconfig.nvim",
+  as = "editorconfig",
+  --[[
+  Add custom with properties:
 
   config = function()
     require('editorconfig').properties.foo = function(bufnr, val)

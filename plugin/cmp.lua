@@ -5,6 +5,18 @@
 -- https://github.com/hrsh7th/nvim-cmp
 --_____________________________________________________________________________
 
+--[[
+A completion engine plugin. Completion sources are installed from
+external repositories, cmp-buffer, cmp-nvim-lsp,...
+
+This also includes the vsnip plugin intergrated with cmp,
+and autopairs, that autocompletes the matching braces, quotes, etc.
+
+To enable this for a lsp server, add the following to  the
+lsp server's config:
+ capabilities = require('cmp_nvim_lsp').default_capabilities()
+--]]
+
 require("plugin").new {
   "hrsh7th/nvim-cmp",
   as = "cmp",

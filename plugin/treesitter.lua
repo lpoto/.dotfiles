@@ -5,6 +5,13 @@
 -- https://github.com/nvim-treesitter/nvim-treesitter
 --_____________________________________________________________________________
 
+--[[
+Treesitter interface for Neovim. Provides inproved
+highlights, ...
+
+Requires treesitter CLI to be installed.
+--]]
+
 require("plugin").new {
   "nvim-treesitter/nvim-treesitter",
   as = "nvim-treesitter",

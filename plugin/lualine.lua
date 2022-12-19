@@ -5,6 +5,14 @@
 -- https://github.com/nvim-lualine/lualine.nvim
 --_____________________________________________________________________________
 
+--[[
+A fast and configurable statusline plugin.
+Displays both tabline and statusline.
+
+Shows git branch, file encoding and tabs in tabline,
+and other information in the statusline.
+--]]
+
 require("plugin").new {
   "nvim-lualine/lualine.nvim",
   as = "lualine",

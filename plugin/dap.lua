@@ -4,14 +4,24 @@
 --=============================================================================
 -- https://github.com/mfussenegger/nvim-dap
 -- https://github.com/theHamsta/nvim-dap-virtual-text
---
---NOTE: this config focused on performing all actions through the dap's repl.
---The repl may be toggled and then it's commands listed with `.help`.
 --_____________________________________________________________________________
 
--- continue with <leader>r
--- toggle breakpoint with <leader>b
--- toggle repl with <leader>r
+--[[
+A Debug Adapter Protocol client implementation.
+This config focused on performing all actions through the dap's repl.
+The repl may be toggled and then it's commands listed with `.help`.
+Includes a plugin to display virtual text for the debugger.
+
+See github.com/mfussenegger/nvim-dap/wiki/Debug-Adapter-installation
+for adapter installation and configurations.
+
+Keymaps:
+  - "<leader>r" - toggle the repl
+  - "<leader>c" - continue (or start)
+  - "<leader>b" - toggle breakpoint
+
+--]]
+
 local plugin = require("plugin").new {
   "mfussenegger/nvim-dap",
   as = "dap",
