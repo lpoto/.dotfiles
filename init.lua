@@ -6,7 +6,7 @@
 -- are sourced after this file in the plugin/ directory.
 -- External plugins are defined in lua/plugins/ but are loaded in the
 -- after/ directory. Filetype specific configs are defined in ftplugin/,
--- those are sourced when the filetype of the oppened file matches the name
+-- those are sourced when the filetype of the opened file matches the name
 -- of the config file.
 -------------------------------------------------------------------------------
 

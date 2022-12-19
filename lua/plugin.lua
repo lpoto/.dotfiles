@@ -25,10 +25,52 @@ local plugins = {}
 ---
 ---@param use function: Packer.nvim's use function
 function Plugin.use(use)
-  for _, plugin in pairs(plugins) do
-    if plugin.__meta.disabled ~= true then
-      use(plugin.__packer)
+  local ok, e = pcall(function()
+    for _, plugin in pairs(plugins) do
+      if plugin.__meta.disabled ~= true then
+        if plugin.__packer.required_executables ~= nil then
+          if type(plugin.__packer.required_executables) == "string" then
+            plugin.__packer.required_executables =
+              { plugin.__packer.required_executables }
+          end
+          for _, executable in ipairs(plugin.__packer.required_executables) do
+            local executable_name = ""
+            local executable_desc = ""
+            if type(executable) == "string" then
+              executable_name = executable
+            elseif type(executable) == "table" then
+              local x = executable[1]
+              if type(x) == "string" then
+                executable_name = x
+              end
+              if type(executable[2]) == "string" then
+                executable_desc = "(" .. executable[2] .. ")"
+              end
+            end
+            if
+              string.len(executable_name) > 0
+              and vim.fn.executable(executable_name) == 0
+            then
+              -- NOTE: make sure all required executables are installed
+              -- for those that are not, warn
+              log.warn(
+                "Plugin '"
+                  .. plugin.__packer.as
+                  .. "' requires '"
+                  .. executable_name
+                  .. "' executable "
+                  .. executable_desc
+                  .. " to be installed."
+              )
+            end
+          end
+        end
+        use(plugin.__packer)
+      end
     end
+  end)
+  if ok == false then
+    log.warn("Failed to load plugins: " .. e)
   end
 end
 
@@ -44,53 +86,50 @@ function Plugin.new(o)
   }
   setmetatable(plugin, Plugin)
 
-  if type(o[1]) ~= "string" then
-    log.warn "Plugin:new: plugin name not provided"
-    return plugin
-  end
-  if o.as == nil then
-    log.warn "Plugin:new: `as` field not provided"
-    return plugin
-  end
-  plugins[o.as] = plugin
-
-  plugin.__meta.configs = { o.config }
-
-  for k, v in pairs(o) do
-    if k == "config" then
-      plugin.__packer.config = function(name)
-        local l = require "log"
-
-        local ok, plugin_module = pcall(require, "plugin")
-        if ok == false then
-          l.warn "'plugin' module not found"
-          return
-        end
-
-        local pl = plugin_module.get(name)
-
-        if pl.__meta == nil or pl.__meta.configs == nil then
-          return
-        end
-        local module
-        ok, module = pcall(require, name)
-        for _, config in ipairs(pl.__meta.configs) do
-          local ok2
-          local e
-          if ok == false then
-            ok2, e = pcall(config)
-          else
-            ok2, e = pcall(config, module)
-          end
-          if ok2 == false then
-            l.warn(e)
-          end
-        end
-        pl.__meta = nil
-      end
-    else
-      plugin.__packer[k] = v
+  local ok, e = pcall(function()
+    if type(o[1]) ~= "string" then
+      log.warn "Plugin:new: plugin name not provided"
+      return plugin
     end
+    if o.as == nil then
+      log.warn "Plugin:new: `as` field not provided"
+      return plugin
+    end
+    plugins[o.as] = plugin
+
+    plugin.__meta.configs = { o.config }
+
+    for k, v in pairs(o) do
+      if k == "config" then
+        plugin.__packer.config = function(name)
+          local l = require "log"
+
+          local ok, plugin_module = pcall(require, "plugin")
+          if ok == false then
+            l.warn "'plugin' module not found"
+            return
+          end
+
+          local pl = plugin_module.get(name)
+
+          if pl.__meta == nil or pl.__meta.configs == nil then
+            return
+          end
+          for _, config in ipairs(pl.__meta.configs) do
+            local ok2, e = pcall(config, name)
+            if ok2 == false then
+              l.warn(e)
+            end
+          end
+          pl.__meta = nil
+        end
+      else
+        plugin.__packer[k] = v
+      end
+    end
+  end)
+  if ok == false then
+    log.warn("Failed to create plugin: " .. e)
   end
   return plugin
 end

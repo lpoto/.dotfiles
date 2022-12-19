@@ -1,25 +1,24 @@
 --=============================================================================
 -------------------------------------------------------------------------------
---                                                                         HTML
+--                                                                   JACASCRIPT
 --=============================================================================
--- Loaded when a html file is opened.
+-- Loaded when a javascript file is opened.
 --_____________________________________________________________________________
 
 local filetype = require "filetype"
 
 filetype.config {
-  filetype = "html",
-  priority = 0,
+  filetype = "javascript",
+  priority = 1,
   copilot = true,
-  formatter = function() -- npm install -g prettier
+  lsp_server = "tsserver", -- npm install -g typescript-language-server
+  formatter = function()
     return {
-      exe = "prettier",
-      args = {
-        vim.api.nvim_buf_get_name(0),
-      },
+      exe = "prettier", -- npm install -g prettier
+      args = { vim.api.nvim_buf_get_name(0) },
       stdin = true,
     }
   end,
 }
 
-filetype.load "html"
+filetype.load "javascript"

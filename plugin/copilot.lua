@@ -5,13 +5,19 @@
 -- https://github.com/github/copilot.vim
 --_____________________________________________________________________________
 
----Copilot is disabled for all filetypes by default.
----Call `require('plugin').get('copilot'):run('enable')`
----to enable it for the current filetype.
----
----<C-Space> to select the next suggestion.
----<C-k> to show the next suggestion.
----<C-j> to show the previous suggestion.
+--[[
+A github copilot plugin. Uses the github copilot API to generate code.
+By default it is disabled for all filetypes.
+(It is usually enabled for filetypes from ftplugin/ files)
+
+Keymaps:
+   - <C-Space> - Select the next suggestion
+   - <C-k>     - show the next suggestion
+   - <C-j>     - show the previous suggstion
+
+Configure copilot with :Copilot setup
+--]]
+
 local plugin = require("plugin").new {
   "github/copilot.vim",
   as = "copilot",

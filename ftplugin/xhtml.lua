@@ -2,26 +2,24 @@
 -------------------------------------------------------------------------------
 --                                                                        XHTML
 --=============================================================================
--- Loaded when a xhtml file is oppened.
+-- Loaded when a xhtml file is opened.
 --_____________________________________________________________________________
 
-require("filetype")
-  .new({
-    always = function()
-      vim.opt.tabstop = 2
-      vim.opt.softtabstop = 2
-      vim.opt.shiftwidth = 2
-    end,
-    copilot = true,
-    -- npm install -g prettier
-    formatter = function()
-      return {
-        exe = "prettier",
-        args = {
-          vim.fn.expand "%:p",
-        },
-        stdin = true,
-      }
-    end,
-  })
-  :load()
+local filetype = require "filetype"
+
+filetype.config {
+  filetype = "xhtml",
+  priority = 0,
+  copilot = true,
+  formatter = function() -- npm install -g prettier
+    return {
+      exe = "prettier",
+      args = {
+        vim.api.nvim_buf_get_name(0),
+      },
+      stdin = true,
+    }
+  end,
+}
+
+filetype.load "xhtml"

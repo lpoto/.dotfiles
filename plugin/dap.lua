@@ -4,14 +4,24 @@
 --=============================================================================
 -- https://github.com/mfussenegger/nvim-dap
 -- https://github.com/theHamsta/nvim-dap-virtual-text
---
---NOTE: this config focused on performing all actions through the dap's repl.
---The repl may be toggled and then it's commands listed with `.help`.
 --_____________________________________________________________________________
 
--- continue with <leader>r
--- toggle breakpoint with <leader>b
--- toggle repl with <leader>r
+--[[
+A Debug Adapter Protocol client implementation.
+This config focused on performing all actions through the dap's repl.
+The repl may be toggled and then it's commands listed with `.help`.
+Includes a plugin to display virtual text for the debugger.
+
+See github.com/mfussenegger/nvim-dap/wiki/Debug-Adapter-installation
+for adapter installation and configurations.
+
+Keymaps:
+  - "<leader>r" - toggle the repl
+  - "<leader>c" - continue (or start)
+  - "<leader>b" - toggle breakpoint
+
+--]]
+
 local plugin = require("plugin").new {
   "mfussenegger/nvim-dap",
   as = "dap",
@@ -24,7 +34,8 @@ local plugin = require("plugin").new {
       module = "nvim-dap-virtual-text",
     },
   },
-  config = function(dap)
+  config = function()
+    local dap = require "dap"
     local log = require "log"
 
     local ok, _ = pcall(require("nvim-dap-virtual-text").setup, {})
@@ -32,17 +43,18 @@ local plugin = require("plugin").new {
       log.warn "Failed loading dap extension: nvim-dap-virtual-text"
     end
 
-    -- NOTE: add all other distinct setups
-    for _, f in ipairs(setup_functions) do
-      f(dap)
-    end
-
-    -- NOTE: set the user commands and remappings
-    set_user_commands()
-
     -- NOTE: open repl immediately when starting the debuggin
     dap.listeners.after.event_initialized["custom"] = function()
-      M.toggle_repl()
+      local toggle = true
+      for _, v in ipairs(vim.api.nvim_list_wins()) do
+        local b = vim.api.nvim_win_get_buf(v)
+        if vim.api.nvim_buf_get_option(b, "filetype") == "dap-repl" then
+          toggle = false
+        end
+      end
+      if toggle == true then
+        require("plugin").get("dap"):run("toggle_repl", true)
+      end
     end
 
     -- NOTE: higlight the breakpoint better
@@ -90,15 +102,20 @@ plugin:config(function()
     "<CMD>lua require('plugin').get('dap'):run('toggle_repl')<CR>"
   )
 
-  -- Continue with Ctrl + d
-  mapper.map("n", "<C-d>", "<CMD>lua require('dap').continue()<CR>")
+  -- Continue with <leader>c
+  mapper.map("n", "<leader>c", "<CMD>lua require('dap').continue()<CR>")
 
-  -- Set breakpoint with Ctrl + b
-  mapper.map("n", "<C-b>", "<CMD>lua require('dap').toggle_breakpoint()<CR>")
+  -- Set breakpoint with <leader>b
+  mapper.map(
+    "n",
+    "<leader>b",
+    "<CMD>lua require('dap').toggle_breakpoint()<CR>"
+  )
 end)
 
 plugin:action("toggle_repl", function()
   local dap = require "dap"
+
   local s = {}
   if vim.o.columns > 240 then
     s.width = 120

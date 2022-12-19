@@ -5,11 +5,19 @@
 -- https://github.com/TimUntersberger/neogit
 --_____________________________________________________________________________
 
+--[[
+An interface for git from within neovim.
+
+Commands:
+  - :Neogit  (or :Git) - open the neogit tab
+--]]
+
 require("plugin").new {
   "TimUntersberger/neogit",
   as = "neogit",
   cmd = { "Git", "Neogit" }, -- Open the Neogit tab
-  config = function(neogit)
+  config = function()
+    local neogit = require "neogit"
     local mapper = require "mapper"
 
     neogit.setup {

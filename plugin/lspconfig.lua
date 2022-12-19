@@ -5,12 +5,22 @@
 -- https://github.com/neovim/nvim-lspconfig
 --_____________________________________________________________________________
 
----Jump to definition with "gd"
----Definition of word under the cursor with "shift + K"
----If there are diagnostics on line the "shit + K " will display
----diagnostics instead.
----"Ctrl + k" will show only definition.
----"Ctrl + d" will show only diagnostics.
+--[[
+Configuration for the built-in LSP client.
+see github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
+for server configurations.
+Lsp is then enabled with ':LspStart' (this is usually done automatically for
+filetypes in ftplguin/)
+
+
+Keymaps:
+  - "gd"    - jump to the definition of the symbol under cursor
+  - "K"     - show the documentation of the symbol under cursor,
+                   or diagnostics if there are any.
+  - "<C-k>" -  Show the definition of symbol under the cursor
+  - "<C-d>" -  Show the diagnostics of the line under the cursor
+--]]
+
 local plugin = require("plugin").new {
   "neovim/nvim-lspconfig",
   as = "lspconfig",

@@ -5,11 +5,20 @@
 -- https://github.com/lpoto/actions.nvim
 --_____________________________________________________________________________
 
+--[[
+A plugin for running asynchronous actions.
+This uses telescope prompt window, if telescope is available.
+
+commands:
+  - :Actions  - display all available actions
+--]]
+
 require("plugin").new {
   "lpoto/actions.nvim",
   as = "actions",
   cmd = "Actions", -- Open available actions window
-  config = function(actions)
+  config = function()
+    local actions = require "actions"
     local mapper = require "mapper"
 
     actions.setup {}
