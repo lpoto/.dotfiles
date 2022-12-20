@@ -21,9 +21,9 @@ local M = {}
 ---  A config object may contain the following fields:
 ---    - `filetype` (string|nil): The filetype to load the config for. If not provided, the current filetype will be used. All of the following fields relate to this filetype.
 ---    - `priority` (number): The priority of the config. Filetype config fields with the highest priority will be loaded (default: 1).
----    - `formatter` (function|table|nil): Formatter.nvim's formatter config function or a table of functions.
----    - `lsp_server` (table|string|nil): A lspconfig's server config (server name on index 1 and optional config on 2, or just server name), cmp capabilities will be automatically added.
----    - `linter` (string|table|nil): A nvim-lint linter name or a table of liner names.
+---    - `formatter` (string): The formatter to use. Should be one of null-ls's builtin formatters.
+---    - `language_server` (table|string|nil): A lspconfig's server config (server name on index 1 and optional config on 2, or just server name), cmp capabilities will be automatically added.
+---    - `linter` (string|table|nil): A liter name. Should be one of null-ls's diagnostics.
 ---    - `copilot` (boolean|nil): Whether to start copilot for the filetype or not.
 ---    - `actions` (table|nil): A table of Actions.nvim actions.
 ---    - `debugger` (table|nil): A table for a dap.nvim debugger config, with fields `adapters` and `configurations` (see dap.nvim's docs).
@@ -39,12 +39,12 @@ local M = {}
 ---    {
 ---      priority = 10,
 ---      filetype = "python",
----      lsp_server = "pyslp",  -- could also use { "pyslp", { ... options } }
+---      language_server = "pyslp",  -- could also use { "pyslp", { ... options } }
 ---    },
 ---    {
 ---      priority = 5,
 ---      filetype = "python",
----      lint = "flake8",  -- could define multiple linters: { "flake8", "pylint" }
+---      lint = "flake8",
 ---      copilot = true,
 ---      unset = {"debugger", "actions"}
 ---    }
@@ -59,9 +59,9 @@ function M.config(o)
     local types = {
       priority = { "number" },
       filetype = { "string" },
-      formatter = { "function", "table" },
-      lsp_server = { "table", "string" },
-      linter = { "string", "table" },
+      formatter = { "string" },
+      language_server = { "table", "string" },
+      linter = { "string" },
       copilot = { "boolean" },
       actions = { "table" },
       debugger = { "table" },
@@ -145,31 +145,27 @@ function M.load(filetype)
     configs[filetype].loaded = true
 
     for k, v in pairs(configs[filetype].values) do
-      if k == "formatter" and Plugin.exists "formatter" then
-        Plugin.get("formatter"):config(function()
-          local formatter = require "formatter"
-          formatter.setup {
-            filetype = {
-              [filetype] = v,
-            },
-          }
+      if k == "formatter" and Plugin.exists "null-ls" then
+        Plugin.get("null-ls"):config(function()
+          local null_ls = require "null-ls"
+          null_ls.register({
+              filetypes = { filetype },
+              sources = {null_ls.builtins.formatting[v]}
+          })
         end)
       elseif k == "copilot" and v == true and Plugin.exists "copilot" then
         Plugin.get("copilot"):run("enable", filetype)
-      elseif k == "linter" and Plugin.exists "lint" then
-        Plugin.get("lint"):config(function()
-          local lint = require "lint"
-          if lint.linters_by_ft == nil then
-            lint.linters_by_ft = {}
-          end
-          if type(v) == "string" then
-            v = { v }
-          end
-          assert(type(filetype) == "string")
-          lint.linters_by_ft[filetype] = v
+      elseif k == "linter" and Plugin.exists "null-ls" then
+        Plugin.get("null-ls"):config(function()
+          local null_ls = require "null-ls"
+
+          null_ls.register({
+              filetypes = { filetype },
+              sources = {null_ls.builtins.diagnostics[v]}
+          })
         end)
-        require "lint"
-      elseif k == "lsp_server" and Plugin.exists "lspconfig" then
+        require "null-ls"
+      elseif k == "language_server" and Plugin.exists "lspconfig" then
         Plugin.get("lspconfig"):config(function()
           local lspconfig = require "lspconfig"
           local lg = require "log"

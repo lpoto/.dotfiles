@@ -1,8 +1,8 @@
 --=============================================================================
 -------------------------------------------------------------------------------
---                                                                         RUBY
+--                                                                           CSS
 --=============================================================================
--- Loaded when a ruby file is opened.
+-- Loaded when a css file is opened.
 -- Install required servers, linters and formatters with:
 --
 --                        :MasonInstall <pkg>   (or :Mason)
@@ -19,28 +19,11 @@
 local filetype = require "filetype"
 
 filetype.config {
-  filetype = "ruby",
+  filetype = "css",
   priority = 0,
   copilot = true,
-  language_server = "solargraph",
-  formatter = "rubocop",
-  linter = "robocop",
+  formatter = "prettier",
+  language_server = "cssls",
 }
 
--- Configure actions
-filetype.config {
-  filetype = "ruby",
-  priority = 0,
-  actions = {
-    ["Run current Ruby file"] = function()
-      return {
-        filetypes = { "ruby" },
-        steps = {
-          { "ruby", vim.api.nvim_buf_get_name(0) },
-        },
-      }
-    end,
-  },
-}
-
-filetype.load "ruby"
+filetype.load "css"

@@ -3,6 +3,17 @@
 --                                                                     MARKDOWN
 --=============================================================================
 -- Loaded when a markdown file is opened.
+-- Install required servers, linters and formatters with:
+--
+--                        :MasonInstall <pkg>  (or :Mason)
+--
+-- To see available linters and formatters for current filetype, run:
+--
+--                        :NullLsInfo
+--
+-- To see attached language server for current filetype, run:
+--
+--                        :LspInfo
 --_____________________________________________________________________________
 
 local filetype = require "filetype"
@@ -11,16 +22,7 @@ filetype.config {
   filetype = "markdown",
   priority = 0,
   copilot = true,
-  -- npm install -g prettier
-  formatter = function()
-    return {
-      exe = "prettier",
-      args = {
-        vim.api.nvim_buf_get_name(0),
-      },
-      stdin = true,
-    }
-  end,
+  formatter = "prettier",
 }
 
 filetype.load "markdown"

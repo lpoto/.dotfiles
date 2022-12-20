@@ -1,11 +1,11 @@
 --=============================================================================
 -------------------------------------------------------------------------------
---                                                                         RUBY
+--                                                                         YAML
 --=============================================================================
--- Loaded when a ruby file is opened.
+-- Loaded when a yaml file is opened.
 -- Install required servers, linters and formatters with:
 --
---                        :MasonInstall <pkg>   (or :Mason)
+--                        :MasonInstall <pkg>  (or :Mason)
 --
 -- To see available linters and formatters for current filetype, run:
 --
@@ -19,28 +19,12 @@
 local filetype = require "filetype"
 
 filetype.config {
-  filetype = "ruby",
-  priority = 0,
+  filetype = "yaml",
+  priority = 1,
   copilot = true,
-  language_server = "solargraph",
-  formatter = "rubocop",
-  linter = "robocop",
+  language_server = "yamlls",
+  linter = "yamllint",
+  formatter = "yamlfmt",
 }
 
--- Configure actions
-filetype.config {
-  filetype = "ruby",
-  priority = 0,
-  actions = {
-    ["Run current Ruby file"] = function()
-      return {
-        filetypes = { "ruby" },
-        steps = {
-          { "ruby", vim.api.nvim_buf_get_name(0) },
-        },
-      }
-    end,
-  },
-}
-
-filetype.load "ruby"
+filetype.load "yaml"

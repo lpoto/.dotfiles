@@ -3,25 +3,34 @@
 --                                                                       PYTHON
 --=============================================================================
 -- Loaded when a python file is opened.
+-- Install required servers, linters and formatters with:
+--
+--                        :MasonInstall <pkg>  (or :Mason)
+--
+-- To see available linters and formatters for current filetype, run:
+--
+--                        :NullLsInfo
+--
+-- To see attached language server for current filetype, run:
+--
+--                        :LspInfo
 --_____________________________________________________________________________
 
 local filetype = require "filetype"
 
 filetype.config {
   filetype = "python",
-  priority = 0,
-  copilot = true, -- :Copilot setup
-  lsp_server = "pylsp", -- pip install python-lsp-server
-  linter = "flake8", -- pip install flake8
-  formatter = function() -- pip install autopep8
-    return {
-      exe = "python3 -m autopep8",
-      args = {
-        "--aggressive --aggressive --aggressive -",
-      },
-      stdin = true,
-    }
-  end,
+  priority = 1,
+  copilot = true,
+  language_server = "pylsp",
+  linter = "flake8",
+  formatter = "autopep8",
+}
+
+-- Configure actions and debuggers
+filetype.config {
+  filetype = "python",
+  priority = 1,
   actions = {
     ["Run current Python file"] = function()
       return {
@@ -35,7 +44,6 @@ filetype.config {
   debugger = {
     adapters = {
       python = {
-        -- pip install debugpy
         type = "executable",
         command = vim.fn.exepath "python",
         args = { "-m", "debugpy.adapter" },
@@ -46,7 +54,6 @@ filetype.config {
     },
     configurations = {
       {
-        -- Debug current Python file
         type = "python",
         request = "launch",
         name = "Launch file",

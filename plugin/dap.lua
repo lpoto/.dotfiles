@@ -77,7 +77,7 @@ plugin:config(function(dap)
 
   repl.commands = vim.tbl_extend("force", repl.commands, {
     exit = { ".exit", ".q", ".kill", ".terminate" },
-    help = { ".h", "help" },
+    help = { ".h", "help", ".help" },
     scopes = { ".scopes", ".s" },
     frames = { ".frames", ".f" },
     custom_commands = {
