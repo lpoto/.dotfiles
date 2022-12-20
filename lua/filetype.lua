@@ -17,7 +17,7 @@ local configs = {}
 
 local M = {}
 
----@param o table: A config object, or a table of config objects.
+---@param o table: A config object:
 ---  A config object may contain the following fields:
 ---    - `filetype` (string|nil): The filetype to load the config for. If not provided, the current filetype will be used. All of the following fields relate to this filetype.
 ---    - `priority` (number): The priority of the config. Filetype config fields with the highest priority will be loaded (default: 1).
@@ -29,31 +29,38 @@ local M = {}
 ---    - `debugger` (table|nil): A table for a dap.nvim debugger config, with fields `adapters` and `configurations` (see dap.nvim's docs).
 ---    - `unset` (table|nil): A table of fields to unset. This is useful for project-local configs, to unset some fields from the global config.
 ---
----  It would be useful to pass multiple objects when you want to set some fields with higher priority than others.
+---  It would be useful to use multiple config when you want to set some fields with higher priority than others.
 ---  Priority makes sense when defining multiple configs for the same filetype, especially in local configs.
 ---
 ---  To load a config for a filetype, use `Filetype.load(<filetype>)`. If the filetype is not provided, the current filetype will be used.
+---  NOTE: once a config for filetype is loaded, no configs may be added.
 ---
 ---<code>
 ---  filetype.config {
----    {
----      priority = 10,
----      filetype = "python",
----      language_server = "pyslp",  -- could also use { "pyslp", { ... options } }
----    },
----    {
----      priority = 5,
----      filetype = "python",
----      lint = "flake8",
----      copilot = true,
----      unset = {"debugger", "actions"}
----    }
+---    priority = 10,
+---    filetype = "python",
+---    language_server = "pyslp",  -- could also use { "pyslp", { ... options } }
+---  }
+---  filetype.config {
+---    priority = 5,
+---    filetype = "python",
+---    lint = "flake8",
+---    copilot = true,
+---    unset = {"debugger", "actions"}
 ---  }
 ---</code>
 function M.config(o)
   local ok, e = pcall(function()
-    if o[1] == nil then
-      o = { o }
+    o = o or {}
+
+    local filetype = o.filetype or vim.bo.filetype
+    local priority = o.priority or 1
+
+    if
+      configs[filetype]
+      and (configs[filetype].disabled or configs[filetype].loaded)
+    then
+      return
     end
 
     local types = {
@@ -68,40 +75,35 @@ function M.config(o)
       unset = { "table", "string" },
     }
 
-    for _, opt in ipairs(o) do
-      local filetype = opt.filetype or vim.bo.filetype
-      local priority = opt.priority or 1
-
-      if configs[filetype] == nil then
-        configs[filetype] = {
-          priorities = {},
-          values = {},
-        }
-      end
-      for k, v in pairs(opt) do
-        if types[k] == nil then
-          log.warn("Unknown filetype config field: " .. k)
-        elseif not vim.tbl_contains(types[k], type(v)) then
-          log.warn("Invalid filetype config field: " .. k)
-        elseif k == "unset" then
-          for _, k2 in ipairs(v) do
-            if types[k2] == nil then
-              log.warn("Unknown filetype config field: " .. k2)
-            else
-              -- Keep priorities, only unset values
-              configs[filetype].values[k2] = nil
-              if configs[filetype].priorities[k2] == nil then
-                configs[filetype].priorities[k2] = priority
-              end
+    if configs[filetype] == nil then
+      configs[filetype] = {
+        priorities = {},
+        values = {},
+      }
+    end
+    for k, v in pairs(o) do
+      if types[k] == nil then
+        log.warn("Unknown filetype config field: " .. k)
+      elseif not vim.tbl_contains(types[k], type(v)) then
+        log.warn("Invalid filetype config field: " .. k)
+      elseif k == "unset" then
+        for _, k2 in ipairs(v) do
+          if types[k2] == nil then
+            log.warn("Unknown filetype config field: " .. k2)
+          else
+            -- Keep priorities, only unset values
+            configs[filetype].values[k2] = nil
+            if configs[filetype].priorities[k2] == nil then
+              configs[filetype].priorities[k2] = priority
             end
           end
-        elseif
-          configs[filetype].priorities[k] == nil
-          or priority > configs[filetype].priorities[k]
-        then
-          configs[filetype].priorities[k] = priority
-          configs[filetype].values[k] = v
         end
+      elseif
+        configs[filetype].priorities[k] == nil
+        or priority > configs[filetype].priorities[k]
+      then
+        configs[filetype].priorities[k] = priority
+        configs[filetype].values[k] = v
       end
     end
   end)
@@ -148,10 +150,10 @@ function M.load(filetype)
       if k == "formatter" and Plugin.exists "null-ls" then
         Plugin.get("null-ls"):config(function()
           local null_ls = require "null-ls"
-          null_ls.register({
-              filetypes = { filetype },
-              sources = {null_ls.builtins.formatting[v]}
-          })
+          null_ls.register {
+            filetypes = { filetype },
+            sources = { null_ls.builtins.formatting[v] },
+          }
         end)
       elseif k == "copilot" and v == true and Plugin.exists "copilot" then
         Plugin.get("copilot"):run("enable", filetype)
@@ -159,10 +161,10 @@ function M.load(filetype)
         Plugin.get("null-ls"):config(function()
           local null_ls = require "null-ls"
 
-          null_ls.register({
-              filetypes = { filetype },
-              sources = {null_ls.builtins.diagnostics[v]}
-          })
+          null_ls.register {
+            filetypes = { filetype },
+            sources = { null_ls.builtins.diagnostics[v] },
+          }
         end)
         require "null-ls"
       elseif k == "language_server" and Plugin.exists "lspconfig" then
