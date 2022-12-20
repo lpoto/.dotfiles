@@ -1,8 +1,8 @@
 --=============================================================================
 -------------------------------------------------------------------------------
---                                                                         RUBY
+--                                                                         JAVA
 --=============================================================================
--- Loaded when a ruby file is opened.
+-- Loaded when a java file is opened.
 -- Install required servers, linters and formatters with:
 --
 --                        :MasonInstall <pkg>   (or :Mason)
@@ -19,28 +19,25 @@
 local filetype = require "filetype"
 
 filetype.config {
-  filetype = "ruby",
-  priority = 0,
+  filetype = "java",
+  priority = 1,
   copilot = true,
-  language_server = "solargraph",
-  formatter = "rubocop",
-  linter = "robocop",
-}
-
--- Configure actions
-filetype.config {
-  filetype = "ruby",
-  priority = 0,
-  actions = {
-    ["Run current Ruby file"] = function()
-      return {
-        filetypes = { "ruby" },
-        steps = {
-          { "ruby", vim.api.nvim_buf_get_name(0) },
-        },
-      }
-    end,
+  formatter = "clang_format",
+  language_server = {
+    "jdtls",
+    {
+      root_dir = function()
+        return require "root" { "pom.xml", ".git", "mvnw", ".gradlew" }
+      end,
+      cmd = {
+        "jdtls",
+        "-configuration",
+        os.getenv "HOME" .. "/.cache",
+        "-data",
+        os.getenv "HOME" .. "/.jdtls",
+      },
+    },
   },
 }
 
-filetype.load "ruby"
+filetype.load "java"

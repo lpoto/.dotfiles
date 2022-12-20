@@ -3,28 +3,33 @@
 --                                                                         RUST
 --=============================================================================
 -- Loaded when a rust file is opened.
+-- Install required servers, linters and formatters with:
+--
+--                        :MasonInstall <pkg>   (or :Mason)
+--
+-- To see available linters and formatters for current filetype, run:
+--
+--                        :NullLsInfo
+--
+-- To see attached language server for current filetype, run:
+--
+--                        :LspInfo
 --_____________________________________________________________________________
 
 local filetype = require "filetype"
 
 filetype.config {
   filetype = "rust",
-  priority = 0,
+  priority = 1,
   copilot = true,
-  -- rustup component add rust-analyzer
-  lsp_server = {
-    "rust_analyzer",
-    {
-      cmd = { "rustup", "run", "stable", "rust-analyzer" },
-    },
-  },
-  -- rustup component add rustfmt
-  formatter = function()
-    return {
-      exe = "rustup run stable rustfmt",
-      stdin = true,
-    }
-  end,
+  language_server = "rust_analyzer",
+  formatter = "rustfmt",
+}
+
+-- Configure actions and debuggers
+filetype.config {
+  filetype = "rust",
+  priority = 0,
   actions = {
     ["Run current Cargo binary"] = function()
       return {
