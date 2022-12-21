@@ -24,7 +24,6 @@ filetype.config {
   copilot = true,
   language_server = "solargraph",
   formatter = "rubocop",
-  linter = "robocop",
 }
 
 -- Configure actions
