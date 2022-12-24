@@ -21,7 +21,7 @@ Keymaps:
 
  Use <C-q> in a telescope prompt to send the results to quickfix.
 
-NOTE:  telescope required rg (Ripgrep) and fd (Find) to be installed.
+NOTE:  telescope required rg (Ripgrep) and fd (Fd-Find) to be installed.
 --]]
 
 local plugin = require("plugin").new {
@@ -44,7 +44,6 @@ local plugin = require("plugin").new {
       module_pattern = "telescope",
     },
   },
-  required_executables = { { "rg", "ripgrep" }, { "fd", "fd-find" } },
   config = function()
     local telescope = require "telescope"
     telescope.setup {

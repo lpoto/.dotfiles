@@ -15,7 +15,6 @@ Requires treesitter CLI to be installed.
 require("plugin").new {
   "nvim-treesitter/nvim-treesitter",
   as = "nvim-treesitter",
-  required_executables = { { "tree-sitter", "Tree Sitter CLI" } },
   config = function()
     local treesitter = require "nvim-treesitter.configs"
     treesitter.setup {
