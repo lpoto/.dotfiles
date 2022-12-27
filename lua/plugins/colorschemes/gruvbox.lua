@@ -5,14 +5,8 @@
 -- https://github.com/ellisonleao/gruvbox.nvim
 --_____________________________________________________________________________
 
---[[
-A gruvbox colorscheme for Neovim.
-This also sets some custom colors.
---]]
-
 return {
   "ellisonleao/gruvbox.nvim",
-  lazy = false,
   config = function()
     local gruvbox = require "gruvbox"
     gruvbox.setup {
@@ -50,13 +44,13 @@ return {
         CursorLine = { bg = "#292727", bold = true },
         -- ColorColumn = { bg = "#292727", bold = true },
         -- CursorColumn = {bg="#181818", bold=true},
-        IndentBlanklineIndent = { fg = "#2b2a2a" },
-        IndentBlanklineContextChar = { fg = "#3b3939", bold = true },
+        -- IndentBlanklineIndent = { fg = "#2b2a2a" },
+        -- IndentBlanklineContextChar = { fg = "#3b3939", bold = true },
       },
       dim_inactive = false,
       transparent_mode = true,
     }
 
-    vim.cmd "colorscheme gruvbox"
+    vim.g.lualine_theme = "gruvbox-material"
   end,
 }

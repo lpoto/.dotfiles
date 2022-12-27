@@ -19,7 +19,7 @@ return {
   config = function()
     local lualine = require "lualine"
 
-    lualine.setup {
+    local setup = {
       options = {
         theme = "gruvbox-material",
         icons_enabled = true,
@@ -45,5 +45,8 @@ return {
         lualine_z = { { "tabs", mode = 2 } },
       },
     }
+    setup.options.theme = vim.g.lualine_theme
+
+    lualine.setup(setup)
   end,
 }
