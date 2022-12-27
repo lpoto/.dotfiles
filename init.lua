@@ -83,11 +83,4 @@ vim.opt.statusline = ""
 require "config.lazy"
 
 ------------------------------------------------------------------- COLORSCHEME
--- set up one of the color schemes configured in lua/plugins/colorschemes/
-
---vim.cmd[[colorscheme gruvbox]]
---vim.cmd[[colorscheme tokyonight-night]]
---vim.cmd[[colorscheme tokyonight-storm]]
---vim.cmd[[colorscheme tokyonight-day]]
---vim.cmd[[colorscheme tokyonight-moon]]
-vim.cmd[[colorscheme onedark]]
+-- colorscheme is set in after/plugin/colorscheme.lua
