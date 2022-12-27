@@ -16,7 +16,7 @@
 --                        :LspInfo
 --_____________________________________________________________________________
 
-local filetype = require "filetype"
+local filetype = require "config.filetype"
 
 filetype.config {
   filetype = "rust",
@@ -35,7 +35,7 @@ filetype.config {
       return {
         filetypes = { "rust" },
         patterns = { ".*/src/bin/[^/]+.rs" },
-        cwd = require "root" { ".git", "cargo.toml" },
+        cwd = require "util.root" { ".git", "cargo.toml" },
         steps = {
           { "cargo", "run", "--bin", vim.fn.expand "%:p:t:r" },
         },
@@ -46,7 +46,7 @@ filetype.config {
         filetypes = { "rust" },
         patterns = { ".*/src/.*.rs" },
         ignore_patterns = { ".*/src/bin/[^/]+.rs" },
-        cwd = require "root" { ".git", "cargo.toml" },
+        cwd = require "util.root" { ".git", "cargo.toml" },
         steps = {
           { "cargo", "run" },
         },

@@ -6,7 +6,7 @@
 -- checking if keys are already mapped. This is useful for making sure
 -- there are no duplicate or overriding mappings.
 
-local log = require "log"
+local log = require "util.log"
 
 local M = {}
 

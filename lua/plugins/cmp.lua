@@ -17,10 +17,10 @@ lsp server's config:
  capabilities = require('cmp_nvim_lsp').default_capabilities()
 --]]
 
-require("plugin").new {
+return {
   "hrsh7th/nvim-cmp",
-  as = "cmp",
-  requires = {
+  event = "InsertEnter",
+  dependencies = {
     "hrsh7th/cmp-nvim-lsp",
     "hrsh7th/cmp-buffer",
     "hrsh7th/cmp-vsnip",

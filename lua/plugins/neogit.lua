@@ -12,13 +12,12 @@ Commands:
   - :Neogit  (or :Git) - open the neogit tab
 --]]
 
-require("plugin").new {
+return {
   "TimUntersberger/neogit",
-  as = "neogit",
   cmd = { "Git", "Neogit" }, -- Open the Neogit tab
   config = function()
     local neogit = require "neogit"
-    local mapper = require "mapper"
+    local mapper = require "util.mapper"
 
     neogit.setup {
       disable_signs = true,

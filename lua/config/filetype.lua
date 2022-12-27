@@ -10,8 +10,7 @@
 -- for project-local configs.
 --_____________________________________________________________________________
 
-local log = require "log"
-local Plugin = require "plugin"
+local log = require "util.log"
 
 local configs = {}
 
@@ -147,81 +146,27 @@ function M.load(filetype)
     configs[filetype].loaded = true
 
     for k, v in pairs(configs[filetype].values) do
-      if k == "formatter" and Plugin.exists "null-ls" then
-        Plugin.get("null-ls"):config(function()
-          local null_ls = require "null-ls"
-          null_ls.register {
-            filetypes = { filetype },
-            sources = { null_ls.builtins.formatting[v] },
-          }
-        end)
-      elseif k == "copilot" and v == true and Plugin.exists "copilot" then
-        Plugin.get("copilot"):run("enable", filetype)
-      elseif k == "linter" and Plugin.exists "null-ls" then
-        Plugin.get("null-ls"):config(function()
-          local null_ls = require "null-ls"
-
-          null_ls.register {
-            filetypes = { filetype },
-            sources = { null_ls.builtins.diagnostics[v] },
-          }
-        end)
-        require "null-ls"
-      elseif k == "language_server" and Plugin.exists "lspconfig" then
-        Plugin.get("lspconfig"):config(function()
-          local lspconfig = require "lspconfig"
-          local lg = require "log"
-
-          local server
-          local opt = {}
-          if type(v) == "table" then
-            server = v[1]
-            opt = v[2] or {}
-          else
-            server = v
-          end
-          if opt.capabilities == nil and Plugin.exists "cmp" then
-            opt.capabilities = require("cmp_nvim_lsp").default_capabilities()
-          end
-          if lspconfig[server] == nil then
-            lg.warn("LSP server not found: " .. server)
-            return
-          end
-          local lsp = lspconfig[server]
-          if lsp == nil then
-            lg.warn("LSP server not found: " .. server)
-            return
-          end
-          lsp.setup(opt)
-        end)
-        local ok, e = pcall(vim.fn.execute, "LspStart", true)
-        if ok == false then
-          log.warn("Failed to start LSP: " .. e)
-        end
-      elseif k == "actions" and Plugin.exists "actions" then
-        Plugin.get("actions"):config(function()
-          local actions = require "actions"
-          actions.setup {
-            actions = v,
-          }
-        end)
-      elseif k == "debugger" and Plugin.exists "dap" then
-        Plugin.get("dap"):config(function()
-          local dap = require "dap"
-          if v.adapters ~= nil then
-            for k2, v2 in pairs(v.adapters) do
-              dap.adapters[k2] = v2
-            end
-          end
-          if v.configurations[1] == nil then
-            for k2, v2 in pairs(v.configurations) do
-              dap.configurations[k2] = v2
-            end
-          else
-            assert(type(filetype) == "string")
-            dap.configurations[filetype] = v.configurations
-          end
-        end)
+      if k == "formatter" then
+        require("plugins.null-ls").register_builtin_source(
+          "formatting",
+          v,
+          filetype
+        )
+      elseif k == "copilot" and v == true then
+        require("plugins.copilot").enable(filetype)
+      elseif k == "linter" then
+        require("plugins.null-ls").register_builtin_source(
+          "diagnostics",
+          v,
+          filetype
+        )
+      elseif k == "language_server" then
+        require("plugins.lspconfig").add_language_server(v)
+      elseif k == "actions" then
+        require("plugins.actions").add_actions(v)
+      elseif k == "debugger" then
+        require("plugins.dap").add_adapters(v.adapters)
+        require("plugins.dap").add_configurations(v.configurations, filetype)
       end
     end
   end)

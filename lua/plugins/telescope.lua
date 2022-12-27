@@ -24,9 +24,8 @@ Keymaps:
 NOTE:  telescope required rg (Ripgrep) and fd (Fd-Find) to be installed.
 --]]
 
-local plugin = require("plugin").new {
+return {
   "nvim-telescope/telescope.nvim",
-  as = "telescope",
   keys = {
     "<leader>n",
     "<leader>q",
@@ -37,12 +36,9 @@ local plugin = require("plugin").new {
     "<C-g>",
   },
   module = "telescope",
-  requires = {
-    { "nvim-lua/plenary.nvim", module_pattern = { "plenary.*" } },
-    {
-      "nvim-telescope/telescope-file-browser.nvim",
-      module_pattern = "telescope",
-    },
+  dependencies = {
+    "nvim-lua/plenary.nvim",
+    "nvim-telescope/telescope-file-browser.nvim",
   },
   config = function()
     local telescope = require "telescope"
@@ -101,49 +97,43 @@ local plugin = require("plugin").new {
       },
     }
     telescope.load_extension "file_browser"
+
+    local mapper = require "util.mapper"
+
+    mapper.map(
+      "n",
+      "<leader>n",
+      "<cmd>lua require('telescope.builtin').find_files()<CR>"
+    )
+    mapper.map(
+      "n",
+      "<leader>q",
+      "<cmd>lua require('telescope.builtin').quickfix()<CR>"
+    )
+    mapper.map(
+      "n",
+      "<leader>d",
+      "<cmd>lua require('telescope.builtin').diagnostics()<CR>"
+    )
+    mapper.map(
+      "n",
+      "<C-x>",
+      "<cmd>lua require('telescope.builtin').grep_string()<CR>"
+    )
+    mapper.map(
+      "n",
+      "<leader>g",
+      "<cmd>lua require('telescope.builtin').live_grep()<CR>"
+    )
+    mapper.map(
+      "n",
+      "<C-g>",
+      "<cmd>lua require('telescope.builtin').git_files()<CR>"
+    )
+    mapper.map(
+      "n",
+      "<C-n>",
+      "<cmd>lua require('telescope').extensions.file_browser.file_browser()<CR>"
+    )
   end,
 }
-
----fuzzy find files with "<leader> + n"
----search word under cursor with "Ctrl + x"
----live grep with "<leader> + g" (REQUIRES 'ripgrep')
----open quickfix with "<leader> + q"
-plugin:config(function()
-  local mapper = require "mapper"
-
-  mapper.map(
-    "n",
-    "<leader>n",
-    "<cmd>lua require('telescope.builtin').find_files()<CR>"
-  )
-  mapper.map(
-    "n",
-    "<leader>q",
-    "<cmd>lua require('telescope.builtin').quickfix()<CR>"
-  )
-  mapper.map(
-    "n",
-    "<leader>d",
-    "<cmd>lua require('telescope.builtin').diagnostics()<CR>"
-  )
-  mapper.map(
-    "n",
-    "<C-x>",
-    "<cmd>lua require('telescope.builtin').grep_string()<CR>"
-  )
-  mapper.map(
-    "n",
-    "<leader>g",
-    "<cmd>lua require('telescope.builtin').live_grep()<CR>"
-  )
-  mapper.map(
-    "n",
-    "<C-g>",
-    "<cmd>lua require('telescope.builtin').git_files()<CR>"
-  )
-  mapper.map(
-    "n",
-    "<C-n>",
-    "<cmd>lua require('telescope').extensions.file_browser.file_browser()<CR>"
-  )
-end)

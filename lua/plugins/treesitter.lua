@@ -8,13 +8,11 @@
 --[[
 Treesitter interface for Neovim. Provides inproved
 highlights, ...
-
-Requires treesitter CLI to be installed.
 --]]
 
-require("plugin").new {
+return {
   "nvim-treesitter/nvim-treesitter",
-  as = "nvim-treesitter",
+  event = { "BufNewFile", "BufReadPre" },
   config = function()
     local treesitter = require "nvim-treesitter.configs"
     treesitter.setup {

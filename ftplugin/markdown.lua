@@ -16,7 +16,7 @@
 --                        :LspInfo
 --_____________________________________________________________________________
 
-local filetype = require "filetype"
+local filetype = require "config.filetype"
 
 filetype.config {
   filetype = "markdown",
