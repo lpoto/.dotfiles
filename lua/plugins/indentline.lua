@@ -26,5 +26,11 @@ return {
         "IndentBlanklineIndent",
       },
     }
+    vim.api.nvim_set_hl(0, "IndentBlanklineIndent", { fg = "#2b2a2a" })
+    vim.api.nvim_set_hl(
+      0,
+      "IndentBlanklineContextChar",
+      { fg = "#3b3939", bold = true }
+    )
   end,
 }

@@ -72,7 +72,7 @@ vim.cmd 'let &t_8f = "\\<Esc>[38;2;%lu;%lu;%lum"'
 vim.cmd 'let &t_8b = "\\<Esc>[48;2;%lu;%lu;%lum"'
 
 -------------------------------------------------------------------- STATUSLINE
--- disable statusline by default, it is then enables by the lualine plugin
+-- disable statusline by default, it may then be enabled by plugins
 
 vim.opt.laststatus = 0
 vim.opt.statusline = ""
@@ -81,3 +81,13 @@ vim.opt.statusline = ""
 -- Load all the plugins with lazy.nvim
 
 require "config.lazy"
+
+------------------------------------------------------------------- COLORSCHEME
+-- set up one of the color schemes configured in lua/plugins/colorschemes/
+
+--vim.cmd[[colorscheme gruvbox]]
+--vim.cmd[[colorscheme tokyonight-night]]
+--vim.cmd[[colorscheme tokyonight-storm]]
+--vim.cmd[[colorscheme tokyonight-day]]
+--vim.cmd[[colorscheme tokyonight-moon]]
+vim.cmd[[colorscheme onedark]]

@@ -30,8 +30,7 @@ if not vim.loop.fs_stat(lazypath) then
 end
 
 vim.opt.runtimepath:prepend(lazypath)
-
-require("lazy").setup("plugins", {
+local opts = {
   defaults = { lazy = true },
   dev = { patterns = jit.os:find "Windows" and {} or { "folke" } },
   checker = { enabled = true },
@@ -56,4 +55,6 @@ require("lazy").setup("plugins", {
     },
   },
   debug = false,
-})
+}
+
+require("lazy").setup("plugins", opts)
