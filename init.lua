@@ -77,10 +77,7 @@ vim.cmd 'let &t_8b = "\\<Esc>[48;2;%lu;%lu;%lum"'
 vim.opt.laststatus = 0
 vim.opt.statusline = ""
 
-------------------------------------------------------------------------- NETRW
--- disable NETRW file explorer, as other file browser plugins may be used
+----------------------------------------------------------------------- PLUGINS
+-- Load all the plugins with lazy.nvim
 
-vim.g.loaded_netrw = 1
-vim.g.loaded_netrwPlugin = 1
-vim.g.loaded_netrwSettings = 1
-vim.g.loaded_netrwFileHandlers = 1
+require "config.lazy"

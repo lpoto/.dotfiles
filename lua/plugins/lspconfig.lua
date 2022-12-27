@@ -21,31 +21,78 @@ Keymaps:
   - "<C-d>" -  Show the diagnostics of the line under the cursor
 --]]
 
-local plugin = require("plugin").new {
+local M = {
   "neovim/nvim-lspconfig",
-  as = "lspconfig",
-  cmd = "LspStart",
   config = function()
-    local mapper = require "mapper"
+    local mapper = require "util.mapper"
 
     mapper.map(
       "n",
       "K",
-      "<cmd>lua require('plugin')"
-        .. ".get('lspconfig'):run('show_definition')<CR>"
+      "<cmd>lua require('plugins.lspconfig')" .. ".show_definition()<CR>"
     )
     mapper.map("n", "<C-k>", "<cmd>lua vim.lsp.buf.hover()<CR>")
     mapper.map("n", "<C-d>", "<cmd>lua vim.diagnostic.open_float()<CR>")
     mapper.map("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>")
   end,
+  dependencies = {
+    "hrsh7th/cmp-nvim-lsp",
+  },
 }
 
 ---Show definition of symbol under cursor, unless
 ---there are any diagnostics on the current line.
 ---Then display those diagnostics instead.
-plugin:action("show_definition", function()
+function M.show_definition()
   if vim.diagnostic.open_float() then
     return
   end
   vim.lsp.buf.hover()
-end)
+end
+
+function M.add_language_server(v)
+  local server
+  local opt = {}
+  if type(v) == "table" then
+    server = v[1]
+    opt = v[2] or {}
+  else
+    server = v
+  end
+
+  M.__enable_language_server(server, opt, true)
+
+  M.servers = M.servers or {}
+  table.insert(M.servers, { server, opt })
+end
+
+function M.__enable_language_server(server, opt, start_lsp)
+  local lspconfig = require "lspconfig"
+  local log = require "util.log"
+
+  if opt.capabilities == nil then
+    opt.capabilities = require("cmp_nvim_lsp").default_capabilities()
+  end
+
+  if lspconfig[server] == nil then
+    log.warn("LSP server not found: " .. server)
+    return
+  end
+
+  local lsp = lspconfig[server]
+  if lsp == nil then
+    log.warn("LSP server not found: " .. server)
+    return
+  end
+
+  lsp.setup(opt)
+
+  if start_lsp then
+    local ok, e = pcall(vim.fn.execute, "LspStart", true)
+    if ok == false then
+      log.warn("Failed to start LSP: " .. e)
+    end
+  end
+end
+
+return M

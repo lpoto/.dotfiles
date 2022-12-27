@@ -10,9 +10,9 @@ A gruvbox colorscheme for Neovim.
 This also sets some custom colors.
 --]]
 
-require("plugin").new {
+return {
   "ellisonleao/gruvbox.nvim",
-  as = "gruvbox",
+  lazy = false,
   config = function()
     local gruvbox = require "gruvbox"
     gruvbox.setup {

@@ -16,7 +16,7 @@
 --                        :LspInfo
 --_____________________________________________________________________________
 
-local filetype = require "filetype"
+local filetype = require "config.filetype"
 
 filetype.config {
   filetype = "java",
@@ -27,7 +27,7 @@ filetype.config {
     "jdtls",
     {
       root_dir = function()
-        return require "root" { "pom.xml", ".git", "mvnw", ".gradlew" }
+        return require "util.root" { "pom.xml", ".git", "mvnw", ".gradlew" }
       end,
       cmd = {
         "jdtls",

@@ -18,7 +18,7 @@ Keymaps:
 Configure copilot with :Copilot setup
 --]]
 
-local plugin = require("plugin").new {
+local M = {
   "github/copilot.vim",
   as = "copilot",
   cmd = "Copilot",
@@ -26,22 +26,21 @@ local plugin = require("plugin").new {
     vim.g.copilot_no_tab_map = true
     vim.g.copilot_assume_mapped = true
   end,
-  config = function()
-    -- NOTE: disable the copilot for all filetypes by default.
-    local tbl = {
-      ["*"] = false,
-    }
-    if vim.g.copilot_filetypes == nil then
-      vim.g.copilot_filetypes = tbl
-    else
-      vim.g.copilot_filetypes =
-        vim.tbl_extend("force", vim.g.copilot_filetypes, tbl)
-    end
-  end,
 }
 
-plugin:config(function()
-  local mapper = require "mapper"
+function M.config()
+  local mapper = require "util.mapper"
+
+  -- NOTE: disable the copilot for all filetypes by default.
+  local tbl = {
+    ["*"] = false,
+  }
+  if vim.g.copilot_filetypes == nil then
+    vim.g.copilot_filetypes = tbl
+  else
+    vim.g.copilot_filetypes =
+      vim.tbl_extend("force", vim.g.copilot_filetypes, tbl)
+  end
 
   mapper.map(
     "i",
@@ -56,7 +55,7 @@ plugin:config(function()
     "copilot#Previous()",
     { silent = true, expr = true }
   )
-end)
+end
 
 ---Enable copilot for the provided filetype, or the
 ---current filetype if none is provided.
@@ -69,7 +68,7 @@ end)
 ---with `require('plugins.copilot').disable()`.
 ---@param filetype string?: the filetype to enable copilot for.
 ---If this is not provided, it is enabled for current filetype.
-plugin:action("enable", function(filetype)
+function M.enable(filetype)
   if vim.fn.exists ":Copilot" == 0 then
     return
   end
@@ -88,4 +87,6 @@ plugin:action("enable", function(filetype)
   if vim.g.loaded_copilot ~= 1 then
     vim.cmd "Copilot enable"
   end
-end)
+end
+
+return M

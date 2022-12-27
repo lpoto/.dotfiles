@@ -9,12 +9,12 @@
 -- Remove them with :RemoveLocalConfig
 --_____________________________________________________________________________
 
-local log = require "log"
-local mapper = require "mapper"
+local log = require "util.log"
+local mapper = require "util.mapper"
 
 ---The root of the currently opened project
 ---@type string
-local root = require "root"()
+local root = require "util.root"()
 ---The defult path for the local config files
 ---@type string
 local local_configs_path = vim.fn.stdpath "data" .. "/local_configs"

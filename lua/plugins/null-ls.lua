@@ -16,30 +16,40 @@ Commands:
   - :NullLsLog  - Open the log file
 --]]
 
-local mapper = require "mapper"
-
-local plugin = require("plugin").new {
+local M = {
   "jose-elias-alvarez/null-ls.nvim",
-  as = "null-ls",
-  keys = "<leader>f",
-  cmd = "NullLsInfo",
-  module = "null-ls",
-  config = function()
-    local null_ls = require "null-ls"
-    null_ls.setup()
-    mapper.map(
-      "n",
-      "<leader>f",
-      "<cmd>lua require('plugin').get('null-ls'):run('format')<CR>"
-    )
-  end,
+  --keys = "<leader>f",
+  --cmd = "NullLsInfo",
 }
+function M.config()
+  local null_ls = require "null-ls"
+  local mapper = require "util.mapper"
+
+  null_ls.setup()
+  mapper.map(
+    "n",
+    "<leader>f",
+    "<cmd>lua require('plugins.null-ls').format()<CR>"
+  )
+end
 
 -- format with "<leader>f""
-plugin:action("format", function()
+function M.format()
   vim.lsp.buf.format {
     timeout_ms = 10000,
     async = false,
   }
   vim.api.nvim_exec("w", true)
-end)
+end
+
+---@param source string
+---@param filetype string
+function M.register_builtin_source(type, source, filetype)
+  local null_ls = require "null-ls"
+  null_ls.register {
+    filetypes = { filetype },
+    sources = { null_ls.builtins[type][source] },
+  }
+end
+
+return M

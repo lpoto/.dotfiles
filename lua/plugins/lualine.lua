@@ -13,12 +13,12 @@ Shows git branch, file encoding and tabs in tabline,
 and other information in the statusline.
 --]]
 
-require("plugin").new {
+return {
   "nvim-lualine/lualine.nvim",
-  as = "lualine",
-  event = "BufNewFile,BufReadPre",
+  event = { "BufNewFile", "BufReadPre" },
   config = function()
     local lualine = require "lualine"
+
     lualine.setup {
       options = {
         theme = "gruvbox-material",

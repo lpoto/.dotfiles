@@ -11,7 +11,7 @@
 ---(renaming file, scrolling popups, window managing, visual mode, jumping,
 ---undoing breakpoints, moving text, writing,...)
 
-local mapper = require "mapper"
+local mapper = require "util.mapper"
 
 --------------------------------------------------------------- SCROLLING POPUP
 -- down with tab, up with shift-tab, select with enter

@@ -20,9 +20,9 @@
     trim_trailing_whitespace
 --]]
 
-require("plugin").new {
+return {
   "gpanders/editorconfig.nvim",
-  as = "editorconfig",
+  lazy = false,
   --[[
   Add custom with properties:
 
