@@ -78,7 +78,7 @@ return {
           }
         end
 
-        db.header_pad = 10
+        db.header_pad = 5
         db.custom_header = function()
           local stats = require("lazy").stats()
           return {
