@@ -51,7 +51,7 @@ mapper.map("n", "N", "Nzzzv")
 mapper.map("n", "J", "mzJ'z")
 mapper.map("n", "<leader>l", "<cmd>cnext<CR>zzzv")
 mapper.map("n", "<leader>h", "<cmd>cprev<CR>zzzv")
-mapper.map("n", "<S-TAB>", "<C-O>zzzv")
+mapper.map("n", "<S-TAB>", "<C-O>zzzv", {}, true)
 mapper.map("n", "<expr> k", '(v:count > 5 ? "m\'" . v:count : "") . \'k\'')
 mapper.map("n", "<expr> j", '(v:count > 5 ? "m\'" . v:count : "") . \'j\'')
 

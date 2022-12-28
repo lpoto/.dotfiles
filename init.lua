@@ -15,11 +15,13 @@ require "config.options"
 require "config.lazy"
 
 -------------------------------------------Lazy load mappings and local configs
+
 vim.api.nvim_create_autocmd("User", {
   pattern = "VeryLazy",
   once = true,
   callback = function()
+    --require("util.version").ensure()
     require "config.remappings"
-    require "config.source_local_config"
+    require("config.local_config").enable()
   end,
 })

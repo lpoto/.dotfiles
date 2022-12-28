@@ -30,7 +30,8 @@ function M.map(mode, lhs, rhs, opts, force)
     then
       vim.notify(
         "Key already mapped: " .. lhs .. " -> " .. rhs2,
-        vim.log.levels.WARN
+        vim.log.levels.WARN,
+        { title = "Mapper" }
       )
       return
     end
@@ -39,7 +40,8 @@ function M.map(mode, lhs, rhs, opts, force)
   if ok == false then
     vim.notify(
       "Error mapping key (" .. lhs .. "): " .. e,
-      vim.log.levels.EROR
+      vim.log.levels.EROR,
+      { title = "Mapper" }
     )
   end
 end
