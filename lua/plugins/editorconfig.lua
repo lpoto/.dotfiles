@@ -22,7 +22,7 @@
 
 return {
   "gpanders/editorconfig.nvim",
-  event = "VeryLazy",
+  lazy = false,
   --[[
   Add custom with properties:
 
