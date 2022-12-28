@@ -28,7 +28,9 @@ return {
     mapper.map(
       "n",
       "<leader>i",
-      "<cmd>lua require('telescope').extensions.notify.notify()<CR>"
+      "<cmd>lua require('telescope').extensions.notify.notify("
+        .. "require('telescope.themes').get_ivy()"
+        .. ")<CR>"
     )
   end,
 }
