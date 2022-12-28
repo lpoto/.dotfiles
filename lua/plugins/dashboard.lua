@@ -73,7 +73,7 @@ return {
             icon = "¡ ",
             icon_hl = { fg = "#dbb671" },
             desc = " Notifications History                  ",
-            action = "lua require('telescope').extensions.notify.notify()",
+            action = "lua require('plugins.notify').history()",
             shortcut = "SPACE i",
           },
         }
