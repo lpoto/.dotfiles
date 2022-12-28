@@ -3,9 +3,7 @@
 --                                                                 LOCAL CONFIG
 --=============================================================================
 -- Enable neovim's exrc option so it shources local
---    .nvim.init
---    .nvimrc
---    .exrc
+--    .nvim.lua
 -- Files.
 --
 -- This required version 0.9 so the local files are sourced safely.
@@ -16,7 +14,7 @@ local loaded_configs = {}
 
 local M = {}
 
----Load local .nvim.init, .nvimrc or .exrc files (the first found).
+---Load local .nvim.lua (the first found).
 ---Start in current directory and check 2 directories up.
 ---Version 0.9 is required for this to work safely.
 function M.enable()
@@ -31,7 +29,7 @@ end
 function M.secure_read_local_config()
   local cwd = vim.fn.getcwd()
   for _ = 1, 3 do
-    for _, name in ipairs { ".nvim.lua", ".nvimrc", ".exrc" } do
+    for _, name in ipairs { ".nvim.lua" } do
       if vim.fn.file_readable(cwd .. "/" .. name) == 1 then
         if loaded_configs[cwd .. "/" .. name] then
           return
