@@ -29,6 +29,7 @@ local M = {
   keys = {
     "<leader>n",
     "<leader>m",
+    "<leader>c",
     "<C-n>",
     "<leader>q",
     "<leader>d",

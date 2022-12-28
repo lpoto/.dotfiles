@@ -42,6 +42,13 @@ return {
             shortcut = "CTRL N",
           },
           {
+            icon = "⚙ ",
+            icon_hl = { fg = "#dbb671" },
+            desc = " Neovim Config Files                    ",
+            action = "lua require('plugins.telescope').neovim_config_files()",
+            shortcut = "SPACE c",
+          },
+          {
             icon = "☌ ",
             icon_hl = { fg = "#dbb671" },
             desc = " Live Grep                              ",
@@ -83,14 +90,6 @@ return {
             shortcut = ":Git",
           })
         end
-
-        table.insert(db.custom_center, {
-          icon = "⚙ ",
-          icon_hl = { fg = "#dbb671" },
-          desc = " Neovim Config                          ",
-          action = "Config",
-          shortcut = ":Config",
-        })
 
         db.footer_pad = 2
         db.custom_footer = function()
