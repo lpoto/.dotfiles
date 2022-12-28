@@ -21,18 +21,18 @@ return {
         db.center_pad = 2
         db.custom_center = {
           {
-            icon = "  ",
-            icon_hl = { fg = "#dbb671" },
-            desc = " Find Files                             ",
-            action = "Telescope find_files",
-            shortcut = "SPACE n",
-          },
-          {
             icon = " 🗃",
             icon_hl = { fg = "#dbb671" },
             desc = " Recent Files                           ",
             action = "Telescope oldfiles",
             shortcut = "SPACE m",
+          },
+          {
+            icon = "  ",
+            icon_hl = { fg = "#dbb671" },
+            desc = " Find Files                             ",
+            action = "Telescope find_files",
+            shortcut = "SPACE n",
           },
           {
             icon = " ",
