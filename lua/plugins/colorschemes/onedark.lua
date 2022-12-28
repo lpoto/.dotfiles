@@ -11,10 +11,20 @@ return {
     local onedark = require "onedark"
 
     onedark.setup {
-      style = "darker",
+      style = "warmer",
       transparent = true,
       lualine = {
         transparent = true,
+      },
+      code_style = {
+        comments = "italic",
+        keywords = "italic",
+        functions = "italic",
+      },
+      diagnostics = {
+        darker = true,
+        undercurl = true,
+        background = false,
       },
     }
 
