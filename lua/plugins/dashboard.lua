@@ -80,7 +80,14 @@ return {
           }
         end
 
-        db:instance(true)
+        -- Open dashboard only when no file is provided
+        if
+          vim.fn.argc() == 0
+          and vim.fn.line2byte "$" == -1
+          and not db.disable_at_vimenter
+        then
+          db:instance(true)
+        end
       end,
     })
   end,

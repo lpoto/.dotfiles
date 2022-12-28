@@ -27,7 +27,7 @@ return {
       },
       filetype_exclude = {
         "dashboard",
-      }
+      },
     }
     vim.api.nvim_set_hl(0, "IndentBlanklineIndent", { fg = "#2b2a2a" })
     vim.api.nvim_set_hl(
