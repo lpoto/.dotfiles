@@ -49,13 +49,15 @@ end
 
 function M.config()
   local mapper = require "util.mapper"
-  local log = require "util.log"
   local dap = require "dap"
   local repl = require "dap.repl"
 
   local ok, _ = pcall(require("nvim-dap-virtual-text").setup, {})
   if ok == false then
-    log.warn "Failed loading dap extension: nvim-dap-virtual-text"
+    vim.notify(
+      "Failed loading dap extension: nvim-dap-virtual-text",
+      vim.log.levels.WARN
+    )
   end
 
   -- NOTE: open repl immediately when starting the debuggin

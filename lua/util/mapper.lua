@@ -6,8 +6,6 @@
 -- checking if keys are already mapped. This is useful for making sure
 -- there are no duplicate or overriding mappings.
 
-local log = require "util.log"
-
 local M = {}
 
 ---Map the provided lhs to rhs. If lhs is already mapped,
@@ -30,13 +28,19 @@ function M.map(mode, lhs, rhs, opts, force)
       and rhs2 ~= ""
       and rhs2:find "packer.load" == nil
     then
-      log.warn("Key already mapped: " .. lhs .. " -> " .. rhs2)
+      vim.notify(
+        "Key already mapped: " .. lhs .. " -> " .. rhs2,
+        vim.log.levels.WARN
+      )
       return
     end
   end
   local ok, e = pcall(vim.api.nvim_set_keymap, mode, lhs, rhs, opts)
   if ok == false then
-    log.warn("Error mapping key (" .. lhs .. "): " .. e)
+    vim.notify(
+      "Error mapping key (" .. lhs .. "): " .. e,
+      vim.log.levels.EROR
+    )
   end
 end
 
@@ -52,12 +56,15 @@ function M.command(name, cmd, opts, force)
   force = force or false
   opts = opts or {}
   if not force and vim.fn.exists(":" .. name) ~= 0 then
-    log.warn("Command already exists: " .. name)
+    vim.notify("Command already exists: " .. name, vim.log.levels.WARN)
     return
   end
   local ok, e = pcall(vim.api.nvim_create_user_command, name, cmd, opts)
   if ok == false then
-    log.warn("Error creating command (" .. name .. "): " .. e)
+    vim.notify(
+      "Error creating command (" .. name .. "): " .. e,
+      vim.log.levels.ERROR
+    )
   end
 end
 

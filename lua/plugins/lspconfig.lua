@@ -68,20 +68,19 @@ end
 
 function M.__enable_language_server(server, opt, start_lsp)
   local lspconfig = require "lspconfig"
-  local log = require "util.log"
 
   if opt.capabilities == nil then
     opt.capabilities = require("cmp_nvim_lsp").default_capabilities()
   end
 
   if lspconfig[server] == nil then
-    log.warn("LSP server not found: " .. server)
+    vim.notify("LSP server not found: " .. server, vim.log.levels.WARN)
     return
   end
 
   local lsp = lspconfig[server]
   if lsp == nil then
-    log.warn("LSP server not found: " .. server)
+    vim.notify("LSP server not found: " .. server, vim.log.levels.WARN)
     return
   end
 
@@ -90,7 +89,7 @@ function M.__enable_language_server(server, opt, start_lsp)
   if start_lsp then
     local ok, e = pcall(vim.fn.execute, "LspStart", true)
     if ok == false then
-      log.warn("Failed to start LSP: " .. e)
+      vim.notify("Failed to start LSP: " .. e, vim.log.levels.WARN)
     end
   end
 end

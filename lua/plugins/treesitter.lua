@@ -12,7 +12,7 @@ highlights, ...
 
 return {
   "nvim-treesitter/nvim-treesitter",
-  event = { "BufNewFile", "BufReadPre" },
+  event = "VeryLazy",
   config = function()
     local treesitter = require "nvim-treesitter.configs"
     treesitter.setup {

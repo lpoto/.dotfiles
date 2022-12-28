@@ -9,7 +9,6 @@
 -- Remove them with :RemoveLocalConfig
 --_____________________________________________________________________________
 
-local log = require "util.log"
 local mapper = require "util.mapper"
 
 ---The root of the currently opened project
@@ -65,21 +64,20 @@ local function open_local_config()
       local r2
       f_he, f_h, r2 = get_path(i)
       if vim.fn.filereadable(f_h .. ".lua") == 1 then
-        log.info("Local config for '" .. r2 .. "' found ...")
+        print("Local config for '" .. r2 .. "' found ...")
         break
       end
       f_h, f_he = nil, nil
     end
-    log.warn("Local config for '" .. r .. "' does not yet exist!")
+    local s = "Local config for '"
+      .. r
+      .. "' does not yet exist!\n"
+      .. "Do you want to create it?"
     local choice
     if f_he == nil then
-      choice = vim.fn.confirm("Do you want to create it?", "&Yes\n&No", 2)
+      choice = vim.fn.confirm(s, "&Yes\n&No", 2)
     else
-      choice = vim.fn.confirm(
-        "Do you want to create it?",
-        "&Yes\n&No\n&Open Found",
-        3
-      )
+      choice = vim.fn.confirm(s, "&Yes\n&No\n&Open Found", 3)
     end
     if choice == 1 then
       local dirname = vim.fs.dirname(file_escaped)
@@ -107,7 +105,7 @@ local function remove_local_config()
   file_escaped = file_escaped .. ".lua"
   if vim.fn.filereadable(file) ~= 1 then
     local txt = "Local config for '" .. r .. "' does not exist!"
-    log.warn(txt)
+    vim.notify(txt, vim.log.levels.WARN)
     return
   end
   local txt = "Are you sure you want to delete local config for: '"
@@ -120,9 +118,9 @@ local function remove_local_config()
   end
   if vim.fn.delete(file) ~= -1 then
     txt = "Local config for '" .. r .. "' deleted"
-    log.info(txt)
+    vim.notify(txt, vim.log.levels.INFO)
   else
-    log.warn "Could not delete the local config!"
+    vim.notify("Could not delete the local config!", vim.log.levels.ERROR)
   end
 end
 
@@ -145,7 +143,7 @@ local function source_local_configs()
     end
     if vim.fn.filereadable(file) == 1 then
       vim.fn.execute("source " .. file_escaped, false)
-      log.debug("Sourced local config for: " .. r)
+      vim.notify("Sourced local config for: " .. r, vim.log.levels.INFO)
       sourced[file] = true
     end
   end
@@ -166,5 +164,4 @@ mapper.command("SourceLocalConfig", function()
   source_local_configs()
 end)
 
--- NOTE: source local configs on start
 source_local_configs()

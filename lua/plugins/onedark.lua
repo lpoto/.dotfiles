@@ -7,6 +7,7 @@
 
 return {
   "navarasu/onedark.nvim",
+  lazy = false,
   config = function()
     local onedark = require "onedark"
 
@@ -29,5 +30,7 @@ return {
     }
 
     vim.g.lualine_theme = "onedark"
+
+    onedark.load()
   end,
 }

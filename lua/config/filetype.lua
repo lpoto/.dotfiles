@@ -10,8 +10,6 @@
 -- for project-local configs.
 --_____________________________________________________________________________
 
-local log = require "util.log"
-
 local configs = {}
 
 local M = {}
@@ -82,13 +80,22 @@ function M.config(o)
     end
     for k, v in pairs(o) do
       if types[k] == nil then
-        log.warn("Unknown filetype config field: " .. k)
+        vim.notify(
+          "Unknown filetype config field: " .. k,
+          vim.log.levels.WARN
+        )
       elseif not vim.tbl_contains(types[k], type(v)) then
-        log.warn("Invalid filetype config field: " .. k)
+        vim.notify(
+          "Invalid filetype config field: " .. k,
+          vim.log.levels.WARN
+        )
       elseif k == "unset" then
         for _, k2 in ipairs(v) do
           if types[k2] == nil then
-            log.warn("Unknown filetype config field: " .. k2)
+            vim.notify(
+              "Unknown filetype config field: " .. k2,
+              vim.log.levels.WARN
+            )
           else
             -- Keep priorities, only unset values
             configs[filetype].values[k2] = nil
@@ -107,7 +114,10 @@ function M.config(o)
     end
   end)
   if ok == false then
-    log.warn("Error while loading filetype config: " .. e)
+    vim.notify(
+      "Error while loading filetype config: " .. e,
+      vim.log.levels.ERROR
+    )
   end
 end
 
@@ -171,7 +181,10 @@ function M.load(filetype)
     end
   end)
   if ok == false then
-    log.warn("Error while loading filetype config: " .. e)
+    vim.notify(
+      "Error while loading filetype config: " .. e,
+      vim.log.levels.ERROR
+    )
   end
 end
 
