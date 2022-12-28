@@ -22,30 +22,42 @@ return {
         db.custom_center = {
           {
             icon = "  ",
-            desc = " Find File                              ",
-            action = "Telescope find_files find_command=rg,--hidden,--files",
+            icon_hl = { fg = "#dbb671" },
+            desc = " Find Files                             ",
+            action = "Telescope find_files",
             shortcut = "SPACE n",
           },
           {
+            icon = " 🗃",
+            icon_hl = { fg = "#dbb671" },
+            desc = " Recent Files                           ",
+            action = "Telescope oldfiles",
+            shortcut = "SPACE m",
+          },
+          {
             icon = " ",
+            icon_hl = { fg = "#dbb671" },
             desc = " File Browser                            ",
             action = "Telescope file_browser",
             shortcut = "CTRL N",
           },
           {
-            icon = " 🔍",
-            desc = " Find Word                              ",
+            icon = " 🔍︎",
+            icon_hl = { fg = "#dbb671" },
+            desc = " Live Grep                              ",
             action = "Telescope live_grep",
             shortcut = "SPACE g",
           },
           {
-            icon = "📦",
+            icon = " ",
+            icon_hl = { fg = "#dbb671" },
             desc = " Package Manager                         ",
             action = "Mason",
             shortcut = ":Mason",
           },
           {
-            icon = " 🔔",
+            icon = "¡ ",
+            icon_hl = { fg = "#dbb671" },
             desc = " Notifications History                  ",
             action = "lua require('telescope').extensions.notify.notify()",
             shortcut = "SPACE i",
@@ -57,7 +69,8 @@ return {
 
         if git_dir ~= "" then
           table.insert(db.custom_center, {
-            icon = " ",
+            icon = " ",
+            icon_hl = { fg = "#dbb671" },
             desc = " Git User Interface                        ",
             action = "Git",
             shortcut = ":Git",
@@ -65,7 +78,8 @@ return {
         end
 
         table.insert(db.custom_center, {
-          icon = " ",
+          icon = "⚙ ",
+          icon_hl = { fg = "#dbb671" },
           desc = " Neovim Config                                ",
           action = "lua require('util.open_nvim_config')",
         })
@@ -90,7 +104,7 @@ return {
             " ╚═╝  ╚═══╝ ╚══════╝ ╚═════╝    ╚═══╝   ╚═╝ ╚═╝     ╚═╝",
             require("util.version").get(),
             "",
-            "🎉 Loaded in "
+            "Loaded in "
               .. (math.floor(stats.startuptime * 100 + 0.5) / 100)
               .. "ms",
           }
