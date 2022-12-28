@@ -9,10 +9,7 @@
 
 if vim.fn.exists "g:colorscheme" == 0 then
   --vim.g.colorscheme = "gruvbox"
-  --vim.g.colorscheme = "tokyonight-night"
-  --vim.g.colorscheme = "tokyonight-storm"
-  --vim.g.colorscheme = "tokyonight-day"
-  --vim.g.colorscheme = "tokyonight-moon"
+  --vim.g.colorscheme = "tokyonight"
   vim.g.colorscheme = "onedark"
 end
 vim.api.nvim_exec("colorscheme " .. vim.g.colorscheme, false)

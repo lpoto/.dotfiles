@@ -14,6 +14,15 @@ return {
     tokyonight.setup {
       style = "moon",
       transparent = true,
+      styles = {
+        comments = { italic = true },
+        functions = { italic = true },
+        keywords = { italic = true },
+        floats = "transparent",
+        sidebars = "transparent",
+      },
+      hide_inactive_statusline = true,
+      dim_inactive = true,
       on_highlights = function(hl)
         hl.TelescopeNormal = {
           bg = nil,
