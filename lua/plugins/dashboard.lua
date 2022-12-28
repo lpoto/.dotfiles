@@ -45,8 +45,8 @@ return {
             shortcut = ":Mason",
           },
           {
-            icon = "🔔",
-            desc = " Notifications History                 ",
+            icon = " 🔔",
+            desc = " Notifications History                  ",
             action = "lua require('telescope').extensions.notify.notify()",
             shortcut = "SPACE i",
           },
@@ -57,8 +57,8 @@ return {
 
         if git_dir ~= "" then
           table.insert(db.custom_center, {
-            icon = "",
-            desc = " Git User Interface                       ",
+            icon = " ",
+            desc = " Git User Interface                        ",
             action = "Git",
             shortcut = ":Git",
           })
@@ -66,7 +66,7 @@ return {
 
         table.insert(db.custom_center, {
           icon = " ",
-          desc = " Neovim Config                               ",
+          desc = " Neovim Config                                ",
           action = "lua require('util.open_nvim_config')",
         })
 
