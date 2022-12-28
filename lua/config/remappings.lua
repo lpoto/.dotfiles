@@ -17,7 +17,13 @@ local mapper = require "util.mapper"
 -- down with tab, up with shift-tab, select with enter
 
 mapper.map("", "<expr><Tab>", "pumvisible() ? '\\<C-n>' : '\\<TAB>'")
-mapper.map("", "<expr><S-Tab>", "pumvisible() ? '\\<C-p>' : '\\<S-TAB>'")
+mapper.map(
+  "",
+  "<expr><S-Tab>",
+  "pumvisible() ? '\\<C-p>' : '\\<S-TAB>'",
+  {},
+  true
+)
 mapper.map("", "<expr><CR>", "pumvisible() ? '\\<C-y>' : '\\<CR>'")
 
 --------------------------------------------------------------- WINDOW MANAGING
