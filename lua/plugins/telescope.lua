@@ -87,18 +87,22 @@ return {
           },
         },
         oldfiles = {
+          hidden = true,
           theme = "ivy",
         },
         live_grep = {
+          hidden = true,
           theme = "ivy",
         },
         quickfix = {
+          hidden = true,
           theme = "ivy",
         },
       },
       extensions = {
         file_browser = {
           theme = "ivy",
+          hidden = true,
           hijack_netrw = true,
         },
       },
