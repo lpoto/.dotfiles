@@ -36,7 +36,6 @@ return {
     "<C-g>",
   },
   cmd = "Telescope",
-  module = "telescope",
   dependencies = {
     "nvim-lua/plenary.nvim",
     "nvim-telescope/telescope-file-browser.nvim",
