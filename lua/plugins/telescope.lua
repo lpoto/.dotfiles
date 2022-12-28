@@ -12,12 +12,11 @@ Items are shown in a popup with a prompt to search over.
 
 Keymaps:
  - "<leader>n"   - find files
+ - "<leader>m"   - old files
+ - "<C-n>"       - file explorer
  - "<leader>g"   - live grep
  - "<leader>d"   - show diagnostics
  - "<leader>q"   - quickfix
- - "<C-n>"       - file explorer
- - "<C-x>"       - live grem for symbol under cursor
- - "<C-g>"       - git files
 
  Use <C-q> in a telescope prompt to send the results to quickfix.
 
@@ -28,12 +27,11 @@ return {
   "nvim-telescope/telescope.nvim",
   keys = {
     "<leader>n",
+    "<leader>m",
+    "<C-n>",
     "<leader>q",
     "<leader>d",
     "<leader>g",
-    "<C-n>",
-    "<C-x>",
-    "<C-g>",
   },
   cmd = "Telescope",
   dependencies = {
@@ -88,6 +86,15 @@ return {
             "__pycache__",
           },
         },
+        oldfiles = {
+          theme = "ivy",
+        },
+        live_grep = {
+          theme = "ivy",
+        },
+        quickfix = {
+          theme = "ivy",
+        },
       },
       extensions = {
         file_browser = {
@@ -104,6 +111,11 @@ return {
       "n",
       "<leader>n",
       "<cmd>lua require('telescope.builtin').find_files()<CR>"
+    )
+    mapper.map(
+      "n",
+      "<leader>m",
+      "<cmd>lua require('telescope.builtin').oldfiles()<CR>"
     )
     mapper.map(
       "n",
