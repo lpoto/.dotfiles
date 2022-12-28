@@ -42,11 +42,18 @@ return {
             shortcut = "CTRL N",
           },
           {
-            icon = " 🔍︎",
+            icon = "☌ ",
             icon_hl = { fg = "#dbb671" },
             desc = " Live Grep                              ",
             action = "Telescope live_grep",
             shortcut = "SPACE g",
+          },
+          {
+            icon = "➡ ",
+            icon_hl = { fg = "#dbb671" },
+            desc = " Plugins                                 ",
+            action = "Lazy",
+            shortcut = ":Lazy",
           },
           {
             icon = " ",
@@ -88,13 +95,16 @@ return {
         db.custom_footer = function()
           local stats = require("lazy").stats()
           return {
-            desc = "Loaded " .. stats.count .. " plugins",
+            desc = "Loaded "
+              .. stats.count
+              .. " plugins in "
+              .. (math.floor(stats.startuptime * 100 + 0.5) / 100)
+              .. "ms",
           }
         end
 
         db.header_pad = 5
         db.custom_header = function()
-          local stats = require("lazy").stats()
           return {
             " ███╗   ██╗ ███████╗ ██████╗  ██╗   ██╗ ██╗ ███╗   ███╗",
             " ████╗  ██║ ██╔════╝██╔═══██╗ ██║   ██║ ██║ ████╗ ████║",
@@ -103,10 +113,6 @@ return {
             " ██║ ╚████║ ███████╗╚██████╔╝  ╚████╔╝  ██║ ██║ ╚═╝ ██║",
             " ╚═╝  ╚═══╝ ╚══════╝ ╚═════╝    ╚═══╝   ╚═╝ ╚═╝     ╚═╝",
             require("util.version").get(),
-            "",
-            "Loaded in "
-              .. (math.floor(stats.startuptime * 100 + 0.5) / 100)
-              .. "ms",
           }
         end
 
