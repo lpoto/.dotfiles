@@ -6,12 +6,10 @@
 --_____________________________________________________________________________
 -- A plugin manager for neovim, this configures and bootstraps it from github.
 ------------------------------------------------------------------------------
-local log = require "util.log"
-
 local lazypath = vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
 
 if not vim.loop.fs_stat(lazypath) then
-  log.warn "Lazy.nvim not found, installing..."
+  vim.notify("Lazy.nvim not found, installing...", vim.log.levels.INFO)
 
   local args = {
     "git",
@@ -22,11 +20,11 @@ if not vim.loop.fs_stat(lazypath) then
     lazypath,
   }
 
-  log.info("Running: " .. table.concat(args, " "))
+  vim.notify("Running: " .. table.concat(args, " "), vim.log.levels.DEBUG)
 
   vim.fn.system(args)
 
-  log.warn "Lazy.nvim installed"
+  vim.notify("Lazy.nvim installed", vim.log.levels.INFO)
 end
 
 vim.opt.runtimepath:prepend(lazypath)

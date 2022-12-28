@@ -35,7 +35,7 @@ return {
     "<C-x>",
     "<C-g>",
   },
-  module = "telescope",
+  cmd = "Telescope",
   dependencies = {
     "nvim-lua/plenary.nvim",
     "nvim-telescope/telescope-file-browser.nvim",
@@ -118,7 +118,9 @@ return {
     mapper.map(
       "n",
       "<C-x>",
-      "<cmd>lua require('telescope.builtin').grep_string()<CR>"
+      "<cmd>lua require('telescope.builtin').grep_string()<CR>",
+      {},
+      true
     )
     mapper.map(
       "n",
