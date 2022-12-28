@@ -141,51 +141,56 @@ end
 ---Load the config for the provided filetype, or the current filetype if none is provided.
 ---@param filetype string|nil
 function M.load(filetype)
-  local ok, e = pcall(function()
-    filetype = filetype or vim.bo.filetype
+  vim.defer_fn(function()
+    local ok, e = pcall(function()
+      filetype = filetype or vim.bo.filetype
 
-    if
-      configs[filetype] == nil
-      or configs[filetype].values == nil
-      or configs[filetype].disabled
-      or configs[filetype].loaded
-    then
-      return
-    end
-
-    configs[filetype].loaded = true
-
-    for k, v in pairs(configs[filetype].values) do
-      if k == "formatter" then
-        require("plugins.null-ls").register_builtin_source(
-          "formatting",
-          v,
-          filetype
-        )
-      elseif k == "copilot" and v == true then
-        require("plugins.copilot").enable(filetype)
-      elseif k == "linter" then
-        require("plugins.null-ls").register_builtin_source(
-          "diagnostics",
-          v,
-          filetype
-        )
-      elseif k == "language_server" then
-        require("plugins.lspconfig").add_language_server(v)
-      elseif k == "actions" then
-        require("plugins.actions").add_actions(v)
-      elseif k == "debugger" then
-        require("plugins.dap").add_adapters(v.adapters)
-        require("plugins.dap").add_configurations(v.configurations, filetype)
+      if
+        configs[filetype] == nil
+        or configs[filetype].values == nil
+        or configs[filetype].disabled
+        or configs[filetype].loaded
+      then
+        return
       end
+
+      configs[filetype].loaded = true
+
+      for k, v in pairs(configs[filetype].values) do
+        if k == "formatter" then
+          require("plugins.null-ls").register_builtin_source(
+            "formatting",
+            v,
+            filetype
+          )
+        elseif k == "copilot" and v == true then
+          require("plugins.copilot").enable(filetype)
+        elseif k == "linter" then
+          require("plugins.null-ls").register_builtin_source(
+            "diagnostics",
+            v,
+            filetype
+          )
+        elseif k == "language_server" then
+          require("plugins.lspconfig").add_language_server(v)
+        elseif k == "actions" then
+          require("plugins.actions").add_actions(v)
+        elseif k == "debugger" then
+          require("plugins.dap").add_adapters(v.adapters)
+          require("plugins.dap").add_configurations(
+            v.configurations,
+            filetype
+          )
+        end
+      end
+    end)
+    if ok == false then
+      vim.notify(
+        "Error while loading filetype config: " .. e,
+        vim.log.levels.ERROR
+      )
     end
-  end)
-  if ok == false then
-    vim.notify(
-      "Error while loading filetype config: " .. e,
-      vim.log.levels.ERROR
-    )
-  end
+  end, 100)
 end
 
 return M
