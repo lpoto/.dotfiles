@@ -10,30 +10,30 @@ return {
       once = true,
       callback = function()
         local db = require "dashboard"
-        local stats = require("lazy").stats()
 
+        db.center_pad = 2
         db.custom_center = {
           {
-            icon = "   ",
-            desc = "Find  File                              ",
+            icon = "  ",
+            desc = " Find File                              ",
             action = "Telescope find_files find_command=rg,--hidden,--files",
             shortcut = "SPACE n",
           },
           {
-            icon = "   ",
-            desc = "File Browser                            ",
+            icon = " ",
+            desc = " File Browser                            ",
             action = "Telescope file_browser",
             shortcut = "CTRL N",
           },
           {
-            icon = "   ",
-            desc = "Find  word                              ",
+            icon = " 🔍",
+            desc = " Find Word                              ",
             action = "Telescope live_grep",
             shortcut = "SPACE g",
           },
           {
-            icon = "  ",
-            desc = "Package manager                         ",
+            icon = "📦",
+            desc = " Package Manager                         ",
             action = "Mason",
             shortcut = ":Mason",
           },
@@ -44,28 +44,41 @@ return {
 
         if git_dir ~= "" then
           table.insert(db.custom_center, {
-            icon = " ",
-            desc = "Git user interface                      ",
+            icon = "",
+            desc = " Git User Interface                       ",
             action = "Git",
             shortcut = ":Git",
           })
         end
+        table.insert(db.custom_center, {
+          icon = " ",
+          desc = " Neovim Config                              ",
+          action = "lua require('util.open_nvim_config')",
+        })
 
-        db.custom_footer = {
-          desc = "Loaded " .. stats.count .. " plugins",
-        }
+        db.footer_pad = 2
+        db.custom_footer = function()
+          local stats = require("lazy").stats()
+          return {
+            desc = "Loaded " .. stats.count .. " plugins",
+          }
+        end
 
-        db.custom_header = {
-          " ███╗   ██╗ ███████╗ ██████╗  ██╗   ██╗ ██╗ ███╗   ███╗",
-          " ████╗  ██║ ██╔════╝██╔═══██╗ ██║   ██║ ██║ ████╗ ████║",
-          " ██╔██╗ ██║ █████╗  ██║   ██║ ██║   ██║ ██║ ██╔████╔██║",
-          " ██║╚██╗██║ ██╔══╝  ██║   ██║ ╚██╗ ██╔╝ ██║ ██║╚██╔╝██║",
-          " ██║ ╚████║ ███████╗╚██████╔╝  ╚████╔╝  ██║ ██║ ╚═╝ ██║",
-          " ╚═╝  ╚═══╝ ╚══════╝ ╚═════╝    ╚═══╝   ╚═╝ ╚═╝     ╚═╝",
-          "🎉 Loaded in "
-            .. (math.floor(stats.startuptime * 100 + 0.5) / 100)
-            .. "ms",
-        }
+        db.header_pad = 10
+        db.custom_header = function()
+          local stats = require("lazy").stats()
+          return {
+            " ███╗   ██╗ ███████╗ ██████╗  ██╗   ██╗ ██╗ ███╗   ███╗",
+            " ████╗  ██║ ██╔════╝██╔═══██╗ ██║   ██║ ██║ ████╗ ████║",
+            " ██╔██╗ ██║ █████╗  ██║   ██║ ██║   ██║ ██║ ██╔████╔██║",
+            " ██║╚██╗██║ ██╔══╝  ██║   ██║ ╚██╗ ██╔╝ ██║ ██║╚██╔╝██║",
+            " ██║ ╚████║ ███████╗╚██████╔╝  ╚████╔╝  ██║ ██║ ╚═╝ ██║",
+            " ╚═╝  ╚═══╝ ╚══════╝ ╚═════╝    ╚═══╝   ╚═╝ ╚═╝     ╚═╝",
+            "🎉 Loaded in "
+              .. (math.floor(stats.startuptime * 100 + 0.5) / 100)
+              .. "ms",
+          }
+        end
 
         db:instance(true)
       end,
