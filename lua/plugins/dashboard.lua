@@ -51,7 +51,7 @@ return {
           {
             icon = "➡ ",
             icon_hl = { fg = "#dbb671" },
-            desc = " Plugins                                 ",
+            desc = " Plugins                                  ",
             action = "Lazy",
             shortcut = ":Lazy",
           },
@@ -87,8 +87,9 @@ return {
         table.insert(db.custom_center, {
           icon = "⚙ ",
           icon_hl = { fg = "#dbb671" },
-          desc = " Neovim Config                                ",
-          action = "lua require('util.open_nvim_config')",
+          desc = " Neovim Config                          ",
+          action = "Config",
+          shortcut = ":Config",
         })
 
         db.footer_pad = 2

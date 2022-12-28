@@ -95,3 +95,14 @@ mapper.command("WQ", "wq", {
 -- return to normal mode with <Esc>
 
 mapper.map("t", "<Esc>", "<C-\\><C-N>")
+
+-------------------------------------------------------------- OPEN NVIM CONFIG
+
+mapper.command("Config", function()
+  local ok, e = pcall(vim.api.nvim_exec, "find $MYVIMRC", false)
+  if ok == false then
+    vim.notify(e, vim.log.levels.ERROR)
+  else
+    vim.fn.chdir(vim.fn.stdpath "config")
+  end
+end, {})
