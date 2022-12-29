@@ -39,7 +39,7 @@ return {
             icon_hl = { fg = "#dbb671" },
             desc = " File Browser                            ",
             action = "Telescope file_browser",
-            shortcut = "CTRL N",
+            shortcut = "CTRL n",
           },
           {
             icon = "⚙ ",
