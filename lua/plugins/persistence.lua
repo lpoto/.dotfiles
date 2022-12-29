@@ -71,12 +71,45 @@ local function session_finder(results)
   }
 end
 
+local function delete_selected_session(prompt_bufnr)
+  local action_state = require "telescope.actions.state"
+  local picker = action_state.get_current_picker(prompt_bufnr)
+  local selection = action_state.get_selected_entry()
+  local session_file = vim.fn.stdpath "data"
+    .. "/sessions/"
+    .. selection.value
+  if vim.fn.delete(session_file) ~= 0 then
+    vim.notify("Failed to delete session", vim.log.levels.WARN, {
+      title = "Sessions",
+    })
+  else
+    vim.notify("Session deleted", vim.log.levels.INFO, {
+      title = "Sessions",
+    })
+    picker:refresh(session_finder(get_sessions()), { reset_prompt = true })
+  end
+end
+
+local function select_session(prompt_bufnr)
+  local action_state = require "telescope.actions.state"
+  local actions = require "telescope.actions"
+
+  local session_dir = vim.fn.stdpath "data" .. "/sessions/"
+  local selection = action_state.get_selected_entry()
+  actions.close(prompt_bufnr)
+  local session_file = session_dir .. selection.value
+  if vim.fn.filereadable(session_file) == 1 then
+    vim.cmd("silent! source " .. vim.fn.fnameescape(session_file))
+  else
+    vim.notify("Session file is not readable", vim.log.levels.WARN, {
+      title = "Sessions",
+    })
+  end
+end
+
 function M.list_sessions()
   local pickers = require "telescope.pickers"
   local actions = require "telescope.actions"
-  local action_state = require "telescope.actions.state"
-
-  local session_dir = vim.fn.stdpath "data" .. "/sessions/"
 
   local sessions = get_sessions()
   if next(sessions) == nil then
@@ -93,37 +126,15 @@ function M.list_sessions()
       finder = session_finder(sessions),
       attach_mappings = function(prompt_bufnr, map)
         actions.select_default:replace(function()
-          local selection = action_state.get_selected_entry()
-          actions.close(prompt_bufnr)
-          local session_file = session_dir .. selection.value
-          if vim.fn.filereadable(session_file) == 1 then
-            vim.cmd("silent! source " .. vim.fn.fnameescape(session_file))
-          else
-            vim.notify("Session file is not readable", vim.log.levels.WARN, {
-              title = "Sessions",
-            })
-          end
+          select_session(prompt_bufnr)
         end)
         map({ "i", "n" }, "<C-d>", function()
-          local picker = action_state.get_current_picker(prompt_bufnr)
-          local selection = action_state.get_selected_entry()
-          local session_file = vim.fn.stdpath "data"
-            .. "/sessions/"
-            .. selection.value
-          if vim.fn.delete(session_file) ~= 0 then
-            vim.notify("Failed to delete session file", vim.log.levels.WARN, {
-              title = "Sessions",
-            })
-          else
-            vim.notify("Session file deleted", vim.log.levels.INFO, {
-              title = "Sessions",
-            })
-            picker:refresh(
-              session_finder(get_sessions()),
-              { reset_prompt = true }
-            )
-          end
+          delete_selected_session(prompt_bufnr)
         end)
+        map({ "n" }, "d", function()
+          delete_selected_session(prompt_bufnr)
+        end)
+
         return true
       end,
     })
