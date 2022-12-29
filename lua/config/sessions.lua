@@ -84,6 +84,10 @@ local function session_finder(results)
   local entry_display = require "telescope.pickers.entry_display"
   local finders = require "telescope.finders"
 
+  -- Build a telescope finder for the available sessions
+  -- The finder displays the results provided as an argument
+  -- to this function. It displays the session name and the
+  -- last modified time and the keybinding to delte the session.
   return finders.new_table {
     results = results,
     entry_maker = function(line)
@@ -103,6 +107,9 @@ local function session_finder(results)
             "%c",
             vim.fn.getftime(path.join(M.session_dir, e.value))
           )
+          -- NOTE: replate % signs with / in the displayed
+          -- session name, so it better represents the session's
+          -- working directory.
           local value = e.value:gsub(".vim$", ""):gsub("%%", "/")
           return displayer {
             { time, "Comment" },
@@ -124,13 +131,19 @@ local function delete_selected_session(prompt_bufnr)
   local session_file = path.join(M.session_dir, selection.value)
 
   if vim.fn.delete(session_file) ~= 0 then
+    -- Notify that the session could not be deleted
     vim.notify("Failed to delete session", vim.log.levels.WARN, {
       title = "Sessions",
     })
   else
+    -- Notify that the session was successfully deleted
+    -- and refresh the picker with a new finder, so
+    -- the removed session is no longer displayed.
     vim.notify("Session deleted", vim.log.levels.INFO, {
       title = "Sessions",
     })
+    -- TODO: maybe this could be done more elegantly
+    -- by using a different method that just deletes a row
     picker:refresh(session_finder(get_sessions()), { reset_prompt = true })
   end
 end
@@ -141,11 +154,15 @@ local function select_session(prompt_bufnr)
   local actions = require "telescope.actions"
 
   local selection = action_state.get_selected_entry()
+  -- Close the prompt when selecting a session
   actions.close(prompt_bufnr)
   local session_file = path.join(M.session_dir, selection.value)
+  -- NOTE: ensure the session file exists
   if vim.fn.filereadable(session_file) == 1 then
+    -- if the session file exists, load it
     vim.cmd("silent! source " .. vim.fn.fnameescape(session_file))
   else
+    -- Notify that the selected session is no longer available
     vim.notify("Session file is not readable", vim.log.levels.WARN, {
       title = "Sessions",
     })
@@ -154,38 +171,44 @@ end
 
 ---List all available sessions in a telescope prompt.
 ---The sessions may then be selected (loaded) or deleted.
-function M.list_sessions()
+---@param theme table: Optional telescope theme
+function M.list_sessions(theme)
   local pickers = require "telescope.pickers"
   local actions = require "telescope.actions"
 
+  ---NOTE: use ivy theme by default
+  theme = theme or require("telescope.themes").get_ivy()
+
   local sessions = get_sessions()
   if next(sessions) == nil then
+    -- NOTE: Do not open the telescope prompt if there are no sessions
     vim.notify("There are no available sessions", vim.log.levels.WARN, {
       title = "Sessions",
     })
     return
   end
 
-  pickers
-    .new(require("telescope.themes").get_ivy(), {
-      prompt_title = "Sessions",
-      hidden = true,
-      finder = session_finder(sessions),
-      attach_mappings = function(prompt_bufnr, map)
-        actions.select_default:replace(function()
-          select_session(prompt_bufnr)
-        end)
-        map({ "i", "n" }, "<C-d>", function()
-          delete_selected_session(prompt_bufnr)
-        end)
-        map({ "n" }, "d", function()
-          delete_selected_session(prompt_bufnr)
-        end)
+  -- NOTE: build the telescope picker for
+  -- displaying the available sessions
+  local sessions_picker = pickers.new(theme, {
+    prompt_title = "Sessions",
+    finder = session_finder(sessions),
+    attach_mappings = function(prompt_bufnr, map)
+      -- NOTE: load the session under the cursor
+      -- when pressing <CR>
+      actions.select_default:replace(function()
+        select_session(prompt_bufnr)
+      end)
+      -- NOTE: delete the session under
+      -- the cursor when <Ctrl-d> is pressed
+      map({ "i", "n" }, "<C-d>", function()
+        delete_selected_session(prompt_bufnr)
+      end)
+      return true
+    end,
+  })
 
-        return true
-      end,
-    })
-    :find()
+  sessions_picker:find()
 end
 
 return M
