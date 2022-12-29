@@ -58,7 +58,9 @@ function M.command(name, cmd, opts, force)
   force = force or false
   opts = opts or {}
   if not force and vim.fn.exists(":" .. name) ~= 0 then
-    vim.notify("Command already exists: " .. name, vim.log.levels.WARN)
+    vim.notify("Command already exists: " .. name, vim.log.levels.WARN, {
+      title = "Mapper",
+    })
     return
   end
   local ok, e = pcall(vim.api.nvim_create_user_command, name, cmd, opts)
