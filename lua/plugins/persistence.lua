@@ -79,6 +79,7 @@ local function session_finder(results)
             separator = " ",
             items = {
               { width = 30 },
+              { width = vim.o.columns - 31 - 30 },
               { remaining = true },
             },
           }
@@ -87,7 +88,11 @@ local function session_finder(results)
             vim.fn.getftime(path.join(M.session_dir, e.value))
           )
           local value = e.value:gsub(".vim$", ""):gsub("%%", "/")
-          return displayer { { time, "Comment" }, value }
+          return displayer {
+            { time, "Comment" },
+            value,
+            { "Delete with <Ctrl-d>", "Comment" },
+          }
         end,
       }
     end,
