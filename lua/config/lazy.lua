@@ -6,7 +6,7 @@
 --_____________________________________________________________________________
 -- A plugin manager for neovim, this configures and bootstraps it from github.
 ------------------------------------------------------------------------------
-local path = require 'util.path'
+local path = require "util.path"
 local lazypath = path.join(vim.fn.stdpath "data", "lazy", "lazy.nvim")
 
 if not vim.loop.fs_stat(lazypath) then

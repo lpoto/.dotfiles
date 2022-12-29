@@ -144,25 +144,25 @@ function M.list_sessions()
   end
 
   pickers
-      .new(require("telescope.themes").get_ivy(), {
-        prompt_title = "Sessions",
-        hidden = true,
-        finder = session_finder(sessions),
-        attach_mappings = function(prompt_bufnr, map)
-          actions.select_default:replace(function()
-            select_session(prompt_bufnr)
-          end)
-          map({ "i", "n" }, "<C-d>", function()
-            delete_selected_session(prompt_bufnr)
-          end)
-          map({ "n" }, "d", function()
-            delete_selected_session(prompt_bufnr)
-          end)
+    .new(require("telescope.themes").get_ivy(), {
+      prompt_title = "Sessions",
+      hidden = true,
+      finder = session_finder(sessions),
+      attach_mappings = function(prompt_bufnr, map)
+        actions.select_default:replace(function()
+          select_session(prompt_bufnr)
+        end)
+        map({ "i", "n" }, "<C-d>", function()
+          delete_selected_session(prompt_bufnr)
+        end)
+        map({ "n" }, "d", function()
+          delete_selected_session(prompt_bufnr)
+        end)
 
-          return true
-        end,
-      })
-      :find()
+        return true
+      end,
+    })
+    :find()
 end
 
 return M
