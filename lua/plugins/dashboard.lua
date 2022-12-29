@@ -21,6 +21,13 @@ return {
         db.center_pad = 2
         db.custom_center = {
           {
+            icon = "⟳ ",
+            icon_hl = { fg = "#dbb671" },
+            desc = " Sessions                               ",
+            action = "lua require('plugins.persistence').list_sessions()",
+            shortcut = "SPACE s",
+          },
+          {
             icon = " 🗃",
             icon_hl = { fg = "#dbb671" },
             desc = " Recent Files                           ",
