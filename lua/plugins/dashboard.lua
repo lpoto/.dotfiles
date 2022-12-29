@@ -35,13 +35,6 @@ return {
             shortcut = "SPACE n",
           },
           {
-            icon = " ",
-            icon_hl = { fg = "#dbb671" },
-            desc = " File Browser                            ",
-            action = "Telescope file_browser",
-            shortcut = "CTRL N",
-          },
-          {
             icon = "⚙ ",
             icon_hl = { fg = "#dbb671" },
             desc = " Neovim Config Files                    ",
@@ -56,11 +49,18 @@ return {
             shortcut = "SPACE g",
           },
           {
-            icon = "➡ ",
+            icon = "¡ ",
             icon_hl = { fg = "#dbb671" },
-            desc = " Plugins                                  ",
-            action = "Lazy",
-            shortcut = ":Lazy",
+            desc = " Notifications History                  ",
+            action = "lua require('plugins.notify').history()",
+            shortcut = "SPACE i",
+          },
+          {
+            icon = " ",
+            icon_hl = { fg = "#dbb671" },
+            desc = " File Browser                            ",
+            action = "Telescope file_browser",
+            shortcut = "CTRL n",
           },
           {
             icon = " ",
@@ -70,11 +70,11 @@ return {
             shortcut = ":Mason",
           },
           {
-            icon = "¡ ",
+            icon = "➡ ",
             icon_hl = { fg = "#dbb671" },
-            desc = " Notifications History                  ",
-            action = "lua require('plugins.notify').history()",
-            shortcut = "SPACE i",
+            desc = " Plugins                                  ",
+            action = "Lazy",
+            shortcut = ":Lazy",
           },
         }
 
