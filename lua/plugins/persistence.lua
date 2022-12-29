@@ -22,11 +22,13 @@ local M = {
   dir = vim.fn.stdpath "data" .. "/lazy/persistence",
 }
 
+M.session_dir = vim.fn.stdpath "data" .. "/sessions/"
+
 function M.config()
   local mapper = require "util.mapper"
 
   require("persistence").setup {
-    dir = vim.fn.stdpath "data" .. "/sessions/",
+    dir = M.session_dir,
   }
 
   mapper.map(
@@ -38,17 +40,28 @@ function M.config()
   )
 end
 
+--- Get a table of all available sessions located
+--- in the persistence.nivm's session directory.
+--- The sessions are sorted by last modified time,
+--- so the most recent session is at the top.
 local function get_sessions()
   local sessions = {}
-  local session_dir = vim.fn.stdpath "data" .. "/sessions/"
-  for k, v in vim.fs.dir(session_dir) do
+  for k, v in vim.fs.dir(M.session_dir) do
     if v == "file" then
       table.insert(sessions, k)
     end
   end
+  -- NOTE: Sort session so that the most recent is at the top
+  table.sort(sessions, function(a, b)
+    a = M.session_dir ..  a
+    b = M.session_dir  .. b
+    return vim.loop.fs_stat(a).mtime.sec > vim.loop.fs_stat(b).mtime.sec
+  end)
   return sessions
 end
 
+--- Create a telescope finder for all available sessions.
+--- The dinfer displays the session name and the last modified time.
 local function session_finder(results)
   local entry_display = require "telescope.pickers.entry_display"
   local finders = require "telescope.finders"
@@ -61,23 +74,30 @@ local function session_finder(results)
         ordinal = line,
         display = function(e)
           local displayer = entry_display.create {
-            items = { { width = 0.99 } },
+            separator = " ",
+            items = {
+              { width = 30 },
+              { remaining = true },
+            },
           }
+          local time = vim.fn.strftime(
+            "%c",
+            vim.fn.getftime(M.session_dir  .. e.value)
+          )
           local v = e.value:gsub("%%", "/"):gsub(".vim$", "")
-          return displayer { v }
+          return displayer { {time, "Comment"}, v }
         end,
       }
     end,
   }
 end
 
+---Delete the session selected in a telescope prompt
 local function delete_selected_session(prompt_bufnr)
   local action_state = require "telescope.actions.state"
   local picker = action_state.get_current_picker(prompt_bufnr)
   local selection = action_state.get_selected_entry()
-  local session_file = vim.fn.stdpath "data"
-    .. "/sessions/"
-    .. selection.value
+  local session_file = M.session_dir  .. selection.value
   if vim.fn.delete(session_file) ~= 0 then
     vim.notify("Failed to delete session", vim.log.levels.WARN, {
       title = "Sessions",
@@ -90,14 +110,14 @@ local function delete_selected_session(prompt_bufnr)
   end
 end
 
+---Load the session selected in a telescope prompt
 local function select_session(prompt_bufnr)
   local action_state = require "telescope.actions.state"
   local actions = require "telescope.actions"
 
-  local session_dir = vim.fn.stdpath "data" .. "/sessions/"
   local selection = action_state.get_selected_entry()
   actions.close(prompt_bufnr)
-  local session_file = session_dir .. selection.value
+  local session_file = M.session_dir  .. selection.value
   if vim.fn.filereadable(session_file) == 1 then
     vim.cmd("silent! source " .. vim.fn.fnameescape(session_file))
   else
@@ -107,6 +127,8 @@ local function select_session(prompt_bufnr)
   end
 end
 
+---List all available sessions in a telescope prompt.
+---The sessions may then be selected (loaded) or deleted.
 function M.list_sessions()
   local pickers = require "telescope.pickers"
   local actions = require "telescope.actions"
@@ -120,25 +142,25 @@ function M.list_sessions()
   end
 
   pickers
-    .new(require("telescope.themes").get_ivy(), {
-      prompt_title = "Sessions",
-      hidden = true,
-      finder = session_finder(sessions),
-      attach_mappings = function(prompt_bufnr, map)
-        actions.select_default:replace(function()
-          select_session(prompt_bufnr)
-        end)
-        map({ "i", "n" }, "<C-d>", function()
-          delete_selected_session(prompt_bufnr)
-        end)
-        map({ "n" }, "d", function()
-          delete_selected_session(prompt_bufnr)
-        end)
+      .new(require("telescope.themes").get_ivy(), {
+        prompt_title = "Sessions",
+        hidden = true,
+        finder = session_finder(sessions),
+        attach_mappings = function(prompt_bufnr, map)
+          actions.select_default:replace(function()
+            select_session(prompt_bufnr)
+          end)
+          map({ "i", "n" }, "<C-d>", function()
+            delete_selected_session(prompt_bufnr)
+          end)
+          map({ "n" }, "d", function()
+            delete_selected_session(prompt_bufnr)
+          end)
 
-        return true
-      end,
-    })
-    :find()
+          return true
+        end,
+      })
+      :find()
 end
 
 return M
