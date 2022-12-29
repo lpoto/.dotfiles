@@ -16,6 +16,7 @@ local path = require "util.path"
 
 local M = {}
 
+---@type string: Path to the directory where sessions are saved
 M.session_dir = path.join(vim.fn.stdpath "data", "sessions")
 
 --- Create an autocomand that saves the session when you quit neovim.
@@ -30,11 +31,13 @@ function M.config()
   --NOTE: register the VimLeavePre autocmd only
   --after entering a buffer, so empty sessions are not saved.
   vim.api.nvim_create_autocmd("BufEnter", {
+    group = "Sessions",
     once = true,
     nested = true,
     callback = function()
       vim.api.nvim_create_autocmd("VimLeavePre", {
         once = true,
+        group = "Sessions",
         callback = function()
           -- When leaving neovim, save the current session
           -- to the session directory.
