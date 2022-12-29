@@ -12,23 +12,33 @@ Keymaps:
     - <leader>i  - show notifications history
 --]]
 
-return {
+local M = {
   "rcarriga/nvim-notify",
   event = "VeryLazy",
-  config = function()
-    local notify = require "notify"
-    notify.setup {
-      level = vim.log.levels.INFO,
-      timeout = 2000,
-      background_colour = "#000000",
-    }
-    vim.notify = notify
-
-    local mapper = require "util.mapper"
-    mapper.map(
-      "n",
-      "<leader>i",
-      "<cmd>lua require('telescope').extensions.notify.notify()<CR>"
-    )
-  end,
 }
+
+function M.config()
+  local notify = require "notify"
+  notify.setup {
+    level = vim.log.levels.INFO,
+    timeout = 2000,
+    background_colour = "#000000",
+  }
+  vim.notify = notify
+
+  local mapper = require "util.mapper"
+  mapper.map(
+    "n",
+    "<leader>i",
+    "<cmd>lua require('plugins.notify').history()<CR>"
+  )
+end
+
+---Display notify history in a telescope prompt
+function M.history()
+  require("telescope").extensions.notify.notify(
+    require("telescope.themes").get_ivy()
+  )
+end
+
+return M
