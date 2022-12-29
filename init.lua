@@ -23,5 +23,6 @@ vim.api.nvim_create_autocmd("User", {
     --require("util.version").ensure()
     require "config.remappings"
     require("config.local_config").enable()
+    require("config.sessions").config()
   end,
 })

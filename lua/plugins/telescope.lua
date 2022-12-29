@@ -114,42 +114,47 @@ function M.config()
   }
   telescope.load_extension "file_browser"
 
-  local mapper = require "util.mapper"
-
-  mapper.map(
+  vim.api.nvim_set_keymap(
     "n",
     "<leader>n",
-    "<cmd>lua require('telescope.builtin').find_files()<CR>"
+    "<cmd>lua require('telescope.builtin').find_files()<CR>",
+    { noremap = true }
   )
-  mapper.map(
+  vim.api.nvim_set_keymap(
     "n",
     "<leader>m",
-    "<cmd>lua require('telescope.builtin').oldfiles()<CR>"
+    "<cmd>lua require('telescope.builtin').oldfiles()<CR>",
+    { noremap = true }
   )
-  mapper.map(
+  vim.api.nvim_set_keymap(
     "n",
     "<leader>q",
-    "<cmd>lua require('telescope.builtin').quickfix()<CR>"
+    "<cmd>lua require('telescope.builtin').quickfix()<CR>",
+    { noremap = true }
   )
-  mapper.map(
+  vim.api.nvim_set_keymap(
     "n",
     "<leader>d",
-    "<cmd>lua require('telescope.builtin').diagnostics()<CR>"
+    "<cmd>lua require('telescope.builtin').diagnostics()<CR>",
+    { noremap = true }
   )
-  mapper.map(
+  vim.api.nvim_set_keymap(
     "n",
     "<leader>g",
-    "<cmd>lua require('telescope.builtin').live_grep()<CR>"
+    "<cmd>lua require('telescope.builtin').live_grep()<CR>",
+    { noremap = true }
   )
-  mapper.map(
+  vim.api.nvim_set_keymap(
     "n",
     "<C-n>",
-    "<cmd>lua require('telescope').extensions.file_browser.file_browser()<CR>"
+    "<cmd>lua require('telescope').extensions.file_browser.file_browser()<CR>",
+    { noremap = true }
   )
-  mapper.map(
+  vim.api.nvim_set_keymap(
     "n",
     "<leader>c",
-    "<cmd>lua require('plugins.telescope').neovim_config_files()<CR>"
+    "<cmd>lua require('plugins.telescope').neovim_config_files()<CR>",
+    { noremap = true }
   )
 end
 

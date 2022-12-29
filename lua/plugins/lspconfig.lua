@@ -24,16 +24,26 @@ Keymaps:
 local M = {
   "neovim/nvim-lspconfig",
   config = function()
-    local mapper = require "util.mapper"
-
-    mapper.map(
+    vim.api.nvim_set_keymap(
       "n",
       "K",
-      "<cmd>lua require('plugins.lspconfig')" .. ".show_definition()<CR>"
+      "<cmd>lua require('plugins.lspconfig')" .. ".show_definition()<CR>",
+      { noremap = true }
     )
-    mapper.map("n", "<C-k>", "<cmd>lua vim.lsp.buf.hover()<CR>")
-    mapper.map("n", "<C-d>", "<cmd>lua vim.diagnostic.open_float()<CR>")
-    mapper.map("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>")
+    vim.api.nvim_set_keymap("n", "<C-k>", "<cmd>lua vim.lsp.buf.hover()<CR>", {
+      noremap = true,
+    })
+    vim.api.nvim_set_keymap(
+      "n",
+      "<C-d>",
+      "<cmd>lua vim.diagnostic.open_float()<CR>",
+      {
+        noremap = true,
+      }
+    )
+    vim.api.nvim_set_keymap("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", {
+      noremap = true,
+    })
   end,
   dependencies = {
     "hrsh7th/cmp-nvim-lsp",

@@ -26,11 +26,11 @@ function M.config()
   }
   vim.notify = notify
 
-  local mapper = require "util.mapper"
-  mapper.map(
+  vim.api.nvim_set_keymap(
     "n",
     "<leader>i",
-    "<cmd>lua require('plugins.notify').history()<CR>"
+    "<cmd>lua require('plugins.notify').history()<CR>",
+    { noremap = true }
   )
 end
 

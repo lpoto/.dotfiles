@@ -23,13 +23,14 @@ local M = {
 }
 function M.config()
   local null_ls = require "null-ls"
-  local mapper = require "util.mapper"
 
   null_ls.setup()
-  mapper.map(
+
+  vim.api.nvim_set_keymap(
     "n",
     "<leader>f",
-    "<cmd>lua require('plugins.null-ls').format()<CR>"
+    "<cmd>lua require('plugins.null-ls').format()<CR>",
+    { noremap = true }
   )
 end
 

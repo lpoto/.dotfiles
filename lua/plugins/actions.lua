@@ -20,15 +20,14 @@ local M = {
 
 function M.config()
   local actions = require "actions"
-  local mapper = require "util.mapper"
-
   local actions_config = require "plugins.actions"
+
   actions.setup {
     actions = actions_config.actions,
   }
   actions_config.actions = nil
 
-  mapper.command("Actions", function()
+  vim.api.nvim_create_user_command("Actions", function()
     pcall(require, "telescope")
     if package.loaded["telescope"] then
       require("actions.telescope").available_actions(
@@ -37,14 +36,15 @@ function M.config()
     else
       require("actions").available_actions()
     end
-  end)
+  end, {})
 
   -- NOTE: toggle the output of the latest action
 
-  mapper.map(
+  vim.api.nvim_set_keymap(
     "n",
     "<leader>e",
-    "<CMD>lua require('actions').toggle_last_output()<CR>"
+    "<CMD>lua require('actions').toggle_last_output()<CR>",
+    { noremap = true }
   )
 end
 

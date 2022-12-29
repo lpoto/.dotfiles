@@ -1,10 +1,7 @@
 --=============================================================================
 -------------------------------------------------------------------------------
---                                                             PERSISTENCE.NVIM
+--                                                                     SESSIONS
 --=============================================================================
--- https://github.com/folke/persistence.nvim
---_____________________________________________________________________________
-
 --[[
 Automated session management.
 
@@ -13,32 +10,48 @@ Keymaps:
               - NOTE: delete session with <C-d>
 
 NOTE: session is saved automatically when yout quit neovim.
---]]
+-----------------------------------------------------------------------------]]
 
 local path = require "util.path"
 
-local M = {
-  "folke/persistence.nvim",
-  event = "VimLeavePre",
-  keys = { "<leader>s" },
-  dir = path.join(vim.fn.stdpath "data", "lazy", "persistence"),
-}
+local M = {}
 
-M.session_dir = path.join(vim.fn.stdpath "data", "sessions", "")
+M.session_dir = path.join(vim.fn.stdpath "data", "sessions")
 
+--- Create an autocomand that saves the session when you quit neovim.
+--- Create a keymap that lists sessions in a telescope prompt.
 function M.config()
-  local mapper = require "util.mapper"
+  if vim.fn.isdirectory(M.session_dir) == 0 then
+    vim.fn.mkdir(M.session_dir, "p")
+  end
 
-  require("persistence").setup {
-    dir = M.session_dir,
-  }
+  vim.api.nvim_create_augroup("Sessions", { clear = true })
 
-  mapper.map(
+  --NOTE: register the VimLeavePre autocmd only
+  --after entering a buffer, so empty sessions are not saved.
+  vim.api.nvim_create_autocmd("BufEnter", {
+    once = true,
+    nested = true,
+    callback = function()
+      vim.api.nvim_create_autocmd("VimLeavePre", {
+        once = true,
+        callback = function()
+          -- When leaving neovim, save the current session
+          -- to the session directory.
+          local name =
+            vim.fn.getcwd():gsub(require("util.path").separator, "%%")
+          local file = path.join(M.session_dir, name .. ".vim")
+          vim.cmd("mksession! " .. vim.fn.fnameescape(file))
+        end,
+      })
+    end,
+  })
+
+  vim.api.nvim_set_keymap(
     "n",
     "<leader>s",
-    "<CMD>lua require('plugins.persistence').list_sessions()<CR>",
-    {},
-    true
+    "<CMD>lua require('config.sessions').list_sessions()<CR>",
+    { noremap = true }
   )
 end
 
@@ -104,7 +117,9 @@ local function delete_selected_session(prompt_bufnr)
   local action_state = require "telescope.actions.state"
   local picker = action_state.get_current_picker(prompt_bufnr)
   local selection = action_state.get_selected_entry()
-  local session_file = M.session_dir .. selection.value
+
+  local session_file = path.join(M.session_dir, selection.value)
+
   if vim.fn.delete(session_file) ~= 0 then
     vim.notify("Failed to delete session", vim.log.levels.WARN, {
       title = "Sessions",
@@ -124,7 +139,7 @@ local function select_session(prompt_bufnr)
 
   local selection = action_state.get_selected_entry()
   actions.close(prompt_bufnr)
-  local session_file = M.session_dir .. selection.value
+  local session_file = path.join(M.session_dir, selection.value)
   if vim.fn.filereadable(session_file) == 1 then
     vim.cmd("silent! source " .. vim.fn.fnameescape(session_file))
   else

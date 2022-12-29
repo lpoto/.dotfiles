@@ -24,7 +24,7 @@ return {
             icon = "⟳ ",
             icon_hl = { fg = "#dbb671" },
             desc = " Sessions                               ",
-            action = "lua require('plugins.persistence').list_sessions()",
+            action = "lua require('config.sessions').list_sessions()",
             shortcut = "<Space-s>",
           },
           {

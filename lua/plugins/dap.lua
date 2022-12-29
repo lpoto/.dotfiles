@@ -48,7 +48,6 @@ function M.toggle_repl()
 end
 
 function M.config()
-  local mapper = require "util.mapper"
   local dap = require "dap"
   local repl = require "dap.repl"
 
@@ -104,17 +103,32 @@ function M.config()
   })
 
   -- toggle repl vertical split with <Alt> + r
-  mapper.map(
+  vim.api.nvim_set_keymap(
     "n",
     "<A-r>",
-    "<CMD>lua require('plugins.dap').toggle_repl()<CR>"
+    "<CMD>lua require('plugins.dap').toggle_repl()<CR>",
+    { noremap = true }
   )
 
   -- Continue with <Alt>n
-  mapper.map("n", "<A-n>", "<CMD>lua require('dap').continue()<CR>")
+  vim.api.nvim_set_keymap(
+    "n",
+    "<A-n>",
+    "<CMD>lua require('dap').continue()<CR>",
+    {
+      noremap = true,
+    }
+  )
 
   -- Set breakpoint with Alt b
-  mapper.map("n", "<A-b>", "<CMD>lua require('dap').toggle_breakpoint()<CR>")
+  vim.api.nvim_set_keymap(
+    "n",
+    "<A-b>",
+    "<CMD>lua require('dap').toggle_breakpoint()<CR>",
+    {
+      noremap = true,
+    }
+  )
 
   local plugin_config = require "plugins.dap"
   dap.adapters = plugin_config.adapters or {}
