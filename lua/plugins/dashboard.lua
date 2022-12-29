@@ -56,7 +56,7 @@ return {
             shortcut = "<Space-g>",
           },
           {
-            icon = "¡ ",
+            icon = "⚠ ",
             icon_hl = { fg = "#dbb671" },
             desc = " Notifications History                  ",
             action = "lua require('plugins.notify').history()",
