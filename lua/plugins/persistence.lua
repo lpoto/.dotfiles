@@ -15,14 +15,16 @@ Keymaps:
 NOTE: session is saved automatically when yout quit neovim.
 --]]
 
+local path = require "util.path"
+
 local M = {
   "folke/persistence.nvim",
   event = "VimLeavePre",
   keys = { "<leader>s" },
-  dir = vim.fn.stdpath "data" .. "/lazy/persistence",
+  dir = path.join(vim.fn.stdpath "data", "lazy", "persistence"),
 }
 
-M.session_dir = vim.fn.stdpath "data" .. "/sessions/"
+M.session_dir = path.join(vim.fn.stdpath "data", "sessions", "")
 
 function M.config()
   local mapper = require "util.mapper"
@@ -53,8 +55,8 @@ local function get_sessions()
   end
   -- NOTE: Sort session so that the most recent is at the top
   table.sort(sessions, function(a, b)
-    a = M.session_dir ..  a
-    b = M.session_dir  .. b
+    a = path.join(M.session_dir, a)
+    b = path.join(M.session_dir, b)
     return vim.loop.fs_stat(a).mtime.sec > vim.loop.fs_stat(b).mtime.sec
   end)
   return sessions
@@ -82,10 +84,10 @@ local function session_finder(results)
           }
           local time = vim.fn.strftime(
             "%c",
-            vim.fn.getftime(M.session_dir  .. e.value)
+            vim.fn.getftime(path.join(M.session_dir, e.value))
           )
-          local v = e.value:gsub("%%", "/"):gsub(".vim$", "")
-          return displayer { {time, "Comment"}, v }
+          local value = e.value:gsub(".vim$", ""):gsub("%%", "/")
+          return displayer { { time, "Comment" }, value }
         end,
       }
     end,
@@ -97,7 +99,7 @@ local function delete_selected_session(prompt_bufnr)
   local action_state = require "telescope.actions.state"
   local picker = action_state.get_current_picker(prompt_bufnr)
   local selection = action_state.get_selected_entry()
-  local session_file = M.session_dir  .. selection.value
+  local session_file = M.session_dir .. selection.value
   if vim.fn.delete(session_file) ~= 0 then
     vim.notify("Failed to delete session", vim.log.levels.WARN, {
       title = "Sessions",
@@ -117,7 +119,7 @@ local function select_session(prompt_bufnr)
 
   local selection = action_state.get_selected_entry()
   actions.close(prompt_bufnr)
-  local session_file = M.session_dir  .. selection.value
+  local session_file = M.session_dir .. selection.value
   if vim.fn.filereadable(session_file) == 1 then
     vim.cmd("silent! source " .. vim.fn.fnameescape(session_file))
   else
