@@ -47,47 +47,77 @@ vim.api.nvim_set_keymap(
 -- create new vertical split with "<leader> + v"
 -- resize all windows to same width with "<leader> + w"
 
-vim.api.nvim_set_keymap("n", "+", "<cmd>vertical resize +5<CR>", {})
-vim.api.nvim_set_keymap("n", "-", "<cmd>vertical resize -5<CR>", {})
-vim.api.nvim_set_keymap("n", "<leader>v", "<cmd>vertical new<CR>", {})
-vim.api.nvim_set_keymap("n", "<leader>w", "<C-W>=", {})
+vim.api.nvim_set_keymap(
+  "n",
+  "+",
+  "<cmd>vertical resize +5<CR>",
+  { noremap = true }
+)
+vim.api.nvim_set_keymap(
+  "n",
+  "-",
+  "<cmd>vertical resize -5<CR>",
+  { noremap = true }
+)
+vim.api.nvim_set_keymap(
+  "n",
+  "<leader>v",
+  "<cmd>vertical new<CR>",
+  { noremap = true }
+)
+vim.api.nvim_set_keymap("n", "<leader>w", "<C-W>=", { noremap = true })
 
 ------------------------------------------------------------------- VISUAL MODE
 -- Ctrl + c' - yanked text to clipboard
 
-vim.api.nvim_set_keymap("n", "<C-c>", '<cmd>let @+=@"<CR>', {})
+vim.api.nvim_set_keymap(
+  "n",
+  "<C-c>",
+  '<cmd>let @+=@"<CR>',
+  { noremap = true }
+)
 
 ----------------------------------------------------------------------- JUMPING
 -- center cursor when jumping, jump forward with tab, backward with shift-tab
 -- count j and k commands with a number larger than 5 as jumps
 -- Navigate quickfix with <leader>l and <leader>h
 
-vim.api.nvim_set_keymap("n", "n", "nzzzv", {})
-vim.api.nvim_set_keymap("n", "N", "Nzzzv", {})
-vim.api.nvim_set_keymap("n", "J", "mzJ'z", {})
-vim.api.nvim_set_keymap("n", "<leader>l", "<cmd>cnext<CR>zzzv", {})
-vim.api.nvim_set_keymap("n", "<leader>h", "<cmd>cprev<CR>zzzv", {})
-vim.api.nvim_set_keymap("n", "<S-TAB>", "<C-O>zzzv", {})
+vim.api.nvim_set_keymap("n", "n", "nzzzv", { noremap = true })
+vim.api.nvim_set_keymap("n", "N", "Nzzzv", { noremap = true })
+vim.api.nvim_set_keymap("n", "J", "mzJ'z", { noremap = true })
+vim.api.nvim_set_keymap(
+  "n",
+  "<leader>l",
+  "<cmd>cnext<CR>zzzv",
+  { noremap = true }
+)
+vim.api.nvim_set_keymap(
+  "n",
+  "<leader>h",
+  "<cmd>cprev<CR>zzzv",
+  { noremap = true }
+)
+vim.api.nvim_set_keymap("n", "<S-TAB>", "<C-O>zzzv", { noremap = true })
 vim.api.nvim_set_keymap(
   "n",
   "<expr> k",
   '(v:count > 5 ? "m\'" . v:count : "") . \'k\'',
-  {}
+  { noremap = true }
 )
 vim.api.nvim_set_keymap(
   "n",
   "<expr> j",
   '(v:count > 5 ? "m\'" . v:count : "") . \'j\'',
-  {}
+  { noremap = true }
 )
 
 ----------------------------------------------------------- UNDO BREAK POINTS
 -- start a new undo chain with punctuations
 
-vim.api.nvim_set_keymap("i", ",", ",<c-g>u", {})
-vim.api.nvim_set_keymap("i", ".", ".<c-g>u", {})
-vim.api.nvim_set_keymap("i", "!", "!<c-g>u", {})
-vim.api.nvim_set_keymap("i", "?", "?<c-g>u", {})
+vim.api.nvim_set_keymap("i", ",", ",<c-g>u", { noremap = true })
+vim.api.nvim_set_keymap("i", ".", ".<c-g>u", { noremap = true })
+vim.api.nvim_set_keymap("i", "!", "!<c-g>u", { noremap = true })
+vim.api.nvim_set_keymap("i", "?", "?<c-g>u", { noremap = true })
 
 ----------------------------------------------------------------------- WRITING
 
@@ -124,7 +154,7 @@ vim.api.nvim_create_user_command("WQ", "wq", {
 ---------------------------------------------------------------------- TERMINAL
 -- return to normal mode with <Esc>
 
-vim.api.nvim_set_keymap("t", "<Esc>", "<C-\\><C-N>", {})
+vim.api.nvim_set_keymap("t", "<Esc>", "<C-\\><C-N>", { noremap = true })
 
 -------------------------------------------------------------- OPEN NVIM CONFIG
 
