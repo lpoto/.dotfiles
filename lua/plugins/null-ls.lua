@@ -18,9 +18,10 @@ Commands:
 
 local M = {
   "jose-elias-alvarez/null-ls.nvim",
-  --keys = "<leader>f",
-  --cmd = "NullLsInfo",
+  keys = "<leader>f",
+  cmd = { "NullLsInfo", "NullLsLog" },
 }
+
 function M.config()
   local null_ls = require "null-ls"
 

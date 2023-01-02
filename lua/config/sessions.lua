@@ -28,7 +28,10 @@ M.ignore_filetype_patterns = {
   "dashboard",
   "Neogit.*",
   "Telecope.*",
-  "",
+  "lazy",
+  "null-ls-info",
+  "Lsp.*",
+  "mason",
 }
 
 ---@type string: Title used for logging, creating augroups,
@@ -74,12 +77,13 @@ function M.config()
 
           local buffers = vim.api.nvim_list_bufs()
           local removed = 0
+
           for _, buf in ipairs(buffers) do
             local filetype = vim.api.nvim_buf_get_option(buf, "filetype")
             -- NOTE: remove some buffers that are not needed
             -- when restoring the session.
             for _, pattern in ipairs(M.ignore_filetype_patterns) do
-              if filetype:match(pattern) then
+              if filetype:match(pattern) or filetype:len() == 0 then
                 pcall(vim.api.nvim_buf_delete, buf, { force = true })
                 removed = removed + 1
                 break
@@ -95,7 +99,7 @@ function M.config()
           end
 
           local name =
-            vim.fn.getcwd():gsub(require("util.path").separator, "%%")
+          vim.fn.getcwd():gsub(require("util.path").separator, "%%")
           local file = path.join(M.session_dir, name .. ".vim")
           pcall(
             vim.api.nvim_exec,
