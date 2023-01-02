@@ -23,6 +23,7 @@ Keymaps:
 
 local M = {
   "neovim/nvim-lspconfig",
+  cmd = { "LspStart", "LspInfo" },
   config = function()
     vim.api.nvim_set_keymap(
       "n",
