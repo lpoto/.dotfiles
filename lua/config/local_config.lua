@@ -4,12 +4,15 @@
 --=============================================================================
 -- Enable neovim's exrc option so it shources local
 --    .nvim.lua
--- Files.
+--    .nvimrc
+--    .exrc
+-- Files (The first it finds).
 --
 -- This required version 0.9 so the local files are sourced safely.
 --_____________________________________________________________________________
 
 local version = require "util.version"
+local path = require "util.path"
 local loaded_configs = {}
 
 local M = {}
@@ -29,12 +32,12 @@ end
 function M.secure_read_local_config()
   local cwd = vim.fn.getcwd()
   for _ = 1, 3 do
-    for _, name in ipairs { ".nvim.lua" } do
-      if vim.fn.file_readable(cwd .. "/" .. name) == 1 then
-        if loaded_configs[cwd .. "/" .. name] then
+    for _, name in ipairs { ".nvim.lua", ".nvimrc", ".exrc" } do
+      if vim.fn.file_readable(path.join(cwd, name)) == 1 then
+        if loaded_configs[path.join(cwd, name)] then
           return
         end
-        loaded_configs[cwd .. "/" .. name] = true
+        loaded_configs[path.join(cwd, name)] = true
         if not version.check() then
           vim.notify(
             "Version "
@@ -45,11 +48,15 @@ function M.secure_read_local_config()
           )
           return
         end
-        local s = vim.secure.read(cwd .. "/" .. name)
+        local s = vim.secure.read(path.join(cwd, name))
         if s ~= nil then
           local loaded = true
           if string.len(s) > 0 then
-            local ok, e = pcall(vim.fn.luaeval, s)
+            local ok, e = pcall(
+              vim.api.nvim_exec,
+              "source " .. path.join(cwd, name),
+              false
+            )
             if ok == false then
               vim.notify(e, vim.log.levels.ERROR, { title = "Local Config" })
               loaded = false
@@ -57,7 +64,7 @@ function M.secure_read_local_config()
           end
           if loaded then
             vim.notify(
-              "Loaded " .. cwd .. "/" .. name,
+              "Loaded " .. path.join(cwd, name),
               vim.log.levels.INFO,
               { title = "Local Config" }
             )

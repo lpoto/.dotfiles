@@ -24,7 +24,7 @@ return {
             icon = "⟳ ",
             icon_hl = { fg = "#dbb671" },
             desc = " Sessions                               ",
-            action = "lua require('plugins.persistence').list_sessions()",
+            action = "lua require('config.sessions').list_sessions()",
             shortcut = "<Space-s>",
           },
           {
@@ -56,7 +56,7 @@ return {
             shortcut = "<Space-g>",
           },
           {
-            icon = "¡ ",
+            icon = "⚠ ",
             icon_hl = { fg = "#dbb671" },
             desc = " Notifications History                  ",
             action = "lua require('plugins.notify').history()",

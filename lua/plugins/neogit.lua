@@ -17,7 +17,6 @@ return {
   cmd = { "Git", "Neogit" }, -- Open the Neogit tab
   config = function()
     local neogit = require "neogit"
-    local mapper = require "util.mapper"
 
     neogit.setup {
       disable_signs = true,
@@ -25,7 +24,7 @@ return {
 
     --NOTE: set :Git as the command for oppening neogit
     --Setup the :Git command exatcly the same as is :Neogit
-    mapper.command("Git", function(o)
+    vim.api.nvim_create_user_command("Git", function(o)
       local ng = require "neogit"
       ng.open(require("neogit.lib.util").parse_command_args(o.fargs))
     end, {

@@ -11,81 +11,141 @@
 ---(renaming file, scrolling popups, window managing, visual mode, jumping,
 ---undoing breakpoints, moving text, writing,...)
 
-local mapper = require "util.mapper"
-
 --------------------------------------------------------------- SCROLLING POPUP
 -- down with tab, up with shift-tab, select with enter
 
-mapper.map("", "<expr><Tab>", "pumvisible() ? '\\<C-n>' : '\\<TAB>'")
-mapper.map(
+vim.api.nvim_set_keymap(
+  "",
+  "<expr><Tab>",
+  "pumvisible() ? '\\<C-n>' : '\\<TAB>'",
+  {
+    noremap = true,
+    silent = true,
+  }
+)
+vim.api.nvim_set_keymap(
   "",
   "<expr><S-Tab>",
   "pumvisible() ? '\\<C-p>' : '\\<S-TAB>'",
-  {},
-  true
+  {
+    noremap = true,
+    silent = true,
+  }
 )
-mapper.map("", "<expr><CR>", "pumvisible() ? '\\<C-y>' : '\\<CR>'")
+vim.api.nvim_set_keymap(
+  "",
+  "<expr><CR>",
+  "pumvisible() ? '\\<C-y>' : '\\<CR>'",
+  {
+    noremap = true,
+    silent = true,
+  }
+)
 
 --------------------------------------------------------------- WINDOW MANAGING
 -- increase the size of a window with +, decrease with -
 -- create new vertical split with "<leader> + v"
 -- resize all windows to same width with "<leader> + w"
 
-mapper.map("n", "+", "<cmd>vertical resize +5<CR>")
-mapper.map("n", "-", "<cmd>vertical resize -5<CR>")
-mapper.map("n", "<leader>v", "<cmd>vertical new<CR>")
-mapper.map("n", "<leader>w", "<C-W>=")
+vim.api.nvim_set_keymap(
+  "n",
+  "+",
+  "<cmd>vertical resize +5<CR>",
+  { noremap = true }
+)
+vim.api.nvim_set_keymap(
+  "n",
+  "-",
+  "<cmd>vertical resize -5<CR>",
+  { noremap = true }
+)
+vim.api.nvim_set_keymap(
+  "n",
+  "<leader>v",
+  "<cmd>vertical new<CR>",
+  { noremap = true }
+)
+vim.api.nvim_set_keymap("n", "<leader>w", "<C-W>=", { noremap = true })
 
 ------------------------------------------------------------------- VISUAL MODE
 -- Ctrl + c' - yanked text to clipboard
 
-mapper.map("n", "<C-c>", '<cmd>let @+=@"<CR>')
+vim.api.nvim_set_keymap(
+  "n",
+  "<C-c>",
+  '<cmd>let @+=@"<CR>',
+  { noremap = true }
+)
 
 ----------------------------------------------------------------------- JUMPING
 -- center cursor when jumping, jump forward with tab, backward with shift-tab
 -- count j and k commands with a number larger than 5 as jumps
 -- Navigate quickfix with <leader>l and <leader>h
 
-mapper.map("n", "n", "nzzzv")
-mapper.map("n", "N", "Nzzzv")
-mapper.map("n", "J", "mzJ'z")
-mapper.map("n", "<leader>l", "<cmd>cnext<CR>zzzv")
-mapper.map("n", "<leader>h", "<cmd>cprev<CR>zzzv")
-mapper.map("n", "<S-TAB>", "<C-O>zzzv", {}, true)
-mapper.map("n", "<expr> k", '(v:count > 5 ? "m\'" . v:count : "") . \'k\'')
-mapper.map("n", "<expr> j", '(v:count > 5 ? "m\'" . v:count : "") . \'j\'')
+vim.api.nvim_set_keymap("n", "n", "nzzzv", { noremap = true })
+vim.api.nvim_set_keymap("n", "N", "Nzzzv", { noremap = true })
+vim.api.nvim_set_keymap("n", "J", "mzJ'z", { noremap = true })
+vim.api.nvim_set_keymap(
+  "n",
+  "<leader>l",
+  "<cmd>cnext<CR>zzzv",
+  { noremap = true }
+)
+vim.api.nvim_set_keymap(
+  "n",
+  "<leader>h",
+  "<cmd>cprev<CR>zzzv",
+  { noremap = true }
+)
+vim.api.nvim_set_keymap("n", "<S-TAB>", "<C-O>zzzv", { noremap = true })
+vim.api.nvim_set_keymap(
+  "n",
+  "<expr> k",
+  '(v:count > 5 ? "m\'" . v:count : "") . \'k\'',
+  { noremap = true }
+)
+vim.api.nvim_set_keymap(
+  "n",
+  "<expr> j",
+  '(v:count > 5 ? "m\'" . v:count : "") . \'j\'',
+  { noremap = true }
+)
 
 ----------------------------------------------------------- UNDO BREAK POINTS
 -- start a new undo chain with punctuations
 
-mapper.map("i", ",", ",<c-g>u")
-mapper.map("i", ".", ".<c-g>u")
-mapper.map("i", "!", "!<c-g>u")
-mapper.map("i", "?", "?<c-g>u")
+vim.api.nvim_set_keymap("i", ",", ",<c-g>u", { noremap = true })
+vim.api.nvim_set_keymap("i", ".", ".<c-g>u", { noremap = true })
+vim.api.nvim_set_keymap("i", "!", "!<c-g>u", { noremap = true })
+vim.api.nvim_set_keymap("i", "?", "?<c-g>u", { noremap = true })
 
 ----------------------------------------------------------------------- WRITING
 
-mapper.command("W", "w", { nargs = "*", bang = true, complete = "file" })
+vim.api.nvim_create_user_command(
+  "W",
+  "w",
+  { nargs = "*", bang = true, complete = "file" }
+)
 
-mapper.command("Q", "q", {
+vim.api.nvim_create_user_command("Q", "q", {
   bang = true,
 })
-mapper.command("Qw", "qw", {
+vim.api.nvim_create_user_command("Qw", "qw", {
   nargs = "*",
   bang = true,
   complete = "file",
 })
-mapper.command("QW", "qw", {
+vim.api.nvim_create_user_command("QW", "qw", {
   nargs = "*",
   bang = true,
   complete = "file",
 })
-mapper.command("Wq", "wq", {
+vim.api.nvim_create_user_command("Wq", "wq", {
   nargs = "*",
   bang = true,
   complete = "file",
 })
-mapper.command("WQ", "wq", {
+vim.api.nvim_create_user_command("WQ", "wq", {
   nargs = "*",
   bang = true,
   complete = "file",
@@ -94,11 +154,11 @@ mapper.command("WQ", "wq", {
 ---------------------------------------------------------------------- TERMINAL
 -- return to normal mode with <Esc>
 
-mapper.map("t", "<Esc>", "<C-\\><C-N>")
+vim.api.nvim_set_keymap("t", "<Esc>", "<C-\\><C-N>", { noremap = true })
 
 -------------------------------------------------------------- OPEN NVIM CONFIG
 
-mapper.command("Config", function()
+vim.api.nvim_create_user_command("Config", function()
   local ok, e = pcall(vim.api.nvim_exec, "find $MYVIMRC", false)
   if ok == false then
     vim.notify(e, vim.log.levels.ERROR)

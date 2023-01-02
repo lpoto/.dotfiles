@@ -29,8 +29,6 @@ local M = {
 }
 
 function M.config()
-  local mapper = require "util.mapper"
-
   -- NOTE: disable the copilot for all filetypes by default.
   local tbl = {
     ["*"] = false,
@@ -42,14 +40,19 @@ function M.config()
       vim.tbl_extend("force", vim.g.copilot_filetypes, tbl)
   end
 
-  mapper.map(
+  vim.api.nvim_set_keymap(
     "i",
     "<C-Space>",
     'copilot#Accept("<CR>")',
     { silent = true, expr = true }
   )
-  mapper.map("i", "<C-k>", "copilot#Next()", { silent = true, expr = true })
-  mapper.map(
+  vim.api.nvim_set_keymap(
+    "i",
+    "<C-k>",
+    "copilot#Next()",
+    { silent = true, expr = true }
+  )
+  vim.api.nvim_set_keymap(
     "i",
     "<C-j>",
     "copilot#Previous()",
