@@ -18,17 +18,16 @@ local M = {}
 ---@type string: Path to the directory where sessions are saved
 M.session_dir = path.join(vim.fn.stdpath "data", "sessions")
 
----@type table: A table of filetypes that will be ignored
+---@type table: A table of filetype patterns that will be ignored
 ---when saving sessions
-M.ignore_filetypes = {
-  "git",
-  "gitcommit",
-  "gitrebase",
+M.ignore_filetype_patterns = {
+  "git.*",
   "qf",
   "help",
   "undotree",
   "dashboard",
-  "NeogitStatus",
+  "Neogit.*",
+  "Telecope.*",
   "",
 }
 
@@ -69,9 +68,12 @@ function M.config()
             local filetype = vim.api.nvim_buf_get_option(buf, "filetype")
             -- NOTE: remove some buffers that are not needed
             -- when restoring the session.
-            if vim.tbl_contains(M.ignore_filetypes, filetype) then
-              vim.api.nvim_buf_delete(buf, { force = true })
-              removed = removed + 1
+            for _, pattern in ipairs(M.ignore_filetype_patterns) do
+              if filetype:match(pattern) then
+                vim.api.nvim_buf_delete(buf, { force = true })
+                removed = removed + 1
+                break
+              end
             end
           end
 
