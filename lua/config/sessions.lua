@@ -7,7 +7,6 @@ Automated session management.
 
 Keymaps:
   - <leader>s - Display all available sessions
-              - NOTE: delete session with <C-d>
 
 NOTE: session is saved automatically when yout quit neovim.
 -----------------------------------------------------------------------------]]
@@ -19,28 +18,70 @@ local M = {}
 ---@type string: Path to the directory where sessions are saved
 M.session_dir = path.join(vim.fn.stdpath "data", "sessions")
 
+---@type table: A table of filetypes that will be ignored
+---when saving sessions
+M.ignore_filetypes = {
+  "git",
+  "gitcommit",
+  "gitrebase",
+  "qf",
+  "help",
+  "undotree",
+  "dashboard",
+  "NeogitStatus",
+  "",
+}
+
+---@type string: Title used for logging, creating augroups,
+---telescope prompts, etc.
+M.title = "Sessions"
+
+---@type string: The key used to display the sessions list
+M.list_sessions_key = "<leader>s"
+
 --- Create an autocomand that saves the session when you quit neovim.
 --- Create a keymap that lists sessions in a telescope prompt.
 function M.config()
   if vim.fn.isdirectory(M.session_dir) == 0 then
+    -- NOTE: ensure that the sessions directory exists
     vim.fn.mkdir(M.session_dir, "p")
   end
 
-  vim.api.nvim_create_augroup("Sessions", { clear = true })
+  vim.api.nvim_create_augroup(M.title, { clear = true })
 
   --NOTE: register the VimLeavePre autocmd only
   --after entering a buffer, so empty sessions are not saved.
   vim.api.nvim_create_autocmd("BufEnter", {
-    group = "Sessions",
+    group = M.title,
     once = true,
     nested = true,
     callback = function()
       vim.api.nvim_create_autocmd("VimLeavePre", {
         once = true,
-        group = "Sessions",
+        group = M.title,
         callback = function()
           -- When leaving neovim, save the current session
           -- to the session directory.
+
+          local buffers = vim.api.nvim_list_bufs()
+          local removed = 0
+          for _, buf in ipairs(buffers) do
+            local filetype = vim.api.nvim_buf_get_option(buf, "filetype")
+            -- NOTE: remove some buffers that are not needed
+            -- when restoring the session.
+            if vim.tbl_contains(M.ignore_filetypes, filetype) then
+              vim.api.nvim_buf_delete(buf, { force = true })
+              removed = removed + 1
+            end
+          end
+
+          -- NOTE: if after removing the buffers above, there are no
+          -- buffers left, then do not save the session.
+          -- This is to avoid saving empty sessions.
+          if #buffers - removed <= 0 then
+            return
+          end
+
           local name =
             vim.fn.getcwd():gsub(require("util.path").separator, "%%")
           local file = path.join(M.session_dir, name .. ".vim")
@@ -52,7 +93,7 @@ function M.config()
 
   vim.api.nvim_set_keymap(
     "n",
-    "<leader>s",
+    M.list_sessions_key,
     "<CMD>lua require('config.sessions').list_sessions()<CR>",
     { noremap = true }
   )
@@ -133,14 +174,14 @@ local function delete_selected_session(prompt_bufnr)
   if vim.fn.delete(session_file) ~= 0 then
     -- Notify that the session could not be deleted
     vim.notify("Failed to delete session", vim.log.levels.WARN, {
-      title = "Sessions",
+      title = M.title,
     })
   else
     -- Notify that the session was successfully deleted
     -- and refresh the picker with a new finder, so
     -- the removed session is no longer displayed.
     vim.notify("Session deleted", vim.log.levels.INFO, {
-      title = "Sessions",
+      title = M.title,
     })
     -- TODO: maybe this could be done more elegantly
     -- by using a different method that just deletes a row
@@ -164,7 +205,7 @@ local function select_session(prompt_bufnr)
   else
     -- Notify that the selected session is no longer available
     vim.notify("Session file is not readable", vim.log.levels.WARN, {
-      title = "Sessions",
+      title = M.title,
     })
   end
 end
@@ -183,7 +224,7 @@ function M.list_sessions(theme)
   if next(sessions) == nil then
     -- NOTE: Do not open the telescope prompt if there are no sessions
     vim.notify("There are no available sessions", vim.log.levels.WARN, {
-      title = "Sessions",
+      title = M.title,
     })
     return
   end
@@ -191,7 +232,7 @@ function M.list_sessions(theme)
   -- NOTE: build the telescope picker for
   -- displaying the available sessions
   local sessions_picker = pickers.new(theme, {
-    prompt_title = "Sessions",
+    prompt_title = M.title,
     finder = session_finder(sessions),
     attach_mappings = function(prompt_bufnr, map)
       -- NOTE: load the session under the cursor
