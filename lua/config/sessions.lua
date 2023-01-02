@@ -43,7 +43,17 @@ M.list_sessions_key = "<leader>s"
 function M.config()
   if vim.fn.isdirectory(M.session_dir) == 0 then
     -- NOTE: ensure that the sessions directory exists
-    vim.fn.mkdir(M.session_dir, "p")
+    local ok, e = pcall(vim.fn.mkdir, M.session_dir, "p")
+    if ok == false then
+      vim.notify(
+        "Failed to create sessions directory: " .. e,
+        vim.log.levels.ERROR,
+        {
+          title = M.title,
+        }
+      )
+      return
+    end
   end
 
   vim.api.nvim_create_augroup(M.title, { clear = true })
@@ -70,7 +80,7 @@ function M.config()
             -- when restoring the session.
             for _, pattern in ipairs(M.ignore_filetype_patterns) do
               if filetype:match(pattern) then
-                vim.api.nvim_buf_delete(buf, { force = true })
+                pcall(vim.api.nvim_buf_delete, buf, { force = true })
                 removed = removed + 1
                 break
               end
@@ -87,7 +97,11 @@ function M.config()
           local name =
             vim.fn.getcwd():gsub(require("util.path").separator, "%%")
           local file = path.join(M.session_dir, name .. ".vim")
-          vim.cmd("mksession! " .. vim.fn.fnameescape(file))
+          pcall(
+            vim.api.nvim_exec,
+            "mksession! " .. vim.fn.fnameescape(file),
+            true
+          )
         end,
       })
     end,
