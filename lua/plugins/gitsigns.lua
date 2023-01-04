@@ -14,24 +14,29 @@ removed in red and modified in blue.
 Show the current line's git blame with a 700ms delay.
 
 Keymaps:
+   - <leader>gd: Open diff view
    - <leader>gs: Stage current buffer
    - <leader>gh: Stage hunk
    - <leader>gu: Unstage current buffer
    - <leader>gr: Reset current buffer
    - <leader>gp: Preview diff hunk in a popup
-   - <leader>gd: Open diff view
 
    - <leader>gg (or :Git): Git status
-          - <Tab> to stage selected file
+          - <C-s> to stage selected file
           - <CR> to go to the selected file
-   - <leader>gb: Git branches (see :h telescope.builtin.git_branches)
+   - <leader>gb: Git branches
           - <CR> to checkout the selected branch
           - <C-d> to delete the selected branch
-          - ... see :h telescope.builtin.git_branches
-   - <leader>gl: Git commits (see :h telescope.builtin.git_commits)
+          - <C-t> to track the selected branch
+          - <C-r> to rebase the selected branch
+          - <C-a> to create a new branch
+          - <C-y> to merge the selected branch
+   - <leader>gl (or <leader>gc): Git commits
           - <CR> to checkout the selected commit
-          - ... see :h telescope.builtin.git_branches
-   - <leader>gS: Git stash (see :h telescope.builtin.git_stash)
+          - <C-r>s to reset to the selected commit (soft)
+          - <C-r>h to reset to the selected commit (hard)
+          - <C-r>m to reset to the selected commit (mixed)
+   - <leader>gS: Git stash
           - <CR> to apply the selected stash
    - <leader>gf: Git files
 
@@ -70,50 +75,71 @@ end
 
 function M.init()
   vim.keymap.set("n", "<leader>gl", M.git_commits, {})
+  vim.keymap.set("n", "<leader>gc", M.git_commits, {})
   vim.keymap.set("n", "<leader>gb", M.git_branches, {})
   vim.keymap.set("n", "<leader>gg", M.git_status, {})
   vim.keymap.set("n", "<leader>gf", M.git_files, {})
+  vim.keymap.set("n", "<leader>gS", M.git_stash, {})
 
   vim.api.nvim_create_user_command("Git", M.git_status, {})
 end
 
-function M.git_commits(theme)
+function M.git_commits()
   local telescope = require "telescope.builtin"
-  theme = theme or require("telescope.themes").get_ivy()
+
+  local theme = require("telescope.themes").get_ivy()
+
+  theme.results_title = "<CR> - checkout, <C-r>s|h|m - reset soft|hard|mixed"
+
   telescope.git_commits(theme)
 end
 
-function M.git_branches(theme)
+function M.git_branches()
   local telescope = require "telescope.builtin"
-  theme = theme or require("telescope.themes").get_ivy()
+
+  local theme = require("telescope.themes").get_ivy()
+
+  theme.results_title = "<CR> - checkout, <C-d|t|r|a|y> - "
+      .. "delete|track|rebase|create|merge"
+
   telescope.git_branches(theme)
 end
 
-function M.git_files(theme)
+function M.git_files()
   local telescope = require "telescope.builtin"
-  theme = theme or require("telescope.themes").get_ivy()
+
+  local theme = require("telescope.themes").get_ivy()
+
+  theme.results_title = "<CR> - open file"
+
   telescope.git_files(theme)
 end
 
-function M.git_status(theme)
+function M.git_stash()
+  local telescope = require "telescope.builtin"
+
+  local theme = require("telescope.themes").get_ivy()
+
+  theme.results_title = "<CR> - apply stash"
+
+  telescope.git_stash(theme)
+end
+
+function M.git_status()
   local telescope = require "telescope.builtin"
   local actions = require "telescope.actions"
 
-  local opts = theme or require("telescope.themes").get_ivy()
+  local opts = require("telescope.themes").get_ivy()
 
-  opts.attach_mappings = function(prompt_bufnr, map)
-    map("i", "<Tab>", function()
-      vim.cmd "normal k"
-    end)
-    map("n", "<Tab>", function()
-      vim.cmd "normal k"
-    end)
-    map("n", "s", function()
-      actions.git_staging_toggle(prompt_bufnr)
-    end)
-    map({ "n", "i" }, "<C-s>", function()
-      actions.git_staging_toggle(prompt_bufnr)
-    end)
+  opts.results_title = "<C-s> - stage/unstage, <CR> - open file"
+
+  opts.attach_mappings = function(_, map)
+    map("i", "<Tab>", actions.move_selection_next)
+    map("n", "<Tab>", actions.move_selection_next)
+    map("i", "<S-Tab>", actions.move_selection_previous)
+    map("n", "<S-Tab>", actions.move_selection_previous)
+    map("n", "s", actions.git_staging_toggle)
+    map({ "n", "i" }, "<C-s>", actions.git_staging_toggle)
     return true
   end
   opts.git_icons = {

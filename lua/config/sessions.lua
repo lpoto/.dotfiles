@@ -99,7 +99,7 @@ function M.config()
           end
 
           local name =
-            vim.fn.getcwd():gsub(require("util.path").separator, "%%")
+          vim.fn.getcwd():gsub(require("util.path").separator, "%%")
           local file = path.join(M.session_dir, name .. ".vim")
           pcall(
             vim.api.nvim_exec,
@@ -160,7 +160,6 @@ local function session_finder(results)
             separator = " ",
             items = {
               { width = 30 },
-              { width = vim.o.columns - 31 - 30 },
               { remaining = true },
             },
           }
@@ -175,7 +174,6 @@ local function session_finder(results)
           return displayer {
             { time, "Comment" },
             value,
-            { "Delete with <Ctrl-d>", "Comment" },
           }
         end,
       }
@@ -253,6 +251,7 @@ function M.list_sessions(theme)
   -- displaying the available sessions
   local sessions_picker = pickers.new(theme, {
     prompt_title = M.title,
+    results_title = "<CR> - Load session, <C-d> - Delete session",
     finder = session_finder(sessions),
     attach_mappings = function(prompt_bufnr, map)
       -- NOTE: load the session under the cursor

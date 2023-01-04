@@ -45,6 +45,8 @@ local M = {
 
 function M.config()
   local telescope = require "telescope"
+  local actions = require "telescope.actions"
+
   telescope.setup {
     defaults = {
       file_sorter = require("telescope.sorters").get_fzy_sorter,
@@ -63,6 +65,12 @@ function M.config()
             require("telescope.actions").send_to_qflist(vim.fn.bufnr())
             require("telescope.builtin").quickfix()
           end,
+          ["<Tab>"] = actions.move_selection_next,
+          ["<S-Tab>"] = actions.move_selection_previous,
+        },
+        n = {
+          ["<Tab>"] = actions.move_selection_next,
+          ["<S-Tab>"] = actions.move_selection_previous,
         },
       },
     },
