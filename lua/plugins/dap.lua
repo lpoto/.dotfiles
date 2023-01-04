@@ -25,11 +25,22 @@ Keymaps:
 local M = {
   "mfussenegger/nvim-dap",
   cmd = { "DapContinue", "DapToggleBreakpoint" },
-  keys = { "<leader>dr", "<leader>dn", "<leader>db" },
   dependencies = {
     "theHamsta/nvim-dap-virtual-text",
   },
 }
+
+function M.init()
+  vim.keymap.set("n", "<leader>dr", function()
+    require("plugins.dap").toggle_repl()
+  end)
+  vim.keymap.set("n", "<leader>dn", function()
+    require("dap").continue()
+  end)
+  vim.keymap.set("n", "<leader>db", function()
+    require("dap").toggle_breakpoint()
+  end)
+end
 
 function M.toggle_repl()
   local dap = require "dap"
@@ -101,34 +112,6 @@ function M.config()
       end,
     },
   })
-
-  -- toggle repl vertical split with <Alt> + r
-  vim.api.nvim_set_keymap(
-    "n",
-    "<leader>dr",
-    "<CMD>lua require('plugins.dap').toggle_repl()<CR>",
-    { noremap = true }
-  )
-
-  -- Continue with <Alt>n
-  vim.api.nvim_set_keymap(
-    "n",
-    "<leader>dn",
-    "<CMD>lua require('dap').continue()<CR>",
-    {
-      noremap = true,
-    }
-  )
-
-  -- Set breakpoint with Alt b
-  vim.api.nvim_set_keymap(
-    "n",
-    "<leader>db",
-    "<CMD>lua require('dap').toggle_breakpoint()<CR>",
-    {
-      noremap = true,
-    }
-  )
 
   local plugin_config = require "plugins.dap"
   dap.adapters = plugin_config.adapters or {}

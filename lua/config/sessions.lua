@@ -111,12 +111,9 @@ function M.config()
     end,
   })
 
-  vim.api.nvim_set_keymap(
-    "n",
-    M.list_sessions_key,
-    "<CMD>lua require('config.sessions').list_sessions()<CR>",
-    { noremap = true }
-  )
+  vim.keymap.set("n", M.list_sessions_key, function()
+    require("config.sessions").list_sessions()
+  end)
 end
 
 --- Get a table of all available sessions located

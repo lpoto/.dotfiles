@@ -17,6 +17,12 @@ local M = {
   event = "VeryLazy",
 }
 
+function M.init()
+  vim.keymap.set("n", "<leader>i", function()
+    require("plugins.notify").show_history()
+  end)
+end
+
 function M.config()
   local notify = require "notify"
   notify.setup {
@@ -25,13 +31,6 @@ function M.config()
     background_colour = "#000000",
   }
   vim.notify = notify
-
-  vim.api.nvim_set_keymap(
-    "n",
-    "<leader>i",
-    "<cmd>lua require('plugins.notify').history()<CR>",
-    { noremap = true }
-  )
 end
 
 ---Display notify history in a telescope prompt

@@ -26,22 +26,39 @@ NOTE:  telescope required rg (Ripgrep) and fd (Fd-Find) to be installed.
 
 local M = {
   "nvim-telescope/telescope.nvim",
-  keys = {
-    "<leader>tf",
-    "<leader>to",
-    "<leader>tc",
-    "<leader>tb",
-    "<leader>tg",
-    "<leader>td",
-    "<leader>tq",
-    "<leader>n",
-  },
   cmd = "Telescope",
   dependencies = {
     "nvim-lua/plenary.nvim",
     "nvim-telescope/telescope-file-browser.nvim",
   },
 }
+
+function M.init()
+  vim.keymap.set("n", "<leader>n", function()
+    require("telescope.builtin").find_files()
+  end)
+  vim.keymap.set("n", "<leader>tf", function()
+    require("telescope.builtin").find_files()
+  end)
+  vim.keymap.set("n", "<leader>to", function()
+    require("telescope.builtin").oldfiles()
+  end)
+  vim.keymap.set("n", "<leader>tq", function()
+    require("telescope.builtin").quickfix()
+  end)
+  vim.keymap.set("n", "<leader>td", function()
+    require("telescope.builtin").diagnostics()
+  end)
+  vim.keymap.set("n", "<leader>tg", function()
+    require("telescope.builtin").live_grep()
+  end)
+  vim.keymap.set("n", "<leader>tb", function()
+    require("telescope").extensions.file_browser.file_browser()
+  end)
+  vim.keymap.set("n", "<leader>tc", function()
+    require("plugins.telescope").neovim_config_files()
+  end)
+end
 
 function M.config()
   local telescope = require "telescope"
@@ -122,55 +139,6 @@ function M.config()
     },
   }
   telescope.load_extension "file_browser"
-
-  vim.api.nvim_set_keymap(
-    "n",
-    "<leader>n",
-    "<cmd>lua require('telescope.builtin').find_files()<CR>",
-    { noremap = true }
-  )
-  vim.api.nvim_set_keymap(
-    "n",
-    "<leader>tf",
-    "<cmd>lua require('telescope.builtin').find_files()<CR>",
-    { noremap = true }
-  )
-  vim.api.nvim_set_keymap(
-    "n",
-    "<leader>to",
-    "<cmd>lua require('telescope.builtin').oldfiles()<CR>",
-    { noremap = true }
-  )
-  vim.api.nvim_set_keymap(
-    "n",
-    "<leader>tq",
-    "<cmd>lua require('telescope.builtin').quickfix()<CR>",
-    { noremap = true }
-  )
-  vim.api.nvim_set_keymap(
-    "n",
-    "<leader>td",
-    "<cmd>lua require('telescope.builtin').diagnostics()<CR>",
-    { noremap = true }
-  )
-  vim.api.nvim_set_keymap(
-    "n",
-    "<leader>tg",
-    "<cmd>lua require('telescope.builtin').live_grep()<CR>",
-    { noremap = true }
-  )
-  vim.api.nvim_set_keymap(
-    "n",
-    "<leader>tb",
-    "<cmd>lua require('telescope').extensions.file_browser.file_browser()<CR>",
-    { noremap = true }
-  )
-  vim.api.nvim_set_keymap(
-    "n",
-    "<leader>tc",
-    "<cmd>lua require('plugins.telescope').neovim_config_files()<CR>",
-    { noremap = true }
-  )
 end
 
 ---Find files in the neovim config directory.

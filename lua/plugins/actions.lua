@@ -40,12 +40,9 @@ function M.config()
 
   -- NOTE: toggle the output of the latest action
 
-  vim.api.nvim_set_keymap(
-    "n",
-    "<leader>e",
-    "<CMD>lua require('actions').toggle_last_output()<CR>",
-    { noremap = true }
-  )
+  vim.keymap.set("n", "<leader>e", function()
+    require("actions").toggle_last_output()
+  end)
 end
 
 ---Adds the provided table of actions to the

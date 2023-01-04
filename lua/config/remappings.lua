@@ -14,110 +14,54 @@
 --------------------------------------------------------------- SCROLLING POPUP
 -- down with tab, up with shift-tab, select with enter
 
-vim.api.nvim_set_keymap(
-  "",
-  "<expr><Tab>",
-  "pumvisible() ? '\\<C-n>' : '\\<TAB>'",
-  {
-    noremap = true,
-    silent = true,
-  }
-)
-vim.api.nvim_set_keymap(
-  "",
-  "<expr><S-Tab>",
-  "pumvisible() ? '\\<C-p>' : '\\<S-TAB>'",
-  {
-    noremap = true,
-    silent = true,
-  }
-)
-vim.api.nvim_set_keymap(
-  "",
-  "<expr><CR>",
-  "pumvisible() ? '\\<C-y>' : '\\<CR>'",
-  {
-    noremap = true,
-    silent = true,
-  }
-)
+vim.keymap.set("", "<expr><Tab>", "pumvisible() ? '\\<C-n>' : '\\<TAB>'")
+vim.keymap.set("", "<expr><S-Tab>", "pumvisible() ? '\\<C-p>' : '\\<S-TAB>'")
+vim.keymap.set("", "<expr><CR>", "pumvisible() ? '\\<C-y>' : '\\<CR>'")
 
 --------------------------------------------------------------- WINDOW MANAGING
 -- increase the size of a window with +, decrease with -
 -- create new vertical split with "<leader> + v"
 -- resize all windows to same width with "<leader> + w"
 
-vim.api.nvim_set_keymap(
-  "n",
-  "+",
-  "<cmd>vertical resize +5<CR>",
-  { noremap = true }
-)
-vim.api.nvim_set_keymap(
-  "n",
-  "-",
-  "<cmd>vertical resize -5<CR>",
-  { noremap = true }
-)
-vim.api.nvim_set_keymap(
-  "n",
-  "<leader>v",
-  "<cmd>vertical new<CR>",
-  { noremap = true }
-)
-vim.api.nvim_set_keymap("n", "<leader>w", "<C-W>=", { noremap = true })
+vim.keymap.set("n", "+", "<cmd>vertical resize +5<CR>")
+vim.keymap.set("n", "-", "<cmd>vertical resize -5<CR>")
+vim.keymap.set("n", "<leader>v", "<cmd>vertical new<CR>")
+vim.keymap.set("n", "<leader>w", "<C-W>=")
 
 ------------------------------------------------------------------- VISUAL MODE
 -- Ctrl + c' - yanked text to clipboard
 
-vim.api.nvim_set_keymap(
-  "n",
-  "<C-c>",
-  '<cmd>let @+=@"<CR>',
-  { noremap = true }
-)
+vim.keymap.set("n", "<C-c>", '<cmd>let @+=@"<CR>')
 
 ----------------------------------------------------------------------- JUMPING
 -- center cursor when jumping, jump forward with tab, backward with shift-tab
 -- count j and k commands with a number larger than 5 as jumps
 -- Navigate quickfix with <leader>l and <leader>h
 
-vim.api.nvim_set_keymap("n", "n", "nzzzv", { noremap = true })
-vim.api.nvim_set_keymap("n", "N", "Nzzzv", { noremap = true })
-vim.api.nvim_set_keymap("n", "J", "mzJ'z", { noremap = true })
-vim.api.nvim_set_keymap(
-  "n",
-  "<leader>l",
-  "<cmd>cnext<CR>zzzv",
-  { noremap = true }
-)
-vim.api.nvim_set_keymap(
-  "n",
-  "<leader>h",
-  "<cmd>cprev<CR>zzzv",
-  { noremap = true }
-)
-vim.api.nvim_set_keymap("n", "<S-TAB>", "<C-O>zzzv", { noremap = true })
-vim.api.nvim_set_keymap(
+vim.keymap.set("n", "n", "nzzzv")
+vim.keymap.set("n", "N", "Nzzzv")
+vim.keymap.set("n", "J", "mzJ'z")
+vim.keymap.set("n", "<leader>l", "<cmd>cnext<CR>zzzv")
+vim.keymap.set("n", "<leader>h", "<cmd>cprev<CR>zzzv")
+vim.keymap.set("n", "<S-TAB>", "<C-O>zzzv")
+vim.keymap.set(
   "n",
   "<expr> k",
-  '(v:count > 5 ? "m\'" . v:count : "") . \'k\'',
-  { noremap = true }
+  '(v:count > 5 ? "m\'" . v:count : "") . \'k\''
 )
-vim.api.nvim_set_keymap(
+vim.keymap.set(
   "n",
   "<expr> j",
-  '(v:count > 5 ? "m\'" . v:count : "") . \'j\'',
-  { noremap = true }
+  '(v:count > 5 ? "m\'" . v:count : "") . \'j\''
 )
 
 ----------------------------------------------------------- UNDO BREAK POINTS
 -- start a new undo chain with punctuations
 
-vim.api.nvim_set_keymap("i", ",", ",<c-g>u", { noremap = true })
-vim.api.nvim_set_keymap("i", ".", ".<c-g>u", { noremap = true })
-vim.api.nvim_set_keymap("i", "!", "!<c-g>u", { noremap = true })
-vim.api.nvim_set_keymap("i", "?", "?<c-g>u", { noremap = true })
+vim.keymap.set("i", ",", ",<c-g>u")
+vim.keymap.set("i", ".", ".<c-g>u")
+vim.keymap.set("i", "!", "!<c-g>u")
+vim.keymap.set("i", "?", "?<c-g>u")
 
 ----------------------------------------------------------------------- WRITING
 
@@ -153,16 +97,10 @@ vim.api.nvim_create_user_command("WQ", "wq", {
 
 ---------------------------------------------------------------------- TERMINAL
 -- return to normal mode with <Esc>
+-- Toggle terminal with <C-t>
 
-vim.api.nvim_set_keymap("t", "<Esc>", "<C-\\><C-N>", { noremap = true })
+vim.keymap.set("t", "<Esc>", "<C-\\><C-N>")
 
--------------------------------------------------------------- OPEN NVIM CONFIG
-
-vim.api.nvim_create_user_command("Config", function()
-  local ok, e = pcall(vim.api.nvim_exec, "find $MYVIMRC", false)
-  if ok == false then
-    vim.notify(e, vim.log.levels.ERROR)
-  else
-    vim.fn.chdir(vim.fn.stdpath "config")
-  end
-end, {})
+vim.keymap.set("n", "<C-t>", function()
+  require "util.toggle_terminal"()
+end)
