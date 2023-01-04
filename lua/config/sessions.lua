@@ -99,7 +99,7 @@ function M.config()
           end
 
           local name =
-          vim.fn.getcwd():gsub(require("util.path").separator, "%%")
+            vim.fn.getcwd():gsub(require("util.path").separator, "%%")
           local file = path.join(M.session_dir, name .. ".vim")
           pcall(
             vim.api.nvim_exec,
@@ -156,17 +156,18 @@ local function session_finder(results)
         value = line,
         ordinal = line,
         display = function(e)
-          local displayer = entry_display.create {
-            separator = " ",
-            items = {
-              { width = 30 },
-              { remaining = true },
-            },
-          }
           local time = vim.fn.strftime(
             "%c",
             vim.fn.getftime(path.join(M.session_dir, e.value))
           )
+
+          local displayer = entry_display.create {
+            separator = " ",
+            items = {
+              { width = string.len(time) + 1 },
+              { remaining = true },
+            },
+          }
           -- NOTE: replate % signs with / in the displayed
           -- session name, so it better represents the session's
           -- working directory.
