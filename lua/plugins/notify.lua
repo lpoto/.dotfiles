@@ -19,7 +19,7 @@ local M = {
 
 function M.init()
   vim.keymap.set("n", "<leader>i", function()
-    require("plugins.notify").show_history()
+    require("plugins.notify").history()
   end)
 end
 
