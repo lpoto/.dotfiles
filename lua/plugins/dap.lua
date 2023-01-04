@@ -16,16 +16,16 @@ See github.com/mfussenegger/nvim-dap/wiki/Debug-Adapter-installation
 for adapter installation and configurations.
 
 Keymaps:
-  - "<A-r>" - toggle the repl
-  - "<A-n>" - continue (or start)
-  - "<A-b>" - toggle breakpoint
+  - "<leader>dr" - toggle the repl
+  - "<leader>dn" - continue (or start)
+  - "<lader>db" - toggle breakpoint
 
 --]]
 
 local M = {
   "mfussenegger/nvim-dap",
   cmd = { "DapContinue", "DapToggleBreakpoint" },
-  keys = { "<A-c>", "<A-b>", "<A-r>" },
+  keys = { "<leader>dr", "<leader>dn", "<leader>db" },
   dependencies = {
     "theHamsta/nvim-dap-virtual-text",
   },
@@ -105,7 +105,7 @@ function M.config()
   -- toggle repl vertical split with <Alt> + r
   vim.api.nvim_set_keymap(
     "n",
-    "<A-r>",
+    "<leader>dr",
     "<CMD>lua require('plugins.dap').toggle_repl()<CR>",
     { noremap = true }
   )
@@ -113,7 +113,7 @@ function M.config()
   -- Continue with <Alt>n
   vim.api.nvim_set_keymap(
     "n",
-    "<A-n>",
+    "<leader>dn",
     "<CMD>lua require('dap').continue()<CR>",
     {
       noremap = true,
@@ -123,7 +123,7 @@ function M.config()
   -- Set breakpoint with Alt b
   vim.api.nvim_set_keymap(
     "n",
-    "<A-b>",
+    "<leader>db",
     "<CMD>lua require('dap').toggle_breakpoint()<CR>",
     {
       noremap = true,
