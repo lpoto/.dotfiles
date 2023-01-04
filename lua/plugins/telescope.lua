@@ -11,13 +11,13 @@ Telescope is a highly extendable fuzzy finder over lists.
 Items are shown in a popup with a prompt to search over.
 
 Keymaps:
- - "<leader>n"   - find files
- - "<leader>m"   - old files
- - "<leader>c"   - find neovim config files
- - "<C-n>"       - file explorer
- - "<leader>g"   - live grep
- - "<leader>d"   - show diagnostics
- - "<leader>q"   - quickfix
+ - "<leader>tf"   - find files   (or <leader>n)
+ - "<leader>to"   - old files
+ - "<leader>tc"   - find neovim config files
+ - "<leader>tb"   - file browser
+ - "<leader>tg"   - live grep
+ - "<leader>td"   - show diagnostics
+ - "<leader>tq"   - quickfix
 
  Use <C-q> in a telescope prompt to send the results to quickfix.
 
@@ -27,13 +27,14 @@ NOTE:  telescope required rg (Ripgrep) and fd (Fd-Find) to be installed.
 local M = {
   "nvim-telescope/telescope.nvim",
   keys = {
+    "<leader>tf",
+    "<leader>to",
+    "<leader>tc",
+    "<leader>tb",
+    "<leader>tg",
+    "<leader>td",
+    "<leader>tq",
     "<leader>n",
-    "<leader>m",
-    "<leader>c",
-    "<C-n>",
-    "<leader>q",
-    "<leader>d",
-    "<leader>g",
   },
   cmd = "Telescope",
   dependencies = {
@@ -122,37 +123,43 @@ function M.config()
   )
   vim.api.nvim_set_keymap(
     "n",
-    "<leader>m",
+    "<leader>tf",
+    "<cmd>lua require('telescope.builtin').find_files()<CR>",
+    { noremap = true }
+  )
+  vim.api.nvim_set_keymap(
+    "n",
+    "<leader>to",
     "<cmd>lua require('telescope.builtin').oldfiles()<CR>",
     { noremap = true }
   )
   vim.api.nvim_set_keymap(
     "n",
-    "<leader>q",
+    "<leader>tq",
     "<cmd>lua require('telescope.builtin').quickfix()<CR>",
     { noremap = true }
   )
   vim.api.nvim_set_keymap(
     "n",
-    "<leader>d",
+    "<leader>td",
     "<cmd>lua require('telescope.builtin').diagnostics()<CR>",
     { noremap = true }
   )
   vim.api.nvim_set_keymap(
     "n",
-    "<leader>g",
+    "<leader>tg",
     "<cmd>lua require('telescope.builtin').live_grep()<CR>",
     { noremap = true }
   )
   vim.api.nvim_set_keymap(
     "n",
-    "<C-n>",
+    "<leader>tb",
     "<cmd>lua require('telescope').extensions.file_browser.file_browser()<CR>",
     { noremap = true }
   )
   vim.api.nvim_set_keymap(
     "n",
-    "<leader>c",
+    "<leader>tc",
     "<cmd>lua require('plugins.telescope').neovim_config_files()<CR>",
     { noremap = true }
   )

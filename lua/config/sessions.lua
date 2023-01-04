@@ -99,7 +99,7 @@ function M.config()
           end
 
           local name =
-          vim.fn.getcwd():gsub(require("util.path").separator, "%%")
+            vim.fn.getcwd():gsub(require("util.path").separator, "%%")
           local file = path.join(M.session_dir, name .. ".vim")
           pcall(
             vim.api.nvim_exec,

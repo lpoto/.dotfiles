@@ -25,49 +25,49 @@ return {
             icon_hl = { fg = "#dbb671" },
             desc = " Sessions                               ",
             action = "lua require('config.sessions').list_sessions()",
-            shortcut = "<Space-s>",
+            shortcut = "Space + s",
           },
           {
             icon = " 🗃",
             icon_hl = { fg = "#dbb671" },
-            desc = " Recent Files                           ",
+            desc = " Old Files                          ",
             action = "Telescope oldfiles",
-            shortcut = "<Space-m>",
+            shortcut = "Space + t + o",
           },
           {
             icon = "  ",
             icon_hl = { fg = "#dbb671" },
-            desc = " Find Files                             ",
+            desc = " Find Files                         ",
             action = "Telescope find_files",
-            shortcut = "<Space-n>",
+            shortcut = "Space + t + f",
           },
           {
             icon = "⚙ ",
             icon_hl = { fg = "#dbb671" },
-            desc = " Neovim Config Files                    ",
+            desc = " Neovim Config Files                ",
             action = "lua require('plugins.telescope').neovim_config_files()",
-            shortcut = "<Space-c>",
+            shortcut = "Space + t + f",
+          },
+          {
+            icon = " ",
+            icon_hl = { fg = "#dbb671" },
+            desc = " File Browser                       ",
+            action = "Telescope file_browser",
+            shortcut = "Space + t + e",
           },
           {
             icon = "☌ ",
             icon_hl = { fg = "#dbb671" },
-            desc = " Live Grep                              ",
+            desc = " Live Grep                          ",
             action = "Telescope live_grep",
-            shortcut = "<Space-g>",
+            shortcut = "Space + t + g",
           },
           {
             icon = "⚠ ",
             icon_hl = { fg = "#dbb671" },
             desc = " Notifications History                  ",
             action = "lua require('plugins.notify').history()",
-            shortcut = "<Space-i>",
-          },
-          {
-            icon = " ",
-            icon_hl = { fg = "#dbb671" },
-            desc = " File Browser                            ",
-            action = "Telescope file_browser",
-            shortcut = "<Ctrl-n>",
+            shortcut = "Space + i",
           },
           {
             icon = " ",
@@ -84,19 +84,6 @@ return {
             shortcut = ":Lazy",
           },
         }
-
-        -- NOTE: add git section only when in a git repo
-        local git_dir = vim.fn.finddir(".git", vim.fn.getcwd() .. ";")
-
-        if git_dir ~= "" then
-          table.insert(db.custom_center, {
-            icon = " ",
-            icon_hl = { fg = "#dbb671" },
-            desc = " Git User Interface                         ",
-            action = "Git",
-            shortcut = ":Git",
-          })
-        end
 
         db.footer_pad = 2
         db.custom_footer = function()
