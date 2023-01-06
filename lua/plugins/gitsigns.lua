@@ -100,7 +100,7 @@ function M.git_branches()
   local theme = require("telescope.themes").get_ivy()
 
   theme.results_title = "<CR> - checkout, <C-d|t|r|a|y> - "
-      .. "delete|track|rebase|create|merge"
+    .. "delete|track|rebase|create|merge"
 
   telescope.git_branches(theme)
 end
@@ -139,7 +139,8 @@ function M.git_status()
     map("i", "<S-Tab>", actions.move_selection_previous)
     map("n", "<S-Tab>", actions.move_selection_previous)
     map("n", "s", actions.git_staging_toggle)
-    map({ "n", "i" }, "<C-s>", actions.git_staging_toggle)
+    map("i", "<C-s>", actions.git_staging_toggle)
+    map("n", "<C-s>", actions.git_staging_toggle)
     return true
   end
   opts.git_icons = {

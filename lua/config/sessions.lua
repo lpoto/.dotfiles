@@ -259,9 +259,11 @@ function M.list_sessions(theme)
       end)
       -- NOTE: delete the session under
       -- the cursor when <Ctrl-d> is pressed
-      map({ "i", "n" }, "<C-d>", function()
-        delete_selected_session(prompt_bufnr)
-      end)
+      for _, mode in ipairs { "n", "i" } do
+        map(mode, "<C-d>", function()
+          delete_selected_session(prompt_bufnr)
+        end)
+      end
       return true
     end,
   })

@@ -30,7 +30,11 @@ end
 
 vim.opt.runtimepath:prepend(lazypath)
 local opts = {
-  defaults = { lazy = true },
+  defaults = {
+    lazy = true,
+    version = "*",
+  },
+  lockfile = path.join(vim.fn.stdpath "config", ".lazy.lock.json"),
   dev = { patterns = jit.os:find "Windows" and {} or { "folke" } },
   checker = {
     enabled = true,
