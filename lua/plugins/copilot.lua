@@ -40,19 +40,19 @@ function M.config()
       vim.tbl_extend("force", vim.g.copilot_filetypes, tbl)
   end
 
-  vim.keymap.set(
+  vim.api.nvim_set_keymap(
     "i",
     "<C-Space>",
     'copilot#Accept("<CR>")',
     { silent = true, expr = true }
   )
-  vim.keymap.set(
+  vim.api.nvim_set_keymap(
     "i",
     "<C-k>",
     "copilot#Next()",
     { silent = true, expr = true }
   )
-  vim.keymap.set(
+  vim.api.nvim_set_keymap(
     "i",
     "<C-j>",
     "copilot#Previous()",
