@@ -32,7 +32,10 @@ vim.opt.runtimepath:prepend(lazypath)
 local opts = {
   defaults = { lazy = true },
   dev = { patterns = jit.os:find "Windows" and {} or { "folke" } },
-  checker = { enabled = true },
+  checker = {
+    enabled = true,
+    notify = false,
+  },
   diff = {
     cmd = "terminal_git",
   },
