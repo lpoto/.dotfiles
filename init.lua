@@ -21,7 +21,10 @@ vim.api.nvim_create_autocmd("User", {
   pattern = "VeryLazy",
   once = true,
   callback = function()
-    --require("util.version").ensure()
+    ------------------------------------------------------------ VERSION AND OS
+
+    require("util.version").ensure(false, true)
+
     ------------------------------------------------------------------ SESSIONS
     -- Configure loading and saving sessions
 
