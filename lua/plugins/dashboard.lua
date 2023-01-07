@@ -117,6 +117,16 @@ return {
           and not db.disable_at_vimenter
         then
           db:instance(true)
+          -- NOTE: allow navigating the dashboard with Tab and Shift+Tab
+          if vim.api.nvim_buf_get_option(0, "filetype") == "dashboard" then
+            local buffer = vim.api.nvim_get_current_buf()
+            vim.keymap.set("n", "<Tab>", function()
+              vim.api.nvim_exec("normal! j", true)
+            end, { buffer = buffer })
+            vim.keymap.set("n", "<S-Tab>", function()
+              vim.api.nvim_exec("normal! k", true)
+            end, { buffer = buffer })
+          end
         end
       end,
     })
