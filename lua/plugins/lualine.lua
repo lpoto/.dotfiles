@@ -24,6 +24,10 @@ return {
         icons_enabled = true,
         component_separators = { left = "", right = "" },
         section_separators = { left = "", right = "" },
+        disabled_filetypes = {
+          "dashboard",
+          "telescope_tasks_output"
+        },
       },
       sections = {
         lualine_a = { "mode" },
