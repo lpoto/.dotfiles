@@ -22,8 +22,10 @@ vim.api.nvim_create_autocmd("User", {
   once = true,
   callback = function()
     ------------------------------------------------------------ VERSION AND OS
+    -- Notify the user when the version of neovim is too low, or
+    -- when the OS is not linux or macos
 
-    require("util.version").ensure(false, true)
+    require("util.version").ensure(true, true)
 
     ------------------------------------------------------------------ SESSIONS
     -- Configure loading and saving sessions
