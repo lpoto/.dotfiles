@@ -90,6 +90,7 @@ function M.git_commits()
   local theme = require("telescope.themes").get_ivy()
 
   theme.results_title = "<CR> - checkout, <C-r>s|h|m - reset soft|hard|mixed"
+  theme.selection_strategy = "row"
 
   telescope.git_commits(theme)
 end
@@ -100,7 +101,8 @@ function M.git_branches()
   local theme = require("telescope.themes").get_ivy()
 
   theme.results_title = "<CR> - checkout, <C-d|t|r|a|y> - "
-    .. "delete|track|rebase|create|merge"
+      .. "delete|track|rebase|create|merge"
+  theme.selection_strategy = "row"
 
   telescope.git_branches(theme)
 end
@@ -111,6 +113,7 @@ function M.git_files()
   local theme = require("telescope.themes").get_ivy()
 
   theme.results_title = "<CR> - open file"
+  theme.selection_strategy = "row"
 
   telescope.git_files(theme)
 end
@@ -121,6 +124,7 @@ function M.git_stash()
   local theme = require("telescope.themes").get_ivy()
 
   theme.results_title = "<CR> - apply stash"
+  theme.selection_strategy = "row"
 
   telescope.git_stash(theme)
 end
@@ -132,6 +136,7 @@ function M.git_status()
   local opts = require("telescope.themes").get_ivy()
 
   opts.results_title = "<C-s> - stage/unstage, <CR> - open file"
+  opts.selection_strategy = "row"
 
   opts.attach_mappings = function(_, map)
     map("i", "<Tab>", actions.move_selection_next)
