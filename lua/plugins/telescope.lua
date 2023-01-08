@@ -62,7 +62,6 @@ end
 
 function M.config()
   local telescope = require "telescope"
-  local actions = require "telescope.actions"
 
   telescope.setup {
     defaults = {
@@ -73,63 +72,9 @@ function M.config()
       file_previewer = require("telescope.previewers").vim_buffer_cat.new,
       grep_previewer = require("telescope.previewers").vim_buffer_vimgrep.new,
       qflist_previewer = require("telescope.previewers").vim_buffer_qflist.new,
-      mappings = {
-        i = {
-          -- NOTE: when a telescope window is opened, use ctrl + q to
-          -- send the current results to a quickfix window, then immediately
-          -- open quickfix in a telescope window
-          ["<C-q>"] = function()
-            require("telescope.actions").send_to_qflist(vim.fn.bufnr())
-            require("telescope.builtin").quickfix()
-          end,
-          ["<Tab>"] = actions.move_selection_next,
-          ["<S-Tab>"] = actions.move_selection_previous,
-        },
-        n = {
-          ["<Tab>"] = actions.move_selection_next,
-          ["<S-Tab>"] = actions.move_selection_previous,
-        },
-      },
+      mappings = M.default_mappings(),
     },
-    pickers = {
-      find_files = {
-        find_command = {
-          "rg",
-          "--files",
-          "--iglob",
-          "!.git",
-          "--hidden",
-          "-u",
-        },
-        theme = "ivy",
-        hidden = true,
-        previewer = false,
-        file_ignore_patterns = {
-          "plugged/",
-          ".undo/",
-          ".local/",
-          ".git/",
-          "node_modules/",
-          "target/",
-          ".settings/",
-          "dist/",
-          ".angular/",
-          "__pycache__",
-        },
-      },
-      oldfiles = {
-        hidden = true,
-        theme = "ivy",
-      },
-      live_grep = {
-        hidden = true,
-        theme = "ivy",
-      },
-      quickfix = {
-        hidden = true,
-        theme = "ivy",
-      },
-    },
+    pickers = M.pickers(),
     extensions = {
       file_browser = {
         theme = "ivy",
@@ -148,6 +93,69 @@ function M.neovim_config_files()
     prompt_title = "Neovim Config Files",
     hidden = true,
     cwd = vim.fn.stdpath "config",
+  }
+end
+
+function M.pickers()
+  return {
+    find_files = {
+      find_command = {
+        "rg",
+        "--files",
+        "--iglob",
+        "!.git",
+        "--hidden",
+        "-u",
+      },
+      theme = "ivy",
+      hidden = true,
+      previewer = false,
+      file_ignore_patterns = {
+        "plugged/",
+        ".undo/",
+        ".local/",
+        ".git/",
+        "node_modules/",
+        "target/",
+        ".settings/",
+        "dist/",
+        ".angular/",
+        "__pycache__",
+      },
+    },
+    oldfiles = {
+      hidden = true,
+      theme = "ivy",
+    },
+    live_grep = {
+      hidden = true,
+      theme = "ivy",
+    },
+    quickfix = {
+      hidden = true,
+      theme = "ivy",
+    },
+  }
+end
+
+function M.default_mappings()
+  local actions = require "telescope.actions"
+  return {
+    i = {
+      -- NOTE: when a telescope window is opened, use ctrl + q to
+      -- send the current results to a quickfix window, then immediately
+      -- open quickfix in a telescope window
+      ["<C-q>"] = function()
+        require("telescope.actions").send_to_qflist(vim.fn.bufnr())
+        require("telescope.builtin").quickfix()
+      end,
+      ["<Tab>"] = actions.move_selection_next,
+      ["<S-Tab>"] = actions.move_selection_previous,
+    },
+    n = {
+      ["<Tab>"] = actions.move_selection_next,
+      ["<S-Tab>"] = actions.move_selection_previous,
+    },
   }
 end
 

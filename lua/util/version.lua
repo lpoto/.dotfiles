@@ -46,7 +46,11 @@ function M.ensure(ensure_version, ensure_os)
   end
   if
     ensure_os
-    and vim.tbl_contains(M.required_os, vim.loop.os_uname().sysname) ~= true
+    and vim.tbl_contains(
+        M.required_os,
+        string.lower(vim.loop.os_uname().sysname)
+      )
+      ~= true
   then
     vim.notify(
       "For this configuration to run properly, "
