@@ -18,7 +18,7 @@ Keymaps:
  - "<leader>tg"   - live grep
  - "<leader>td"   - show diagnostics
  - "<leader>tq"   - quickfix
- - "<leader>tt"   - tasks 
+ - "<leader>tt"   - tasks  (toggle last output with "<leader>e")
 
  Use <C-q> in a telescope prompt to send the results to quickfix.
 
@@ -31,10 +31,7 @@ local M = {
   dependencies = {
     "nvim-lua/plenary.nvim",
     "nvim-telescope/telescope-file-browser.nvim",
-    {
-      dir = "~/personal/telescope-tasks.nvim",
-      dev = true,
-    },
+    "lpoto/telescope-tasks.nvim",
   },
 }
 
@@ -61,6 +58,9 @@ function M.init()
     require("telescope").extensions.file_browser.file_browser()
   end)
   vim.keymap.set("n", "<leader>tt", "<cmd>Telescope tasks theme=ivy<CR>")
+  vim.keymap.set("n", "<leader>e", function()
+    require("telescope").extensions.tasks.actions.toggle_last_output()
+  end)
   vim.keymap.set("n", "<leader>tc", function()
     require("plugins.telescope").neovim_config_files()
   end)
