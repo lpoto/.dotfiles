@@ -1,5 +1,4 @@
 {
-  "actions.nvim": { "branch": "main", "commit": "f5f47a59dcbbeff8aafb0790b3d322ebc062edc5" },
   "cmp-buffer": { "branch": "main", "commit": "3022dbc9166796b644a841a02de8dd1cc1d311fa" },
   "cmp-nvim-lsp": { "branch": "main", "commit": "59224771f91b86d1de12570b4070fe4ad7cd1eeb" },
   "cmp-vsnip": { "branch": "main", "commit": "989a8a73c44e926199bfd05fa7a516d51f2d2752" },
@@ -21,6 +20,7 @@
   "onedark.nvim": { "branch": "master", "commit": "89dde4963ad198c9b6144dee3d5e8bcbb7559ddc" },
   "plenary.nvim": { "branch": "master", "commit": "9d81624fbcedd3dd43b38d7e13a1e7b3f873d8cd" },
   "telescope-file-browser.nvim": { "branch": "master", "commit": "304508fb7bea78e3c0eeddd88c4837501e403ae8" },
+  "telescope-tasks.nvim": { "branch": "main", "commit": "6f59b7a891c884e49898127a5d8240663b652c86" },
   "telescope.nvim": { "branch": "master", "commit": "b79cd6c88b3d96b0f49cb7d240807cd59b610cd8" },
   "vim-vsnip": { "branch": "master", "commit": "8dde8c0ef10bb1afdbb301e2bd7eb1c153dd558e" }
 }
