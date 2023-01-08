@@ -18,6 +18,7 @@ Keymaps:
  - "<leader>tg"   - live grep
  - "<leader>td"   - show diagnostics
  - "<leader>tq"   - quickfix
+ - "<leader>tt"   - tasks 
 
  Use <C-q> in a telescope prompt to send the results to quickfix.
 
@@ -30,6 +31,10 @@ local M = {
   dependencies = {
     "nvim-lua/plenary.nvim",
     "nvim-telescope/telescope-file-browser.nvim",
+    {
+      dir = "~/personal/telescope-tasks.nvim",
+      dev = true,
+    },
   },
 }
 
@@ -55,6 +60,7 @@ function M.init()
   vim.keymap.set("n", "<leader>tb", function()
     require("telescope").extensions.file_browser.file_browser()
   end)
+  vim.keymap.set("n", "<leader>tt", "<cmd>Telescope tasks theme=ivy<CR>")
   vim.keymap.set("n", "<leader>tc", function()
     require("plugins.telescope").neovim_config_files()
   end)
@@ -84,6 +90,7 @@ function M.config()
     },
   }
   telescope.load_extension "file_browser"
+  telescope.load_extension "tasks"
 end
 
 ---Find files in the neovim config directory.

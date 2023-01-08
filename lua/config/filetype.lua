@@ -174,7 +174,8 @@ function M.load(filetype)
         elseif k == "language_server" then
           require("plugins.lspconfig").add_language_server(v)
         elseif k == "actions" then
-          require("plugins.actions").add_actions(v)
+          vim.g.telescope_tasks =
+            vim.tbl_extend("force", vim.g.telescope_tasks or {}, v)
         elseif k == "debugger" then
           require("plugins.dap").add_adapters(v.adapters)
           require("plugins.dap").add_configurations(
