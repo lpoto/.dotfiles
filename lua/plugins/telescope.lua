@@ -57,7 +57,7 @@ function M.init()
   vim.keymap.set("n", "<leader>tb", function()
     require("telescope").extensions.file_browser.file_browser()
   end)
-  vim.keymap.set("n", "<leader>tt", "<cmd>Telescope tasks theme=ivy<CR>")
+  vim.keymap.set("n", "<leader>tt", "<cmd>Telescope tasks <CR>")
   vim.keymap.set("n", "<leader>e", function()
     require("telescope").extensions.tasks.actions.toggle_last_output()
   end)
@@ -86,6 +86,9 @@ function M.config()
         theme = "ivy",
         hidden = true,
         hijack_netrw = true,
+      },
+      tasks = {
+        theme = "ivy",
       },
     },
   }
