@@ -101,7 +101,7 @@ function M.git_branches()
   local theme = require("telescope.themes").get_ivy()
 
   theme.results_title = "<CR> - checkout, <C-d|t|r|a|y> - "
-      .. "delete|track|rebase|create|merge"
+    .. "delete|track|rebase|create|merge"
   theme.selection_strategy = "row"
 
   telescope.git_branches(theme)

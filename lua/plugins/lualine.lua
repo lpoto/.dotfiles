@@ -26,7 +26,7 @@ return {
         section_separators = { left = "", right = "" },
         disabled_filetypes = {
           "dashboard",
-          "telescope_tasks_output"
+          "telescope_tasks_output",
         },
       },
       sections = {
