@@ -34,10 +34,8 @@ filetype.config {
   actions = {
     ["Run current Python file"] = function()
       return {
+        { "python3", vim.api.nvim_buf_get_name(0) },
         filetypes = { "python" },
-        steps = {
-          { "python3", vim.api.nvim_buf_get_name(0) },
-        },
       }
     end,
   },

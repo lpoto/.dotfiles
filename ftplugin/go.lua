@@ -34,10 +34,8 @@ filetype.config {
   actions = {
     ["Run current Go file"] = function()
       return {
+        { "go", "run", vim.api.nvim_buf_get_name(0) },
         filetypes = { "go" },
-        steps = {
-          { "go", "run", vim.api.nvim_buf_get_name(0) },
-        },
       }
     end,
   },

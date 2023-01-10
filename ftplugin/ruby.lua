@@ -33,10 +33,8 @@ filetype.config {
   actions = {
     ["Run current Ruby file"] = function()
       return {
+        { "ruby", vim.api.nvim_buf_get_name(0) },
         filetypes = { "ruby" },
-        steps = {
-          { "ruby", vim.api.nvim_buf_get_name(0) },
-        },
       }
     end,
   },

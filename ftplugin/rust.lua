@@ -33,23 +33,19 @@ filetype.config {
   actions = {
     ["Run current Cargo binary"] = function()
       return {
+        { "cargo", "run", "--bin", vim.fn.expand "%:p:t:r" },
         filetypes = { "rust" },
         patterns = { ".*/src/bin/[^/]+.rs" },
         cwd = require "util.root" { ".git", "cargo.toml" },
-        steps = {
-          { "cargo", "run", "--bin", vim.fn.expand "%:p:t:r" },
-        },
       }
     end,
     ["Run current Cargo project"] = function()
       return {
+        { "cargo", "run" },
         filetypes = { "rust" },
         patterns = { ".*/src/.*.rs" },
         ignore_patterns = { ".*/src/bin/[^/]+.rs" },
         cwd = require "util.root" { ".git", "cargo.toml" },
-        steps = {
-          { "cargo", "run" },
-        },
       }
     end,
   },
