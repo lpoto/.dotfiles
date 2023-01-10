@@ -27,41 +27,4 @@ filetype.config {
   formatter = "autopep8",
 }
 
--- Configure actions and debuggers
-filetype.config {
-  filetype = "python",
-  priority = 1,
-  actions = {
-    ["Run current Python file"] = function()
-      return {
-        { "python3", vim.api.nvim_buf_get_name(0) },
-        filetypes = { "python" },
-      }
-    end,
-  },
-  debugger = {
-    adapters = {
-      python = {
-        type = "executable",
-        command = vim.fn.exepath "python",
-        args = { "-m", "debugpy.adapter" },
-        options = {
-          detached = true,
-        },
-      },
-    },
-    configurations = {
-      {
-        type = "python",
-        request = "launch",
-        name = "Launch file",
-        program = "${file}",
-        pythonPath = function()
-          return vim.fn.exepath "python"
-        end,
-      },
-    },
-  },
-}
-
 filetype.load "python"

@@ -22,8 +22,6 @@ local M = {}
 ---    - `language_server` (table|string|nil): A lspconfig's server config (server name on index 1 and optional config on 2, or just server name), cmp capabilities will be automatically added.
 ---    - `linter` (string|table|nil): A liter name. Should be one of null-ls's diagnostics.
 ---    - `copilot` (boolean|nil): Whether to start copilot for the filetype or not.
----    - `actions` (table|nil): A table of Actions.nvim actions.
----    - `debugger` (table|nil): A table for a dap.nvim debugger config, with fields `adapters` and `configurations` (see dap.nvim's docs).
 ---    - `unset` (table|nil): A table of fields to unset. This is useful for project-local configs, to unset some fields from the global config.
 ---
 ---  It would be useful to use multiple config when you want to set some fields with higher priority than others.
@@ -41,9 +39,9 @@ local M = {}
 ---  filetype.config {
 ---    priority = 5,
 ---    filetype = "python",
----    lint = "flake8",
+---    linter = "flake8",
 ---    copilot = true,
----    unset = {"debugger", "actions"}
+---    unset = {"linter", "copilot"}
 ---  }
 ---</code>
 function M.config(o)
@@ -67,8 +65,6 @@ function M.config(o)
       language_server = { "table", "string" },
       linter = { "string" },
       copilot = { "boolean" },
-      actions = { "table" },
-      debugger = { "table" },
       unset = { "table", "string" },
     }
 
@@ -173,15 +169,6 @@ function M.load(filetype)
           )
         elseif k == "language_server" then
           require("plugins.lspconfig").add_language_server(v)
-        elseif k == "actions" then
-          vim.g.telescope_tasks =
-            vim.tbl_extend("force", vim.g.telescope_tasks or {}, v)
-        elseif k == "debugger" then
-          require("plugins.dap").add_adapters(v.adapters)
-          require("plugins.dap").add_configurations(
-            v.configurations,
-            filetype
-          )
         end
       end
     end)

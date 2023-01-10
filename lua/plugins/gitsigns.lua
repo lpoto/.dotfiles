@@ -148,9 +148,6 @@ function M.git_status()
     map("n", "<C-s>", actions.git_staging_toggle)
     return true
   end
-  opts.git_icons = {
-    changed = ".",
-  }
   telescope.git_status(opts)
 end
 

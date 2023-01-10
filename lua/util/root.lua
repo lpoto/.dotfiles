@@ -22,10 +22,8 @@ return function(root_dir_patterns, max_depth)
   if vim.g["root_dir_max_depth"] then
     max_depth = vim.g["root_dir_max_depth"]
   end
-  local default_path_maker = "%:p:h"
-  local path_maker = default_path_maker
+  local p = vim.fn.getcwd()
   for _ = 1, max_depth, 1 do
-    local p = vim.fn.expand(path_maker)
     if string.len(p) == 1 or path.join(p, "") == os.getenv "HOME" then
       break
     end
@@ -37,7 +35,7 @@ return function(root_dir_patterns, max_depth)
         return p
       end
     end
-    path_maker = path_maker .. ":h"
+    p = vim.fs.dirname(p)
   end
-  return vim.fn.expand(default_path_maker)
+  return vim.fn.getcwd()
 end

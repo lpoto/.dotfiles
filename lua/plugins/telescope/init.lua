@@ -14,24 +14,27 @@ Keymaps:
  - "<leader>tf"   - find files   (or <leader>n)
  - "<leader>to"   - old files
  - "<leader>tc"   - find neovim config files
- - "<leader>tb"   - file browser
  - "<leader>tg"   - live grep
  - "<leader>td"   - show diagnostics
  - "<leader>tq"   - quickfix
- - "<leader>tt"   - tasks  (toggle last output with "<leader>e")
 
  Use <C-q> in a telescope prompt to send the results to quickfix.
+NOTE: 
+  see 
+  -  lua/plugins/telescope/tasks.lua
+  -  lua/plugins/telescope/file_browser.lua
 
 NOTE:  telescope required rg (Ripgrep) and fd (Fd-Find) to be installed.
 --]]
-
+--
 local M = {
   "nvim-telescope/telescope.nvim",
   cmd = "Telescope",
   dependencies = {
     "nvim-lua/plenary.nvim",
     "nvim-telescope/telescope-file-browser.nvim",
-    "lpoto/telescope-tasks.nvim",
+    require "plugins.telescope.file_browser",
+    require "plugins.telescope.tasks",
   },
 }
 
@@ -54,17 +57,13 @@ function M.init()
   vim.keymap.set("n", "<leader>tg", function()
     require("telescope.builtin").live_grep()
   end)
-  vim.keymap.set("n", "<leader>tb", function()
-    require("telescope").extensions.file_browser.file_browser()
-  end)
-  vim.keymap.set("n", "<leader>tt", "<cmd>Telescope tasks <CR>")
-  vim.keymap.set("n", "<leader>e", function()
-    require("telescope").extensions.tasks.actions.toggle_last_output()
-  end)
   vim.keymap.set("n", "<leader>tc", function()
     require("plugins.telescope").neovim_config_files()
   end)
 end
+
+local default_mappings
+local pickers
 
 function M.config()
   local telescope = require "telescope"
@@ -78,22 +77,10 @@ function M.config()
       file_previewer = require("telescope.previewers").vim_buffer_cat.new,
       grep_previewer = require("telescope.previewers").vim_buffer_vimgrep.new,
       qflist_previewer = require("telescope.previewers").vim_buffer_qflist.new,
-      mappings = M.default_mappings(),
+      mappings = default_mappings(),
     },
-    pickers = M.pickers(),
-    extensions = {
-      file_browser = {
-        theme = "ivy",
-        hidden = true,
-        hijack_netrw = true,
-      },
-      tasks = {
-        theme = "ivy",
-      },
-    },
+    pickers = pickers(),
   }
-  telescope.load_extension "file_browser"
-  telescope.load_extension "tasks"
 end
 
 ---Find files in the neovim config directory.
@@ -106,7 +93,28 @@ function M.neovim_config_files()
   }
 end
 
-function M.pickers()
+default_mappings = function()
+  local actions = require "telescope.actions"
+  return {
+    i = {
+      -- NOTE: when a telescope window is opened, use ctrl + q to
+      -- send the current results to a quickfix window, then immediately
+      -- open quickfix in a telescope window
+      ["<C-q>"] = function()
+        require("telescope.actions").send_to_qflist(vim.fn.bufnr())
+        require("telescope.builtin").quickfix()
+      end,
+      ["<Tab>"] = actions.move_selection_next,
+      ["<S-Tab>"] = actions.move_selection_previous,
+    },
+    n = {
+      ["<Tab>"] = actions.move_selection_next,
+      ["<S-Tab>"] = actions.move_selection_previous,
+    },
+  }
+end
+
+pickers = function()
   return {
     find_files = {
       find_command = {
@@ -144,27 +152,6 @@ function M.pickers()
     quickfix = {
       hidden = true,
       theme = "ivy",
-    },
-  }
-end
-
-function M.default_mappings()
-  local actions = require "telescope.actions"
-  return {
-    i = {
-      -- NOTE: when a telescope window is opened, use ctrl + q to
-      -- send the current results to a quickfix window, then immediately
-      -- open quickfix in a telescope window
-      ["<C-q>"] = function()
-        require("telescope.actions").send_to_qflist(vim.fn.bufnr())
-        require("telescope.builtin").quickfix()
-      end,
-      ["<Tab>"] = actions.move_selection_next,
-      ["<S-Tab>"] = actions.move_selection_previous,
-    },
-    n = {
-      ["<Tab>"] = actions.move_selection_next,
-      ["<S-Tab>"] = actions.move_selection_previous,
     },
   }
 end

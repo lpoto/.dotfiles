@@ -185,6 +185,10 @@ local function delete_selected_session(prompt_bufnr)
   local picker = action_state.get_current_picker(prompt_bufnr)
   local selection = action_state.get_selected_entry()
 
+  if selection == nil then
+    return
+  end
+
   local session_file = path.join(M.session_dir, selection.value)
 
   if vim.fn.delete(session_file) ~= 0 then
@@ -211,6 +215,9 @@ local function select_session(prompt_bufnr)
   local actions = require "telescope.actions"
 
   local selection = action_state.get_selected_entry()
+  if selection == nil then
+    return
+  end
   -- Close the prompt when selecting a session
   actions.close(prompt_bufnr)
   local session_file = path.join(M.session_dir, selection.value)

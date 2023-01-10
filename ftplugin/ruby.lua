@@ -26,18 +26,4 @@ filetype.config {
   formatter = "rubocop",
 }
 
--- Configure actions
-filetype.config {
-  filetype = "ruby",
-  priority = 0,
-  actions = {
-    ["Run current Ruby file"] = function()
-      return {
-        { "ruby", vim.api.nvim_buf_get_name(0) },
-        filetypes = { "ruby" },
-      }
-    end,
-  },
-}
-
 filetype.load "ruby"
