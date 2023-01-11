@@ -27,6 +27,11 @@ return {
         undercurl = true,
         background = false,
       },
+      highlights = {
+        NormalFloat = { bg = "None" },
+        FloatBorder = { bg = "None" },
+        NoiceMini = { bg = "#282C34" },
+      },
     }
 
     vim.g.lualine_theme = "onedark"

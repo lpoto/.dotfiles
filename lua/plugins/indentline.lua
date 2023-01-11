@@ -28,6 +28,7 @@ return {
       filetype_exclude = {
         "dashboard",
         "telescope_tasks_output",
+        "noice",
       },
     }
     vim.api.nvim_set_hl(0, "IndentBlanklineIndent", { fg = "#2b2a2a" })

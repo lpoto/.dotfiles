@@ -35,7 +35,10 @@ local opts = {
     version = "*",
   },
   lockfile = path.join(vim.fn.stdpath "config", ".lazy.lock.json"),
-  dev = { patterns = jit.os:find "Windows" and {} or { "folke" } },
+  root = path.join(vim.fn.stdpath "data", "lazy"),
+  dev = {
+    dir = path.join(vim.fn.stdpath "data", "lazy"),
+  },
   checker = {
     enabled = true,
     notify = false,

@@ -27,6 +27,7 @@ return {
         disabled_filetypes = {
           "dashboard",
           "telescope_tasks_output",
+          "noice",
         },
       },
       sections = {
