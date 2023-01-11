@@ -60,7 +60,7 @@ function M.add_task_generators(telescope)
         return {
           "Run current Cargo binary",
           cmd = { "cargo", "run", "--bin", vim.fn.expand "%:p:t:r" },
-          cwd = root { "cargo.toml", ".git" },
+          cwd = vim.fn.expand "%:p:h:h",
         }
       elseif name:gmatch ".*/src/.*.rs" then
         return {
