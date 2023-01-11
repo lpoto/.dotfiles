@@ -38,55 +38,84 @@ function M.config()
 
   telescope.load_extension "tasks"
 
+  --telescope.extensions.tasks.generators.enable_default()
+
   M.add_task_generators(telescope)
 end
 
 function M.add_task_generators(telescope)
-  telescope.extensions.tasks.generators.add(function(buf)
-    local root = require "util.root"
-    local path = require "util.path"
-    local filetype = vim.api.nvim_buf_get_option(buf, "filetype")
-    local name = vim.api.nvim_buf_get_name(buf)
+  local tasks = telescope.extensions.tasks
+  local util = tasks.util
 
-    -------------------------------------------------------------------- PYTHON
-    if filetype == "python" then
-      return {
-        "Run current Python file",
-        cmd = { "python", name },
-      }
-      -------------------------------------------------------------------- RUST
-    elseif filetype == "rust" then
-      if name:gmatch ".*/src/bin/[^/]+.rs" then
+  tasks.generators.add_batch {
+    ---------------------------------------------------------------------- RUST
+    {
+      generator = function()
         return {
           "Run current Cargo binary",
+          cwd = util.find_current_file_root { "Cargo.toml" },
           cmd = { "cargo", "run", "--bin", vim.fn.expand "%:p:t:r" },
-          cwd = vim.fn.expand "%:p:h:h",
         }
-      elseif name:gmatch ".*/src/.*.rs" then
+      end,
+      opts = {
+        filetypes = { "rust" },
+        patterns = { ".*/src/bin/[^/]+.rs" },
+        parent_dir_includes = { "Cargo.toml" },
+      },
+    },
+    {
+      generator = function()
         return {
           "Run current Cargo project",
-          cmd = { "cargo", "run", "--bin", vim.fn.expand "%:p:t:r" },
-          cwd = root { "cargo.toml", ".git" },
+          cwd = util.find_current_file_root { "Cargo.toml" },
+          cmd = { "cargo", "run" },
         }
-      end
-      ---------------------------------------------------------------------- GO
-    elseif filetype == "go" then
-      local r = root { "go.mod", ".git" }
-      if vim.fn.filereadable(path.join(r, "go.mod")) == 1 then
+      end,
+      opts = {
+        parent_dir_includes = { "Cargo.toml" },
+        ignore_patterns = { ".*/src/bin/[^/]+.rs" },
+        filetypes = { "rust" },
+      },
+    },
+    -------------------------------------------------------------------- PYTHON
+    {
+      generator = function(buf)
         return {
-          "Run current Go project",
-          cmd = { "go", "run", "." },
-          cwd = r,
+          "Run current Python file",
+          cmd = { "python", vim.api.nvim_buf_get_name(buf) },
         }
-      else
+      end,
+      opts = {
+        filetypes = { "python" },
+      },
+    },
+    ------------------------------------------------------------------------ GO
+    {
+      generator = function(buf)
         return {
           "Run current Go file",
-          cmd = { "go", "run", name },
-          cwd = r,
+          cmd = { "go", "run", vim.api.nvim_buf_get_name(buf) },
+          cwd = util.find_current_file_root { "go.mod" },
         }
-      end
-    end
-  end)
+      end,
+      opts = {
+        filetypes = { "go" },
+      },
+    },
+    {
+      generator = function()
+        return {
+          "Run Go project",
+          cmd = { "go", "run", "." },
+          cwd = util.find_current_file_root { "go.mod" },
+        }
+      end,
+      opts = {
+        filetypes = { "go" },
+        parent_dir_includes = { "go.mod" },
+      },
+    },
+  }
 end
 
 return M
