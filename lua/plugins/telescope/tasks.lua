@@ -15,6 +15,8 @@ Keymaps:
 
 local M = {
   "lpoto/telescope-tasks.nvim",
+  dev = true,
+  dir = "/home/luka/personal/telescope-tasks.nvim",
 }
 
 function M.init()
@@ -31,14 +33,14 @@ function M.config()
   telescope.setup {
     extensions = {
       tasks = {
-        theme = "ivy",
+        theme = "dropdown",
       },
     },
   }
 
   telescope.load_extension "tasks"
 
-  --telescope.extensions.tasks.generators.enable_default()
+  telescope.extensions.tasks.generators.enable_default()
 
   M.add_task_generators(telescope)
 end

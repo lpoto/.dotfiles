@@ -73,9 +73,9 @@ return {
       {
         icon = "⚠ ",
         icon_hl = { fg = "#dbb671" },
-        desc = " Notifications History                  ",
-        action = "lua require('plugins.notify').history()",
-        shortcut = "Space + i",
+        desc = " Notifications History                    ",
+        action = "Noice",
+        shortcut = ":Noice",
       },
       {
         icon = " ",

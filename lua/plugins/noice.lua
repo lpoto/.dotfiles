@@ -19,12 +19,6 @@ local M = {
   },
 }
 
-function M.init()
-  vim.keymap.set("n", "<leader>i", function()
-    require("plugins.noice").notification_history()
-  end)
-end
-
 function M.config()
   require("noice").setup {
     lsp = {
@@ -34,6 +28,9 @@ function M.config()
         ["vim.lsp.util.stylize_markdown"] = true,
         ["cmp.entry.get_documentation"] = true,
       },
+    },
+    confirm = {
+      view = "cmdline",
     },
     -- you can enable a preset for easier configuration
     presets = {
@@ -49,7 +46,7 @@ end
 ---Display notify history in a telescope prompt
 function M.notification_history()
   require("telescope").extensions.notify.notify(
-    require("telescope.themes").get_ivy()
+    require("telescope.themes").get_dropdown()
   )
 end
 

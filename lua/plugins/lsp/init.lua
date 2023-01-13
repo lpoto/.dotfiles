@@ -31,7 +31,7 @@ local M = {
 
 function M.init()
   vim.keymap.set("n", "K", function()
-    require("plugins.lspconfig").show_definition()
+    require("plugins.lsp").show_definition()
   end)
   vim.keymap.set("n", "<C-k>", function()
     vim.lsp.buf.hover()

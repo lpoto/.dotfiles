@@ -41,6 +41,6 @@ vim.api.nvim_create_autocmd("User", {
     -- Search for a local config file in the current dir or 2 dirs up
     -- (.nvim.lua  or .nvimrc or .exrc)
 
-    require("config.local_config").enable()
+    require("config").init()
   end,
 })

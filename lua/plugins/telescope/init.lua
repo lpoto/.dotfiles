@@ -31,7 +31,6 @@ local M = {
   "nvim-telescope/telescope.nvim",
   cmd = "Telescope",
   dependencies = {
-    "nvim-lua/plenary.nvim",
     "nvim-telescope/telescope-file-browser.nvim",
     require "plugins.telescope.file_browser",
     require "plugins.telescope.tasks",
@@ -125,7 +124,7 @@ pickers = function()
         "--hidden",
         "-u",
       },
-      theme = "ivy",
+      theme = "dropdown",
       hidden = true,
       previewer = false,
       file_ignore_patterns = {
@@ -143,15 +142,15 @@ pickers = function()
     },
     oldfiles = {
       hidden = true,
-      theme = "ivy",
+      theme = "dropdown",
     },
     live_grep = {
       hidden = true,
-      theme = "ivy",
+      theme = "dropdown",
     },
     quickfix = {
       hidden = true,
-      theme = "ivy",
+      theme = "dropdown",
     },
   }
 end
