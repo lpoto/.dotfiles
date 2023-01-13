@@ -72,24 +72,27 @@ end
 ---@param filetype string?: the filetype to enable copilot for.
 ---If this is not provided, it is enabled for current filetype.
 function M.enable(filetype)
-  if vim.fn.exists ":Copilot" == 0 then
-    return
-  end
-  if filetype == nil then
-    filetype = vim.bo.filetype
-  end
-  -- NOTE: make sure the copilot is enabled for the current filetype.
-  if vim.g.copilot_filetypes == nil then
-    vim.g.copilot_filetypes = { [filetype] = true }
-  else
-    vim.g.copilot_filetypes =
-      vim.tbl_extend("force", vim.g.copilot_filetypes, {
-        [filetype] = true,
-      })
-  end
-  if vim.g.loaded_copilot ~= 1 then
-    vim.cmd "Copilot enable"
-  end
+  vim.defer_fn(function()
+    if vim.fn.exists ":Copilot" == 0 then
+      return
+    end
+    if filetype == nil then
+      filetype = vim.bo.filetype
+    end
+    -- NOTE: make sure the copilot is enabled for the current filetype.
+    if vim.g.copilot_filetypes == nil then
+      vim.g.copilot_filetypes = { [filetype] = true }
+    else
+      vim.g.copilot_filetypes =
+        vim.tbl_extend("force", vim.g.copilot_filetypes, {
+          [filetype] = true,
+        })
+    end
+    if vim.g.loaded_copilot ~= 1 then
+      vim.cmd "Copilot enable"
+      vim.notify("Enabled copilot for: " .. filetype)
+    end
+  end, 0)
 end
 
 return M

@@ -16,8 +16,6 @@ M.augroup = "ConfigAugroup"
 M.title = "Config"
 
 function M.init()
-  config = secure_read_config(Path:new(M.config_path))
-
   vim.api.nvim_create_augroup(M.augroup, {
     clear = true,
   })
@@ -29,6 +27,9 @@ function M.init()
     group = M.augroup,
     callback = load_local_config,
   })
+
+  config = secure_read_config(Path:new(M.config_path))
+
   load_local_config()
   parse_config()
 end
@@ -39,6 +40,9 @@ load_local_config = function()
     local parents = Path:new(cwd) or {}
     table.insert(parents, cwd)
     for _, parent in ipairs(parents) do
+      if parent == vim.fn.stdpath "config" then
+        return
+      end
       local path = Path:new(parent, M.filename)
       if path:is_file() then
         local c = secure_read_config(path)
@@ -61,6 +65,10 @@ end
 parse_config = function(force)
   local buf = vim.api.nvim_get_current_buf()
   local filetype = vim.api.nvim_buf_get_option(buf, "filetype")
+  local buftype = vim.api.nvim_buf_get_option(buf, "buftype")
+  if buftype:len() ~= 0 then
+    return
+  end
   local opts = {}
   if type(config) == "table" then
     opts = config
@@ -91,7 +99,7 @@ parse_filetype = function(filetype, opts, force)
         v,
         filetype
       )
-    elseif k == "copilot" and v == true then
+    elseif k == "copilot" and v then
       require("plugins.copilot").enable(filetype)
     elseif k == "linter" then
       require("plugins.null-ls").register_builtin_source(
