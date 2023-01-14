@@ -60,7 +60,7 @@ load_local_config = function()
         local c = secure_read_config(path)
         if next(c or {}) ~= nil then
           config =
-          vim.tbl_extend("force", config or {}, secure_read_config(path))
+            vim.tbl_extend("force", config or {}, secure_read_config(path))
           vim.notify("Loaded local config: " .. path:__tostring())
         end
         return

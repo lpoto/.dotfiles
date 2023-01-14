@@ -8,9 +8,6 @@
 return {
   "glepnir/dashboard-nvim",
   init = function()
-    if vim.fn.argc() > 0 or vim.fn.line2byte "$" ~= -1 then
-      return
-    end
     -- NOTE: use this init function
     -- to load the plugin once the LazyVimStarted
     -- event is triggered, so the lazy stats are available
@@ -116,6 +113,9 @@ return {
       }
     end
 
+    if vim.fn.argc() > 0 or vim.fn.line2byte "$" ~= -1 then
+      return
+    end
     pcall(function()
       db:instance(true)
     end)

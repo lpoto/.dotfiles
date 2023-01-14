@@ -115,5 +115,5 @@ vim.api.nvim_create_user_command("WQ", "wq", {
 vim.keymap.set("t", "<Esc>", "<C-\\><C-N>")
 
 vim.keymap.set("n", "<C-t>", function()
-  require "util.toggle_terminal"()
+  require "util.toggle_terminal" ()
 end)

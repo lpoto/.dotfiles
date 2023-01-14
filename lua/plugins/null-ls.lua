@@ -33,13 +33,19 @@ function M.config()
   null_ls.setup()
 end
 
--- format with "<leader>f""
 function M.format()
-  vim.lsp.buf.format {
-    timeout_ms = 10000,
-    async = false,
-  }
-  vim.api.nvim_exec("w", true)
+  local ok, e = pcall(function()
+    vim.lsp.buf.format {
+      timeout_ms = 10000,
+      async = false,
+    }
+    vim.api.nvim_exec("w", true)
+  end)
+  if not ok and type(e) == "string" then
+    vim.notify(e, vim.log.levels.WARN, {
+      title = "Format",
+    })
+  end
 end
 
 ---@param source string
