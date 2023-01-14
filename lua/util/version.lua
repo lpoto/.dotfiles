@@ -8,7 +8,7 @@
 local M = {}
 
 M.required_version = "nvim-0.9"
-M.required_os = { "linux", "macos" }
+M.required_os = { "linux", "macos", "darwin" }
 
 ---@return string: the version of neovim
 function M.get()
