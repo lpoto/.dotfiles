@@ -33,7 +33,15 @@ vim.keymap.set("n", "<leader>w", "<cmd>wincmd w<cr>")
 ------------------------------------------------------------------- VISUAL MODE
 -- Ctrl + c' - yanked text to clipboard
 
-vim.keymap.set("n", "<C-c>", '<cmd>let @+=@"<CR>')
+-- Copy to external clipboard by adding <leader> prefix to yank
+--
+vim.keymap.set({ "v", "n" }, "<leader>y", '"+y')
+vim.keymap.set("n", "<leader>Y", '"+yg_')
+vim.keymap.set("n", "<leader>yy", '"+yy')
+--
+-- Paste from clipboard by adding <leader> prefix to paste
+vim.keymap.set({ "n", "v" }, "<leader>p", '"+p')
+vim.keymap.set({ "n", "v" }, "<leader>P", '"+P')
 
 ----------------------------------------------------------------------- JUMPING
 -- center cursor when jumping, jump forward with tab, backward with shift-tab
