@@ -26,7 +26,9 @@ vim.keymap.set("", "<expr><CR>", "pumvisible() ? '\\<C-y>' : '\\<CR>'")
 vim.keymap.set("n", "+", "<cmd>vertical resize +5<CR>")
 vim.keymap.set("n", "-", "<cmd>vertical resize -5<CR>")
 vim.keymap.set("n", "<leader>v", "<cmd>vertical new<CR>")
-vim.keymap.set("n", "<leader>w", "<C-W>=")
+
+-- Switch window with <leader>w
+vim.keymap.set("n", "<leader>w", "<cmd>wincmd w<cr>")
 
 ------------------------------------------------------------------- VISUAL MODE
 -- Ctrl + c' - yanked text to clipboard
@@ -62,6 +64,9 @@ vim.keymap.set("i", ",", ",<c-g>u")
 vim.keymap.set("i", ".", ".<c-g>u")
 vim.keymap.set("i", "!", "!<c-g>u")
 vim.keymap.set("i", "?", "?<c-g>u")
+
+-- Redo with <leader>r
+vim.keymap.set("n", "<leader>r", "<C-r>")
 
 ----------------------------------------------------------------------- WRITING
 

@@ -1,4 +1,5 @@
 local Path = require "plenary.path"
+local version = require "util.version"
 
 local config = nil
 local loaded = {}
@@ -16,6 +17,17 @@ M.augroup = "ConfigAugroup"
 M.title = "Config"
 
 function M.init()
+  if not version.check() then
+    vim.notify(
+      "Sourcing '.nvim.lua' files is disabled, as the neovim version is too low",
+      vim.log.levels.WARN,
+      {
+        title = M.title,
+      }
+    )
+    return
+  end
+
   vim.api.nvim_create_augroup(M.augroup, {
     clear = true,
   })
@@ -48,7 +60,7 @@ load_local_config = function()
         local c = secure_read_config(path)
         if next(c or {}) ~= nil then
           config =
-            vim.tbl_extend("force", config or {}, secure_read_config(path))
+          vim.tbl_extend("force", config or {}, secure_read_config(path))
           vim.notify("Loaded local config: " .. path:__tostring())
         end
         return
