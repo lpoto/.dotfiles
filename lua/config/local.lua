@@ -66,7 +66,18 @@ load_local_config = function()
       if path:is_file() then
         local c = secure_read_config(path)
         if next(c or {}) then
-          config = vim.tbl_extend("force", config or {}, c)
+          config = config or {}
+          for k, v in pairs(c or {}) do
+            if
+              config[k]
+              and type(v) == "table"
+              and type(config[k]) == "table"
+            then
+              config[k] = vim.tbl_extend("force", config[k], v)
+            else
+              config[k] = v
+            end
+          end
           vim.notify("Loaded local config: " .. path:__tostring())
         end
         return
