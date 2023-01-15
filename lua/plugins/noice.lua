@@ -13,11 +13,15 @@
 
 local M = {
   "folke/noice.nvim",
-  event = "VeryLazy",
+  lazy = false,
   dependencies = {
     "MunifTanjim/nui.nvim",
   },
 }
+
+function M.init()
+  vim.keymap.set("n", "<leader>i", M.notification_history)
+end
 
 function M.config()
   require("noice").setup {
@@ -28,9 +32,6 @@ function M.config()
         ["vim.lsp.util.stylize_markdown"] = true,
         ["cmp.entry.get_documentation"] = true,
       },
-    },
-    confirm = {
-      view = "cmdline",
     },
     -- you can enable a preset for easier configuration
     presets = {
@@ -45,9 +46,7 @@ end
 
 ---Display notify history in a telescope prompt
 function M.notification_history()
-  require("telescope").extensions.notify.notify(
-    require("telescope.themes").get_dropdown()
-  )
+  vim.api.nvim_exec("Noice telescope", false)
 end
 
 return M

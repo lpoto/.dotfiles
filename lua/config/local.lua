@@ -13,10 +13,10 @@ local M = {}
 
 M.filename = ".nvim.lua"
 M.config_path = { vim.fn.stdpath "config", M.filename }
-M.augroup = "ConfigAugroup"
-M.title = "Config"
+M.augroup = "LocalConfigAugroup"
+M.title = "Local Config"
 
-function M.init()
+function M.config()
   if not version.check() then
     vim.notify(
       "Sourcing '.nvim.lua' files is disabled, as the neovim version is too low",

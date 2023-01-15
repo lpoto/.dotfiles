@@ -32,6 +32,10 @@ function M.config()
     extensions = {
       tasks = {
         theme = "dropdown",
+        output = {
+          style = "float",
+          layout = "right",
+        },
       },
     },
   }

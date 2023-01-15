@@ -28,8 +28,8 @@ return {
         background = false,
       },
       highlights = {
-        NormalFloat = { bg = "None" },
-        FloatBorder = { bg = "None" },
+        FloatBorder = { bg = "#282C34" },
+        NormalFloat = { bg = "#282C34" },
         NoiceMini = { bg = "#282C34" },
       },
     }
