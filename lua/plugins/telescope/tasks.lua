@@ -15,8 +15,6 @@ Keymaps:
 
 local M = {
   "lpoto/telescope-tasks.nvim",
-  dev = true,
-  dir = "/home/luka/personal/telescope-tasks.nvim",
 }
 
 function M.init()
