@@ -42,7 +42,7 @@ function M.config()
 
   telescope.load_extension "tasks"
 
-  telescope.extensions.tasks.generators.enable_default()
+  telescope.extensions.tasks.generators.default.run_project.all()
 end
 
 return M

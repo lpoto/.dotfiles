@@ -19,10 +19,6 @@ local M = {
   },
 }
 
-function M.init()
-  vim.keymap.set("n", "<leader>i", M.notification_history)
-end
-
 function M.config()
   require("noice").setup {
     lsp = {

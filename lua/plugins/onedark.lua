@@ -30,7 +30,6 @@ return {
       highlights = {
         FloatBorder = { bg = "#282C34" },
         NormalFloat = { bg = "#282C34" },
-        NoiceMini = { bg = "#282C34" },
       },
     }
 

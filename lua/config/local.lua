@@ -6,6 +6,7 @@ local loaded = {}
 
 local parse_config
 local parse_filetype
+local parse_plugins
 local secure_read_config
 local load_local_config
 
@@ -33,17 +34,23 @@ function M.config()
   })
   vim.api.nvim_create_autocmd("Filetype", {
     group = M.augroup,
-    callback = parse_config,
+    callback = function()
+      parse_config()
+    end,
   })
   vim.api.nvim_create_autocmd("DirChanged", {
     group = M.augroup,
-    callback = load_local_config,
+    callback = function()
+      load_local_config()
+      parse_config(true)
+    end,
   })
 
   config = secure_read_config(Path:new(M.config_path))
 
   load_local_config()
-  parse_config()
+
+  parse_config(false, true)
 end
 
 load_local_config = function()
@@ -58,9 +65,8 @@ load_local_config = function()
       local path = Path:new(parent, M.filename)
       if path:is_file() then
         local c = secure_read_config(path)
-        if next(c or {}) ~= nil then
-          config =
-            vim.tbl_extend("force", config or {}, secure_read_config(path))
+        if next(c or {}) then
+          config = vim.tbl_extend("force", config or {}, c)
           vim.notify("Loaded local config: " .. path:__tostring())
         end
         return
@@ -74,17 +80,30 @@ load_local_config = function()
   end
 end
 
-parse_config = function(force)
+parse_config = function(force, init)
   local buf = vim.api.nvim_get_current_buf()
   local filetype = vim.api.nvim_buf_get_option(buf, "filetype")
   local buftype = vim.api.nvim_buf_get_option(buf, "buftype")
-  if buftype:len() ~= 0 then
-    return
-  end
+
   local opts = {}
   if type(config) == "table" then
     opts = config
   end
+
+  if not init and buftype:len() ~= 0 then
+    return
+  end
+
+  if opts.plugins and (not loaded.plugins or force) then
+    loaded.plugins = true
+    local ok, e = pcall(parse_plugins, opts.plugins)
+    if not ok and type(e) == "string" then
+      vim.notify(e, vim.log.levels.WARN, {
+        title = M.title,
+      })
+    end
+  end
+
   for k, v in pairs(opts) do
     if k == filetype then
       local ok, e = pcall(parse_filetype, filetype, v, force)
@@ -93,6 +112,21 @@ parse_config = function(force)
           title = M.title,
         })
       end
+    end
+  end
+end
+
+parse_plugins = function(plugins)
+  assert(type(plugins) == "table", "Plugins config should be a table")
+
+  for k, v in pairs(plugins) do
+    assert(type(k) == "string", "Plugin name should be a string")
+    local ok, m = pcall(require, "plugins." .. k)
+    assert(ok, m)
+    assert(type(v) == "table", "Plugin configs should be tables")
+    for k2, v2 in pairs(v) do
+      assert(type(k2) == "string", "Plugin config keys should be strings")
+      m[k2] = v2
     end
   end
 end
@@ -111,8 +145,6 @@ parse_filetype = function(filetype, opts, force)
         v,
         filetype
       )
-    elseif k == "copilot" and v then
-      require("plugins.copilot").enable(filetype)
     elseif k == "linter" then
       require("plugins.null-ls").register_builtin_source(
         "diagnostics",

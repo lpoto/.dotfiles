@@ -99,7 +99,7 @@ function M.config()
           end
 
           local name =
-            vim.fn.getcwd():gsub(require("util.path").separator, "%%")
+          vim.fn.getcwd():gsub(require("util.path").separator, "%%")
           local file = path.join(M.session_dir, name .. ".vim")
           pcall(
             vim.api.nvim_exec,
@@ -259,6 +259,7 @@ function M.list_sessions(theme)
     results_title = "<CR> - Load session, <C-d> - Delete session",
     selection_strategy = "row",
     finder = session_finder(sessions),
+    generic_sorter = require("telescope.sorters").get_fzy_sorter,
     attach_mappings = function(prompt_bufnr, map)
       -- NOTE: load the session under the cursor
       -- when pressing <CR>

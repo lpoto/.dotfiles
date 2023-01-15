@@ -8,7 +8,7 @@
   "indent-blankline.nvim": { "branch": "master", "commit": "db7cbcb40cc00fc5d6074d7569fb37197705e7f6" },
   "lazy.nvim": { "branch": "main", "commit": "0d0d5870a3265f1c92a89dccef4a592c44e70179" },
   "lualine.nvim": { "branch": "master", "commit": "0050b308552e45f7128f399886c86afefc3eb988" },
-  "mason.nvim": { "branch": "main", "commit": "8529daa38242091d579ed24f28b35c8b80928e8a" },
+  "mason.nvim": { "branch": "main", "commit": "b61d7f1af2678eb5b5859aebb628c6839ae82cf2" },
   "noice.nvim": { "branch": "main", "commit": "e8f0cdc08bd4e637fa8c9da2a454622c5b55beae" },
   "nui.nvim": { "branch": "main", "commit": "257da38029d3859ed111804f9d4e95b0fa993a31" },
   "null-ls.nvim": { "branch": "main", "commit": "915558963709ea17c5aa246ca1c9786bfee6ddb4" },
@@ -21,7 +21,7 @@
   "onedark.nvim": { "branch": "master", "commit": "89dde4963ad198c9b6144dee3d5e8bcbb7559ddc" },
   "plenary.nvim": { "branch": "master", "commit": "9d81624fbcedd3dd43b38d7e13a1e7b3f873d8cd" },
   "telescope-file-browser.nvim": { "branch": "master", "commit": "304508fb7bea78e3c0eeddd88c4837501e403ae8" },
-  "telescope-tasks.nvim": { "branch": "main", "commit": "ca66440ed8ce6c07cc396109b2bb2aa9097f43e7" },
+  "telescope-tasks.nvim": { "branch": "main", "commit": "d4ea96b615323392fb9f0ef4bfd4fbd545731744" },
   "telescope.nvim": { "branch": "master", "commit": "b79cd6c88b3d96b0f49cb7d240807cd59b610cd8" },
   "vim-vsnip": { "branch": "master", "commit": "8dde8c0ef10bb1afdbb301e2bd7eb1c153dd558e" }
 }

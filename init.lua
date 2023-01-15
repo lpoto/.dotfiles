@@ -25,8 +25,8 @@ vim.api.nvim_create_autocmd("User", {
     ------------------------------------ Configure loading and saving sessions
     require("config.sessions").config()
 
-    ----------- Search for a local config file in the current dir or 2 dirs up
-    ----------- (.nvim.lua  or .nvimrc or .exrc)
+    ----------------- Search for a local .nvim.lua config file in the current
+    ----------------  or any of it's parent directories.
     require("config.local").config()
   end,
 })
