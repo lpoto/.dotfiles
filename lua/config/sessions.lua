@@ -240,8 +240,8 @@ function M.list_sessions(theme)
   local pickers = require "telescope.pickers"
   local actions = require "telescope.actions"
 
-  ---NOTE: use dropdown theme by default
-  theme = theme or require("telescope.themes").get_dropdown()
+  ---NOTE: use ivy theme by default
+  theme = theme or require("telescope.themes").get_ivy()
 
   local sessions = get_sessions()
   if next(sessions) == nil then

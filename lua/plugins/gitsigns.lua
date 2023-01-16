@@ -87,7 +87,7 @@ end
 function M.git_commits()
   local telescope = require "telescope.builtin"
 
-  local theme = require("telescope.themes").get_dropdown()
+  local theme = require("telescope.themes").get_ivy()
 
   theme.results_title = "<CR> - checkout, <C-r>s|h|m - reset soft|hard|mixed"
   theme.selection_strategy = "row"
@@ -98,7 +98,7 @@ end
 function M.git_branches()
   local telescope = require "telescope.builtin"
 
-  local theme = require("telescope.themes").get_dropdown()
+  local theme = require("telescope.themes").get_ivy()
 
   theme.results_title = "<CR> - checkout, <C-d|t|r|a|y> - "
     .. "delete|track|rebase|create|merge"
@@ -110,7 +110,7 @@ end
 function M.git_files()
   local telescope = require "telescope.builtin"
 
-  local theme = require("telescope.themes").get_dropdown()
+  local theme = require("telescope.themes").get_ivy()
 
   theme.results_title = "<CR> - open file"
   theme.selection_strategy = "row"
@@ -121,7 +121,7 @@ end
 function M.git_stash()
   local telescope = require "telescope.builtin"
 
-  local theme = require("telescope.themes").get_dropdown()
+  local theme = require("telescope.themes").get_ivy()
 
   theme.results_title = "<CR> - apply stash"
   theme.selection_strategy = "row"
@@ -133,7 +133,7 @@ function M.git_status()
   local telescope = require "telescope.builtin"
   local actions = require "telescope.actions"
 
-  local opts = require("telescope.themes").get_dropdown()
+  local opts = require("telescope.themes").get_ivy()
 
   opts.results_title = "<C-s> - stage/unstage, <CR> - open file"
   opts.selection_strategy = "row"

@@ -124,9 +124,9 @@ pickers = function()
         "--hidden",
         "-u",
       },
-      theme = "dropdown",
+      theme = "ivy",
       hidden = true,
-      previewer = false,
+      --previewer = true,
       file_ignore_patterns = {
         "plugged/",
         ".undo/",
@@ -142,15 +142,15 @@ pickers = function()
     },
     oldfiles = {
       hidden = true,
-      theme = "dropdown",
+      theme = "ivy",
     },
     live_grep = {
       hidden = true,
-      theme = "dropdown",
+      theme = "ivy",
     },
     quickfix = {
       hidden = true,
-      theme = "dropdown",
+      theme = "ivy",
     },
   }
 end

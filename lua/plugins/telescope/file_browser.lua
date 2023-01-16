@@ -27,7 +27,7 @@ function M.config()
   telescope.setup {
     extensions = {
       file_browser = {
-        theme = "dropdown",
+        theme = "ivy",
         hidden = true,
         hijack_netrw = true,
       },
