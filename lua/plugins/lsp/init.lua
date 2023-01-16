@@ -24,32 +24,25 @@ Keymaps:
 local M = {
   "neovim/nvim-lspconfig",
   cmd = { "LspStart", "LspInfo" },
-  config = function()
-    vim.api.nvim_set_keymap(
-      "n",
-      "K",
-      "<cmd>lua require('plugins.lspconfig')" .. ".show_definition()<CR>",
-      { noremap = true }
-    )
-    vim.api.nvim_set_keymap("n", "<C-k>", "<cmd>lua vim.lsp.buf.hover()<CR>", {
-      noremap = true,
-    })
-    vim.api.nvim_set_keymap(
-      "n",
-      "<C-d>",
-      "<cmd>lua vim.diagnostic.open_float()<CR>",
-      {
-        noremap = true,
-      }
-    )
-    vim.api.nvim_set_keymap("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", {
-      noremap = true,
-    })
-  end,
   dependencies = {
     "hrsh7th/cmp-nvim-lsp",
   },
 }
+
+function M.init()
+  vim.keymap.set("n", "K", function()
+    require("plugins.lsp").show_definition()
+  end)
+  vim.keymap.set("n", "<C-k>", function()
+    vim.lsp.buf.hover()
+  end)
+  vim.keymap.set("n", "<C-d>", function()
+    vim.diagnostic.open_float()
+  end)
+  vim.keymap.set("n", "gd", function()
+    vim.lsp.buf.definition()
+  end)
+end
 
 ---Show definition of symbol under cursor, unless
 ---there are any diagnostics on the current line.

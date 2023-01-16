@@ -8,6 +8,7 @@
 local M = {}
 
 M.required_version = "nvim-0.9"
+M.required_os = { "linux", "macos", "darwin" }
 
 ---@return string: the version of neovim
 function M.get()
@@ -28,10 +29,12 @@ function M.check()
   return vim.fn.has(M.required_version) == 1
 end
 
----Ensures the version is valid for the configuration to run,
+---Ensures the version and os are valid for the configuration to run,
 ---and warns the user if it is not.
-function M.ensure()
-  if M.check() ~= true then
+---@param ensure_version boolean: Ensure version and warn when not sufficient
+---@param ensure_os boolean: Ensure os and warn when not linux or macos
+function M.ensure(ensure_version, ensure_os)
+  if ensure_version and M.check() ~= true then
     vim.notify(
       "For this configuration to run properly, "
         .. "version "
@@ -39,6 +42,22 @@ function M.ensure()
         .. " or higher is required.",
       vim.log.levels.WARN,
       { title = "Version" }
+    )
+  end
+  if
+    ensure_os
+    and vim.tbl_contains(
+        M.required_os,
+        string.lower(vim.loop.os_uname().sysname)
+      )
+      ~= true
+  then
+    vim.notify(
+      "For this configuration to run properly, "
+        .. "the operating system must be one of: "
+        .. table.concat(M.required_os, ", "),
+      vim.log.levels.WARN,
+      { title = "OS" }
     )
   end
 end

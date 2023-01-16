@@ -18,30 +18,34 @@ Commands:
 
 local M = {
   "jose-elias-alvarez/null-ls.nvim",
-  keys = "<leader>f",
   cmd = { "NullLsInfo", "NullLsLog" },
 }
+
+function M.init()
+  vim.keymap.set("n", "<leader>f", function()
+    require("plugins.null-ls").format()
+  end)
+end
 
 function M.config()
   local null_ls = require "null-ls"
 
   null_ls.setup()
-
-  vim.api.nvim_set_keymap(
-    "n",
-    "<leader>f",
-    "<cmd>lua require('plugins.null-ls').format()<CR>",
-    { noremap = true }
-  )
 end
 
--- format with "<leader>f""
 function M.format()
-  vim.lsp.buf.format {
-    timeout_ms = 10000,
-    async = false,
-  }
-  vim.api.nvim_exec("w", true)
+  local ok, e = pcall(function()
+    vim.lsp.buf.format {
+      timeout_ms = 10000,
+      async = false,
+    }
+    vim.api.nvim_exec("w", true)
+  end)
+  if not ok and type(e) == "string" then
+    vim.notify(e, vim.log.levels.WARN, {
+      title = "Format",
+    })
+  end
 end
 
 ---@param source string

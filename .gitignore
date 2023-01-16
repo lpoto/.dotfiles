@@ -13,3 +13,6 @@ nvim.appimage
 vim.log
 
 .luarc.json
+
+# .nvim.lua copied from .nvim.example.lua
+.nvim.lua

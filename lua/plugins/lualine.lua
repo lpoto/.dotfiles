@@ -24,6 +24,11 @@ return {
         icons_enabled = true,
         component_separators = { left = "", right = "" },
         section_separators = { left = "", right = "" },
+        disabled_filetypes = {
+          "dashboard",
+          "telescope_tasks_output",
+          "noice",
+        },
       },
       sections = {
         lualine_a = { "mode" },
@@ -35,12 +40,12 @@ return {
       },
       tabline = {
         lualine_a = { "branch" },
-        lualine_b = { "encoding" },
-        lualine_c = {
+        lualine_b = { "diff" },
+        lualine_c = { "encoding" },
+        lualine_x = {},
+        lualine_y = {
           { "diagnostics", sources = { "nvim_diagnostic", "vim_lsp" } },
         },
-        lualine_x = {},
-        lualine_y = {},
         lualine_z = { { "tabs", mode = 2 } },
       },
     }

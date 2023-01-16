@@ -99,7 +99,7 @@ function M.config()
           end
 
           local name =
-          vim.fn.getcwd():gsub(require("util.path").separator, "%%")
+            vim.fn.getcwd():gsub(require("util.path").separator, "%%")
           local file = path.join(M.session_dir, name .. ".vim")
           pcall(
             vim.api.nvim_exec,
@@ -111,12 +111,9 @@ function M.config()
     end,
   })
 
-  vim.api.nvim_set_keymap(
-    "n",
-    M.list_sessions_key,
-    "<CMD>lua require('config.sessions').list_sessions()<CR>",
-    { noremap = true }
-  )
+  vim.keymap.set("n", M.list_sessions_key, function()
+    require("config.sessions").list_sessions()
+  end)
 end
 
 --- Get a table of all available sessions located
@@ -156,18 +153,18 @@ local function session_finder(results)
         value = line,
         ordinal = line,
         display = function(e)
-          local displayer = entry_display.create {
-            separator = " ",
-            items = {
-              { width = 30 },
-              { width = vim.o.columns - 31 - 30 },
-              { remaining = true },
-            },
-          }
           local time = vim.fn.strftime(
             "%c",
             vim.fn.getftime(path.join(M.session_dir, e.value))
           )
+
+          local displayer = entry_display.create {
+            separator = " ",
+            items = {
+              { width = string.len(time) + 1 },
+              { remaining = true },
+            },
+          }
           -- NOTE: replate % signs with / in the displayed
           -- session name, so it better represents the session's
           -- working directory.
@@ -175,7 +172,6 @@ local function session_finder(results)
           return displayer {
             { time, "Comment" },
             value,
-            { "Delete with <Ctrl-d>", "Comment" },
           }
         end,
       }
@@ -188,6 +184,10 @@ local function delete_selected_session(prompt_bufnr)
   local action_state = require "telescope.actions.state"
   local picker = action_state.get_current_picker(prompt_bufnr)
   local selection = action_state.get_selected_entry()
+
+  if selection == nil then
+    return
+  end
 
   local session_file = path.join(M.session_dir, selection.value)
 
@@ -215,6 +215,9 @@ local function select_session(prompt_bufnr)
   local actions = require "telescope.actions"
 
   local selection = action_state.get_selected_entry()
+  if selection == nil then
+    return
+  end
   -- Close the prompt when selecting a session
   actions.close(prompt_bufnr)
   local session_file = path.join(M.session_dir, selection.value)
@@ -253,7 +256,10 @@ function M.list_sessions(theme)
   -- displaying the available sessions
   local sessions_picker = pickers.new(theme, {
     prompt_title = M.title,
+    results_title = "<CR> - Load session, <C-d> - Delete session",
+    selection_strategy = "row",
     finder = session_finder(sessions),
+    generic_sorter = require("telescope.sorters").get_fzy_sorter,
     attach_mappings = function(prompt_bufnr, map)
       -- NOTE: load the session under the cursor
       -- when pressing <CR>
@@ -262,9 +268,11 @@ function M.list_sessions(theme)
       end)
       -- NOTE: delete the session under
       -- the cursor when <Ctrl-d> is pressed
-      map({ "i", "n" }, "<C-d>", function()
-        delete_selected_session(prompt_bufnr)
-      end)
+      for _, mode in ipairs { "n", "i" } do
+        map(mode, "<C-d>", function()
+          delete_selected_session(prompt_bufnr)
+        end)
+      end
       return true
     end,
   })

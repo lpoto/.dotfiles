@@ -30,9 +30,19 @@ end
 
 vim.opt.runtimepath:prepend(lazypath)
 local opts = {
-  defaults = { lazy = true },
-  dev = { patterns = jit.os:find "Windows" and {} or { "folke" } },
-  checker = { enabled = true },
+  defaults = {
+    lazy = true,
+    version = "*",
+  },
+  lockfile = path.join(vim.fn.stdpath "config", ".lazy.lock.json"),
+  root = path.join(vim.fn.stdpath "data", "lazy"),
+  dev = {
+    dir = path.join(vim.fn.stdpath "data", "lazy"),
+  },
+  checker = {
+    enabled = true,
+    notify = false,
+  },
   diff = {
     cmd = "terminal_git",
   },
