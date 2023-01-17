@@ -65,6 +65,18 @@ vim.keymap.set(
   '(v:count > 5 ? "m\'" . v:count : "") . \'j\''
 )
 
+--- Don't modify jumplist when jumping with { and }
+vim.keymap.set(
+  "n",
+  "{",
+  "<cmd>execute 'keepjumps norm! ' . v:count1 . '{'<CR>"
+)
+vim.keymap.set(
+  "n",
+  "}",
+  "<cmd>execute 'keepjumps norm! ' . v:count1 . '}'<CR>"
+)
+
 ----------------------------------------------------------- UNDO BREAK POINTS
 -- start a new undo chain with punctuations
 
