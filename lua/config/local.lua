@@ -1,3 +1,11 @@
+--=============================================================================
+-------------------------------------------------------------------------------
+--                                                                        LOCAL
+--=============================================================================
+-- Safely source local .nvim.lua files, those files should return a table
+-- containing filetype keys or a plugin key.
+--_____________________________________________________________________________
+
 local Path = require "plenary.path"
 local version = require "util.version"
 

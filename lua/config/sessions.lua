@@ -11,12 +11,10 @@ Keymaps:
 NOTE: session is saved automatically when yout quit neovim.
 -----------------------------------------------------------------------------]]
 
-local path = require "util.path"
-
 local M = {}
 
 ---@type string: Path to the directory where sessions are saved
-M.session_dir = path.join(vim.fn.stdpath "data", "sessions")
+M.session_dir = table.concat({ vim.fn.stdpath "data", "sessions" }, "/")
 
 ---@type table: A table of filetype patterns that will be ignored
 ---when saving sessions
@@ -98,9 +96,8 @@ function M.config()
             return
           end
 
-          local name =
-            vim.fn.getcwd():gsub(require("util.path").separator, "%%")
-          local file = path.join(M.session_dir, name .. ".vim")
+          local name = vim.fn.getcwd():gsub("/", "%%")
+          local file = table.concat({ M.session_dir, name .. ".vim" }, "/")
           pcall(
             vim.api.nvim_exec,
             "mksession! " .. vim.fn.fnameescape(file),
@@ -129,8 +126,8 @@ local function get_sessions()
   end
   -- NOTE: Sort session so that the most recent is at the top
   table.sort(sessions, function(a, b)
-    a = path.join(M.session_dir, a)
-    b = path.join(M.session_dir, b)
+    a = table.concat({ M.session_dir, a }, "/")
+    b = table.concat({ M.session_dir, b }, "/")
     return vim.loop.fs_stat(a).mtime.sec > vim.loop.fs_stat(b).mtime.sec
   end)
   return sessions
@@ -155,7 +152,7 @@ local function session_finder(results)
         display = function(e)
           local time = vim.fn.strftime(
             "%c",
-            vim.fn.getftime(path.join(M.session_dir, e.value))
+            vim.fn.getftime(table.concat({ M.session_dir, e.value }, "/"))
           )
 
           local displayer = entry_display.create {
@@ -189,7 +186,7 @@ local function delete_selected_session(prompt_bufnr)
     return
   end
 
-  local session_file = path.join(M.session_dir, selection.value)
+  local session_file = table.concat({ M.session_dir, selection.value }, "/")
 
   if vim.fn.delete(session_file) ~= 0 then
     -- Notify that the session could not be deleted
@@ -220,7 +217,7 @@ local function select_session(prompt_bufnr)
   end
   -- Close the prompt when selecting a session
   actions.close(prompt_bufnr)
-  local session_file = path.join(M.session_dir, selection.value)
+  local session_file = table.concat({ M.session_dir, selection.value }, "/")
   -- NOTE: ensure the session file exists
   if vim.fn.filereadable(session_file) == 1 then
     -- if the session file exists, load it

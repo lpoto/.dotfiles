@@ -28,5 +28,7 @@ vim.api.nvim_create_autocmd("User", {
     ----------------- Search for a local .nvim.lua config file in the current
     ----------------  or any of it's parent directories.
     require("config.local").config()
+
+    require("config.folding").config()
   end,
 })

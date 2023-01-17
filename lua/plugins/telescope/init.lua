@@ -32,9 +32,13 @@ local M = {
   cmd = "Telescope",
   dependencies = {
     "nvim-telescope/telescope-file-browser.nvim",
-    require "plugins.telescope.file_browser",
-    require "plugins.telescope.tasks",
   },
+}
+
+local _M = {
+  M,
+  require "plugins.telescope.file_browser",
+  require "plugins.telescope.tasks",
 }
 
 function M.init()
@@ -155,4 +159,4 @@ pickers = function()
   }
 end
 
-return M
+return _M

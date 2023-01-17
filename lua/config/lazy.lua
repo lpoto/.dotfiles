@@ -6,64 +6,72 @@
 --_____________________________________________________________________________
 -- A plugin manager for neovim, this configures and bootstraps it from github.
 ------------------------------------------------------------------------------
-local path = require "util.path"
-local lazypath = path.join(vim.fn.stdpath "data", "lazy", "lazy.nvim")
+local lazy = {}
 
-if not vim.loop.fs_stat(lazypath) then
-  vim.notify("Lazy.nvim not found, installing...", vim.log.levels.INFO)
+lazy.path = table.concat({ vim.fn.stdpath "data", "lazy", "lazy.nvim" }, "/")
 
-  local args = {
-    "git",
-    "clone",
-    "--filter=blob:none",
-    "--single-branch",
-    "git@github.com:folke/lazy.nvim.git",
-    lazypath,
-  }
+lazy.config = function()
+  if not vim.loop.fs_stat(lazy.path) then
+    vim.notify("Lazy.nvim not found, installing...", vim.log.levels.INFO)
 
-  vim.notify("Running: " .. table.concat(args, " "), vim.log.levels.DEBUG)
+    local args = {
+      "git",
+      "clone",
+      "--filter=blob:none",
+      "--single-branch",
+      "git@github.com:folke/lazy.nvim.git",
+      lazy.path,
+    }
 
-  vim.fn.system(args)
+    vim.notify("Running: " .. table.concat(args, " "), vim.log.levels.DEBUG)
 
-  vim.notify("Lazy.nvim installed", vim.log.levels.INFO)
-end
+    vim.fn.system(args)
 
-vim.opt.runtimepath:prepend(lazypath)
-local opts = {
-  defaults = {
-    lazy = true,
-    version = "*",
-  },
-  lockfile = path.join(vim.fn.stdpath "config", ".lazy.lock.json"),
-  root = path.join(vim.fn.stdpath "data", "lazy"),
-  dev = {
-    dir = path.join(vim.fn.stdpath "data", "lazy"),
-  },
-  checker = {
-    enabled = true,
-    notify = false,
-  },
-  diff = {
-    cmd = "terminal_git",
-  },
-  performance = {
-    cache = {
-      enabled = true,
+    vim.notify("Lazy.nvim installed", vim.log.levels.INFO)
+  end
+
+  vim.opt.runtimepath:prepend(lazy.path)
+  local opts = {
+    defaults = {
+      lazy = true,
+      version = "*",
     },
-    rtp = {
-      disabled_plugins = {
-        "gzip",
-        "matchit",
-        "matchparen",
-        "netrwPlugin",
-        "tarPlugin",
-        "tohtml",
-        "tutor",
-        "zipPlugin",
+    lockfile = table.concat(
+      { vim.fn.stdpath "config", ".lazy.lock.json" },
+      "/"
+    ),
+    root = table.concat({ vim.fn.stdpath "data", "lazy" }, "/"),
+    dev = {
+      dir = table.concat({ vim.fn.stdpath "data", "lazy" }, "/"),
+    },
+    checker = {
+      enabled = true,
+      notify = false,
+    },
+    diff = {
+      cmd = "terminal_git",
+    },
+    performance = {
+      cache = {
+        enabled = true,
+      },
+      rtp = {
+        disabled_plugins = {
+          "gzip",
+          "matchit",
+          "matchparen",
+          "netrwPlugin",
+          "tarPlugin",
+          "tohtml",
+          "tutor",
+          "zipPlugin",
+        },
       },
     },
-  },
-  debug = false,
-}
+    debug = false,
+  }
 
-require("lazy").setup("plugins", opts)
+  require("lazy").setup("plugins", opts)
+end
+
+return lazy.config()
