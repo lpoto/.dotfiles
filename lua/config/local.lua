@@ -75,17 +75,7 @@ load_local_config = function()
         local c = secure_read_config(path)
         if next(c or {}) then
           config = config or {}
-          for k, v in pairs(c or {}) do
-            if
-              config[k]
-              and type(v) == "table"
-              and type(config[k]) == "table"
-            then
-              config[k] = vim.tbl_extend("force", config[k], v)
-            else
-              config[k] = v
-            end
-          end
+          config = vim.tbl_deep_extend("force", config, c or {})
           vim.notify("Loaded local config: " .. path:__tostring())
         end
         return
@@ -158,20 +148,22 @@ parse_filetype = function(filetype, opts, force)
 
   loaded[filetype] = true
   for k, v in pairs(opts) do
-    if k == "formatter" then
-      require("plugins.null-ls").register_builtin_source(
-        "formatting",
-        v,
-        filetype
-      )
-    elseif k == "linter" then
-      require("plugins.null-ls").register_builtin_source(
-        "diagnostics",
-        v,
-        filetype
-      )
-    elseif k == "language_server" then
-      require("plugins.lsp").add_language_server(v)
+    if v ~= false then
+      if k == "formatter" then
+        require("plugins.null-ls").register_builtin_source(
+          "formatting",
+          v,
+          filetype
+        )
+      elseif k == "linter" then
+        require("plugins.null-ls").register_builtin_source(
+          "diagnostics",
+          v,
+          filetype
+        )
+      elseif k == "language_server" then
+        require("plugins.lsp").add_language_server(v)
+      end
     end
   end
 end
@@ -193,7 +185,7 @@ secure_read_config = function(path)
     return {}
   end
   ok, v = pcall(v)
-  if not ok and type(v) == "stirng" then
+  if not ok and type(v) == "string" then
     vim.notify(v, vim.log.levels.WARN, {
       title = M.title,
     })
