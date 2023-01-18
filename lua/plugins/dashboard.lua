@@ -47,13 +47,6 @@ return {
         shortcut = "Space + t + f",
       },
       {
-        icon = "⚙ ",
-        icon_hl = { fg = "#dbb671" },
-        desc = " Neovim Config Files                ",
-        action = "lua require('plugins.telescope').neovim_config_files()",
-        shortcut = "Space + t + f",
-      },
-      {
         icon = " ",
         icon_hl = { fg = "#dbb671" },
         desc = " File Browser                       ",
@@ -75,7 +68,8 @@ return {
         shortcut = ":Noice",
       },
       {
-        icon = " ",
+        --icon = " ",
+        icon = "⚙ ",
         icon_hl = { fg = "#dbb671" },
         desc = " Package Manager                          ",
         action = "Mason",
