@@ -64,7 +64,7 @@ end
 load_local_config = function()
   local ok, e = pcall(function()
     local cwd = vim.loop.cwd()
-    local parents = Path:new(cwd) or {}
+    local parents = Path:new(cwd):parents() or {}
     table.insert(parents, cwd)
     for _, parent in ipairs(parents) do
       if parent == vim.fn.stdpath "config" then

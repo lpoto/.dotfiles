@@ -34,7 +34,7 @@ function M.config()
         theme = "ivy",
         output = {
           style = "float",
-          layout = "right",
+          layout = "center",
         },
       },
     },
