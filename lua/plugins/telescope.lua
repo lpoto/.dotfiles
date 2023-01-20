@@ -11,7 +11,7 @@ Telescope is a highly extendable fuzzy finder over lists.
 Items are shown in a popup with a prompt to search over.
 
 Keymaps:
- - "<leader>tf"   - find files   (or <leader>n)
+ - "<leader>t"   - find files   (or <leader>n)
  - "<leader>to"   - old files
  - "<leader>tg"   - live grep
  - "<leader>td"   - show diagnostics
@@ -34,7 +34,7 @@ function M.init()
   vim.keymap.set("n", "<leader>n", function()
     require("telescope.builtin").find_files()
   end)
-  vim.keymap.set("n", "<leader>tf", function()
+  vim.keymap.set("n", "<leader>t", function()
     require("telescope.builtin").find_files()
   end)
   vim.keymap.set("n", "<leader>to", function()
