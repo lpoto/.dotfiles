@@ -39,7 +39,7 @@ function M.format()
       timeout_ms = 10000,
       async = false,
     }
-    vim.api.nvim_exec("w", true)
+    pcall(vim.api.nvim_exec, "w", true)
   end)
   if not ok and type(e) == "string" then
     vim.notify(e, vim.log.levels.WARN, {

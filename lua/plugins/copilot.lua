@@ -17,34 +17,27 @@ Configure copilot with :Copilot setup
 --]]
 
 local M = {
-  "github/copilot.vim",
-  as = "copilot",
-  cmd = "Copilot",
-  init = function()
-    vim.g.copilot_no_tab_map = true
-    vim.g.copilot_assume_mapped = true
-  end,
+  "zbirenbaum/copilot.lua",
+  event = "VeryLazy",
 }
 
 function M.config()
-  vim.api.nvim_set_keymap(
-    "i",
-    "<C-Space>",
-    'copilot#Accept("<CR>")',
-    { silent = true, expr = true }
-  )
-  vim.api.nvim_set_keymap(
-    "i",
-    "<C-k>",
-    "copilot#Next()",
-    { silent = true, expr = true }
-  )
-  vim.api.nvim_set_keymap(
-    "i",
-    "<C-j>",
-    "copilot#Previous()",
-    { silent = true, expr = true }
-  )
+  vim.defer_fn(function()
+    local copilot = require "copilot"
+    copilot.setup {
+      panel = {
+        enabled = true,
+        keymap = {
+          accept = "<CR>",
+        },
+      },
+      suggestion = {
+        enabled = true,
+        auto_trigger = true,
+        debounce = 100,
+      },
+    }
+  end, 100)
 end
 
 return M

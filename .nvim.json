@@ -22,6 +22,12 @@
     "linter": "yamllint",
     "formatter": "yamlfmt"
   },
+  "sql": {
+    "formatter": "sql_formatter"
+  },
+  "mysql": {
+    "formatter": "sql_formatter"
+  },
   "markdown": {
     "formatter": "prettier"
   },

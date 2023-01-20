@@ -66,6 +66,8 @@ function M.__enable_language_server(server, opt, start_lsp)
 
   if opt.capabilities == nil then
     opt.capabilities = require("cmp_nvim_lsp").default_capabilities()
+  elseif opt.capabilities == false then
+    opt.capabilities = nil
   end
 
   if lspconfig[server] == nil then

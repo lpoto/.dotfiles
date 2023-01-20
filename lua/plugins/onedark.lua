@@ -40,11 +40,10 @@ return {
       },
       highlights = {
         FloatBorder = {
-          fg = colors.darker_black,
           bg = "None",
         },
         NormalFloat = {
-          bg = "#282C34",
+          bg = "None",
         },
         TelescopeBorder = {
           fg = colors.darker_black,
@@ -66,6 +65,9 @@ return {
         TelescopeResultsTitle = {
           fg = colors.black,
           bg = colors.light_grey,
+        },
+        Pmenu = {
+          bg = "NONE",
         },
       },
     }

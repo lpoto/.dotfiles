@@ -41,7 +41,7 @@ function M.config()
   vim.api.nvim_create_augroup(M.augroup, {
     clear = true,
   })
-  vim.api.nvim_create_autocmd("Filetype", {
+  vim.api.nvim_create_autocmd("BufWinEnter", {
     group = M.augroup,
     callback = function()
       parse_config()
