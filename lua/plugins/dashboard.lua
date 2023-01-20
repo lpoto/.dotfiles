@@ -29,7 +29,7 @@ return {
         icon = "⟳ ",
         icon_hl = { fg = "#dbb671" },
         desc = " Sessions                               ",
-        action = "lua require('config.sessions').list_sessions()",
+        action = "lua require('sessions').list_sessions()",
         shortcut = ":Sessions",
       },
       {
@@ -103,7 +103,7 @@ return {
         " ██║╚██╗██║ ██╔══╝  ██║   ██║ ╚██╗ ██╔╝ ██║ ██║╚██╔╝██║",
         " ██║ ╚████║ ███████╗╚██████╔╝  ╚████╔╝  ██║ ██║ ╚═╝ ██║",
         " ╚═╝  ╚═══╝ ╚══════╝ ╚═════╝    ╚═══╝   ╚═╝ ╚═╝     ╚═╝",
-        require("util.version").get(),
+        require("version").get(),
       }
     end
 

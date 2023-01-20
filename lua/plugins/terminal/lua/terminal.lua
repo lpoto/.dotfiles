@@ -1,7 +1,9 @@
 --=============================================================================
 -------------------------------------------------------------------------------
---                                                              TOGGLE TERMINAL
+--                                                                     TERMINAL
 --=============================================================================
+--[[ Toggling terminal
+-----------------------------------------------------------------------------]]
 
 local M = {}
 
@@ -37,7 +39,7 @@ function M.create_buf()
   return buf
 end
 
-function M.open()
+function M.toggle()
   if not M.term_buf or not vim.api.nvim_buf_is_valid(M.term_buf) then
     M.term_buf = M.create_buf()
   end
@@ -60,4 +62,4 @@ function M.open()
   end)
 end
 
-return M.open
+return M

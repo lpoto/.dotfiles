@@ -31,7 +31,7 @@ local M = {
 
 function M.init()
   vim.keymap.set("n", "K", function()
-    require("plugins.lsp").show_definition()
+    require("plugins.lspconfig").show_definition()
   end)
   vim.keymap.set("n", "<C-k>", function()
     vim.lsp.buf.hover()
@@ -54,20 +54,11 @@ function M.show_definition()
   vim.lsp.buf.hover()
 end
 
-function M.add_language_server(v)
-  local server
-  local opt = {}
-  if type(v) == "table" then
-    server = v[1]
-    opt = v[2] or {}
-  else
-    server = v
-  end
-
-  M.__enable_language_server(server, opt, true)
+function M.add_language_server(name, config)
+  M.__enable_language_server(name, config or {}, true)
 
   M.servers = M.servers or {}
-  table.insert(M.servers, { server, opt })
+  table.insert(M.servers, { name, config or {} })
 end
 
 function M.__enable_language_server(server, opt, start_lsp)

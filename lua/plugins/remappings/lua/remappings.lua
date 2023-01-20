@@ -2,11 +2,6 @@
 -------------------------------------------------------------------------------
 --                                                                   REMAPPINGS
 --=============================================================================
--- This file contains all the default remappings and custom commands.
--- NOTE: plugins and special configs such as the config for netrw, have
--- remappings defined in their own configs.
--------------------------------------------------------------------------------
-
 ---Set the default global remappings and user commands
 ---(renaming file, scrolling popups, window managing, visual mode, jumping,
 ---undoing breakpoints, moving text, writing,...)
@@ -125,7 +120,3 @@ vim.api.nvim_create_user_command("WQ", "wq", {
 -- Toggle terminal with <C-t>
 
 vim.keymap.set("t", "<Esc>", "<C-\\><C-N>")
-
-vim.keymap.set("n", "<C-t>", function()
-  require "util.toggle_terminal"()
-end)

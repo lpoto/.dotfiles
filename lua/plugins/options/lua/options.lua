@@ -2,10 +2,8 @@
 -------------------------------------------------------------------------------
 --                                                                      OPTIONS
 --=============================================================================
--- This file defines all the general neovim options
+-- Defines all the general neovim options
 -------------------------------------------------------------------------------
-
-vim.g["mapleader"] = " " -- map <leader> to space
 
 ---Set the default global options for the editor
 ---(save/undo, indenting, autocomplete, searching, ui)

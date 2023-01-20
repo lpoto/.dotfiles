@@ -1,0 +1,87 @@
+{
+  "plugins": {
+    "copilot": {
+      "cond": false
+    }
+  },
+  "go": {
+    "language_server": "gopls",
+    "formatter": "goimports"
+  },
+  "rust": {
+    "language_server": "rust_analyzer",
+    "formatter": "rustfmt"
+  },
+  "python": {
+    "language_server": "pylsp",
+    "linter": "flake8",
+    "formatter": "autopep8"
+  },
+  "yaml": {
+    "language_server": "yamlls",
+    "linter": "yamllint",
+    "formatter": "yamlfmt"
+  },
+  "markdown": {
+    "formatter": "prettier"
+  },
+  "sh": {
+    "language_server": "bashls",
+    "linter": "shellcheck",
+    "formatter": "shfmt"
+  },
+  "css": {
+    "formatter": "prettier",
+    "language_server": "cssls"
+  },
+  "ruby": {
+    "language_server": "solargraph",
+    "formatter": "rubocop"
+  },
+  "html": {
+    "formatter": "prettier",
+    "language_server": "html"
+  },
+  "xhtml": {
+    "formatter": "prettier",
+    "language_server": "html"
+  },
+  "json": {
+    "language_server": "jsonls",
+    "formatter": "prettier"
+  },
+  "javascript": {
+    "language_server": "tsserver",
+    "formatter": "prettier"
+  },
+  "typescript": {
+    "language_server": "tsserver",
+    "formatter": "prettier"
+  },
+  "lua": {
+    "formatter": "stylua",
+    "language_server": "sumneko_lua",
+    "language_server_config": {
+      "settings": {
+        "Lua": {
+          "runtime": {
+            "version": "LuaJIT",
+            "path": "lua return vim.tbl_extend('force', vim.split(package.path, ':'), {'lua/?.lua', 'lua/?/init.lua'})"
+          },
+          "diagnostics": {
+            "globals": [
+              "vim"
+            ]
+          },
+          "workspace": {
+            "library": "lua return vim.api.nvim_get_runtime_file('', true)",
+            "checkThirdParty": false
+          },
+          "telemetry": {
+            "enable": false
+          }
+        }
+      }
+    }
+  }
+}

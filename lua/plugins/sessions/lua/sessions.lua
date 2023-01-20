@@ -2,13 +2,7 @@
 -------------------------------------------------------------------------------
 --                                                                     SESSIONS
 --=============================================================================
---[[
-Automated session management.
-
-Commands:
-  - :Sessions - Display all available sessions
-
-NOTE: session is saved automatically when yout quit neovim.
+--[[ Automated session management.
 -----------------------------------------------------------------------------]]
 
 local M = {}
@@ -30,7 +24,7 @@ M.ignore_filetype_patterns = {
   "null-ls-info",
   "Lsp.*",
   "mason",
-  "SidebarNvim"
+  "SidebarNvim",
 }
 
 ---@type string: Title used for logging, creating augroups,
@@ -59,58 +53,45 @@ function M.config()
 
   --NOTE: register the VimLeavePre autocmd only
   --after entering a buffer, so empty sessions are not saved.
-  vim.api.nvim_create_autocmd("BufEnter", {
-    group = M.title,
+  vim.api.nvim_create_autocmd("VimLeavePre", {
     once = true,
-    nested = true,
+    group = M.title,
     callback = function()
-      vim.api.nvim_create_autocmd("VimLeavePre", {
-        once = true,
-        group = M.title,
-        callback = function()
-          -- When leaving neovim, save the current session
-          -- to the session directory.
+      -- When leaving neovim, save the current session
+      -- to the session directory.
 
-          local buffers = vim.api.nvim_list_bufs()
-          local removed = 0
+      local buffers = vim.api.nvim_list_bufs()
+      local removed = 0
 
-          for _, buf in ipairs(buffers) do
-            local filetype = vim.api.nvim_buf_get_option(buf, "filetype")
-            -- NOTE: remove some buffers that are not needed
-            -- when restoring the session.
-            for _, pattern in ipairs(M.ignore_filetype_patterns) do
-              if filetype:match(pattern) or filetype:len() == 0 then
-                pcall(vim.api.nvim_buf_delete, buf, { force = true })
-                removed = removed + 1
-                break
-              end
-            end
+      for _, buf in ipairs(buffers) do
+        local filetype = vim.api.nvim_buf_get_option(buf, "filetype")
+        -- NOTE: remove some buffers that are not needed
+        -- when restoring the session.
+        for _, pattern in ipairs(M.ignore_filetype_patterns) do
+          if filetype:match(pattern) or filetype:len() == 0 then
+            pcall(vim.api.nvim_buf_delete, buf, { force = true })
+            removed = removed + 1
+            break
           end
+        end
+      end
 
-          -- NOTE: if after removing the buffers above, there are no
-          -- buffers left, then do not save the session.
-          -- This is to avoid saving empty sessions.
-          if #buffers - removed <= 0 then
-            return
-          end
+      -- NOTE: if after removing the buffers above, there are no
+      -- buffers left, then do not save the session.
+      -- This is to avoid saving empty sessions.
+      if #buffers - removed <= 0 then
+        return
+      end
 
-          local name = vim.fn.getcwd():gsub("/", "%%")
-          local file = table.concat({ M.session_dir, name .. ".vim" }, "/")
-          pcall(
-            vim.api.nvim_exec,
-            "mksession! " .. vim.fn.fnameescape(file),
-            true
-          )
-        end,
-      })
+      local name = vim.fn.getcwd():gsub("/", "%%")
+      local file = table.concat({ M.session_dir, name .. ".vim" }, "/")
+      pcall(
+        vim.api.nvim_exec,
+        "mksession! " .. vim.fn.fnameescape(file),
+        true
+      )
     end,
   })
-  vim.api.nvim_exec("delc SessionLoad", true)
-  vim.api.nvim_exec("delc SessionSave", true)
-  vim.api.nvim_exec("delc SessionDelete", true)
-  vim.api.nvim_create_user_command(M.title, function()
-    require("config.sessions").list_sessions()
-  end, {})
 end
 
 --- Get a table of all available sessions located
@@ -232,7 +213,7 @@ end
 
 ---List all available sessions in a telescope prompt.
 ---The sessions may then be selected (loaded) or deleted.
----@param theme table: Optional telescope theme
+---@param theme table?: Optional telescope theme
 function M.list_sessions(theme)
   local pickers = require "telescope.pickers"
   local actions = require "telescope.actions"

@@ -1,34 +1,84 @@
 --=============================================================================
 -------------------------------------------------------------------------------
---                                                                    INIT NVIM
---=============================================================================
---NOTE: all filetype specific configs are defined in file in ftplugin/
+--                                                                         INIT
+--[[===========================================================================
 
--------------------- Load the default options defined in lua/config/options.lua
-require "config.options"
+Ensure that Lazy.nvim (https://github.com/folke/lazy.nvim) is installed, then
+set it up. All other configs are managed through lazy.
 
--------------- Load the default remappings defined in lua/config/remappings.lua
-require "config.remappings"
+-----------------------------------------------------------------------------]]
 
-------------------- Load all the plugins defined in lua/plugins/ with lazy.nvim
-require "config.lazy"
+vim.g["mapleader"] = " " -------------------------------  map <leader> to space
 
------------------ Lazy load some configs that are not needed for the initial UI
-vim.api.nvim_create_autocmd("User", {
-  pattern = "LazyVimStarted",
-  once = true,
-  callback = function()
-    ---------------- Notify the user when the version of neovim is too low, or
-    ---------------- when the OS is not linux or macos
-    require("util.version").ensure(true, true)
+---@return string: Lazy.nvim's installation path
+local function get_lazy_path()
+  return table.concat({ vim.fn.stdpath "data", "lazy", "lazy.nvim" }, "/")
+end
 
-    ------------------------------------ Configure loading and saving sessions
-    require("config.sessions").config()
+---Install lazy.nvim if neccessary
+local function ensure_lazy()
+  if not vim.loop.fs_stat(get_lazy_path()) then
+    vim.notify("Lazy.nvim not found, installing...", vim.log.levels.INFO)
 
-    ----------------- Search for a local .nvim.lua config file in the current
-    ----------------  or any of it's parent directories.
-    require("config.local").config()
+    local args = {
+      "git",
+      "clone",
+      "--filter=blob:none",
+      "--single-branch",
+      "git@github.com:folke/lazy.nvim.git",
+      get_lazy_path(),
+    }
 
-    require("config.folding").config()
-  end,
-})
+    vim.notify("Running: " .. table.concat(args, " "), vim.log.levels.DEBUG)
+
+    vim.fn.system(args)
+
+    vim.notify("Lazy.nvim installed", vim.log.levels.INFO)
+  end
+end
+
+local function get_lazy_options()
+  return {
+    defaults = {
+      lazy = true,
+      --version = "*",
+    },
+    lockfile = table.concat(
+      { vim.fn.stdpath "config", ".lazy.lock.json" },
+      "/"
+    ),
+    root = table.concat({ vim.fn.stdpath "data", "lazy" }, "/"),
+    dev = {
+      dir = table.concat({ vim.fn.stdpath "data", "lazy" }, "/"),
+    },
+    checker = {
+      enabled = true,
+      notify = false,
+    },
+    diff = {
+      cmd = "terminal_git",
+    },
+    performance = {
+      cache = {
+        enabled = true,
+      },
+      rtp = {
+        disabled_plugins = {
+          "gzip",
+          "matchit",
+          "matchparen",
+          "netrwPlugin",
+          "tarPlugin",
+          "tohtml",
+          "tutor",
+          "zipPlugin",
+        },
+      },
+    },
+    debug = false,
+  }
+end
+
+ensure_lazy()
+vim.opt.runtimepath:prepend(get_lazy_path())
+require("lazy").setup("plugins", get_lazy_options())

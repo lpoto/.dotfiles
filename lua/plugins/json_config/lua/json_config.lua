@@ -1,13 +1,14 @@
 --=============================================================================
 -------------------------------------------------------------------------------
---                                                                        LOCAL
+--                                                                  JSON_CONFIG
 --=============================================================================
--- Safely source local .nvim.lua files, those files should return a table
--- containing filetype keys or a plugin key.
+-- Safely source local .nvim.json files, those files should contain
+-- filetype keys or a plugin key.
 --_____________________________________________________________________________
 
 local Path = require "plenary.path"
-local version = require "util.version"
+local async = require "plenary.async"
+local version = require "version"
 
 local config = nil
 local loaded = {}
@@ -20,10 +21,10 @@ local load_local_config
 
 local M = {}
 
-M.filename = ".nvim.lua"
+M.filename = ".nvim.json"
 M.config_path = { vim.fn.stdpath "config", M.filename }
-M.augroup = "LocalConfigAugroup"
-M.title = "Local Config"
+M.augroup = "JsonConfigAugroup"
+M.title = "Json Config"
 
 function M.config()
   if not version.check() then
@@ -54,11 +55,13 @@ function M.config()
     end,
   })
 
-  config = secure_read_config(Path:new(M.config_path))
+  vim.defer_fn(function()
+    config = secure_read_config(Path:new(M.config_path))
 
-  load_local_config()
+    load_local_config()
 
-  parse_config(false, true)
+    parse_config(false, true)
+  end, 1)
 end
 
 load_local_config = function()
@@ -90,14 +93,14 @@ load_local_config = function()
 end
 
 parse_config = function(force, init)
+  if type(config) ~= "table" or next(config) == nil then
+    return
+  end
   local buf = vim.api.nvim_get_current_buf()
   local filetype = vim.api.nvim_buf_get_option(buf, "filetype")
   local buftype = vim.api.nvim_buf_get_option(buf, "buftype")
 
-  local opts = {}
-  if type(config) == "table" then
-    opts = config
-  end
+  local opts = config
 
   if not init and buftype:len() ~= 0 then
     return
@@ -150,19 +153,27 @@ parse_filetype = function(filetype, opts, force)
   for k, v in pairs(opts) do
     if v ~= false then
       if k == "formatter" then
+        assert(type(v) == "string", "formatter should be a string!")
         require("plugins.null-ls").register_builtin_source(
           "formatting",
           v,
           filetype
         )
       elseif k == "linter" then
+        assert(type(v) == "string", "linter should be a string!")
         require("plugins.null-ls").register_builtin_source(
           "diagnostics",
           v,
           filetype
         )
       elseif k == "language_server" then
-        require("plugins.lsp").add_language_server(v)
+        assert(type(v) == "string", "language_server should be a string!")
+        local c = opts["language_server_config"]
+        assert(
+          c == nil or type(c) == "table",
+          "language_server_config should be a table!"
+        )
+        require("plugins.lspconfig").add_language_server(v, c)
       end
     end
   end
@@ -174,24 +185,52 @@ secure_read_config = function(path)
   end
 
   local s = vim.secure.read(path:__tostring())
-  local ok, v = pcall(loadstring, s)
-  if not ok and type(v) == "stirng" then
-    vim.notify(v, vim.log.levels.WARN, {
-      title = M.title,
-    })
+  if s == nil or s:len() == 0 then
     return {}
   end
-  if type(v) ~= "function" then
-    return {}
-  end
-  ok, v = pcall(v)
+  local ok, v = pcall(vim.json.decode, s)
   if not ok and type(v) == "string" then
     vim.notify(v, vim.log.levels.WARN, {
       title = M.title,
     })
     return {}
   end
-  return v or {}
+  if type(v) ~= "table" then
+    return {}
+  end
+  local handle
+  handle = function(o)
+    if type(o) == "string" then
+      if string.match(o, "^lua ") then
+        local ok2, v2 = pcall(loadstring, string.sub(o, 4))
+        if not ok2 and type(v2) == "string" then
+          vim.notify(v2, vim.log.levels.WARN, {
+            title = M.title,
+          })
+          return o
+        end
+        if type(v2) ~= "function" then
+          return o
+        end
+        ok2, o = pcall(v2)
+        if not ok2 and type(v2) == "string" then
+          vim.notify(v2, vim.log.levels.WARN, {
+            title = M.title,
+          })
+          return o
+        end
+        return o
+      end
+    end
+    if type(o) ~= "table" then
+      return o
+    end
+    for k2, v2 in pairs(o) do
+      o[k2] = handle(v2)
+    end
+    return o
+  end
+  return handle(v)
 end
 
 return M

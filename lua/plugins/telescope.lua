@@ -21,7 +21,6 @@ Keymaps:
 NOTE: 
   see 
   -  lua/plugins/telescope/tasks.lua
-  -  lua/plugins/telescope/file_browser.lua
 
 NOTE:  telescope required rg (Ripgrep) and fd (Fd-Find) to be installed.
 --]]
@@ -29,15 +28,6 @@ NOTE:  telescope required rg (Ripgrep) and fd (Fd-Find) to be installed.
 local M = {
   "nvim-telescope/telescope.nvim",
   cmd = "Telescope",
-  dependencies = {
-    "nvim-telescope/telescope-file-browser.nvim",
-  },
-}
-
-local _M = {
-  M,
-  require "plugins.telescope.file_browser",
-  require "plugins.telescope.tasks",
 }
 
 function M.init()
@@ -145,4 +135,4 @@ pickers = function()
   }
 end
 
-return _M
+return M
