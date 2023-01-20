@@ -30,7 +30,7 @@ return {
         icon_hl = { fg = "#dbb671" },
         desc = " Sessions                               ",
         action = "lua require('config.sessions').list_sessions()",
-        shortcut = "Space + s",
+        shortcut = ":Sessions",
       },
       {
         icon = " 🗃",

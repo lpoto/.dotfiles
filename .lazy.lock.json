@@ -10,10 +10,10 @@
   "indent-blankline.nvim": { "branch": "master", "commit": "db7cbcb40cc00fc5d6074d7569fb37197705e7f6" },
   "lazy.nvim": { "branch": "main", "commit": "4f60facf18b34ae06d164485aa2ce879e21e44fc" },
   "lualine.nvim": { "branch": "master", "commit": "0050b308552e45f7128f399886c86afefc3eb988" },
-  "mason.nvim": { "branch": "main", "commit": "3d9ded5a837d4c667f6332f437e431624733fbb1" },
+  "mason.nvim": { "branch": "main", "commit": "db162f3f32e54f3a4ee2f03c1ea08a5253a0500a" },
   "noice.nvim": { "branch": "main", "commit": "e8f0cdc08bd4e637fa8c9da2a454622c5b55beae" },
   "nui.nvim": { "branch": "main", "commit": "b99e6cb13dc51768abc1c4c8585045a0c0459ef1" },
-  "null-ls.nvim": { "branch": "main", "commit": "7bd74a821d991057ca1c0ca569d8252c4f89f860" },
+  "null-ls.nvim": { "branch": "main", "commit": "ef3d4a438f96865e3ae018e33ed30156a955ed00" },
   "nvim-autopairs": { "branch": "master", "commit": "f00eb3b766c370cb34fdabc29c760338ba9e4c6c" },
   "nvim-cmp": { "branch": "main", "commit": "983453e32cb35533a119725883c04436d16c0120" },
   "nvim-dap": { "branch": "master", "commit": "700a3c7d6fbe5b07bee74e9952b456120d355c47" },
@@ -24,6 +24,6 @@
   "plenary.nvim": { "branch": "master", "commit": "9d81624fbcedd3dd43b38d7e13a1e7b3f873d8cd" },
   "pretty-fold.nvim": { "branch": "master", "commit": "04f30fde0ce9c32eca8500ade5bc1b45efec24af" },
   "telescope-file-browser.nvim": { "branch": "master", "commit": "304508fb7bea78e3c0eeddd88c4837501e403ae8" },
-  "telescope-tasks.nvim": { "branch": "main", "commit": "34906b3145e2bee1287ff64556e037c0f9198cc6" },
+  "telescope-tasks.nvim": { "branch": "main", "commit": "207d7b3c98bda8386c5bd7892b7d172ffab4ec88" },
   "telescope.nvim": { "branch": "master", "commit": "c1a2af0af69e80e14e6b226d3957a064cd080805" }
 }

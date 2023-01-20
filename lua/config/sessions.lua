@@ -5,8 +5,8 @@
 --[[
 Automated session management.
 
-Keymaps:
-  - <leader>s - Display all available sessions
+Commands:
+  - :Sessions - Display all available sessions
 
 NOTE: session is saved automatically when yout quit neovim.
 -----------------------------------------------------------------------------]]
@@ -36,11 +36,8 @@ M.ignore_filetype_patterns = {
 ---telescope prompts, etc.
 M.title = "Sessions"
 
----@type string: The key used to display the sessions list
-M.list_sessions_key = "<leader>s"
-
 --- Create an autocomand that saves the session when you quit neovim.
---- Create a keymap that lists sessions in a telescope prompt.
+--- Create a command that lists sessions in a telescope prompt.
 function M.config()
   if vim.fn.isdirectory(M.session_dir) == 0 then
     -- NOTE: ensure that the sessions directory exists
@@ -107,10 +104,12 @@ function M.config()
       })
     end,
   })
-
-  vim.keymap.set("n", M.list_sessions_key, function()
+  vim.api.nvim_exec("delc SessionLoad", true)
+  vim.api.nvim_exec("delc SessionSave", true)
+  vim.api.nvim_exec("delc SessionDelete", true)
+  vim.api.nvim_create_user_command(M.title, function()
     require("config.sessions").list_sessions()
-  end)
+  end, {})
 end
 
 --- Get a table of all available sessions located
