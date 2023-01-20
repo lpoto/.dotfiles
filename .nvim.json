@@ -69,9 +69,7 @@
             "path": "lua return vim.tbl_extend('force', vim.split(package.path, ':'), {'lua/?.lua', 'lua/?/init.lua'})"
           },
           "diagnostics": {
-            "globals": [
-              "vim"
-            ]
+            "globals": ["vim"]
           },
           "workspace": {
             "library": "lua return vim.api.nvim_get_runtime_file('', true)",

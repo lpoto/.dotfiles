@@ -7,7 +7,6 @@
 --_____________________________________________________________________________
 
 local Path = require "plenary.path"
-local async = require "plenary.async"
 local version = require "version"
 
 local config = nil
@@ -16,6 +15,7 @@ local loaded = {}
 local parse_config
 local parse_filetype
 local parse_plugins
+local parse_tasks
 local secure_read_config
 local load_local_config
 
@@ -116,6 +116,16 @@ parse_config = function(force, init)
     end
   end
 
+  if opts.tasks and (not loaded.tasks or force) then
+    loaded.tasks = true
+    local ok, e = pcall(parse_tasks, opts.tasks)
+    if not ok and type(e) == "string" then
+      vim.notify(e, vim.log.levels.WARN, {
+        title = M.title,
+      })
+    end
+  end
+
   for k, v in pairs(opts) do
     if k == filetype then
       local ok, e = pcall(parse_filetype, filetype, v, force)
@@ -143,6 +153,27 @@ parse_plugins = function(plugins)
   end
 end
 
+parse_tasks = function(tasks)
+  assert(type(tasks) == "table", "Tasks config should be a table")
+  for _, v in pairs(tasks) do
+    assert(type(v) == "table", "Tasks generator should be a table!")
+    assert(
+      type(v.generator) == "table" or type(v.generator) == "function",
+      "Task's generator should have a table or a function generator field!"
+    )
+    if type(v.generator) == "table" then
+      local generator = v.generator
+      v.generator = function()
+        return generator
+      end
+    end
+    if not v.opts then
+      v.opts = v.options or {}
+    end
+  end
+  require("telescope").extensions.tasks.generators.custom.add(unpack(tasks))
+end
+
 parse_filetype = function(filetype, opts, force)
   if loaded[filetype] and not force then
     return
@@ -153,27 +184,45 @@ parse_filetype = function(filetype, opts, force)
   for k, v in pairs(opts) do
     if v ~= false then
       if k == "formatter" then
-        assert(type(v) == "string", "formatter should be a string!")
-        require("plugins.null-ls").register_builtin_source(
-          "formatting",
-          v,
-          filetype
+        assert(
+          v == false or type(v) == "string",
+          "formatter should be a string!"
         )
+        if type(v) == "string" then
+          require("plugins.null-ls").register_builtin_source(
+            "formatting",
+            v,
+            filetype
+          )
+        end
       elseif k == "linter" then
-        assert(type(v) == "string", "linter should be a string!")
-        require("plugins.null-ls").register_builtin_source(
-          "diagnostics",
-          v,
-          filetype
+        assert(
+          v == false or type(v) == "string",
+          "linter should be a string!"
         )
+        if type(v) == "string" then
+          require("plugins.null-ls").register_builtin_source(
+            "diagnostics",
+            v,
+            filetype
+          )
+        end
       elseif k == "language_server" then
-        assert(type(v) == "string", "language_server should be a string!")
+        assert(
+          v == false or type(v) == "string",
+          "language_server should be a string!"
+        )
         local c = opts["language_server_config"]
         assert(
-          c == nil or type(c) == "table",
+          c == nil or type(c) == "table" or c == false,
           "language_server_config should be a table!"
         )
-        require("plugins.lspconfig").add_language_server(v, c)
+        if c == false then
+          c = nil
+        end
+        if v ~= false then
+          require("plugins.lspconfig").add_language_server(v, c)
+        end
       end
     end
   end

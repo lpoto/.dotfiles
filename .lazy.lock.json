@@ -24,6 +24,6 @@
   "plenary.nvim": { "branch": "master", "commit": "1c7e3e6b0f4dd5a174fcea9fda8a4d7de593b826" },
   "pretty-fold.nvim": { "branch": "master", "commit": "a7d8b424abe0eedf50116c460fbe6dfd5783b1d5" },
   "sidebar.nvim": { "branch": "main", "commit": "990ce5f562c9125283ccac5473235b1a56fea6dc" },
-  "telescope-tasks.nvim": { "branch": "main", "commit": "207d7b3c98bda8386c5bd7892b7d172ffab4ec88" },
+  "telescope-tasks.nvim": { "branch": "main", "commit": "1cd9a71fca83af2d3e78a44b0c31a6340a5a721a" },
   "telescope.nvim": { "branch": "master", "commit": "2f32775405f6706348b71d0bb8a15a22852a61e4" }
 }
