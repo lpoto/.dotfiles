@@ -28,6 +28,7 @@ return {
           "dashboard",
           "telescope_tasks_output",
           "noice",
+          "SidebarNvim",
         },
       },
       sections = {

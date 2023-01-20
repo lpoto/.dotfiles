@@ -30,6 +30,7 @@ M.ignore_filetype_patterns = {
   "null-ls-info",
   "Lsp.*",
   "mason",
+  "SidebarNvim"
 }
 
 ---@type string: Title used for logging, creating augroups,

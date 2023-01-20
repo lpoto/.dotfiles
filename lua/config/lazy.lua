@@ -34,7 +34,7 @@ lazy.config = function()
   local opts = {
     defaults = {
       lazy = true,
-      version = "*",
+      --version = "*",
     },
     lockfile = table.concat(
       { vim.fn.stdpath "config", ".lazy.lock.json" },
