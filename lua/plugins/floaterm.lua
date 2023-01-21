@@ -8,7 +8,7 @@
 Terminal manager for neovim
 
 Keymaps:
-  - <C-t> - Toggle terminal
+  - <C-t> - Toggle terminal (or <leader>o)
 ]]
 
 local M = {
@@ -56,6 +56,9 @@ function M.init()
     end,
   })
   vim.keymap.set("n", "<C-t>", function()
+    vim.api.nvim_command "FloatermToggle"
+  end)
+  vim.keymap.set("n", "<leader>o", function()
     vim.api.nvim_command "FloatermToggle"
   end)
 end
