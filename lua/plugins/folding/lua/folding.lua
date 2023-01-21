@@ -11,9 +11,13 @@ folding.initialized = {}
 
 function folding.fold()
   local buf = vim.api.nvim_get_current_buf()
+  local buftype = vim.api.nvim_buf_get_option(buf, "buftype")
+  if buftype:len() > 0 then
+    return
+  end
   if not folding.initialized[buf] then
     folding.initialized[buf] = true
-    vim.api.nvim_exec("e", true)
+    pcall(vim.api.nvim_exec, "e", true)
   end
   local ok, e = pcall(vim.api.nvim_exec, "normal! za", false)
   if not ok then
