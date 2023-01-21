@@ -19,7 +19,6 @@
   },
   "yaml": {
     "language_server": "yamlls",
-    "linter": "yamllint",
     "formatter": "yamlfmt"
   },
   "sql": {
