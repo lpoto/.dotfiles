@@ -66,10 +66,15 @@ function M.config()
 
       for _, buf in ipairs(buffers) do
         local filetype = vim.api.nvim_buf_get_option(buf, "filetype")
+        local buftype = vim.api.nvim_buf_get_option(buf, "buftype")
         -- NOTE: remove some buffers that are not needed
         -- when restoring the session.
         for _, pattern in ipairs(M.ignore_filetype_patterns) do
-          if filetype:match(pattern) or filetype:len() == 0 then
+          if
+            buftype:len() > 0
+            or filetype:match(pattern)
+            or filetype:len() == 0
+          then
             pcall(vim.api.nvim_buf_delete, buf, { force = true })
             removed = removed + 1
             break
