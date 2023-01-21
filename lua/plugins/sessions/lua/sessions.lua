@@ -25,6 +25,7 @@ M.ignore_filetype_patterns = {
   "Lsp.*",
   "mason",
   "SidebarNvim",
+  "noice",
 }
 
 ---@type string: Title used for logging, creating augroups,

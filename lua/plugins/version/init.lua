@@ -24,8 +24,10 @@ function M.init()
     pattern = "VeryLazy",
     once = true,
     callback = function()
-      local version = require "version"
-      version.ensure(true, true)
+      vim.schedule(function()
+        local version = require "version"
+        version.ensure(true, true)
+      end)
     end,
   })
 end

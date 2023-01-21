@@ -44,24 +44,26 @@ function M.config()
   vim.api.nvim_create_autocmd("BufWinEnter", {
     group = M.augroup,
     callback = function()
-      parse_config()
+      vim.schedule(parse_config)
     end,
   })
   vim.api.nvim_create_autocmd("DirChanged", {
     group = M.augroup,
     callback = function()
-      load_local_config()
-      parse_config(true)
+      vim.schedule(function()
+        load_local_config()
+        parse_config(true)
+      end)
     end,
   })
 
-  vim.defer_fn(function()
+  vim.schedule(function()
     config = secure_read_config(Path:new(M.config_path))
 
     load_local_config()
 
     parse_config(false, true)
-  end, 1)
+  end)
 end
 
 load_local_config = function()
@@ -126,14 +128,13 @@ parse_config = function(force, init)
     end
   end
 
-  for k, v in pairs(opts) do
-    if k == filetype then
-      local ok, e = pcall(parse_filetype, filetype, v, force)
-      if not ok and type(e) == "string" then
-        vim.notify(e, vim.log.levels.WARN, {
-          title = M.title,
-        })
-      end
+  if opts[filetype] and (not loaded[filetype] or force) then
+    loaded[filetype] = true
+    local ok, e = pcall(parse_filetype, filetype, opts[filetype], force)
+    if not ok and type(e) == "string" then
+      vim.notify(e, vim.log.levels.WARN, {
+        title = M.title,
+      })
     end
   end
 end
@@ -175,12 +176,7 @@ parse_tasks = function(tasks)
 end
 
 parse_filetype = function(filetype, opts, force)
-  if loaded[filetype] and not force then
-    return
-  end
   assert(type(opts) == "table", "Filetype config should be a table!")
-
-  loaded[filetype] = true
   for k, v in pairs(opts) do
     if v ~= false then
       if k == "formatter" then
