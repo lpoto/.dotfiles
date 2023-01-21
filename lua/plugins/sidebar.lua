@@ -5,13 +5,13 @@
 -- https://github.com/sidebar-nvim/sidebar.nvim
 --_____________________________________________________________________________
 --[[
-display files, git status and docker containers in a sidebar.
+display files and docker containers in a sidebar.
 
 Keymaps:
   - "<leader>s" - Toggle sidebar
 
 (use c - create, y - copy, d - delete, ... keymaps in files )
-(use s - stage, u - unstage, e - edit, ... keymaps in git )
+(use e - edit, d - close, w - write, ... keymaps in buffers)
 ]]
 
 local M = {
@@ -31,7 +31,7 @@ function M.config()
     open = false,
     --hide_statusline = true,
     side = "right",
-    sections = { "files", "git", "containers" },
+    sections = { "files", "buffers", "containers" },
     update_interval = 5000,
   }
 end

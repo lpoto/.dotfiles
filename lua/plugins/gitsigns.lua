@@ -21,9 +21,9 @@ Keymaps:
    - <leader>gr: Reset current buffer
    - <leader>gp: Preview diff hunk in a popup
 
-   - <leader>gg (or :Git): Git status
-          - <C-s> to stage selected file
-          - <CR> to go to the selected file
+   - <leader>g (or :Git): Git status
+          - <CR> to (un)stage selected file
+          - <C-e> (or e in normal mode) to go to the selected file
    - <leader>gb: Git branches
           - <CR> to checkout the selected branch
           - <C-d> to delete the selected branch
@@ -77,68 +77,56 @@ function M.init()
   vim.keymap.set("n", "<leader>gl", M.git_commits, {})
   vim.keymap.set("n", "<leader>gc", M.git_commits, {})
   vim.keymap.set("n", "<leader>gb", M.git_branches, {})
-  vim.keymap.set("n", "<leader>gg", M.git_status, {})
+  vim.keymap.set("n", "<leader>g", M.git_status, {})
   vim.keymap.set("n", "<leader>gf", M.git_files, {})
   vim.keymap.set("n", "<leader>gS", M.git_stash, {})
 
   vim.api.nvim_create_user_command("Git", M.git_status, {})
 end
 
-function M.git_commits()
+M.theme = "ivy"
+
+local wrap_opts
+
+function M.git_commits(opts)
   local telescope = require "telescope.builtin"
 
-  local theme = require("telescope.themes").get_ivy()
-
-  theme.results_title = "<CR> - checkout, <C-r>s|h|m - reset soft|hard|mixed"
-  theme.selection_strategy = "row"
-
-  telescope.git_commits(theme)
+  opts = wrap_opts(opts)
+  telescope.git_commits(opts)
 end
 
-function M.git_branches()
+function M.git_branches(opts)
   local telescope = require "telescope.builtin"
 
-  local theme = require("telescope.themes").get_ivy()
-
-  theme.results_title = "<CR> - checkout, <C-d|t|r|a|y> - "
-    .. "delete|track|rebase|create|merge"
-  theme.selection_strategy = "row"
-
-  telescope.git_branches(theme)
+  opts = wrap_opts(opts)
+  telescope.git_branches(opts)
 end
 
-function M.git_files()
+function M.git_files(opts)
   local telescope = require "telescope.builtin"
 
-  local theme = require("telescope.themes").get_ivy()
-
-  theme.results_title = "<CR> - open file"
-  theme.selection_strategy = "row"
-
-  telescope.git_files(theme)
+  opts = wrap_opts(opts)
+  telescope.git_files(opts)
 end
 
-function M.git_stash()
+function M.git_stash(opts)
   local telescope = require "telescope.builtin"
 
-  local theme = require("telescope.themes").get_ivy()
-
-  theme.results_title = "<CR> - apply stash"
-  theme.selection_strategy = "row"
-
-  telescope.git_stash(theme)
+  opts = wrap_opts(opts)
+  telescope.git_stash(opts)
 end
 
-function M.git_status()
+function M.git_status(opts)
   local telescope = require "telescope.builtin"
   local actions = require "telescope.actions"
 
-  local opts = require("telescope.themes").get_ivy()
-
-  opts.results_title = "<C-s> - stage/unstage, <CR> - open file"
-  opts.selection_strategy = "row"
+  opts = wrap_opts(opts)
 
   opts.attach_mappings = function(_, map)
+    actions.select_default:replace(actions.git_staging_toggle)
+    map("n", "e", actions.file_edit)
+    map("i", "<C-e>", actions.file_edit)
+    map("i", "<Tab>", actions.move_selection_next)
     map("i", "<Tab>", actions.move_selection_next)
     map("n", "<Tab>", actions.move_selection_next)
     map("i", "<S-Tab>", actions.move_selection_previous)
@@ -149,6 +137,18 @@ function M.git_status()
     return true
   end
   telescope.git_status(opts)
+end
+
+wrap_opts = function(opts)
+  opts = vim.tbl_extend(
+    "force",
+    require("telescope.themes")["get_" .. M.theme](),
+    opts or {}
+  )
+  if not opts.selection_strategy then
+    opts.selection_strategy = "row"
+  end
+  return opts
 end
 
 return M
