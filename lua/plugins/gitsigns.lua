@@ -31,7 +31,7 @@ Keymaps:
           - <C-r> to rebase the selected branch
           - <C-a> to create a new branch
           - <C-y> to merge the selected branch
-   - <leader>gl (or <leader>gc): Git commits
+   - <leader>gl Git log
           - <CR> to checkout the selected commit
           - <C-r>s to reset to the selected commit (soft)
           - <C-r>h to reset to the selected commit (hard)
@@ -75,7 +75,6 @@ end
 
 function M.init()
   vim.keymap.set("n", "<leader>gl", M.git_commits, {})
-  vim.keymap.set("n", "<leader>gc", M.git_commits, {})
   vim.keymap.set("n", "<leader>gb", M.git_branches, {})
   vim.keymap.set("n", "<leader>g", M.git_status, {})
   vim.keymap.set("n", "<leader>gf", M.git_files, {})

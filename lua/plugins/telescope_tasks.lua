@@ -35,6 +35,7 @@ function M.config()
         output = {
           style = "float",
           layout = "center",
+          terminal = true,
         },
       },
     },
