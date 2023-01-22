@@ -27,11 +27,12 @@ end
 
 function M.config()
   local sidebar = require "sidebar-nvim"
+
   sidebar.setup {
     open = false,
     --hide_statusline = true,
     side = "right",
-    sections = { "files", "buffers", "containers" },
+    sections = { "files", "buffers", M.custom_containers() },
     update_interval = 5000,
   }
 end
@@ -89,6 +90,42 @@ function M.hijack_netrw()
     end,
     desc = "sidebar.nvim replacement for netrw",
   })
+end
+
+function M.custom_containers()
+  local custom_containers = require "sidebar-nvim.builtin.containers"
+  custom_containers.title = "Docker Containers"
+  custom_containers.bindings = {
+    ["<CR>"] = function()
+      local line = vim.api.nvim_get_current_line()
+      if not line or line:len() == 0 or line:match "containers>" then
+        return
+      end
+      line = line:match("^%s*(.*)"):match "(.-)%s*$"
+      line = vim.split(line, " ")
+      line[1] = ""
+      line = table.concat(line, " "):match("^%s*(.*)"):match "(.-)%s*$"
+      if line:len() == 0 then
+        return
+      end
+      local choice = vim.fn.confirm(
+        "Enter container '" .. line .. "' ?",
+        "&Yes\n&No",
+        2,
+        "question"
+      )
+      vim.notify(vim.inspect(choice))
+      if choice ~= 1 then
+        return
+      end
+      local cmd = "docker exec -it " .. line .. " /bin/sh"
+      vim.cmd("FloatermNew --name=" .. line .. " --title=" .. line)
+      vim.cmd(
+        "FloatermSend --name=" .. line .. " --title=" .. line .. " " .. cmd
+      )
+    end,
+  }
+  return custom_containers
 end
 
 return M
