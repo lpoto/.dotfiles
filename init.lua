@@ -64,14 +64,14 @@ local function get_lazy_options()
       },
       rtp = {
         disabled_plugins = {
-          "gzip",
+          --"gzip",
           "matchit",
           "matchparen",
           "netrwPlugin",
           "tarPlugin",
           "tohtml",
           "tutor",
-          "zipPlugin",
+          --"zipPlugin",
         },
       },
     },
