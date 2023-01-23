@@ -75,6 +75,8 @@ load_local_config = function()
       if parent == vim.fn.stdpath "config" then
         return
       end
+    end
+    for _, parent in ipairs(parents) do
       local path = Path:new(parent, M.filename)
       if path:is_file() then
         local c = secure_read_config(path)
@@ -175,7 +177,7 @@ parse_tasks = function(tasks)
   require("telescope").extensions.tasks.generators.custom.add(unpack(tasks))
 end
 
-parse_filetype = function(filetype, opts, force)
+parse_filetype = function(filetype, opts)
   assert(type(opts) == "table", "Filetype config should be a table!")
   for k, v in pairs(opts) do
     if v ~= false then

@@ -2,39 +2,33 @@
 -------------------------------------------------------------------------------
 --                                                               GITHUB COPILOT
 --=============================================================================
--- https://github.com/github/copilot.vim
+-- https://github.com/zbirenbaum/copilot-cmp
+-- https://github.com/zbirenbaum/copilot.lua
 --_____________________________________________________________________________
-
 --[[
-A github copilot plugin. Uses the github copilot API to generate code.
-
-Keymaps:
-   - <C-Space> - Select the next suggestion
-   - <C-k>     - show the next suggestion
-   - <C-j>     - show the previous suggstion
-
-Configure copilot with :Copilot setup
---]]
+Add github copilot as a cmp source
+]]
 
 local M = {
-  "zbirenbaum/copilot.lua",
-  event = "VeryLazy",
+  "zbirenbaum/copilot-cmp",
+  dependencies = {
+    "zbirenbaum/copilot.lua",
+  },
 }
 
 function M.config()
+  require("copilot_cmp").setup {
+    method = "getCompletionsCycling",
+  }
+  vim.api.nvim_set_hl(0, "CmpItemKindCopilot", { fg = "#6CC644" })
   vim.defer_fn(function()
     local copilot = require "copilot"
     copilot.setup {
       panel = {
-        enabled = true,
-        keymap = {
-          accept = "<CR>",
-        },
+        enabled = false,
       },
       suggestion = {
-        enabled = true,
-        auto_trigger = true,
-        debounce = 100,
+        enabled = false,
       },
     }
   end, 100)

@@ -36,13 +36,14 @@ function M.config()
           style = "float",
           layout = "center",
         },
+        enable_build_commands = false,
       },
     },
   }
 
   telescope.load_extension "tasks"
 
-  telescope.extensions.tasks.generators.default.run_project.all()
+  telescope.extensions.tasks.generators.default.all()
 end
 
 return M
