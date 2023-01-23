@@ -25,8 +25,6 @@ local M = {
     "hrsh7th/cmp-path",
     "L3MON4d3/LuaSnip",
     "saadparwaiz1/cmp_luasnip",
-    require "plugins.cmp.autopairs",
-    require "plugins.cmp.copilot",
   },
 }
 

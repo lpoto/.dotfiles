@@ -1,6 +1,6 @@
 {
   "plugins": {
-    "cmp.copilot": {
+    "copilot": {
       "cond": false
     }
   },
