@@ -82,5 +82,3 @@ end
 ensure_lazy()
 vim.opt.runtimepath:prepend(get_lazy_path())
 require("lazy").setup("plugins", get_lazy_options())
-
-vim.bo.winbar = "asd"

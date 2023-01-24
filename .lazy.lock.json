@@ -13,7 +13,7 @@
   "lazy.nvim": { "branch": "main", "commit": "809d67fcf0f6dd5dabdd1c2b88d451cef4695880" },
   "lualine.nvim": { "branch": "master", "commit": "0050b308552e45f7128f399886c86afefc3eb988" },
   "mason.nvim": { "branch": "main", "commit": "52a469a57d4795eacd71f55bc735c6e68075c7e5" },
-  "noice.nvim": { "branch": "main", "commit": "a66a5c62366e3a51a8710db6ec56a58722854617" },
+  "noice.nvim": { "branch": "main", "commit": "b7e9054b02b5958db8bb5ad7675e92bfb5a8e903" },
   "nui.nvim": { "branch": "main", "commit": "b99e6cb13dc51768abc1c4c8585045a0c0459ef1" },
   "null-ls.nvim": { "branch": "main", "commit": "18497120fa0db0a3b9e53870ac8f342be4bffb57" },
   "nvim-autopairs": { "branch": "master", "commit": "31042a5823b55c4bfb30efcbba2fc1b5b53f90dc" },

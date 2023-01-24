@@ -52,6 +52,21 @@ return {
     }
 
     lualine.setup(setup)
-    vim.opt.statusline = ""
+
+    vim.api.nvim_create_augroup("StatuslineSeparator", {
+      clear = true,
+    })
+    vim.opt.laststatus = 0
+    vim.api.nvim_set_hl(0, "Statusline", { link = "Normal" })
+    vim.api.nvim_set_hl(0, "StatuslineNC", { link = "Normal" })
+
+    vim.api.nvim_create_autocmd({ "BufWinEnter", "WinEnter" }, {
+      group = "StatuslineSeparator",
+      callback = function()
+        --local str = string.rep("─", vim.api.nvim_win_get_width(0))
+        local str = string.rep("_", vim.api.nvim_win_get_width(0))
+        vim.wo.statusline = "%#WinSeparator#" .. str
+      end,
+    })
   end,
 }
