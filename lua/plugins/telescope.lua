@@ -89,6 +89,14 @@ default_mappings = function()
     n = {
       ["<Tab>"] = actions.move_selection_next,
       ["<S-Tab>"] = actions.move_selection_previous,
+      ["<leader>j"] = function(bufnr)
+        actions.move_selection_next(bufnr)
+        actions.toggle_selection(bufnr)
+      end,
+      ["<leader>k"] = function(bufnr)
+        actions.toggle_selection(bufnr)
+        actions.move_selection_previous(bufnr)
+      end,
     },
   }
 end

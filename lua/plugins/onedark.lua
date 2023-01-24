@@ -72,8 +72,6 @@ return {
       },
     }
 
-    vim.g.lualine_theme = "onedark"
-
     onedark.load()
   end,
 }
