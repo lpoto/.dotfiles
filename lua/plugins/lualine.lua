@@ -21,7 +21,7 @@ return {
 
     local setup = {
       options = {
-        icons_enabled = true,
+        icons_enabled = false,
         component_separator = "",
         section_separators = { left = "", right = "" },
         disabled_filetypes = {
