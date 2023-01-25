@@ -20,6 +20,7 @@ return {
       end,
     })
   end,
+
   config = function()
     local db = require "dashboard"
 

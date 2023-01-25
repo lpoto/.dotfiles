@@ -16,6 +16,7 @@ To enable this for a lsp server, add the following to  the
 lsp server's config:
  capabilities = require('cmp_nvim_lsp').default_capabilities()
 --]]
+--echo hello world
 
 local M = {
   "hrsh7th/nvim-cmp",
@@ -29,27 +30,15 @@ local M = {
 }
 
 function M.init()
-  local loaded = false
-  vim.api.nvim_create_autocmd("InsertEnter", {
+  local id
+  id = vim.api.nvim_create_autocmd("InsertEnter", {
     callback = function()
       vim.schedule(function()
-        if not loaded then
-          local buf = vim.api.nvim_get_current_buf()
-          local buftype = vim.api.nvim_buf_get_option(buf, "buftype")
-          if buftype:len() == 0 then
-            M.config()
-            loaded = true
-          end
-        end
-
-        local cmp = require "cmp"
-        for _, source in pairs(cmp.core.sources) do
-          if source.name == "copilot" then
-            source:complete(
-              cmp.core:get_context { reason = cmp.ContextReason.Manual },
-              function() end
-            )
-          end
+        local buf = vim.api.nvim_get_current_buf()
+        local buftype = vim.api.nvim_buf_get_option(buf, "buftype")
+        if buftype:len() == 0 then
+          vim.api.nvim_del_autocmd(id)
+          M.config()
         end
       end)
     end,
@@ -62,8 +51,6 @@ function M.config()
   cmp.setup {
     completion = {
       completeopt = "menu,menuone,noinsert",
-      --autocomplete = true,
-      --keyword_length = 1,
     },
     preselect = cmp.PreselectMode.Item,
     snippet = {
@@ -86,52 +73,29 @@ function M.config()
     sources = {
       {
         name = "nvim_lsp",
-        group_index = 2, --[[  keyword_length =  1]]
+        group_index = 2,
       },
       {
         name = "luasnip",
-        group_index = 2, --[[  keyword_length =  1]]
+        group_index = 2,
       },
       {
         name = "buffer",
-        group_index = 2, --[[  keyword_length =  1]]
+        group_index = 2,
       },
       {
         name = "path",
-        group_index = 2, --[[ keyword_length = 1  ]]
-      },
-      {
-        name = "copilot",
-        group_index = 2, --[[ keyword_length = 0  ]]
-      },
-    },
-
-    sorting = {
-      priority_weight = 0,
-      comparators = {
-        -- cmp.config.compare.scopes, --this is commented in nvim-cmp too
-        cmp.config.compare.exact,
-        require("copilot_cmp.comparators").prioritize,
-        require("copilot_cmp.comparators").score,
-        -- Below is the default comparitor list and order for nvim-cmp
-        cmp.config.compare.offset,
-        cmp.config.compare.score,
-        cmp.config.compare.recently_used,
-        cmp.config.compare.locality,
-        cmp.config.compare.kind,
-        cmp.config.compare.sort_text,
-        cmp.config.compare.length,
-        cmp.config.compare.order,
+        group_index = 2,
       },
     },
     window = {
       completion = cmp.config.window.bordered(),
       documentation = cmp.config.window.bordered(),
     },
-    formatting = {
-      insert_text = require("copilot_cmp.format").remove_existing,
-    },
   }
+  vim.api.nvim_exec_autocmds("User", {
+    pattern = "CmpLoaded",
+  })
 end
 
 return M

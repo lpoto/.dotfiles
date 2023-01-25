@@ -7,7 +7,6 @@
 --_____________________________________________________________________________
 
 local Path = require "plenary.path"
-local version = require "version"
 
 local config = nil
 local loaded = {}
@@ -27,14 +26,16 @@ M.augroup = "JsonConfigAugroup"
 M.title = "Json Config"
 
 function M.config()
-  if not version.check() then
-    vim.notify(
-      "Sourcing '.nvim.lua' files is disabled, as the neovim version is too low",
-      vim.log.levels.WARN,
-      {
-        title = M.title,
-      }
-    )
+  if not vim.secure then
+    vim.schedule(function()
+      vim.notify(
+        "Sourcing '.nvim.lua' files is disabled, as the neovim version is too low",
+        vim.log.levels.WARN,
+        {
+          title = M.title,
+        }
+      )
+    end)
     return
   end
 
@@ -148,7 +149,10 @@ parse_plugins = function(plugins)
     assert(type(k) == "string", "Plugin name should be a string")
     local ok, m = pcall(require, "plugins." .. k)
     assert(ok, m)
-    assert(type(v) == "table", "Plugin configs should be tables")
+    assert(
+      type(v) == "table" and type(m) == "table",
+      "Plugin configs should be tables"
+    )
     for k2, v2 in pairs(v) do
       assert(type(k2) == "string", "Plugin config keys should be strings")
       m[k2] = v2

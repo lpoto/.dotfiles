@@ -11,7 +11,6 @@ local M = {
     { vim.fn.stdpath "config", "lua", "plugins", "json_config" },
     "/"
   ),
-  priority = 1,
   lazy = false,
 }
 

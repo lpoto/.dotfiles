@@ -18,7 +18,6 @@ local colors = {
 return {
   "navarasu/onedark.nvim",
   lazy = false,
-  priority = 3,
   config = function()
     local onedark = require "onedark"
 
