@@ -24,15 +24,7 @@ function M.init()
     local sessions = require "sessions"
     sessions.list_sessions()
   end, {})
-  vim.api.nvim_create_autocmd("User", {
-    pattern = "VeryLazy",
-    once = true,
-    callback = function()
-      vim.api.nvim_exec("delc! SessionSave", true)
-      vim.api.nvim_exec("delc! SessionLoad", true)
-      vim.api.nvim_exec("delc! SessionDelete", true)
-    end,
-  })
+  vim.keymap.set("n", "<leader>s", "<cmd>Sessions<CR>")
 end
 
 function M.config()

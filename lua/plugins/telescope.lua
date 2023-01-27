@@ -16,6 +16,7 @@ Keymaps:
  - "<leader>tg"   - live grep
  - "<leader>td"   - show diagnostics
  - "<leader>tq"   - quickfix
+ - "<leader>tb"   - file browser
 
  Use <C-q> in a telescope prompt to send the results to quickfix.
 NOTE: 
@@ -28,6 +29,9 @@ NOTE:  telescope required rg (Ripgrep) and fd (Fd-Find) to be installed.
 local M = {
   "nvim-telescope/telescope.nvim",
   cmd = "Telescope",
+  dependencies = {
+    "nvim-telescope/telescope-file-browser.nvim",
+  },
 }
 
 function M.init()
@@ -49,6 +53,9 @@ function M.init()
   vim.keymap.set("n", "<leader>tg", function()
     require("telescope.builtin").live_grep()
   end)
+  vim.keymap.set("n", "<leader>tb", function()
+    require("telescope").extensions.file_browser.file_browser()
+  end)
 end
 
 local default_mappings
@@ -68,8 +75,17 @@ function M.config()
       qflist_previewer = require("telescope.previewers").vim_buffer_qflist.new,
       mappings = default_mappings(),
     },
+    extensions = {
+      file_browser = {
+        theme = "ivy",
+        hidden = true,
+        initial_mode = "normal",
+        hijack_netrw = true,
+      },
+    },
     pickers = pickers(),
   }
+  telescope.load_extension "file_browser"
 end
 
 default_mappings = function()
@@ -139,6 +155,7 @@ pickers = function()
     quickfix = {
       hidden = true,
       theme = "ivy",
+      initial_mode = "normal",
     },
   }
 end

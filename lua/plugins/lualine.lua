@@ -29,6 +29,8 @@ return {
           "telescope_tasks_output",
           "noice",
           "SidebarNvim",
+          "NvimTree",
+          "alpha",
         },
       },
       winbar = {

@@ -117,6 +117,6 @@ vim.api.nvim_create_user_command("WQ", "wq", {
 
 ---------------------------------------------------------------------- TERMINAL
 -- return to normal mode with <Esc>
--- Toggle terminal with <C-t>
+-- Toggle terminal in a new tab with <C-t>
 
 vim.keymap.set("t", "<Esc>", "<C-\\><C-N>")

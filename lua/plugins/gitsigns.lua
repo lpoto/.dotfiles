@@ -39,6 +39,9 @@ Keymaps:
    - <leader>gS: Git stash
           - <CR> to apply the selected stash
    - <leader>gf: Git files
+   - <leader>gc: Git commit
+   - <leader>ga: Git commit ammend
+   - <leader>gp: Git push
 
 --]]
 
@@ -79,6 +82,9 @@ function M.init()
   vim.keymap.set("n", "<leader>g", M.git_status, {})
   vim.keymap.set("n", "<leader>gf", M.git_files, {})
   vim.keymap.set("n", "<leader>gS", M.git_stash, {})
+  vim.keymap.set("n", "<leader>gc", M.git_commit, {})
+  vim.keymap.set("n", "<leader>ga", M.git_commit_ammend, {})
+  vim.keymap.set("n", "<leader>gp", M.git_push, {})
 
   vim.api.nvim_create_user_command("Git", M.git_status, {})
 end
@@ -136,6 +142,45 @@ function M.git_status(opts)
     return true
   end
   telescope.git_status(opts)
+end
+
+function M.git_push()
+  if not vim.g.gitsigns_head or vim.g.gitsigns_head:len() == 0 then
+    vim.notify("No current git HEAD", vim.log.levels.WARN, {
+      title = "Git",
+    })
+    return
+  end
+  local cmd = "git push origin "
+  local head = vim.fn.input(cmd, vim.g.gitsigns_head)
+  if not head or head:len() == 0 then
+    vim.notify("Invalid git command", vim.log.levels.WARN, {
+      title = "Git",
+    })
+    return
+  end
+  cmd = cmd .. head
+  require("plugins.unception").toggle_term(cmd)
+end
+
+function M.git_commit_ammend()
+  return M.git_commit(true)
+end
+
+function M.git_commit(ammend)
+  if not vim.g.gitsigns_head or vim.g.gitsigns_head:len() == 0 then
+    vim.notify("No current git HEAD", vim.log.levels.WARN, {
+      title = "Git",
+    })
+    return
+  end
+  local cmd = "git commit "
+  if ammend then
+    cmd = cmd .. "--amend"
+  else
+    cmd = cmd .. "-a"
+  end
+  require("plugins.unception").toggle_term(cmd)
 end
 
 wrap_opts = function(opts)
