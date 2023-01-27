@@ -149,8 +149,8 @@ function M.git_push()
     })
     return
   end
-  local cmd = "git push origin "
-  local head = vim.fn.input(cmd, vim.g.gitsigns_head)
+  local cmd = "git push "
+  local head = vim.fn.input(cmd, "origin " .. vim.g.gitsigns_head)
   if not head or head:len() == 0 then
     vim.notify("Invalid git command", vim.log.levels.WARN, {
       title = "Git",

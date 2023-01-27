@@ -25,19 +25,6 @@ vim.keymap.set("n", "<C-w>", "<C-w>=")
 -- Switch window with <leader>w
 vim.keymap.set("n", "<leader>w", "<cmd>wincmd w<cr>")
 
-------------------------------------------------------------------- VISUAL MODE
--- Ctrl + c' - yanked text to clipboard
-
--- Copy to external clipboard by adding <leader> prefix to yank
---
-vim.keymap.set({ "v", "n" }, "<leader>y", '"+y')
-vim.keymap.set("n", "<leader>Y", '"+yg_')
-vim.keymap.set("n", "<leader>yy", '"+yy')
---
--- Paste from clipboard by adding <leader> prefix to paste
-vim.keymap.set({ "n", "v" }, "<leader>p", '"+p')
-vim.keymap.set({ "n", "v" }, "<leader>P", '"+P')
-
 ----------------------------------------------------------------------- JUMPING
 -- center cursor when jumping, jump forward with tab, backward with shift-tab
 -- count j and k commands with a number larger than 5 as jumps
@@ -72,7 +59,7 @@ vim.keymap.set(
   "<cmd>execute 'keepjumps norm! ' . v:count1 . '}'<CR>"
 )
 
------------------------------------------------------------ UNDO BREAK POINTS
+------------------------------------------------------------- UNDO BREAK POINTS
 -- start a new undo chain with punctuations
 
 vim.keymap.set("i", ",", ",<c-g>u")
@@ -120,3 +107,24 @@ vim.api.nvim_create_user_command("WQ", "wq", {
 -- Toggle terminal in a new tab with <C-t>
 
 vim.keymap.set("t", "<Esc>", "<C-\\><C-N>")
+
+----------------------------------------------------------------------- YANKING
+-- Copy to external clipboard by adding <leader> prefix to yank
+--
+vim.keymap.set({ "v", "n" }, "<leader>y", '"+y')
+vim.keymap.set("n", "<leader>Y", '"+yg_')
+vim.keymap.set("n", "<leader>yy", '"+yy')
+--
+-- Paste from clipboard by adding <leader> prefix to paste
+vim.keymap.set({ "n", "v" }, "<leader>p", '"+p')
+vim.keymap.set({ "n", "v" }, "<leader>P", '"+P')
+
+-- Highlight yanked text
+vim.api.nvim_create_autocmd("TextYankPost", {
+  callback = function()
+    require("vim.highlight").on_yank {
+      higroup = "IncSearch",
+      timeout = 40,
+    }
+  end,
+})
