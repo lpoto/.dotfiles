@@ -31,6 +31,7 @@ local M = {
   cmd = "Telescope",
   dependencies = {
     "nvim-telescope/telescope-file-browser.nvim",
+    "nvim-lua/plenary.nvim",
   },
 }
 
