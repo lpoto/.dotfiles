@@ -17,7 +17,7 @@ local colors = {
 
 return {
   "navarasu/onedark.nvim",
-  lazy = false,
+  event = "User LazyVimStarted",
   config = function()
     local onedark = require "onedark"
 
