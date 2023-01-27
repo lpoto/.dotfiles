@@ -24,7 +24,9 @@ Keymaps:
 
 return {
   "numToStr/Comment.nvim",
+  event = "ModeChanged *:[vV\x16]*",
   keys = "gc",
+
   config = function()
     require("Comment").setup()
   end,
