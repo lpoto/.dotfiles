@@ -22,10 +22,28 @@ function M.init()
 end
 
 function M.toggle_term(cmd)
+  if cmd ~= nil and type(cmd) ~= "string" then
+    vim.notify("'cmd' should be a string", vim.log.levels.WARN, {
+      title = "Toggle Terminal",
+    })
+    return
+  end
+  local new_tab = true
+  if vim.b.terminal_job_id then
+    local r = vim.fn.jobwait({ vim.b.terminal_job_id }, 0)
+    local _, n = next(r)
+    if n == -3 then
+      new_tab = false
+    end
+  end
   vim.schedule(function()
     local ok, e = pcall(function()
-      vim.api.nvim_exec("tabnew", false)
-      if type(cmd) ~= "string" and type(cmd) ~= "table" then
+      if new_tab then
+        vim.api.nvim_exec("tabnew", false)
+      else
+        vim.api.nvim_buf_set_option(0, "modified", false)
+      end
+      if not cmd then
         vim.api.nvim_exec("term", false)
         local bufnr = vim.api.nvim_get_current_buf()
         local winid = vim.api.nvim_get_current_win()
@@ -51,16 +69,13 @@ function M.toggle_term(cmd)
           end,
         })
       else
-        vim.fn.termopen(
-          cmd,
-          {
-            detach = false,
-            env = {
-              VISUAL = "nvim",
-              EDITOR = "nvim",
-            },
-          }
-        )
+        vim.fn.termopen(cmd, {
+          detach = false,
+          env = {
+            VISUAL = "nvim",
+            EDITOR = "nvim",
+          },
+        })
       end
     end)
     if not ok and type(e) == "string" then

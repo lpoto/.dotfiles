@@ -19,7 +19,6 @@ Keymaps:
    - <leader>gh: Stage hunk
    - <leader>gu: Unstage current buffer
    - <leader>gr: Reset current buffer
-   - <leader>gp: Preview diff hunk in a popup
 
    - <leader>g (or :Git): Git status
           - <CR> to (un)stage selected file
@@ -66,7 +65,6 @@ function M.config()
       local gs = require "gitsigns"
       local opts = { buffer = bufnr }
 
-      vim.keymap.set("n", "<leader>gp", gs.preview_hunk, opts)
       vim.keymap.set("n", "<leader>gd", gs.diffthis, opts)
       vim.keymap.set("n", "<leader>gs", gs.stage_buffer, opts)
       vim.keymap.set("n", "<leader>gh", gs.stage_hunk, opts)
