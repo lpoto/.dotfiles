@@ -47,6 +47,22 @@ function M.format()
   end
 end
 
+---@param source string: Name of the builting formatting source
+---@param filetype string?: Current filetype will be used when not provided
+function M.register_formatter(source, filetype)
+  M.register_builtin_source("formatting", source, filetype or vim.bo.filetype)
+end
+
+---@param source string: Name of the builting diagnostics source
+---@param filetype string?: Current filetype will be used when not provided
+function M.register_linter(source, filetype)
+  M.register_builtin_source(
+    "diagnostics",
+    source,
+    filetype or vim.bo.filetype
+  )
+end
+
 ---@param source string
 ---@param filetype string
 function M.register_builtin_source(type, source, filetype)
