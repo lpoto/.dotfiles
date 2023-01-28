@@ -9,7 +9,7 @@
 ---(save/undo, indenting, autocomplete, searching, ui)
 vim.opt.errorbells = false -- disable error sounds
 vim.opt.updatetime = 50 -- shorten updatetime from 4s to 50ms
-vim.opt.timeoutlen = 500 -- shorten timeout for key combinations
+vim.opt.timeoutlen = 300 -- shorten timeout for key combinations
 vim.opt.exrc = false -- do not source local .nvimrc files
 vim.opt.splitbelow = true -- open new window below in normal split
 vim.opt.splitright = true --open new window on the right in vertical split
