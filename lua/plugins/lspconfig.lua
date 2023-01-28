@@ -31,7 +31,7 @@ local M = {
 
 function M.init()
   vim.keymap.set("n", "K", function()
-    require("plugins.lsp").show_definition()
+    require("plugins.lspconfig").show_definition()
   end)
   vim.keymap.set("n", "<C-k>", function()
     vim.lsp.buf.hover()
@@ -54,27 +54,20 @@ function M.show_definition()
   vim.lsp.buf.hover()
 end
 
-function M.add_language_server(v)
-  local server
-  local opt = {}
-  if type(v) == "table" then
-    server = v[1]
-    opt = v[2] or {}
-  else
-    server = v
-  end
-
-  M.__enable_language_server(server, opt, true)
-
-  M.servers = M.servers or {}
-  table.insert(M.servers, { server, opt })
-end
-
-function M.__enable_language_server(server, opt, start_lsp)
+---Start the provided language server, if no opts
+---are provided, {} will be used.
+---opts.capabilities will be automatically set to
+---cmp's default capabilities if not found.
+---@param server string: Name of the server to start
+---@param opts table?: Optional server configuration
+function M.start_language_server(server, opts)
   local lspconfig = require "lspconfig"
+  opts = opts or {}
 
-  if opt.capabilities == nil then
-    opt.capabilities = require("cmp_nvim_lsp").default_capabilities()
+  if opts.capabilities == nil then
+    opts.capabilities = require("cmp_nvim_lsp").default_capabilities()
+  elseif opts.capabilities == false then
+    opts.capabilities = nil
   end
 
   if lspconfig[server] == nil then
@@ -88,13 +81,11 @@ function M.__enable_language_server(server, opt, start_lsp)
     return
   end
 
-  lsp.setup(opt)
+  lsp.setup(opts)
 
-  if start_lsp then
-    local ok, e = pcall(vim.fn.execute, "LspStart", true)
-    if ok == false then
-      vim.notify("Failed to start LSP: " .. e, vim.log.levels.WARN)
-    end
+  local ok, e = pcall(vim.fn.execute, "LspStart", true)
+  if ok == false then
+    vim.notify("Failed to start LSP: " .. e, vim.log.levels.WARN)
   end
 end
 

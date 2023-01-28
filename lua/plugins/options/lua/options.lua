@@ -2,17 +2,15 @@
 -------------------------------------------------------------------------------
 --                                                                      OPTIONS
 --=============================================================================
--- This file defines all the general neovim options
+-- Defines all the general neovim options
 -------------------------------------------------------------------------------
-
-vim.g["mapleader"] = " " -- map <leader> to space
 
 ---Set the default global options for the editor
 ---(save/undo, indenting, autocomplete, searching, ui)
 vim.opt.errorbells = false -- disable error sounds
 vim.opt.updatetime = 50 -- shorten updatetime from 4s to 50ms
-vim.opt.timeoutlen = 500 -- shorten timeout for key combinations
-vim.opt.exrc = false -- do not source local .nvimrc files
+vim.opt.timeoutlen = 300 -- shorten timeout for key combinations
+vim.opt.exrc = true -- source local .nvim.lua files
 vim.opt.splitbelow = true -- open new window below in normal split
 vim.opt.splitright = true --open new window on the right in vertical split
 
@@ -21,7 +19,7 @@ vim.opt.splitright = true --open new window on the right in vertical split
 vim.opt.swapfile = false -- load buffers without creating swap files
 vim.opt.backup = false -- do not automatically save
 vim.opt.undofile = true -- allow undo after reoppening the file
-vim.opt.undodir = require("util.path").join(vim.fn.stdpath "config", "/.undo")
+vim.opt.undodir = table.concat({ vim.fn.stdpath "data", "/.undo" }, "/")
 
 --------------------------------------------------------------------- INDENTING
 
@@ -50,7 +48,7 @@ vim.opt.jumpoptions = "stack" -- make jumplist behave like stack
 
 vim.opt.background = "dark"
 vim.opt.number = true
-vim.opt.relativenumber = true
+--vim.opt.relativenumber = true
 vim.opt.wrap = false
 vim.opt.scrolloff = 8
 vim.opt.incsearch = true
@@ -66,8 +64,25 @@ vim.opt.termguicolors = true
 vim.cmd 'let &t_8f = "\\<Esc>[38;2;%lu;%lu;%lum"'
 vim.cmd 'let &t_8b = "\\<Esc>[48;2;%lu;%lu;%lum"'
 
+-- Set relative number and cursorline only for the active window
+vim.api.nvim_create_autocmd({ "VimEnter", "WinEnter", "BufWinEnter" }, {
+  callback = function()
+    if vim.wo.number then
+      vim.wo.relativenumber = true
+      vim.wo.cursorline = true
+    end
+  end,
+})
+vim.api.nvim_create_autocmd({ "WinLeave" }, {
+  callback = function()
+    if vim.wo.number then
+      vim.wo.relativenumber = false
+      vim.wo.cursorline = false
+    end
+  end,
+})
+
 -------------------------------------------------------------------- STATUSLINE
 -- disable statusline by default, it may then be enabled by plugins
 
 vim.opt.laststatus = 0
-vim.opt.statusline = ""

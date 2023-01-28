@@ -21,36 +21,54 @@ return {
 
     local setup = {
       options = {
-        icons_enabled = true,
-        component_separators = { left = "", right = "" },
+        icons_enabled = false,
+        component_separator = "",
         section_separators = { left = "", right = "" },
         disabled_filetypes = {
           "dashboard",
           "telescope_tasks_output",
           "noice",
+          "SidebarNvim",
+          "NvimTree",
+          "alpha",
         },
       },
-      sections = {
+      winbar = {
         lualine_a = { "mode" },
         lualine_b = { "filename" },
-        lualine_c = { "filetype" },
-        lualine_x = {},
-        lualine_y = { "progress" },
+        lualine_c = { "filetype", "diagnostics" },
+        lualine_x = { "diff" },
+        lualine_y = { "branch" },
         lualine_z = { "location" },
       },
-      tabline = {
-        lualine_a = { "branch" },
-        lualine_b = { "diff" },
-        lualine_c = { "encoding" },
-        lualine_x = {},
-        lualine_y = {
-          { "diagnostics", sources = { "nvim_diagnostic", "vim_lsp" } },
-        },
-        lualine_z = { { "tabs", mode = 2 } },
+      inactive_winbar = {
+        lualine_a = {},
+        lualine_b = { "filename" },
+        lualine_c = {},
+        lualine_x = { "filetype" },
+        lualine_y = {},
+        lualine_z = {},
       },
+      sections = {},
+      inactive_sections = {},
     }
-    setup.options.theme = vim.g.lualine_theme
 
     lualine.setup(setup)
+
+    vim.api.nvim_create_augroup("StatuslineSeparator", {
+      clear = true,
+    })
+    vim.opt.laststatus = 0
+    vim.api.nvim_set_hl(0, "Statusline", { link = "Normal" })
+    vim.api.nvim_set_hl(0, "StatuslineNC", { link = "Normal" })
+
+    vim.api.nvim_create_autocmd({ "BufWinEnter", "WinEnter" }, {
+      group = "StatuslineSeparator",
+      callback = function()
+        --local str = string.rep("─", vim.api.nvim_win_get_width(0))
+        local str = string.rep("_", vim.api.nvim_win_get_width(0))
+        vim.wo.statusline = "%#WinSeparator#" .. str
+      end,
+    })
   end,
 }

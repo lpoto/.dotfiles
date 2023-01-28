@@ -11,18 +11,17 @@ Telescope is a highly extendable fuzzy finder over lists.
 Items are shown in a popup with a prompt to search over.
 
 Keymaps:
- - "<leader>tf"   - find files   (or <leader>n)
+ - "<leader>t"   - find files   (or <leader>n)
  - "<leader>to"   - old files
- - "<leader>tc"   - find neovim config files
  - "<leader>tg"   - live grep
  - "<leader>td"   - show diagnostics
  - "<leader>tq"   - quickfix
+ - "<leader>tb"   - file browser
 
  Use <C-q> in a telescope prompt to send the results to quickfix.
 NOTE: 
   see 
   -  lua/plugins/telescope/tasks.lua
-  -  lua/plugins/telescope/file_browser.lua
 
 NOTE:  telescope required rg (Ripgrep) and fd (Fd-Find) to be installed.
 --]]
@@ -32,8 +31,7 @@ local M = {
   cmd = "Telescope",
   dependencies = {
     "nvim-telescope/telescope-file-browser.nvim",
-    require "plugins.telescope.file_browser",
-    require "plugins.telescope.tasks",
+    "nvim-lua/plenary.nvim",
   },
 }
 
@@ -41,7 +39,7 @@ function M.init()
   vim.keymap.set("n", "<leader>n", function()
     require("telescope.builtin").find_files()
   end)
-  vim.keymap.set("n", "<leader>tf", function()
+  vim.keymap.set("n", "<leader>t", function()
     require("telescope.builtin").find_files()
   end)
   vim.keymap.set("n", "<leader>to", function()
@@ -56,8 +54,8 @@ function M.init()
   vim.keymap.set("n", "<leader>tg", function()
     require("telescope.builtin").live_grep()
   end)
-  vim.keymap.set("n", "<leader>tc", function()
-    require("plugins.telescope").neovim_config_files()
+  vim.keymap.set("n", "<leader>tb", function()
+    require("telescope").extensions.file_browser.file_browser()
   end)
 end
 
@@ -78,18 +76,17 @@ function M.config()
       qflist_previewer = require("telescope.previewers").vim_buffer_qflist.new,
       mappings = default_mappings(),
     },
+    extensions = {
+      file_browser = {
+        theme = "ivy",
+        hidden = true,
+        initial_mode = "normal",
+        hijack_netrw = true,
+      },
+    },
     pickers = pickers(),
   }
-end
-
----Find files in the neovim config directory.
-function M.neovim_config_files()
-  local builtin = require "telescope.builtin"
-  builtin.find_files {
-    prompt_title = "Neovim Config Files",
-    hidden = true,
-    cwd = vim.fn.stdpath "config",
-  }
+  telescope.load_extension "file_browser"
 end
 
 default_mappings = function()
@@ -109,6 +106,14 @@ default_mappings = function()
     n = {
       ["<Tab>"] = actions.move_selection_next,
       ["<S-Tab>"] = actions.move_selection_previous,
+      ["<leader>j"] = function(bufnr)
+        actions.move_selection_next(bufnr)
+        actions.toggle_selection(bufnr)
+      end,
+      ["<leader>k"] = function(bufnr)
+        actions.toggle_selection(bufnr)
+        actions.move_selection_previous(bufnr)
+      end,
     },
   }
 end
@@ -151,6 +156,7 @@ pickers = function()
     quickfix = {
       hidden = true,
       theme = "ivy",
+      initial_mode = "normal",
     },
   }
 end

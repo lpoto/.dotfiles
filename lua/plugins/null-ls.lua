@@ -39,13 +39,28 @@ function M.format()
       timeout_ms = 10000,
       async = false,
     }
-    vim.api.nvim_exec("w", true)
   end)
   if not ok and type(e) == "string" then
     vim.notify(e, vim.log.levels.WARN, {
       title = "Format",
     })
   end
+end
+
+---@param source string: Name of the builting formatting source
+---@param filetype string?: Current filetype will be used when not provided
+function M.register_formatter(source, filetype)
+  M.register_builtin_source("formatting", source, filetype or vim.bo.filetype)
+end
+
+---@param source string: Name of the builting diagnostics source
+---@param filetype string?: Current filetype will be used when not provided
+function M.register_linter(source, filetype)
+  M.register_builtin_source(
+    "diagnostics",
+    source,
+    filetype or vim.bo.filetype
+  )
 end
 
 ---@param source string

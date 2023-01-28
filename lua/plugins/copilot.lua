@@ -2,49 +2,61 @@
 -------------------------------------------------------------------------------
 --                                                               GITHUB COPILOT
 --=============================================================================
--- https://github.com/github/copilot.vim
+-- https://github.com/zbirenbaum/copilot-cmp
+-- https://github.com/zbirenbaum/copilot.lua
 --_____________________________________________________________________________
-
 --[[
-A github copilot plugin. Uses the github copilot API to generate code.
-
-Keymaps:
-   - <C-Space> - Select the next suggestion
-   - <C-k>     - show the next suggestion
-   - <C-j>     - show the previous suggstion
-
-Configure copilot with :Copilot setup
---]]
+Add github copilot as a cmp source
+]]
 
 local M = {
-  "github/copilot.vim",
-  as = "copilot",
-  cmd = "Copilot",
-  init = function()
-    vim.g.copilot_no_tab_map = true
-    vim.g.copilot_assume_mapped = true
-  end,
+  "zbirenbaum/copilot-cmp",
+  event = "User CmpLoaded",
+  dependencies = {
+    "zbirenbaum/copilot.lua",
+  },
 }
 
 function M.config()
-  vim.api.nvim_set_keymap(
-    "i",
-    "<C-Space>",
-    'copilot#Accept("<CR>")',
-    { silent = true, expr = true }
-  )
-  vim.api.nvim_set_keymap(
-    "i",
-    "<C-k>",
-    "copilot#Next()",
-    { silent = true, expr = true }
-  )
-  vim.api.nvim_set_keymap(
-    "i",
-    "<C-j>",
-    "copilot#Previous()",
-    { silent = true, expr = true }
-  )
+  vim.defer_fn(function()
+    require("copilot_cmp").setup {
+      method = "getCompletionsCycling",
+    }
+    vim.api.nvim_set_hl(0, "CmpItemKindCopilot", { fg = "#6CC644" })
+    local copilot = require "copilot"
+    copilot.setup {
+      panel = {
+        enabled = false,
+      },
+      suggestion = {
+        enabled = false,
+      },
+    }
+    M.attach_to_cmp()
+  end, 100)
+end
+
+function M.attach_to_cmp()
+  local cmp = require "cmp"
+
+  local config = cmp.get_config()
+  config.sources = config.sources or {}
+  table.insert(config.sources, {
+    name = "copilot",
+    group_index = 2,
+    keyword_length = 0,
+  })
+  config.sorting = config.sorting or {}
+  config.sorting.priority_weight = 0
+  config.sorting.comprators = {
+    require("copilot_cmp.comparators").prioritize,
+    require("copilot_cmp.comparators").score,
+    unpack(config.sorting.comparators or {}),
+  }
+  config.formatting = config.formatting or {}
+  table.insert(config.formatting, {
+    format = require("copilot_cmp.format").remove_existing,
+  })
 end
 
 return M

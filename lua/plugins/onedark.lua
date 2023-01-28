@@ -17,7 +17,7 @@ local colors = {
 
 return {
   "navarasu/onedark.nvim",
-  lazy = false,
+  event = "User LazyVimStarted",
   config = function()
     local onedark = require "onedark"
 
@@ -39,11 +39,10 @@ return {
       },
       highlights = {
         FloatBorder = {
-          fg = colors.darker_black,
           bg = "None",
         },
         NormalFloat = {
-          bg = "#282C34",
+          bg = "None",
         },
         TelescopeBorder = {
           fg = colors.darker_black,
@@ -66,10 +65,11 @@ return {
           fg = colors.black,
           bg = colors.light_grey,
         },
+        Pmenu = {
+          bg = "NONE",
+        },
       },
     }
-
-    vim.g.lualine_theme = "onedark"
 
     onedark.load()
   end,

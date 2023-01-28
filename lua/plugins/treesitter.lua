@@ -26,15 +26,15 @@ return {
       indent = {
         enable = false,
       },
-      incremental_selection = {
-        enable = true,
-        keymaps = {
-          init_selection = "<CR>",
-          node_incremental = "<CR>",
-          scope_incremental = "<S-CR>",
-          node_decremental = "<BS>",
-        },
-      },
+      -- incremental_selection = {
+      --   enable = true,
+      --   keymaps = {
+      --     init_selection = "<leader>v",
+      --     node_incremental = "<leader>v",
+      --     scope_incremental = "<leader>v",
+      --     node_decremental = "<A-v>",
+      --   },
+      -- },
     }
   end,
 }

@@ -2,21 +2,13 @@
 -------------------------------------------------------------------------------
 --                                                                     SESSIONS
 --=============================================================================
---[[
-Automated session management.
-
-Keymaps:
-  - <leader>s - Display all available sessions
-
-NOTE: session is saved automatically when yout quit neovim.
+--[[ Automated session management.
 -----------------------------------------------------------------------------]]
-
-local path = require "util.path"
 
 local M = {}
 
 ---@type string: Path to the directory where sessions are saved
-M.session_dir = path.join(vim.fn.stdpath "data", "sessions")
+M.session_dir = table.concat({ vim.fn.stdpath "data", "sessions" }, "/")
 
 ---@type table: A table of filetype patterns that will be ignored
 ---when saving sessions
@@ -32,17 +24,16 @@ M.ignore_filetype_patterns = {
   "null-ls-info",
   "Lsp.*",
   "mason",
+  "SidebarNvim",
+  "noice",
 }
 
 ---@type string: Title used for logging, creating augroups,
 ---telescope prompts, etc.
 M.title = "Sessions"
 
----@type string: The key used to display the sessions list
-M.list_sessions_key = "<leader>s"
-
 --- Create an autocomand that saves the session when you quit neovim.
---- Create a keymap that lists sessions in a telescope prompt.
+--- Create a command that lists sessions in a telescope prompt.
 function M.config()
   if vim.fn.isdirectory(M.session_dir) == 0 then
     -- NOTE: ensure that the sessions directory exists
@@ -63,57 +54,50 @@ function M.config()
 
   --NOTE: register the VimLeavePre autocmd only
   --after entering a buffer, so empty sessions are not saved.
-  vim.api.nvim_create_autocmd("BufEnter", {
-    group = M.title,
+  vim.api.nvim_create_autocmd("VimLeavePre", {
     once = true,
-    nested = true,
+    group = M.title,
     callback = function()
-      vim.api.nvim_create_autocmd("VimLeavePre", {
-        once = true,
-        group = M.title,
-        callback = function()
-          -- When leaving neovim, save the current session
-          -- to the session directory.
+      -- When leaving neovim, save the current session
+      -- to the session directory.
 
-          local buffers = vim.api.nvim_list_bufs()
-          local removed = 0
+      local buffers = vim.api.nvim_list_bufs()
+      local removed = 0
 
-          for _, buf in ipairs(buffers) do
-            local filetype = vim.api.nvim_buf_get_option(buf, "filetype")
-            -- NOTE: remove some buffers that are not needed
-            -- when restoring the session.
-            for _, pattern in ipairs(M.ignore_filetype_patterns) do
-              if filetype:match(pattern) or filetype:len() == 0 then
-                pcall(vim.api.nvim_buf_delete, buf, { force = true })
-                removed = removed + 1
-                break
-              end
-            end
+      for _, buf in ipairs(buffers) do
+        local filetype = vim.api.nvim_buf_get_option(buf, "filetype")
+        local buftype = vim.api.nvim_buf_get_option(buf, "buftype")
+        -- NOTE: remove some buffers that are not needed
+        -- when restoring the session.
+        for _, pattern in ipairs(M.ignore_filetype_patterns) do
+          if
+            buftype:len() > 0
+            or filetype:match(pattern)
+            or filetype:len() == 0
+          then
+            pcall(vim.api.nvim_buf_delete, buf, { force = true })
+            removed = removed + 1
+            break
           end
+        end
+      end
 
-          -- NOTE: if after removing the buffers above, there are no
-          -- buffers left, then do not save the session.
-          -- This is to avoid saving empty sessions.
-          if #buffers - removed <= 0 then
-            return
-          end
+      -- NOTE: if after removing the buffers above, there are no
+      -- buffers left, then do not save the session.
+      -- This is to avoid saving empty sessions.
+      if #buffers - removed <= 0 then
+        return
+      end
 
-          local name =
-            vim.fn.getcwd():gsub(require("util.path").separator, "%%")
-          local file = path.join(M.session_dir, name .. ".vim")
-          pcall(
-            vim.api.nvim_exec,
-            "mksession! " .. vim.fn.fnameescape(file),
-            true
-          )
-        end,
-      })
+      local name = vim.fn.getcwd():gsub("/", "%%")
+      local file = table.concat({ M.session_dir, name .. ".vim" }, "/")
+      pcall(
+        vim.api.nvim_exec,
+        "mksession! " .. vim.fn.fnameescape(file),
+        true
+      )
     end,
   })
-
-  vim.keymap.set("n", M.list_sessions_key, function()
-    require("config.sessions").list_sessions()
-  end)
 end
 
 --- Get a table of all available sessions located
@@ -129,8 +113,8 @@ local function get_sessions()
   end
   -- NOTE: Sort session so that the most recent is at the top
   table.sort(sessions, function(a, b)
-    a = path.join(M.session_dir, a)
-    b = path.join(M.session_dir, b)
+    a = table.concat({ M.session_dir, a }, "/")
+    b = table.concat({ M.session_dir, b }, "/")
     return vim.loop.fs_stat(a).mtime.sec > vim.loop.fs_stat(b).mtime.sec
   end)
   return sessions
@@ -155,7 +139,7 @@ local function session_finder(results)
         display = function(e)
           local time = vim.fn.strftime(
             "%c",
-            vim.fn.getftime(path.join(M.session_dir, e.value))
+            vim.fn.getftime(table.concat({ M.session_dir, e.value }, "/"))
           )
 
           local displayer = entry_display.create {
@@ -189,7 +173,7 @@ local function delete_selected_session(prompt_bufnr)
     return
   end
 
-  local session_file = path.join(M.session_dir, selection.value)
+  local session_file = table.concat({ M.session_dir, selection.value }, "/")
 
   if vim.fn.delete(session_file) ~= 0 then
     -- Notify that the session could not be deleted
@@ -220,7 +204,7 @@ local function select_session(prompt_bufnr)
   end
   -- Close the prompt when selecting a session
   actions.close(prompt_bufnr)
-  local session_file = path.join(M.session_dir, selection.value)
+  local session_file = table.concat({ M.session_dir, selection.value }, "/")
   -- NOTE: ensure the session file exists
   if vim.fn.filereadable(session_file) == 1 then
     -- if the session file exists, load it
@@ -235,7 +219,7 @@ end
 
 ---List all available sessions in a telescope prompt.
 ---The sessions may then be selected (loaded) or deleted.
----@param theme table: Optional telescope theme
+---@param theme table?: Optional telescope theme
 function M.list_sessions(theme)
   local pickers = require "telescope.pickers"
   local actions = require "telescope.actions"
