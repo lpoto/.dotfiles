@@ -40,12 +40,14 @@ Keymaps:
    - <leader>gf: Git files
    - <leader>gc: Git commit
    - <leader>ga: Git commit ammend
-   - <leader>gp: Git push
+   - <leader>gP: Git push
+   - <leader>gp: Git pull
 
 --]]
 
 local M = {
   "lewis6991/gitsigns.nvim",
+  keys = "<leader>g",
   event = { "BufNewFile", "BufReadPre" },
 }
 
@@ -82,7 +84,8 @@ function M.init()
   vim.keymap.set("n", "<leader>gS", M.git_stash, {})
   vim.keymap.set("n", "<leader>gc", M.git_commit, {})
   vim.keymap.set("n", "<leader>ga", M.git_commit_ammend, {})
-  vim.keymap.set("n", "<leader>gp", M.git_push, {})
+  vim.keymap.set("n", "<leader>gP", M.git_push, {})
+  vim.keymap.set("n", "<leader>gp", M.git_pull, {})
 
   vim.api.nvim_create_user_command("Git", M.git_status, {})
 end
@@ -150,6 +153,25 @@ function M.git_push()
     return
   end
   local cmd = "git push "
+  local head = vim.fn.input(cmd, "origin " .. vim.g.gitsigns_head)
+  if not head or head:len() == 0 then
+    vim.notify("Invalid git command", vim.log.levels.WARN, {
+      title = "Git",
+    })
+    return
+  end
+  cmd = cmd .. head
+  require("plugins.unception").toggle_term(cmd)
+end
+
+function M.git_pull()
+  if not vim.g.gitsigns_head or vim.g.gitsigns_head:len() == 0 then
+    vim.notify("No current git HEAD", vim.log.levels.WARN, {
+      title = "Git",
+    })
+    return
+  end
+  local cmd = "git pull "
   local head = vim.fn.input(cmd, "origin " .. vim.g.gitsigns_head)
   if not head or head:len() == 0 then
     vim.notify("Invalid git command", vim.log.levels.WARN, {

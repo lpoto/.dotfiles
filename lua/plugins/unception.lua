@@ -17,8 +17,23 @@ local M = {
 }
 
 function M.init()
-  vim.g.unception_block_while_host_edits = 1
+  vim.g.unception_block_while_host_edits = true
+  vim.g.unception_enable_flavor_text = false
   vim.keymap.set("n", "<C-t>", M.toggle_term)
+end
+
+function M.config()
+  vim.api.nvim_create_autocmd("User", {
+    pattern = "UnceptionEditRequestReceived",
+    callback = function()
+      vim.schedule(function()
+        if vim.bo.buftype ~= "" or vim.bo.filetype:match "^git" then
+          vim.bo.bufhidden = "wipe"
+          vim.bo.noswapfile = true
+        end
+      end)
+    end,
+  })
 end
 
 function M.toggle_term(cmd)
