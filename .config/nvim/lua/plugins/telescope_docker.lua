@@ -37,10 +37,7 @@ function M.config()
       docker = {
         theme = "ivy",
         log_level = vim.log.levels.INFO,
-        init_term = function(command)
-          vim.cmd "FloatermNew"
-          vim.cmd("FloatermSend " .. command)
-        end,
+        init_term = "tabnew",
       },
     },
   }
