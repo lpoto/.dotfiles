@@ -43,25 +43,52 @@ local _M = {
   "nvim-lua/plenary.nvim",
 }
 
+M.keys = {
+  {
+    "<leader>t",
+    function()
+      require("telescope.builtin").find_files()
+    end,
+    mode = "n",
+  },
+  {
+    "<leader>n",
+    function()
+      require("telescope.builtin").find_files()
+    end,
+    mode = "n",
+  },
+  {
+    "<leader>to",
+    function()
+      require("telescope.builtin").oldfiles()
+    end,
+    mode = "n",
+  },
+  {
+    "<leader>tq",
+    function()
+      require("telescope.builtin").quickfix()
+    end,
+    mode = "n",
+  },
+  {
+    "<leader>td",
+    function()
+      require("telescope.builtin").diagnostics()
+    end,
+    mode = "n",
+  },
+  {
+    "<leader>tg",
+    function()
+      require("telescope.builtin").live_grep()
+    end,
+    mode = "n",
+  },
+}
+
 function M.init()
-  vim.keymap.set("n", "<leader>n", function()
-    require("telescope.builtin").find_files()
-  end)
-  vim.keymap.set("n", "<leader>t", function()
-    require("telescope.builtin").find_files()
-  end)
-  vim.keymap.set("n", "<leader>to", function()
-    require("telescope.builtin").oldfiles()
-  end)
-  vim.keymap.set("n", "<leader>tq", function()
-    require("telescope.builtin").quickfix()
-  end)
-  vim.keymap.set("n", "<leader>td", function()
-    require("telescope.builtin").diagnostics()
-  end)
-  vim.keymap.set("n", "<leader>tg", function()
-    require("telescope.builtin").live_grep()
-  end)
   require("plugins.telescope.git").init()
   require("plugins.telescope.sessions").init()
 end

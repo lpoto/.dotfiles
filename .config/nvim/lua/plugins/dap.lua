@@ -30,17 +30,29 @@ local M = {
   },
 }
 
-function M.init()
-  vim.keymap.set("n", "<leader>dr", function()
-    require("plugins.dap").toggle_repl()
-  end)
-  vim.keymap.set("n", "<leader>dn", function()
-    require("dap").continue()
-  end)
-  vim.keymap.set("n", "<leader>db", function()
-    require("dap").toggle_breakpoint()
-  end)
-end
+M.keys = {
+  {
+    "<leader>dr",
+    function()
+      require("plugins.dap").toggle_repl()
+    end,
+    mode = "n",
+  },
+  {
+    "<leader>dn",
+    function()
+      require("dap").continue()
+    end,
+    mode = "n",
+  },
+  {
+    "<leader>db",
+    function()
+      require("dap").toggle_breakpoint()
+    end,
+    mode = "n",
+  },
+}
 
 function M.toggle_repl()
   local dap = require "dap"

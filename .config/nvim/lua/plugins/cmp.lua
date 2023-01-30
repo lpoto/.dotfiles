@@ -33,6 +33,10 @@ function M.init()
   local id
   id = vim.api.nvim_create_autocmd("InsertEnter", {
     callback = function()
+      if M.cond == false or type(M.cond) == "function" and not M.cond() then
+        vim.api.nvim_del_autocmd(id)
+        return
+      end
       vim.schedule(function()
         local buf = vim.api.nvim_get_current_buf()
         local buftype = vim.api.nvim_buf_get_option(buf, "buftype")

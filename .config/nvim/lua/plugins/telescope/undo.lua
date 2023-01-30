@@ -14,14 +14,16 @@ Keymaps:
 
 local M = {
   "debugloop/telescope-undo.nvim",
-  keys = "<leader>tu"
 }
-
-function M.init()
-  vim.keymap.set("n", "<leader>tu", function()
-    require("telescope").extensions.undo.undo()
-  end)
-end
+M.keys = {
+  {
+    "<leader>tu",
+    function()
+      require("telescope").extensions.undo.undo()
+    end,
+    mode = "n",
+  },
+}
 
 function M.config()
   local telescope = require "telescope"

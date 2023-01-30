@@ -14,19 +14,26 @@ Keymaps:
 
 local M = {
   "nvim-telescope/telescope-file-browser.nvim",
-  keys = { "<leader>tb", "<leader>tB" },
 }
 
-function M.init()
-  vim.keymap.set("n", "<leader>tb", function()
-    require("telescope").extensions.file_browser.file_browser {
-      path = "%:p:h",
-    }
-  end)
-  vim.keymap.set("n", "<leader>tB", function()
-    require("telescope").extensions.file_browser.file_browser()
-  end)
-end
+M.keys = {
+  {
+    "<leader>tb",
+    function()
+      require("telescope").extensions.file_browser.file_browser {
+        path = "%:p:h",
+      }
+    end,
+    mode = "n",
+  },
+  {
+    "<leader>tB",
+    function()
+      require("telescope").extensions.file_browser.file_browser()
+    end,
+    mode = "n",
+  },
+}
 
 function M.config()
   local telescope = require "telescope"

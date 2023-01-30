@@ -21,11 +21,15 @@ local M = {
   cmd = { "NullLsInfo", "NullLsLog" },
 }
 
-function M.init()
-  vim.keymap.set("n", "<leader>f", function()
-    require("plugins.null-ls").format()
-  end)
-end
+M.keys = {
+  {
+    "<leader>f",
+    function()
+      require("plugins.null-ls").format()
+    end,
+    mode = "n",
+  },
+}
 
 function M.config()
   local null_ls = require "null-ls"

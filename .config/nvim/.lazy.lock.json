@@ -21,7 +21,7 @@
   "nvim-dap": { "branch": "master", "commit": "0e376f00e7fac143e29e1017d2ac2cc3df13d185" },
   "nvim-dap-virtual-text": { "branch": "master", "commit": "7f7f2af549e72a0b7bddc3b4f827beb027ea8ce3" },
   "nvim-lspconfig": { "branch": "master", "commit": "1e988250a0f52a68ddb72905d623405d634e9c5d" },
-  "nvim-treesitter": { "branch": "master", "commit": "cda8b291ef6fc4e04036e2ea6cf0de8aa84c2656" },
+  "nvim-treesitter": { "branch": "master", "commit": "adeb6e02d3bd682f7bea99a988b0deadd407e888" },
   "nvim-unception": { "branch": "main", "commit": "2e475b74f3e581d21cd0ce86e0520546ac756791" },
   "onedark.nvim": { "branch": "master", "commit": "f0a70e0993acbb348c32a52a88058cc60c160992" },
   "plenary.nvim": { "branch": "master", "commit": "1c7e3e6b0f4dd5a174fcea9fda8a4d7de593b826" },
@@ -30,5 +30,5 @@
   "telescope-file-browser.nvim": { "branch": "master", "commit": "304508fb7bea78e3c0eeddd88c4837501e403ae8" },
   "telescope-tasks.nvim": { "branch": "main", "commit": "9c3abeb04fc51044e38e384cd0a2804dbfdf99c1" },
   "telescope-undo.nvim": { "branch": "main", "commit": "b5e31b358095074b60d87690bd1dc0a020a2afab" },
-  "telescope.nvim": { "branch": "master", "commit": "dce1156ca103b8222e4abbfc63f9c6887abf5ec6" }
+  "telescope.nvim": { "branch": "master", "commit": "d5f6c0911d6066397f1757c6b55a8bd6851bd6dc" }
 }

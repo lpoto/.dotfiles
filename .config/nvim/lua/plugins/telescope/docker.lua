@@ -18,17 +18,29 @@ local M = {
   "lpoto/telescope-docker.nvim",
 }
 
-function M.init()
-  vim.keymap.set("n", "<leader>d", function()
-    require("telescope").extensions.docker.docker()
-  end)
-  vim.keymap.set("n", "<leader>di", function()
-    require("telescope").extensions.docker.images()
-  end)
-  vim.keymap.set("n", "<leader>dc", function()
-    require("telescope").extensions.docker.compose()
-  end)
-end
+M.keys = {
+  {
+    "<leader>d",
+    function()
+      require("telescope").extensions.docker.docker()
+    end,
+    mode = "n",
+  },
+  {
+    "<leader>di",
+    function()
+      require("telescope").extensions.docker.images()
+    end,
+    mode = "n",
+  },
+  {
+    "<leader>dc",
+    function()
+      require("telescope").extensions.docker.compose()
+    end,
+    mode = "n",
+  },
+}
 
 function M.config()
   local telescope = require "telescope"
