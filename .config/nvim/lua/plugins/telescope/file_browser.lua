@@ -14,6 +14,7 @@ Keymaps:
 
 local M = {
   "nvim-telescope/telescope-file-browser.nvim",
+  keys = { "<leader>tb", "<leader>tB" },
 }
 
 function M.init()

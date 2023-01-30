@@ -14,6 +14,7 @@ Keymaps:
 
 local M = {
   "debugloop/telescope-undo.nvim",
+  keys = "<leader>tu"
 }
 
 function M.init()

@@ -15,6 +15,7 @@ Keymaps:
 
 local M = {
   "lpoto/telescope-tasks.nvim",
+  keys = { "<leader>a" },
 }
 
 function M.init()

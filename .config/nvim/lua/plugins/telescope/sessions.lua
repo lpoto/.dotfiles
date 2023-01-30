@@ -1,8 +1,13 @@
 --=============================================================================
 -------------------------------------------------------------------------------
 --                                                                     SESSIONS
---=============================================================================
---[[ Automated session management.
+--[[===========================================================================
+Automated session management with telescope.
+
+Commands:
+  - :Sessions - Display all available sessions
+
+NOTE: session is saved automatically when yout quit neovim.
 -----------------------------------------------------------------------------]]
 
 local M = {}
@@ -32,32 +37,35 @@ M.ignore_filetype_patterns = {
 ---telescope prompts, etc.
 M.title = "Sessions"
 
---- Create an autocomand that saves the session when you quit neovim.
---- Create a command that lists sessions in a telescope prompt.
-function M.config()
-  if vim.fn.isdirectory(M.session_dir) == 0 then
-    -- NOTE: ensure that the sessions directory exists
-    local ok, e = pcall(vim.fn.mkdir, M.session_dir, "p")
-    if ok == false then
-      vim.notify(
-        "Failed to create sessions directory: " .. e,
-        vim.log.levels.ERROR,
-        {
-          title = M.title,
-        }
-      )
-      return
-    end
-  end
-
-  vim.api.nvim_create_augroup(M.title, { clear = true })
-
+function M.init()
+  vim.api.nvim_create_user_command("Sessions", function()
+    M.list_sessions()
+  end, {})
+  vim.keymap.set("n", "<leader>s", "<cmd>Sessions<CR>")
+  --- Create an autocomand that saves the session when you quit neovim.
+  --- Create a command that lists sessions in a telescope prompt.
+  --
   --NOTE: register the VimLeavePre autocmd only
   --after entering a buffer, so empty sessions are not saved.
   vim.api.nvim_create_autocmd("VimLeavePre", {
     once = true,
-    group = M.title,
+    group = vim.api.nvim_create_augroup(M.title, { clear = true }),
     callback = function()
+      if vim.fn.isdirectory(M.session_dir) == 0 then
+        -- NOTE: ensure that the sessions directory exists
+        local ok, e = pcall(vim.fn.mkdir, M.session_dir, "p")
+        if ok == false then
+          vim.notify(
+            "Failed to create sessions directory: " .. e,
+            vim.log.levels.ERROR,
+            {
+              title = M.title,
+            }
+          )
+          return
+        end
+      end
+
       -- When leaving neovim, save the current session
       -- to the session directory.
 

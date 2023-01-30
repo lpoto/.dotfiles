@@ -25,6 +25,7 @@ NOTE:
   -  lua/plugins/telescope/file_browser.lua
   -  lua/plugins/telescope/docker.lua
   -  lua/plugins/telescope/git.lua
+  -  lua/plugins/telescope/sessions.lua
 
 NOTE:  telescope required rg (Ripgrep) and fd (Fd-Find) to be installed.
 --]]
@@ -62,6 +63,7 @@ function M.init()
     require("telescope.builtin").live_grep()
   end)
   require("plugins.telescope.git").init()
+  require("plugins.telescope.sessions").init()
 end
 
 local default_mappings
