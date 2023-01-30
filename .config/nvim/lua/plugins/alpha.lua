@@ -64,6 +64,11 @@ function buttons()
         "☌  Live Grep",
         "<CMD>lua require('telescope.builtin').live_grep()<CR>"
       ),
+      button(
+        "g",
+        "  Git status",
+        "<CMD>lua require('telescope.builtin').git_status()<CR>"
+      ),
       button("p", "  Plugins", "<CMD>Lazy<CR>"),
       button("m", "  Package Manager", "<CMD>Mason<CR>"),
       button("n", "⚠  Notifications", "<CMD>Noice<CR>"),
