@@ -43,35 +43,25 @@ function buttons()
   return {
     type = "group",
     val = {
-      button("s", "⟳  List Sessions", "<CMD>Sessions<CR>"),
-      button(
-        "o",
-        "🗃 Old Files",
-        "<CMD>lua require('telescope.builtin').oldfiles()<CR>"
-      ),
-      button(
-        "f",
-        "  Find Files",
-        "<CMD>lua require('telescope.builtin').find_files()<CR>"
-      ),
-      button(
-        "e",
-        "  File Browser",
-        "<CMD>lua require('telescope').extensions.file_browser.file_browser()<CR>"
-      ),
-      button(
-        "l",
-        "☌  Live Grep",
-        "<CMD>lua require('telescope.builtin').live_grep()<CR>"
-      ),
-      button(
-        "g",
-        "  Git status",
-        "<CMD>lua require('telescope.builtin').git_status()<CR>"
-      ),
-      button("p", "  Plugins", "<CMD>Lazy<CR>"),
-      button("m", "  Package Manager", "<CMD>Mason<CR>"),
-      button("n", "⚠  Notifications", "<CMD>Noice<CR>"),
+      button(":Sessions", "⟳  Sessions", "Sessions"),
+      button("<leader>to", "🗃 Old Files", function()
+        require("telescope.builtin").oldfiles()
+      end),
+      button("<leader>tf", "  Find Files", function()
+        require("telescope.builtin").find_files()
+      end),
+      button("<leader>tb", "  File Browser", function()
+        require("telescope").extensions.file_browser.file_browser()
+      end),
+      button("<leader>tg", "☌  Live Grep", function()
+        require("telescope.builtin").live_grep()
+      end),
+      button("<leader>gg", "  Git status", function()
+        require("telescope.builtin").git_status()
+      end),
+      button(":Lazy", "  Plugins", "Lazy"),
+      button(":Mason", "  Package Manager", "Mason"),
+      button(":Noice", "⚠  Notifications", "Noice"),
     },
     opts = {
       spacing = 0,
@@ -123,9 +113,7 @@ function M.config()
   alpha.start(true)
 end
 
-function button(sc, txt, keybind)
-  local sc_ = sc:gsub("%s", ""):gsub("SPC", "<leader>")
-
+function button(sc, txt, on_press)
   local opts = {
     position = "center",
     text = txt,
@@ -133,19 +121,19 @@ function button(sc, txt, keybind)
     cursor = 0,
     width = 44,
     align_shortcut = "right",
-    hl_shortcut = "Conditional",
+    hl_shortcut = "Comment",
     hl = "Normal",
   }
-  if keybind then
-    opts.keymap = { "n", sc_, keybind, { noremap = true, silent = true } }
-  end
 
   return {
     type = "button",
     val = txt,
     on_press = function()
-      local key = vim.api.nvim_replace_termcodes(sc_, true, false, true)
-      vim.api.nvim_feedkeys(key, "normal", false)
+      if type(on_press) == "function" then
+        on_press()
+      elseif type(on_press) == "string" then
+        vim.cmd(on_press)
+      end
     end,
     opts = opts,
   }
