@@ -16,7 +16,8 @@ Keymaps:
  - "<leader>tg"   - live grep
  - "<leader>td"   - show diagnostics
  - "<leader>tq"   - quickfix
- - "<leader>tb"   - file browser
+ - "<leader>tb"   - file browser relative to current file
+ - "<leader>tB"   - file browser relative to current directory
 
  Use <C-q> in a telescope prompt to send the results to quickfix.
 NOTE: 
@@ -55,6 +56,11 @@ function M.init()
     require("telescope.builtin").live_grep()
   end)
   vim.keymap.set("n", "<leader>tb", function()
+    require("telescope").extensions.file_browser.file_browser {
+      path = "%:p:h",
+    }
+  end)
+  vim.keymap.set("n", "<leader>tB", function()
     require("telescope").extensions.file_browser.file_browser()
   end)
 end
@@ -82,7 +88,6 @@ function M.config()
         hidden = true,
         initial_mode = "normal",
         hijack_netrw = true,
-        path = "%:p:h",
         grouped = true,
       },
     },
