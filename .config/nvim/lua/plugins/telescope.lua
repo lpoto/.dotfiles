@@ -82,6 +82,7 @@ function M.config()
         hidden = true,
         initial_mode = "normal",
         hijack_netrw = true,
+        path = "%:p:h"
       },
     },
     pickers = pickers(),
