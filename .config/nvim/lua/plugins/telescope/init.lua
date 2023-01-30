@@ -16,13 +16,15 @@ Keymaps:
  - "<leader>tg"   - live grep
  - "<leader>td"   - show diagnostics
  - "<leader>tq"   - quickfix
- - "<leader>tb"   - file browser relative to current file
- - "<leader>tB"   - file browser relative to current directory
 
  Use <C-q> in a telescope prompt to send the results to quickfix.
 NOTE: 
   see 
   -  lua/plugins/telescope/tasks.lua
+  -  lua/plugins/telescope/undo.lua
+  -  lua/plugins/telescope/file_browser.lua
+  -  lua/plugins/telescope/docker.lua
+  -  lua/plugins/telescope/git.lua
 
 NOTE:  telescope required rg (Ripgrep) and fd (Fd-Find) to be installed.
 --]]
@@ -30,10 +32,14 @@ NOTE:  telescope required rg (Ripgrep) and fd (Fd-Find) to be installed.
 local M = {
   "nvim-telescope/telescope.nvim",
   cmd = "Telescope",
-  dependencies = {
-    "nvim-telescope/telescope-file-browser.nvim",
-    "nvim-lua/plenary.nvim",
-  },
+}
+local _M = {
+  M,
+  require "plugins.telescope.undo",
+  require "plugins.telescope.tasks",
+  require "plugins.telescope.file_browser",
+  require "plugins.telescope.docker",
+  "nvim-lua/plenary.nvim",
 }
 
 function M.init()
@@ -55,14 +61,7 @@ function M.init()
   vim.keymap.set("n", "<leader>tg", function()
     require("telescope.builtin").live_grep()
   end)
-  vim.keymap.set("n", "<leader>tb", function()
-    require("telescope").extensions.file_browser.file_browser {
-      path = "%:p:h",
-    }
-  end)
-  vim.keymap.set("n", "<leader>tB", function()
-    require("telescope").extensions.file_browser.file_browser()
-  end)
+  require("plugins.telescope.git").init()
 end
 
 local default_mappings
@@ -82,18 +81,8 @@ function M.config()
       qflist_previewer = require("telescope.previewers").vim_buffer_qflist.new,
       mappings = default_mappings(),
     },
-    extensions = {
-      file_browser = {
-        theme = "ivy",
-        hidden = true,
-        initial_mode = "normal",
-        hijack_netrw = true,
-        grouped = true,
-      },
-    },
     pickers = pickers(),
   }
-  telescope.load_extension "file_browser"
 end
 
 default_mappings = function()
@@ -141,14 +130,14 @@ pickers = function()
       --previewer = true,
       file_ignore_patterns = {
         "plugged/",
-        ".undo/",
+        "\\.undo/",
         ".local/",
-        ".git/",
+        "\\.git/",
         "node_modules/",
         "target/",
-        ".settings/",
+        "\\.settings/",
         "dist/",
-        ".angular/",
+        "\\.angular/",
         "__pycache__",
       },
     },
@@ -168,4 +157,4 @@ pickers = function()
   }
 end
 
-return M
+return _M

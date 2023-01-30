@@ -16,7 +16,7 @@ local M = {
     { vim.fn.stdpath "config", "lua", "plugins", "sessions" },
     "/"
   ),
-  event = { "VeryLazy", "VimLeavePre" },
+  event = { "VimLeavePre" },
 }
 
 function M.init()
