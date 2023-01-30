@@ -7,7 +7,7 @@
 
 --[[
 Package manager for neovim.
-Easily install and manage lsp servers, dap servers, linters and formatters.
+Easily install and manage lsp servers, linters and formatters.
 
 Commands:
   - :Mason                    - Open a graphical status window

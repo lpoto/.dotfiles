@@ -31,7 +31,7 @@ return {
         "noice",
         "SidebarNvim",
         "NvimTree",
-        "alpha"
+        "alpha",
       },
     }
     vim.api.nvim_set_hl(0, "IndentBlanklineIndent", { fg = "#2b2a2a" })
