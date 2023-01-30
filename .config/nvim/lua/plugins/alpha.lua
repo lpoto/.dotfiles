@@ -44,10 +44,26 @@ function buttons()
     type = "group",
     val = {
       button("s", "⟳  List Sessions", "<CMD>Sessions<CR>"),
-      button("o", "🗃 Old Files", "<CMD>Telescope find_files<CR>"),
-      button("f", "  Find Files", "<CMD>Telescope find_files<CR>"),
-      button("e", "  File Browser", "<CMD>Telescope file_browser<CR>"),
-      button("l", "☌  Live Grep", "<CMD>Telescope live_grep<CR>"),
+      button(
+        "o",
+        "🗃 Old Files",
+        "<CMD>lua require('telescope.builtin').oldfiles()<CR>"
+      ),
+      button(
+        "f",
+        "  Find Files",
+        "<CMD>lua require('telescope.builtin').find_files()<CR>"
+      ),
+      button(
+        "e",
+        "  File Browser",
+        "<CMD>lua require('telescope').extensions.file_browser.file_browser()<CR>"
+      ),
+      button(
+        "l",
+        "☌  Live Grep",
+        "<CMD>lua require('telescope.builtin').live_grep()<CR>"
+      ),
       button("p", "  Plugins", "<CMD>Lazy<CR>"),
       button("m", "  Package Manager", "<CMD>Mason<CR>"),
       button("n", "⚠  Notifications", "<CMD>Noice<CR>"),
@@ -74,6 +90,8 @@ function footer()
   }
 end
 
+local get_version
+
 function M.config()
   local alpha = require "alpha"
   alpha.setup {
@@ -84,7 +102,7 @@ function M.config()
       {
         type = "text",
         val = {
-          require("version").get(),
+          get_version(),
         },
         opts = {
           position = "center",
@@ -126,6 +144,18 @@ function button(sc, txt, keybind)
     end,
     opts = opts,
   }
+end
+
+function get_version()
+  local version = vim.version()
+
+  local s = version.major
+  s = s .. "." .. version.minor
+  s = s .. "." .. version.patch
+  if version.prerelease then
+    s = s .. " (prerelease)"
+  end
+  return s
 end
 
 return M
