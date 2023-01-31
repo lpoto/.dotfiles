@@ -5,6 +5,16 @@
 -- Defines all the general neovim options
 -------------------------------------------------------------------------------
 
+---------------------------------------------------- Update nvim standard paths
+-- Move them all to neovim config folder
+local old_stdpath = vim.fn.stdpath
+vim.fn.stdpath = function(value)
+  if value == "config" then
+    return old_stdpath "config"
+  end
+  return table.concat({ old_stdpath "config", ".data", value }, "/")
+end
+
 vim.g["mapleader"] = " " -------------------------------  map <leader> to space
 
 ---Set the default global options for the editor

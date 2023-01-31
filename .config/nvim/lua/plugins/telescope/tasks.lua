@@ -15,6 +15,8 @@ Keymaps:
 
 local M = {
   "lpoto/telescope-tasks.nvim",
+  --dev = true,
+  --dir = "~/personal/telescope-tasks.nvim",
 }
 
 M.keys = {
@@ -44,7 +46,7 @@ function M.config()
           style = "float",
           layout = "center",
         },
-        enable_build_commands = false,
+        --data_dir = false
       },
     },
   }

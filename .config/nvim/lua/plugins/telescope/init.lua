@@ -146,27 +146,20 @@ end
 pickers = function()
   return {
     find_files = {
-      find_command = {
-        "rg",
-        "--files",
-        "--iglob",
-        "!.git",
-        "--hidden",
-        "-u",
-      },
       theme = "ivy",
       hidden = true,
       --previewer = true,
       file_ignore_patterns = {
         "plugged/",
-        "\\.undo/",
+        ".undo/",
+        ".data/",
         ".local/",
-        "\\.git/",
+        ".git/",
         "node_modules/",
         "target/",
-        "\\.settings/",
+        ".settings/",
         "dist/",
-        "\\.angular/",
+        ".angular/",
         "__pycache__",
       },
     },
