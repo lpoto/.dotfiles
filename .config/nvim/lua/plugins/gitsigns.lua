@@ -26,13 +26,16 @@ Add custom git commands:
 
 local M = {
   "lewis6991/gitsigns.nvim",
-  event = { "BufNewFile", "BufReadPre" },
+  event = { "BufReadPre" },
   dependencies = {
     "samjwill/nvim-unception",
   },
 }
 
 function M.init()
+  vim.g.unception_block_while_host_edits = true
+  vim.g.unception_enable_flavor_text = false
+
   vim.keymap.set("n", "<leader>g", M.git_command, {})
   vim.api.nvim_create_user_command("Git", function()
     M.git_command()
@@ -40,9 +43,6 @@ function M.init()
   vim.keymap.set("n", "<leader>gc", M.git_commit, {})
   vim.keymap.set("n", "<leader>gP", M.git_push, {})
   vim.keymap.set("n", "<leader>gp", M.git_pull, {})
-
-  vim.g.unception_block_while_host_edits = true
-  vim.g.unception_enable_flavor_text = false
 end
 
 function M.config()
@@ -96,35 +96,31 @@ function M.git_pull()
 end
 
 function M.git_commit()
-  call_git_command("git commit ", "-a")
+  call_git_command "git commit "
 end
 
+local fetch_git_data
 local run_cmd
 function call_git_command(cmd, suffix)
-  local f = function()
-    if not vim.g.gitsigns_head or vim.g.gitsigns_head:len() == 0 then
-      vim.notify("No git HEAD found", vim.log.levels.WARN, {
-        title = "Git",
-      })
-      return
-    end
-    if suffix then
-      suffix = vim.fn.input(cmd, suffix)
-    else
-      suffix = vim.fn.input(cmd)
-    end
-    if not suffix or suffix:len() == 0 then
+  local no_git_data = function()
+    vim.notify("No git data found", vim.log.levels.WARN, {
+      title = "Git",
+    })
+  end
+
+  local callback = function()
+    suffix = vim.fn.input {
+      prompt = cmd,
+      default = suffix,
+      cancelreturn = false,
+    }
+    if not suffix then
       return
     end
     cmd = cmd .. suffix
     run_cmd(cmd)
   end
-  if not package.loaded["gisigns"] then
-    M.config()
-    vim.defer_fn(f, 100)
-  else
-    f()
-  end
+  fetch_git_data(callback, no_git_data)
 end
 
 function run_cmd(cmd)
@@ -163,6 +159,48 @@ function run_cmd(cmd)
       })
     end
   end)
+end
+
+function fetch_git_data(callback, on_error)
+  local remote = {}
+  vim.fn.jobstart("git remote show", {
+    detach = false,
+    on_stdout = function(_, data)
+      for _, d in ipairs(data) do
+        if d:len() > 0 then
+          table.insert(remote, d)
+        end
+      end
+    end,
+    on_exit = function(_, remote_exit_code)
+      if remote_exit_code ~= 0 then
+        return on_error(remote_exit_code)
+      end
+      local branch = {}
+      vim.fn.jobstart("git branch --show-current", {
+        detach = false,
+        on_stdout = function(_, data)
+          for _, d in ipairs(data) do
+            if d:len() > 0 then
+              table.insert(branch, d)
+            end
+          end
+        end,
+        on_exit = function(_, code)
+          if code ~= 0 then
+            return on_error(code)
+          end
+          if not package.loaded["unception"] then
+            pcall(require "unception")
+          end
+          return callback(
+            table.concat(remote, " "),
+            table.concat(branch, " ")
+          )
+        end,
+      })
+    end,
+  })
 end
 
 return M
