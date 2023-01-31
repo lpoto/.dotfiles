@@ -7,8 +7,9 @@
 
 ---------------------------------------------------- Update nvim standard paths
 -- Move them all to neovim config folder
-local old_stdpath = vim.fn.stdpath
-vim.fn.stdpath = function(value)
+local p = "stdpath"
+local old_stdpath = vim.fn[p]
+vim.fn[p] = function(value)
   if value == "config" then
     return old_stdpath "config"
   end
