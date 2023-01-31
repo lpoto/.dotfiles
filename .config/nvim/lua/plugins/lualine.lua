@@ -22,7 +22,7 @@ return {
     local setup = {
       options = {
         icons_enabled = false,
-        component_separator = "",
+        component_separators = { left = "", right = "" },
         section_separators = { left = "", right = "" },
         disabled_filetypes = {
           "dashboard",
