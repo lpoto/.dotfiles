@@ -1,10 +1,43 @@
 #!/bin/sh
+#
+if [ "$USER" != "root" ]
+then
+    echo "==> ERROR: Can only be run as root, exiting."
+    exit 2
+fi
 
 cd "$(dirname "$0")"
 cd ../
 
-unlink ${HOME}/.config/nvim &> /dev/null
-ln -s ${PWD}/.config/nvim ${HOME}/.config/nvim
-unlink ${HOME}/.config/kitty &> /dev/null
-ln -s ${PWD}/.config/kitty ${HOME}/.config/kitty
+read -p "==? Build/Update neovim from source? [y/n] " -n 1 -r
+echo    # (optional) move to a new line
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    echo "==> building neovim"
+    ./scripts/build/nvim
+fi
 
+
+# link neovim config only when nvim available
+if command -v nvim &> /dev/null
+then
+    echo "==> linking  neovim config to ~/.config/nvim"
+    nvim_link=$(readlink -f ${HOME}/.config/nvim)
+    if [ "$nvim_link" != "${PWD}/.config/nvim" ]; then
+        ln -s ${PWD}/.config/nvim ${HOME}/.config/nvim
+    fi
+else
+    echo "==> WARN: 'nvim' not avialable, not linking neovim config to ~/.config/nvim"
+fi
+
+# link kitty config only when kitty available
+if command -v kitty &> /dev/null
+then
+    echo "==> linking  kitty config to ~/.config/kitty"
+    kitty_link=$(readlink -f ${HOME}/.config/kitty)
+    if [ "$kitty_link" != "${PWD}/.config/kitty" ]; then
+        ln -s ${PWD}/.config/kitty ${HOME}/.config/kitty
+    fi
+else
+    echo "==> WARN: 'kitty' not avialable, not linking kitty config to ~/.config/kitty"
+fi

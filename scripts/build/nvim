@@ -1,0 +1,60 @@
+#!/bin/sh
+
+if [ "$USER" != "root" ]
+then
+    echo "==> ERROR: Can only be run as root, exiting."
+    exit 2
+fi
+
+echo "==> Checking prerequisites ..."
+sleep 1
+for v in "git" "make" "cmake" "gcc";
+do
+    if ! command -v $v &> /dev/null
+    then
+        echo "==> ERROR: '$v' could not be found, exiting."
+        exit 2
+    fi
+done
+
+if command -v nvim &> /dev/null
+then
+    echo "WARN: 'nvim' command already exists!"
+    exit 2
+fi
+
+cd "$(dirname "$0")"
+cd ../../
+
+if [ -d "./neovim" ];
+then
+    mkdir ./.build
+fi
+
+if [ -d "./.build/neovim" ];
+then
+    echo "==> ./.build/neovim exists, pulling latest version ..."
+    sleep 1
+    cd ./.build/neovim && git pull
+else
+    echo "==> ./.build/neovim does not exist, cloning ..."
+    sleep 1
+    git clone https://github.com/neovim/neovim ./.build/neovim
+    cd ./.build/neovim
+fi
+echo "==> Starting build ..."
+sleep 2
+make CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX=${PWD}/.build" install
+
+echo "==> Creating symlink ..."
+
+link_info=$(readlink /usr/bin/nvim)
+if [ "$link_info" = "${PWD}/.build/bin/nvim" ];
+then
+    rm /usr/bin/nvim
+fi
+
+ln -s ${PWD}/.build/bin/nvim /usr/bin/nvim
+
+echo "==> Build complete."
+

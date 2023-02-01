@@ -161,6 +161,7 @@ pickers = function()
         "dist/",
         ".angular/",
         "__pycache__",
+        ".build/",
       },
     },
     oldfiles = {
