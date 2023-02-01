@@ -1,8 +1,8 @@
 #!/bin/sh
 
-if [ "$USER" != "root" ]
+if [ "$USER" = "root" ]
 then
-    echo "==> ERROR: Can only be run as root, exiting."
+    echo "==> WARN: This should not be run as root."
     exit 2
 fi
 
@@ -24,12 +24,12 @@ fi
 
 # link ./kitty to ~/.config/kitty
 nvim_build_link=$(readlink -f /usr/bin/nvim)
-if [ "$nvim_build_link" = "${PWD}/.build/neovim/build/bin/nvim" ]; then
+if [ "$nvim_build_link" = "${PWD}/.build/neovim/.build/bin/nvim" ]; then
     read -p "==? Unlink neovim build? [y/n] " -n 1 -r
     echo    # (optional) move to a new line
     if [[ $REPLY =~ ^[Yy]$ ]]
     then
-        echo "==> unlinking nvim binary from /usr/bin/nvim"
-        rm /usr/bin/nvim
+        echo "==> unlinking nvim binary from /usr/bin/nvim, sudo is required"
+        sudo rm /usr/bin/nvim
     fi
 fi

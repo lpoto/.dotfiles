@@ -1,8 +1,8 @@
 #!/bin/sh
 
-if [ "$USER" != "root" ]
+if [ "$USER" = "root" ]
 then
-    echo "==> ERROR: Can only be run as root, exiting."
+    echo "==> WARN: This should not be run as root."
     exit 2
 fi
 
@@ -17,18 +17,21 @@ do
     fi
 done
 
-if command -v nvim &> /dev/null
-then
-    echo "WARN: 'nvim' command already exists!"
-    exit 2
-fi
-
 cd "$(dirname "$0")"
 cd ../../
 
-if [ -d "./neovim" ];
+link_info=$(readlink /usr/bin/nvim)
+if [ "$link_info" = "${PWD}/.build/neovim/.build/bin/nvim" ];
 then
-    mkdir ./.build
+    echo "==> Removing old symlink ..., sudo is required"
+    sudo rm /usr/bin/nvim
+fi
+
+
+if command -v nvim &> /dev/null
+then
+    echo "==> WARN: 'nvim' command already exists!"
+    exit 2
 fi
 
 if [ -d "./.build/neovim" ];
@@ -46,15 +49,9 @@ echo "==> Starting build ..."
 sleep 2
 make CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX=${PWD}/.build" install
 
-echo "==> Creating symlink ..."
+echo "==> Creating symlink ..., sudo is required"
 
-link_info=$(readlink /usr/bin/nvim)
-if [ "$link_info" = "${PWD}/.build/bin/nvim" ];
-then
-    rm /usr/bin/nvim
-fi
-
-ln -s ${PWD}/.build/bin/nvim /usr/bin/nvim
+sudo ln -s ${PWD}/.build/bin/nvim /usr/bin/nvim
 
 echo "==> Build complete."
 
