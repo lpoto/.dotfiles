@@ -29,6 +29,7 @@ local M = {
   event = { "BufReadPre" },
   dependencies = {
     "samjwill/nvim-unception",
+    event = "VeryLazy",
   },
 }
 
@@ -189,9 +190,6 @@ function fetch_git_data(callback, on_error)
         on_exit = function(_, code)
           if code ~= 0 then
             return on_error(code)
-          end
-          if not package.loaded["unception"] then
-            pcall(require "unception")
           end
           return callback(
             table.concat(remote, " "),
