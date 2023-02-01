@@ -32,6 +32,7 @@ function M.init()
     pickers = {
       git_status = {
         theme = "ivy",
+        initial_mode = "normal",
         attach_mappings = attach_git_status_mappings,
         selection_strategy = "row",
       },
@@ -40,12 +41,15 @@ function M.init()
       },
       git_branches = {
         theme = "ivy",
+        initial_mode = "normal",
       },
       git_commits = {
         theme = "ivy",
+        initial_mode = "normal",
       },
       git_stash = {
         theme = "ivy",
+        initial_mode = "normal",
       },
     },
   }

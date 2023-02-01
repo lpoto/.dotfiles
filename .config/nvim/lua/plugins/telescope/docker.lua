@@ -50,6 +50,7 @@ function M.config()
         theme = "ivy",
         log_level = vim.log.levels.INFO,
         init_term = "tabnew",
+        initial_mode = "normal",
       },
     },
   }

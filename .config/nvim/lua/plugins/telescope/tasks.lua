@@ -45,6 +45,7 @@ function M.config()
           layout = "center",
         },
         --data_dir = false
+        initial_mode = "normal",
       },
     },
   }
