@@ -41,7 +41,7 @@ function M.format()
   local ok, e = pcall(function()
     vim.lsp.buf.format {
       timeout_ms = 10000,
-      async = false,
+      async = true,
     }
   end)
   if not ok and type(e) == "string" then

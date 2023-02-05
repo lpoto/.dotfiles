@@ -1,5 +1,5 @@
-.data/
 bin/
 .kitty/
-.nvim/
+.local/
 .build/
+tmp/

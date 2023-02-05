@@ -18,12 +18,7 @@ local M = {
 function M.config()
   local treesitter = require "nvim-treesitter.configs"
 
-  local parser_install_dir =
-    table.concat({ vim.fn.stdpath "data", "treesitter" }, "/")
-  vim.opt.runtimepath:append(parser_install_dir)
-
   treesitter.setup {
-    parser_install_dir = parser_install_dir,
     ensure_installed = "all",
     --sync_install = true,
     auto_install = true,

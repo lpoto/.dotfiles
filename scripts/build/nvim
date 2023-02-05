@@ -1,5 +1,8 @@
 #!/bin/sh
 
+
+cur_pwd=${PWD}
+
 if [ "$USER" = "root" ]
 then
     echo "==> WARN: This should not be run as root."
@@ -20,20 +23,6 @@ done
 cd "$(dirname "$0")"
 cd ../../
 
-link_info=$(readlink /usr/bin/nvim)
-if [ "$link_info" = "${PWD}/.build/neovim/.build/bin/nvim" ];
-then
-    echo "==> Removing old symlink ..., sudo is required"
-    sudo rm /usr/bin/nvim
-fi
-
-
-if command -v nvim &> /dev/null
-then
-    echo "==> WARN: 'nvim' command already exists!"
-    exit 2
-fi
-
 if [ -d "./.build/neovim" ];
 then
     echo "==> ./.build/neovim exists, pulling latest version ..."
@@ -47,11 +36,8 @@ else
 fi
 echo "==> Starting build ..."
 sleep 2
-make CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX=${PWD}/.build" install
-
-echo "==> Creating symlink ..., sudo is required"
-
-sudo ln -s ${PWD}/.build/bin/nvim /usr/bin/nvim
+make CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX=${PWD}/build" install
 
 echo "==> Build complete."
 
+cd ${cur_pwd}

@@ -148,6 +148,7 @@ pickers = function()
     find_files = {
       theme = "ivy",
       hidden = true,
+      no_ignore = true,
       --previewer = true,
       file_ignore_patterns = {
         "plugged/",
@@ -161,12 +162,12 @@ pickers = function()
         "dist/",
         ".angular/",
         "__pycache__",
-        ".build/",
       },
     },
     oldfiles = {
       hidden = true,
       theme = "ivy",
+      no_ignore = true,
     },
     live_grep = {
       hidden = true,
