@@ -27,16 +27,9 @@ Add custom git commands:
 local M = {
   "lewis6991/gitsigns.nvim",
   event = { "BufReadPre" },
-  dependencies = {
-    "samjwill/nvim-unception",
-    event = "VeryLazy",
-  },
 }
 
 function M.init()
-  vim.g.unception_block_while_host_edits = true
-  vim.g.unception_enable_flavor_text = false
-
   vim.keymap.set("n", "<leader>g", M.git_command, {})
   vim.api.nvim_create_user_command("Git", function()
     M.git_command()
@@ -125,41 +118,24 @@ function call_git_command(cmd, suffix)
 end
 
 function run_cmd(cmd)
-  if type(cmd) ~= "table" and type(cmd) ~= "string" then
-    vim.notify("'cmd' should be a string or a table", vim.log.levels.WARN, {
-      title = "Git Terminal",
+  if type(cmd) ~= "string" then
+    vim.notify("'cmd' should be a string", vim.log.levels.WARN, {
+      title = "Git tmux",
     })
     return
   end
-  local new_tab = true
-  if vim.b.terminal_job_id then
-    local r = vim.fn.jobwait({ vim.b.terminal_job_id }, 0)
-    local _, n = next(r)
-    if n == -3 then
-      new_tab = false
-    end
+  if vim.fn.executable "tmux" ~= 1 then
+    vim.notify("'tmux' is not executable!", vim.log.levels.WARN, {
+      title = "Git tmux",
+    })
+    return
   end
-  vim.schedule(function()
-    local ok, e = pcall(function()
-      if new_tab then
-        vim.api.nvim_exec("tabnew", false)
-      else
-        vim.api.nvim_buf_set_option(0, "modified", false)
-      end
-      vim.fn.termopen(cmd, {
-        detach = false,
-        env = {
-          VISUAL = "nvim",
-          EDITOR = "nvim",
-        },
-      })
-    end)
-    if not ok and type(e) == "string" then
-      vim.notify(e, vim.log.levels.WARN, {
-        title = "Git Terminal",
-      })
-    end
-  end)
+  local ok, e = pcall(vim.api.nvim_exec, "!tmux split-window -h " .. cmd, false)
+  if not ok and type(e) == "string" then
+    vim.notify("Failed to run a git tmux command: " .. e, {
+      title = "Git tmux",
+    })
+  end
 end
 
 function fetch_git_data(callback, on_error)
