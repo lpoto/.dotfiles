@@ -49,25 +49,7 @@ function M.config()
         theme = "ivy",
         log_level = vim.log.levels.INFO,
         initial_mode = "normal",
-        init_term = function(cmd, env)
-          if vim.fn.executable "tmux" ~= 1 then
-            vim.notify("tmux not executable", vim.log.levels.WARN, {
-              title = "Telescope Docker Tmux",
-            })
-            return
-          end
-          if type(cmd) == "table" then
-            cmd = table.concat(cmd, " ")
-          end
-          local s = ""
-          if type(env) == "table" then
-            for k, v in ipairs(env) do
-              s = s .. " " .. k .. "=" .. v
-            end
-          end
-          cmd = s .. " " .. cmd
-          vim.cmd("!tmux split-window -h " .. cmd)
-        end,
+        init_term = "vsplit new",
       },
     },
   }
