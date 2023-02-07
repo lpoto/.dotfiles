@@ -15,12 +15,9 @@ filetypes in ftplguin/)
 
 Keymaps:
   - "gd"    - jump to the definition of the symbol under cursor
-  - "K"     - show the documentation of the symbol under cursor,
-                   or diagnostics if there are any.
-  - "<C-k>" -  Show the definition of symbol under the cursor
+  - "K" -  Show the definition of symbol under the cursor
   - "<C-d>" -  Show the diagnostics of the line under the cursor
 --]]
-
 local M = {
   "neovim/nvim-lspconfig",
   cmd = { "LspStart", "LspInfo" },
@@ -31,9 +28,6 @@ local M = {
 
 function M.init()
   vim.keymap.set("n", "K", function()
-    require("plugins.lspconfig").show_definition()
-  end)
-  vim.keymap.set("n", "<C-k>", function()
     vim.lsp.buf.hover()
   end)
   vim.keymap.set("n", "<C-d>", function()

@@ -15,6 +15,8 @@ Keymaps:
 --]]
 local M = {
   "lpoto/telescope-docker.nvim",
+  dev = true,
+  dir = "~/personal/telescope-docker.nvim"
 }
 
 M.keys = {

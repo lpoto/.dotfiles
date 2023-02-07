@@ -39,7 +39,7 @@ return {
       },
       highlights = {
         FloatBorder = {
-          fg = colors.darker_black,
+          fg = colors.grey,
           bg = "None",
         },
         NormalFloat = {
