@@ -23,7 +23,6 @@ Add custom git commands:
    - <leader>g or (:Git) :  Custom git command
 
 ------------------------------------------------------------------------------]]
-
 local M = {
   "lewis6991/gitsigns.nvim",
   event = { "BufReadPre" },
@@ -130,12 +129,12 @@ function run_cmd(cmd)
     })
     return
   end
-  local ok, e = pcall(vim.api.nvim_exec, "!tmux split-window -h " .. cmd, false)
-  if not ok and type(e) == "string" then
-    vim.notify("Failed to run a git tmux command: " .. e, {
-      title = "Git tmux",
-    })
-  end
+  vim.fn.jobstart("tmux split-window -h " .. cmd, {
+    detach = false,
+    on_exit = function(_, code)
+      vim.notify(vim.inspect(code))
+    end,
+  })
 end
 
 function fetch_git_data(callback, on_error)
