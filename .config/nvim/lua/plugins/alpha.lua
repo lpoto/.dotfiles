@@ -125,7 +125,7 @@ function M.config()
   -- NOTE: need to manually call alpha, as
   -- it is loaded after the vim enter event
   -- (it is loaded later so the plugins info is available)
-  vim.cmd "Alpha"
+  alpha.start(true, alpha.default_config)
 end
 
 function button(sc, txt, on_press)
