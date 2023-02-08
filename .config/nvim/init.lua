@@ -5,10 +5,12 @@
 local safe_require
 
 local function init()
-  ------------------------------------------------- Load general neovim options
+  --------------------------------------------------------- Load custom options
   safe_require "config.options"
-  ------------------------------------ Load general neovim keymaps and commands
+  --------------------------------------------------------- Load custom keymaps
   safe_require "config.keymaps"
+  ---------------------------------------------------- Load custom autocommands
+  safe_require "config.autocommands"
   --------------------------------------------- Load the plugins with lazy.nvim
   safe_require "config.lazy"
 end
