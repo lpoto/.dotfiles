@@ -128,3 +128,8 @@ vim.api.nvim_create_autocmd("TextYankPost", {
     }
   end,
 })
+
+--  set q: q/ and q? to no-op, as they interfere a lot
+vim.keymap.set("n", "q:", "<nop>")
+vim.keymap.set("n", "q/", "<nop>")
+vim.keymap.set("n", "q?", "<nop>")
