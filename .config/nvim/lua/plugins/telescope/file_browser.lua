@@ -11,7 +11,6 @@ Keymaps:
  - "<leader>tB"   - file browser relative to current directory
 
 --]]
-
 local M = {
   "nvim-telescope/telescope-file-browser.nvim",
 }

@@ -13,7 +13,6 @@ Keymaps
    - <leader>gS: Git stash
           - <CR> to apply the selected stash
 -----------------------------------------------------------------------------]]
-
 local M = {}
 
 local attach_git_status_mappings

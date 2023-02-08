@@ -15,8 +15,6 @@ Keymaps:
 --]]
 local M = {
   "lpoto/telescope-docker.nvim",
-  dev = true,
-  dir = "~/personal/telescope-docker.nvim"
 }
 
 M.keys = {
@@ -51,7 +49,7 @@ function M.config()
         theme = "ivy",
         log_level = vim.log.levels.INFO,
         initial_mode = "normal",
-        init_term = "vsplit new",
+        init_term = "tabnew",
       },
     },
   }
