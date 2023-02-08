@@ -16,7 +16,7 @@ local buttons
 local footer
 
 function header()
-  local header = {
+  local hdr = {
     [[ ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿]],
     [[ ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⠛⠋⠉⣉⣉⠙⠿⠋⣠⢴⣊⣙⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿]],
     [[ ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠟⠋⠁⠀⢀⠔⡩⠔⠒⠛⠧⣾⠊⢁⣀⣀⣀⡙⣿⣿⣿⣿⣿⣿⣿⣿⣿]],
@@ -38,7 +38,7 @@ function header()
       table.insert(h, "")
     end
   end
-  for _, s in ipairs(header) do
+  for _, s in ipairs(hdr) do
     table.insert(h, s)
   end
   return {
@@ -122,7 +122,10 @@ function M.config()
       footer(),
     },
   }
-  alpha.start(true)
+  -- NOTE: need to manually call alpha, as
+  -- it is loaded after the vim enter event
+  -- (it is loaded later so the plugins info is available)
+  vim.cmd "Alpha"
 end
 
 function button(sc, txt, on_press)
