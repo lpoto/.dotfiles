@@ -9,6 +9,8 @@ local function init()
   safe_require "config.options"
   --------------------------------------------------------- Load custom keymaps
   safe_require "config.keymaps"
+  ---------------------------------------------------------- Load user commands
+  safe_require "config.user_commands"
   ---------------------------------------------------- Load custom autocommands
   safe_require "config.autocommands"
   --------------------------------------------- Load the plugins with lazy.nvim
