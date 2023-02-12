@@ -17,7 +17,7 @@ Add custom git commands:
    - <leader>gc: Git commit
    - <leader>gP: Git push
    - <leader>gp: Git pull
-   - <leader>g or (:Git) :  Custom git command
+   - :Git <args> :  Custom git command
 ------------------------------------------------------------------------------]]
 local M = {
   "lewis6991/gitsigns.nvim",
@@ -28,14 +28,19 @@ local M = {
   },
 }
 
+local run_git_command
 function M.init()
   vim.g.unception_block_while_host_edits = true
   vim.g.unception_enable_flavor_text = false
 
   vim.keymap.set("n", "<leader>g", M.git_command, {})
-  vim.api.nvim_create_user_command("Git", function()
-    M.git_command()
-  end, {})
+  vim.api.nvim_create_user_command("Git", function(opts)
+    opts.args = opts.args or "--help"
+    local cmd = "git " .. opts.args
+    run_git_command(cmd)
+  end, {
+    nargs = "*",
+  })
   vim.keymap.set("n", "<leader>gc", M.git_commit, {})
   vim.keymap.set("n", "<leader>gP", M.git_push, {})
   vim.keymap.set("n", "<leader>gp", M.git_pull, {})
@@ -114,6 +119,18 @@ function call_git_command(cmd, suffix)
       return
     end
     cmd = cmd .. suffix
+    run_cmd(cmd)
+  end
+  fetch_git_data(callback, no_git_data)
+end
+
+function run_git_command(cmd)
+  local no_git_data = function()
+    vim.notify("No git data found", vim.log.levels.WARN, {
+      title = "Git",
+    })
+  end
+  local callback = function()
     run_cmd(cmd)
   end
   fetch_git_data(callback, no_git_data)
