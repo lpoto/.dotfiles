@@ -103,6 +103,11 @@ M.keys = {
     "<cmd>DiffviewOpen<CR>",
     mode = "n",
   },
+  {
+    "<leader>gb",
+    "<cmd>Neogit branch<CR>",
+    mode = "n",
+  },
 }
 
 return M
