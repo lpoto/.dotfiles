@@ -30,6 +30,8 @@ M.ignore_filetype_patterns = {
   "mason",
   "SidebarNvim",
   "noice",
+  "Neogit.*",
+  "Diffview.*",
 }
 
 ---@type string: Title used for logging, creating augroups,

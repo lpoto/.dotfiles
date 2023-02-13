@@ -10,7 +10,10 @@ Commands:
 --
 local M = {
   "TimUntersberger/neogit",
-  cmd = { "Git", "Neogit" },
+  cmd = { "Git", "Neogit", "DiffviewOpen" },
+  dependencies = {
+    "sindrets/diffview.nvim",
+  },
 }
 
 M.config = function()
@@ -30,7 +33,42 @@ M.config = function()
 
   local neogit = require "neogit"
   neogit.setup {
-     disable_commit_confirmation = true,
+    disable_commit_confirmation = true,
+    integrations = {
+      diffview = true,
+    },
+  }
+
+  local diffview = require "diffview"
+  diffview.setup {
+    use_icons = false,
+    keymaps = {
+      view = {
+        {
+          "n",
+          "q",
+          function()
+            vim.cmd "DiffviewClose!"
+          end,
+        },
+      },
+      file_panel = {
+        {
+          "n",
+          "q",
+          function()
+            vim.cmd "DiffviewClose!"
+          end,
+        },
+        {
+          "n",
+          "<esc>",
+          function()
+            vim.cmd "DiffviewClose!"
+          end,
+        },
+      },
+    },
   }
 end
 
@@ -58,6 +96,11 @@ M.keys = {
   {
     "<leader>gP",
     "<cmd>Neogit push<CR>",
+    mode = "n",
+  },
+  {
+    "<leader>gd",
+    "<cmd>DiffviewOpen<CR>",
     mode = "n",
   },
 }
