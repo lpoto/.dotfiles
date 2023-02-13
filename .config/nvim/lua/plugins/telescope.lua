@@ -18,28 +18,14 @@ Keymaps:
  - "<leader>tq"   - quickfix
 
  Use <C-q> in a telescope prompt to send the results to quickfix.
-NOTE:
-  see
-  -  lua/plugins/telescope/tasks.lua
-  -  lua/plugins/telescope/undo.lua
-  -  lua/plugins/telescope/file_browser.lua
-  -  lua/plugins/telescope/docker.lua
-  -  lua/plugins/telescope/messions.lua
-
-NOTE:  telescope required rg (Ripgrep) and fd (Fd-Find) to be installed.
 --]]
 --
 local M = {
   "nvim-telescope/telescope.nvim",
   cmd = "Telescope",
-}
-local _M = {
-  M,
-  require "plugins.telescope.undo",
-  require "plugins.telescope.tasks",
-  require "plugins.telescope.file_browser",
-  require "plugins.telescope.docker",
-  "nvim-lua/plenary.nvim",
+  dependencies = {
+    "nvim-lua/plenary.nvim",
+  },
 }
 
 M.keys = {
@@ -86,10 +72,6 @@ M.keys = {
     mode = "n",
   },
 }
-
-function M.init()
-  require("plugins.telescope.sessions").init()
-end
 
 local default_mappings
 local pickers
@@ -180,4 +162,4 @@ pickers = function()
   }
 end
 
-return _M
+return M

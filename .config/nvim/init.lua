@@ -15,6 +15,8 @@ local function init()
   safe_require "config.autocommands"
   --------------------------------------------- Load the plugins with lazy.nvim
   safe_require "config.lazy"
+  ------------------------------------------- Load automatic session management
+  safe_require "config.sessions"
 end
 
 ------------- Safely require a module, so other configs still load if one fails

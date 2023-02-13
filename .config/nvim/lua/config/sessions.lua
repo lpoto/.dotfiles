@@ -273,4 +273,4 @@ function M.list_sessions(theme)
   sessions_picker:find()
 end
 
-return M
+return M.init()
