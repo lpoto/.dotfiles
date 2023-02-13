@@ -9,7 +9,6 @@ Commands:
 
 NOTE: session is saved automatically when yout quit neovim.
 -----------------------------------------------------------------------------]]
-
 local M = {}
 
 ---@type string: Path to the directory where sessions are saved

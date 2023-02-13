@@ -45,6 +45,18 @@ return {
         NormalFloat = {
           bg = "None",
         },
+        TelescopeNormal = {
+          bg = "None",
+        },
+        TelescopePromptNormal = {
+          bg = "None",
+        },
+        TelescopePreviewNormal = {
+          bg = "None",
+        },
+        TelescopeResultsNormal = {
+          bg = "None",
+        },
         TelescopeBorder = {
           fg = colors.darker_black,
         },

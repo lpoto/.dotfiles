@@ -18,13 +18,13 @@ Keymaps:
  - "<leader>tq"   - quickfix
 
  Use <C-q> in a telescope prompt to send the results to quickfix.
-NOTE: 
-  see 
+NOTE:
+  see
   -  lua/plugins/telescope/tasks.lua
   -  lua/plugins/telescope/undo.lua
   -  lua/plugins/telescope/file_browser.lua
   -  lua/plugins/telescope/docker.lua
-  -  lua/plugins/telescope/sessions.lua
+  -  lua/plugins/telescope/messions.lua
 
 NOTE:  telescope required rg (Ripgrep) and fd (Fd-Find) to be installed.
 --]]
