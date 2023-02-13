@@ -15,7 +15,7 @@ local null_ls = require "plugins.null-ls"
 
 null_ls.register_formatter "stylua"
 
-lspconfig.start_language_server("sumneko_lua", {
+lspconfig.start_language_server("lua_ls", {
   settings = {
     Lua = {
       runtime = {

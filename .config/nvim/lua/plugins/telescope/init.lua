@@ -24,7 +24,6 @@ NOTE:
   -  lua/plugins/telescope/undo.lua
   -  lua/plugins/telescope/file_browser.lua
   -  lua/plugins/telescope/docker.lua
-  -  lua/plugins/telescope/git.lua
   -  lua/plugins/telescope/sessions.lua
 
 NOTE:  telescope required rg (Ripgrep) and fd (Fd-Find) to be installed.
@@ -89,7 +88,6 @@ M.keys = {
 }
 
 function M.init()
-  require("plugins.telescope.git").init()
   require("plugins.telescope.sessions").init()
 end
 
