@@ -15,7 +15,7 @@ local null_ls = require "plugins.null-ls"
 
 null_ls.register_formatter "stylua"
 
-lspconfig.start_language_server("sumneko_lua", {
+lspconfig.start_language_server("lua_ls", {
   settings = {
     Lua = {
       runtime = {
@@ -29,6 +29,7 @@ lspconfig.start_language_server("sumneko_lua", {
         globals = { "vim" },
       },
       workspace = {
+        ignoreDir = { ".data/" },
         library = vim.api.nvim_get_runtime_file("", true),
         checkThirdParty = false,
       },

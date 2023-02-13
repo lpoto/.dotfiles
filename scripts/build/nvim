@@ -1,0 +1,43 @@
+#!/bin/sh
+
+
+cur_pwd=${PWD}
+
+if [ "$USER" = "root" ]
+then
+    echo "==> WARN: This should not be run as root."
+    exit 2
+fi
+
+echo "==> Checking prerequisites ..."
+sleep 1
+for v in "git" "make" "cmake" "gcc";
+do
+    if ! command -v $v &> /dev/null
+    then
+        echo "==> ERROR: '$v' could not be found, exiting."
+        exit 2
+    fi
+done
+
+cd "$(dirname "$0")"
+cd ../../
+
+if [ -d "./.build/neovim" ];
+then
+    echo "==> ./.build/neovim exists, pulling latest version ..."
+    sleep 1
+    cd ./.build/neovim && git pull
+else
+    echo "==> ./.build/neovim does not exist, cloning ..."
+    sleep 1
+    git clone https://github.com/neovim/neovim ./.build/neovim
+    cd ./.build/neovim
+fi
+echo "==> Starting build ..."
+sleep 2
+make CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX=${PWD}/build" install
+
+echo "==> Build complete."
+
+cd ${cur_pwd}

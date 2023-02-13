@@ -2,9 +2,6 @@
 -------------------------------------------------------------------------------
 --                                                                   REMAPPINGS
 --=============================================================================
----Set the default global remappings and user commands
----(renaming file, scrolling popups, window managing, visual mode, jumping,
----undoing breakpoints, moving text, writing,...)
 
 --------------------------------------------------------------- SCROLLING POPUP
 -- down with tab, up with shift-tab, select with enter
@@ -70,38 +67,6 @@ vim.keymap.set("i", "?", "?<c-g>u")
 -- Redo with <leader>r
 vim.keymap.set("n", "<leader>r", "<C-r>")
 
------------------------------------------------------------------------ WRITING
-
-vim.api.nvim_create_user_command(
-  "W",
-  "w",
-  { nargs = "*", bang = true, complete = "file" }
-)
-
-vim.api.nvim_create_user_command("Q", "q", {
-  bang = true,
-})
-vim.api.nvim_create_user_command("Qw", "qw", {
-  nargs = "*",
-  bang = true,
-  complete = "file",
-})
-vim.api.nvim_create_user_command("QW", "qw", {
-  nargs = "*",
-  bang = true,
-  complete = "file",
-})
-vim.api.nvim_create_user_command("Wq", "wq", {
-  nargs = "*",
-  bang = true,
-  complete = "file",
-})
-vim.api.nvim_create_user_command("WQ", "wq", {
-  nargs = "*",
-  bang = true,
-  complete = "file",
-})
-
 ---------------------------------------------------------------------- TERMINAL
 -- return to normal mode with <Esc>
 -- Toggle terminal in a new tab with <C-t>
@@ -119,12 +84,7 @@ vim.keymap.set("n", "<leader>yy", '"+yy')
 vim.keymap.set({ "n", "v" }, "<leader>p", '"+p')
 vim.keymap.set({ "n", "v" }, "<leader>P", '"+P')
 
--- Highlight yanked text
-vim.api.nvim_create_autocmd("TextYankPost", {
-  callback = function()
-    require("vim.highlight").on_yank {
-      higroup = "IncSearch",
-      timeout = 40,
-    }
-  end,
-})
+--  set q: q/ and q? to no-op, as they interfere a lot
+vim.keymap.set("n", "q:", "<nop>")
+vim.keymap.set("n", "q/", "<nop>")
+vim.keymap.set("n", "q?", "<nop>")

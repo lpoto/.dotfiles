@@ -1,83 +1,39 @@
 --=============================================================================
 -------------------------------------------------------------------------------
 --                                                                         INIT
---[[===========================================================================
+--=============================================================================
+local safe_require
 
-Ensure that Lazy.nvim (https://github.com/folke/lazy.nvim) is installed, then
-set it up. All other configs are managed as plugins through lazy.
-
------------------------------------------------------------------------------]]
-
-vim.g["mapleader"] = " " -------------------------------  map <leader> to space
-
-local ensure_lazy, get_lazy_options
-
----Ensure the lazy.nvim plugin manager is installed. If not,
----intall it, then set it up and lazy load all the plugins in the
----./lua/plugins directory.
-local function load_lazy(lazy_path)
-  ensure_lazy(lazy_path)
-  vim.opt.runtimepath:prepend(lazy_path)
-  require("lazy").setup("plugins", get_lazy_options())
+local function init()
+  --------------------------------------------------------- Load custom options
+  safe_require "config.options"
+  --------------------------------------------------------- Load custom keymaps
+  safe_require "config.keymaps"
+  ---------------------------------------------------------- Load user commands
+  safe_require "config.user_commands"
+  ---------------------------------------------------- Load custom autocommands
+  safe_require "config.autocommands"
+  --------------------------------------------- Load the plugins with lazy.nvim
+  safe_require "config.lazy"
+  ------------------------------------------- Load automatic session management
+  safe_require "config.sessions"
 end
 
-function ensure_lazy(lazy_path)
-  if not vim.loop.fs_stat(lazy_path) then
-    vim.notify("Lazy.nvim not found, installing...", vim.log.levels.INFO)
-    local args = {
-      "git",
-      "clone",
-      "--filter=blob:none",
-      "--single-branch",
-      "git@github.com:folke/lazy.nvim.git",
-      lazy_path,
-    }
-    vim.notify("Running: " .. table.concat(args, " "), vim.log.levels.DEBUG)
-    vim.fn.system(args)
-    vim.notify("Lazy.nvim installed", vim.log.levels.INFO)
+------------- Safely require a module, so other configs still load if one fails
+---@param module string
+function safe_require(module)
+  local ok, e = pcall(require, module)
+  if not ok and type(e) == "string" then
+    vim.defer_fn(function()
+      vim.notify(
+        "Failed to load '" .. module .. "': " .. e,
+        vim.log.levels.ERROR,
+        {
+          title = "INIT",
+        }
+      )
+    end, 500)
   end
 end
 
-function get_lazy_options()
-  return {
-    defaults = {
-      lazy = true,
-      --version = "*",
-    },
-    lockfile = table.concat(
-      { vim.fn.stdpath "config", ".lazy.lock.json" },
-      "/"
-    ),
-    root = vim.fn.stdpath "data" .. "/lazy",
-    dev = {
-      dir = vim.fn.stdpath "data" .. "/lazy",
-    },
-    checker = {
-      enabled = true,
-      notify = false,
-    },
-    diff = {
-      cmd = "terminal_git",
-    },
-    performance = {
-      cache = {
-        enabled = true,
-      },
-      rtp = {
-        disabled_plugins = {
-          --"gzip",
-          "matchit",
-          "matchparen",
-          "netrwPlugin",
-          "tarPlugin",
-          "tohtml",
-          "tutor",
-          --"zipPlugin",
-        },
-      },
-    },
-    debug = false,
-  }
-end
-
-load_lazy(vim.fn.stdpath "data" .. "/lazy/lazy.nvim")
+init()

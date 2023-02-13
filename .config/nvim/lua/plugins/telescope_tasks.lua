@@ -17,14 +17,22 @@ local M = {
   "lpoto/telescope-tasks.nvim",
 }
 
-function M.init()
-  vim.keymap.set("n", "<leader>a", function()
-    require("telescope").extensions.tasks.tasks()
-  end)
-  vim.keymap.set("n", "<leader>e", function()
-    require("telescope").extensions.tasks.actions.toggle_last_output()
-  end)
-end
+M.keys = {
+  {
+    "<leader>a",
+    function()
+      require("telescope").extensions.tasks.tasks()
+    end,
+    mode = "n",
+  },
+  {
+    "<leader>e",
+    function()
+      require("telescope").extensions.tasks.actions.toggle_last_output()
+    end,
+    mode = "n",
+  },
+}
 
 function M.config()
   local telescope = require "telescope"
@@ -36,7 +44,8 @@ function M.config()
           style = "float",
           layout = "center",
         },
-        enable_build_commands = false,
+        --data_dir = false
+        initial_mode = "normal",
       },
     },
   }

@@ -1,0 +1,6 @@
+bin/
+.kitty/
+.local/
+.build/
+tmp/
+github-copilot

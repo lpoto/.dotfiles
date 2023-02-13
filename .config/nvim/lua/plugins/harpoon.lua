@@ -20,20 +20,31 @@ local M = {
   "ThePrimeagen/harpoon",
 }
 
-function M.init()
-  vim.keymap.set("n", "<leader>ha", function()
-    require("harpoon.mark").add_file()
-  end)
-  vim.keymap.set("n", "<leader>h", function()
-    require("harpoon.ui").toggle_quick_menu()
-  end)
-  for i, v in ipairs { "q", "w", "e", "r", "t" } do
-    vim.keymap.set("n", "<leader>h" .. v, function()
-      require("harpoon.ui").nav_file(i)
-    end)
-  end
-end
+M.keys = {
+  {
+    "<leader>ha",
+    function()
+      require("harpoon.mark").add_file()
+    end,
+    mode = "n",
+  },
+  {
+    "<leader>h",
+    function()
+      require("harpoon.ui").toggle_quick_menu()
+    end,
+  },
+  mode = "n",
+}
 
-function M.config() end
+for i, v in ipairs { "q", "w", "e", "r", "t" } do
+  table.insert(M.keys, {
+    "<leader>h" .. v,
+    function()
+      require("harpoon.ui").nav_file(i)
+    end,
+    mode = "n",
+  })
+end
 
 return M

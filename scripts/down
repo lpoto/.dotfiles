@@ -1,5 +1,0 @@
-#!/bin/sh
-
-unlink ${HOME}/.config/nvim
-unlink ${HOME}/.config/kitty
-

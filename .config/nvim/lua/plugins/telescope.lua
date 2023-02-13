@@ -16,48 +16,62 @@ Keymaps:
  - "<leader>tg"   - live grep
  - "<leader>td"   - show diagnostics
  - "<leader>tq"   - quickfix
- - "<leader>tb"   - file browser
 
  Use <C-q> in a telescope prompt to send the results to quickfix.
-NOTE: 
-  see 
-  -  lua/plugins/telescope/tasks.lua
-
-NOTE:  telescope required rg (Ripgrep) and fd (Fd-Find) to be installed.
 --]]
 --
 local M = {
   "nvim-telescope/telescope.nvim",
   cmd = "Telescope",
   dependencies = {
-    "nvim-telescope/telescope-file-browser.nvim",
     "nvim-lua/plenary.nvim",
   },
 }
 
-function M.init()
-  vim.keymap.set("n", "<leader>n", function()
-    require("telescope.builtin").find_files()
-  end)
-  vim.keymap.set("n", "<leader>t", function()
-    require("telescope.builtin").find_files()
-  end)
-  vim.keymap.set("n", "<leader>to", function()
-    require("telescope.builtin").oldfiles()
-  end)
-  vim.keymap.set("n", "<leader>tq", function()
-    require("telescope.builtin").quickfix()
-  end)
-  vim.keymap.set("n", "<leader>td", function()
-    require("telescope.builtin").diagnostics()
-  end)
-  vim.keymap.set("n", "<leader>tg", function()
-    require("telescope.builtin").live_grep()
-  end)
-  vim.keymap.set("n", "<leader>tb", function()
-    require("telescope").extensions.file_browser.file_browser()
-  end)
-end
+M.keys = {
+  {
+    "<leader>t",
+    function()
+      require("telescope.builtin").find_files()
+    end,
+    mode = "n",
+  },
+  {
+    "<leader>n",
+    function()
+      require("telescope.builtin").find_files()
+    end,
+    mode = "n",
+  },
+  {
+    "<leader>to",
+    function()
+      require("telescope.builtin").oldfiles()
+    end,
+    mode = "n",
+  },
+  {
+    "<leader>tq",
+    function()
+      require("telescope.builtin").quickfix()
+    end,
+    mode = "n",
+  },
+  {
+    "<leader>td",
+    function()
+      require("telescope.builtin").diagnostics()
+    end,
+    mode = "n",
+  },
+  {
+    "<leader>tg",
+    function()
+      require("telescope.builtin").live_grep()
+    end,
+    mode = "n",
+  },
+}
 
 local default_mappings
 local pickers
@@ -70,23 +84,14 @@ function M.config()
       file_sorter = require("telescope.sorters").get_fzy_sorter,
       generic_sorter = require("telescope.sorters").get_fzy_sorter,
       prompt_prefix = "🔍",
-      color_devicons = true,
+      color_devicons = false,
       file_previewer = require("telescope.previewers").vim_buffer_cat.new,
       grep_previewer = require("telescope.previewers").vim_buffer_vimgrep.new,
       qflist_previewer = require("telescope.previewers").vim_buffer_qflist.new,
       mappings = default_mappings(),
     },
-    extensions = {
-      file_browser = {
-        theme = "ivy",
-        hidden = true,
-        initial_mode = "normal",
-        hijack_netrw = true,
-      },
-    },
     pickers = pickers(),
   }
-  telescope.load_extension "file_browser"
 end
 
 default_mappings = function()
@@ -121,20 +126,14 @@ end
 pickers = function()
   return {
     find_files = {
-      find_command = {
-        "rg",
-        "--files",
-        "--iglob",
-        "!.git",
-        "--hidden",
-        "-u",
-      },
       theme = "ivy",
       hidden = true,
+      no_ignore = true,
       --previewer = true,
       file_ignore_patterns = {
         "plugged/",
         ".undo/",
+        ".data/",
         ".local/",
         ".git/",
         "node_modules/",
@@ -143,11 +142,13 @@ pickers = function()
         "dist/",
         ".angular/",
         "__pycache__",
+        "github-copilot",
       },
     },
     oldfiles = {
       hidden = true,
       theme = "ivy",
+      no_ignore = true,
     },
     live_grep = {
       hidden = true,
