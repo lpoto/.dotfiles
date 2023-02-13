@@ -162,6 +162,7 @@ pickers = function()
         "dist/",
         ".angular/",
         "__pycache__",
+        "github-copilot",
       },
     },
     oldfiles = {

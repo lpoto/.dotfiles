@@ -7,7 +7,7 @@
 
 --[[
 A completion engine plugin. Completion sources are installed from
-external repositories, cmp-buffer, cmp-nvim-lsp,...
+external repositories, cmp-nvim-lsp,...
 
 This also includes the vsnip plugin intergrated with cmp,
 and autopairs, that autocompletes the matching braces, quotes, etc.
@@ -20,43 +20,22 @@ lsp server's config:
 
 local M = {
   "hrsh7th/nvim-cmp",
+  event = "User RealInsertEnter",
   dependencies = {
     "hrsh7th/cmp-nvim-lsp",
-    "hrsh7th/cmp-buffer",
     "hrsh7th/cmp-path",
     "L3MON4d3/LuaSnip",
     "saadparwaiz1/cmp_luasnip",
   },
 }
 
-function M.init()
-  local id
-  id = vim.api.nvim_create_autocmd("InsertEnter", {
-    callback = function()
-      if M.cond == false or type(M.cond) == "function" and not M.cond() then
-        vim.api.nvim_del_autocmd(id)
-        return
-      end
-      vim.schedule(function()
-        local buf = vim.api.nvim_get_current_buf()
-        local buftype = vim.api.nvim_buf_get_option(buf, "buftype")
-        if buftype:len() == 0 then
-          vim.api.nvim_del_autocmd(id)
-          M.config()
-        end
-      end)
-    end,
-  })
-end
-
 function M.config()
   local cmp = require "cmp"
 
   cmp.setup {
     completion = {
-      completeopt = "menu,menuone,noinsert",
+      completeopt = "menu,menuone,noinsert,noselect",
     },
-    preselect = cmp.PreselectMode.Item,
     snippet = {
       expand = function(args)
         require("luasnip").lsp_expand(args.body)
@@ -77,19 +56,12 @@ function M.config()
     sources = {
       {
         name = "nvim_lsp",
-        group_index = 2,
       },
       {
         name = "luasnip",
-        group_index = 2,
-      },
-      {
-        name = "buffer",
-        group_index = 2,
       },
       {
         name = "path",
-        group_index = 2,
       },
     },
     window = {
@@ -97,9 +69,6 @@ function M.config()
       documentation = cmp.config.window.bordered(),
     },
   }
-  vim.api.nvim_exec_autocmds("User", {
-    pattern = "CmpLoaded",
-  })
 end
 
 return M
