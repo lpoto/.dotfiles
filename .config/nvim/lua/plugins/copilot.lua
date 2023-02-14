@@ -44,10 +44,10 @@ function M.keymap()
       if cmp.visible() then
         cmp.close()
         return
-      elseif copilot_suggestion.is_visible() then
-        copilot_suggestion.dismiss()
       end
-      cmp.complete()
+    end
+    if copilot_suggestion.is_visible() then
+      copilot_suggestion.dismiss()
     end
   end)
 end
