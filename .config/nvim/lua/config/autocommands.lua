@@ -39,10 +39,26 @@ id = vim.api.nvim_create_autocmd("InsertEnter", {
       local buftype = vim.api.nvim_buf_get_option(buf, "buftype")
       if buftype:len() == 0 then
         vim.api.nvim_del_autocmd(id)
+        vim.api.nvim_exec_autocmds("User", {
+          pattern = "RealInsertEnter",
+        })
       end
-      vim.api.nvim_exec_autocmds("User", {
-        pattern = "RealInsertEnter",
-      })
+    end)
+  end,
+})
+
+local id2
+id2 = vim.api.nvim_create_autocmd("BufEnter", {
+  callback = function()
+    vim.schedule(function()
+      local buf = vim.api.nvim_get_current_buf()
+      local buftype = vim.api.nvim_buf_get_option(buf, "buftype")
+      if buftype:len() == 0 then
+        pcall(vim.api.nvim_del_autocmd, id2)
+        vim.api.nvim_exec_autocmds("User", {
+          pattern = "RealBufEnter",
+        })
+      end
     end)
   end,
 })
