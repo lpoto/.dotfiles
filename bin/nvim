@@ -1,0 +1,32 @@
+#!/bin/sh
+
+dotfiles=$(dirname $(dirname "$0"))
+nvim_path=${dotfiles}/.build/neovim/build/bin/nvim
+
+if [ ! -f "${nvim_path}" ]; then
+    echo "Neovim not found at ${nvim_path}"
+    read -p "==? Build neovim from source? [y/n] " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]
+    then
+        echo "==> building neovim"
+        ${dotfiles}/scripts/build/nvim
+    fi
+fi
+
+
+
+DOTFILES_CONFIG_HOME=${dotfiles}/.config
+DOTFILES_DATA_HOME=${dotfiles}/.local/share
+DOTFILES_RUNTIME_DIR=${dotfiles}/.local/share
+DOTFILES_STATE_HOME=${dotfiles}/.local/state
+
+dotfiles_bin="${dotfiles}/bin"
+PATH="${dotfiles_bin}:${PATH}"
+
+XDG_CONFIG_HOME=${DOTFILES_CONFIG_HOME} \
+    XDG_DATA_HOME=${DOTFILES_DATA_HOME} \
+    XDG_RUNTIME_DIR=${DOTFILES_RUNTIME_DIR} \
+    XDG_STATE_HOME=${DOTFILES_STATE_HOME} \
+    PATH=${PATH} \
+    ${nvim_path} $@

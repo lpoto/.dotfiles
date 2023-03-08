@@ -1,0 +1,30 @@
+#!/bin/sh
+
+dotfiles=$(dirname $(dirname "$0"))
+tmux_path=${dotfiles}/.build/tmux/tmux/tmux
+
+if [ ! -f "${tmux_path}" ]; then
+    echo "Tmux not found at ${tmux_path}"
+    read -p "==? Build tmux from source? [y/n] " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]
+    then
+        echo "==> building tmux"
+        ${dotfiles}/scripts/build/tmux
+    fi
+fi
+
+args=$@
+if [ $# -eq 0 ]; then
+    args="new"
+fi
+
+
+LD_LIBRARY_PATH=${dotfiles}/.build/tmux/lib:${LD_LIBRARY_PATH}
+
+dotfiles_bin="${dotfiles}/bin"
+PATH="${dotfiles_bin}:${PATH}"
+
+LD_LIBRARY_PATH=${LD_LIBRARY_PATH} \
+    PATH=${PATH} \
+    ${tmux_path} source ${dotfiles}/.config/tmux/tmux.conf \; $args
