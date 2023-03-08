@@ -8,17 +8,6 @@ then
     exit 2
 fi
 
-echo "==> Checking prerequisites ..."
-sleep 1
-for v in "git" "make" "autoconf" "automake";
-do
-    if ! command -v $v &> /dev/null
-    then
-        echo "==> ERROR: '$v' could not be found, exiting."
-        exit 2
-    fi
-done
-
 cd "$(dirname "$0")"
 cd ../../
 
@@ -75,3 +64,4 @@ make -j && make install
 echo "==> Build complete."
 
 cd ${cur_pwd}
+

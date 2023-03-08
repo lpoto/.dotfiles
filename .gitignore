@@ -1,5 +1,6 @@
 .kitty/
 .local/
 .build/
+libevent*
 tmp/
 github-copilot

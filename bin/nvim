@@ -5,13 +5,8 @@ nvim_path=${dotfiles}/.build/neovim/build/bin/nvim
 
 if [ ! -f "${nvim_path}" ]; then
     echo "Neovim not found at ${nvim_path}"
-    read -p "==? Build neovim from source? [y/n] " -n 1 -r
-    echo
-    if [[ $REPLY =~ ^[Yy]$ ]]
-    then
-        echo "==> building neovim"
-        ${dotfiles}/scripts/build/nvim
-    fi
+    echo "==> building neovim"
+    ${dotfiles}/scripts/build/nvim
 fi
 
 
