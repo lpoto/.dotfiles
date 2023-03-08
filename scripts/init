@@ -1,5 +1,0 @@
-#!/bin/sh
-
-dotfiles_path=$(dirname $(dirname "$0"))
-
-export PATH=${dotfiles_path}/bin:${PATH}
