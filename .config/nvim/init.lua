@@ -13,6 +13,8 @@ local function init()
   safe_require "config.user_commands"
   ---------------------------------------------------- Load custom autocommands
   safe_require "config.autocommands"
+  -------------------------------------------------------- Source local configs 
+  safe_require "config.local_config"
   --------------------------------------------- Load the plugins with lazy.nvim
   safe_require "config.lazy"
   ------------------------------------------- Load automatic session management
