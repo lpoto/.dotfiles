@@ -5,8 +5,19 @@ tmux_path=${dotfiles}/.build/tmux/tmux/tmux
 
 if [ ! -f "${tmux_path}" ]; then
     echo "Tmux not found at ${tmux_path}"
-    echo "==> building tmux"
+    read -p "Build it from source? [Y/N] " REPLY
+    echo
+
+    if [ "$REPLY" != "y" ] && [ "$REPLY" != "Y" ]; then
+        echo "Not building tmux, exiting ..."
+        exit
+    fi
+    echo "==> building tmux..."
+    echo
     ${dotfiles}/scripts/build/tmux
+    echo
+    echo "==> starting tmux ..."
+    sleep 3
 fi
 
 args=$@

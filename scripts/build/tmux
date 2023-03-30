@@ -9,6 +9,7 @@ then
 fi
 
 cd "$(dirname "$0")"
+scripts=$PWD
 cd ../../
 
 if [ -d "./.build/tmux/tmux" ];
@@ -61,7 +62,8 @@ sh autogen.sh
     LDFLAGS="-L${PWD}/.build/tmux/lib"
 make -j && make install
 
-echo "==> Build complete."
+echo
+echo "==> Build complete. (run '${scripts}/tmux' to update tmux)"
 
 cd ${cur_pwd}
 

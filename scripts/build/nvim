@@ -10,6 +10,7 @@ then
 fi
 
 cd "$(dirname "$0")"
+scripts=$PWD
 cd ../../
 
 if [ -d "./.build/neovim" ];
@@ -27,6 +28,7 @@ echo "==> Starting build ..."
 sleep 2
 make CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX=${PWD}/build" install
 
-echo "==> Build complete."
+echo
+echo "==> Build complete. (run '${scripts}/nvim' to update neovim)"
 
 cd ${cur_pwd}
