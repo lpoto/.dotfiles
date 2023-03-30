@@ -135,13 +135,13 @@ end
 
 function fetch_git_data(callback, on_error)
   on_error = on_error
-    or function()
-      vim.schedule(function()
-        vim.notify("Could not fetch git data", vim.log.levels.WARN, {
-          "Git",
-        })
-      end)
-    end
+      or function()
+        vim.schedule(function()
+          vim.notify("Could not fetch git data", vim.log.levels.WARN, {
+            "Git",
+          })
+        end)
+      end
   local remote = {}
   vim.fn.jobstart("git remote show", {
     detach = false,
