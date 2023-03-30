@@ -1,5 +1,5 @@
 ```bash
-git clone git@github.com:lpoto/.dotfiles.git
+git clone git@github.com:lpoto/.dotfiles.git ${HOME}/.dotfiles
 
-export PATH=${PWD}/.dotfiles/bin:${PATH}
+export PATH=${HOME}/.dotfiles/bin:${PATH}
 ```
