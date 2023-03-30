@@ -1,4 +1,13 @@
 #!/bin/sh
+#
+# This script will start neovim built in the .build directory.
+# If it is not found, it will ask if you want to build it, and then
+# build it from source.
+#
+# This will modify thje XDG environment variables for the neovim's
+# runtime, so all the configs, plugins and logs will be stored
+# in the .dotfiles directory, instead of saving data all over the
+# machine.
 
 dotfiles=$(dirname $(dirname "$0"))
 nvim_path=${dotfiles}/.build/neovim/build/bin/nvim

@@ -1,4 +1,9 @@
 #!/bin/sh
+#
+# This script will build tmux from source and install it to
+# ~/.build/tmux.
+# This script may also be run to update and already built tmux
+# installation.
 
 cur_pwd=${PWD}
 
