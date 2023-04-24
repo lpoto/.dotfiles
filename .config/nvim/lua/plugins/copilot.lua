@@ -26,6 +26,7 @@ function M.config()
           accept = "<C-Space>",
           next = "<C-k>",
           prev = "<C-j>",
+          dismiss = "<C-x>",
         },
       },
     }
@@ -33,23 +34,21 @@ function M.config()
   end, 100)
 end
 
----Set up the copilot dismiss keymap. (<C-x>)
----If cmp popup is visible, it will be closed, otherwise
----the copilot suggestion will be dismissed and cmp reopened.
+--- When copilot suggestion is visible and cmp popup is not visible,
+--- <Tab> will accept the suggestion.
 function M.keymap()
-  vim.keymap.set("i", "<C-x>", function()
-    local copilot_suggestion = require "copilot.suggestion"
-    if package.loaded["cmp"] then
-      local cmp = require "cmp"
-      if cmp.visible() then
-        cmp.close()
-        return
-      end
+  vim.keymap.set("i", "<Tab>", function()
+    if
+      (package.loaded["cmp"] and require("cmp").visible())
+      or not package.loaded["copilot"]
+      or not require("copilot.suggestion").is_visible()
+    then
+      return "<Tab>"
     end
-    if copilot_suggestion.is_visible() then
-      copilot_suggestion.dismiss()
-    end
-  end)
+    vim.schedule(function()
+      require("copilot.suggestion").accept()
+    end)
+  end, { expr = true })
 end
 
 return M
