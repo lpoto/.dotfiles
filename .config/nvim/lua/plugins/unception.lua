@@ -19,9 +19,10 @@ end
 function M.config()
   vim.api.nvim_create_autocmd("User", {
     pattern = "UnceptionEditRequestReceived",
+    once = false,
     callback = function()
       vim.schedule(function()
-        if vim.bo.buftype ~= "" or vim.bo.filetype:match "^git" then
+        if vim.bo.buftype ~= "" or vim.bo.filetype:match "^git" ~= nil then
           vim.bo.bufhidden = "wipe"
           vim.bo.swapfile = false
         end

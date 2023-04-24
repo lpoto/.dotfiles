@@ -66,7 +66,7 @@ function M.init_term(cmd, env)
     cmd = table.concat(cmd, " ")
   end
   cmd = cmd2 .. cmd
-  require("plugins.floaterm").floaterm_command("docker", cmd)
+  require("plugins.unception").run_command(cmd)
 end
 
 return M
