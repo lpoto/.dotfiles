@@ -24,6 +24,7 @@
   "pretty-fold.nvim": { "branch": "master", "commit": "a7d8b424abe0eedf50116c460fbe6dfd5783b1d5" },
   "telescope-docker.nvim": { "branch": "main", "commit": "cf35685a9325185a5c23ad8b81a1e21c86fb83a0" },
   "telescope-file-browser.nvim": { "branch": "master", "commit": "e0fcb12702ad0d2873544a31730f9aaef04fd032" },
+  "telescope-tasks.nvim": { "branch": "main", "commit": "5e8ba4de6813137601dbd68c57f0ad9125da459b" },
   "telescope-undo.nvim": { "branch": "main", "commit": "231b5ebb4328d2768c830c9a8d1b9c696116848d" },
   "telescope.nvim": { "branch": "master", "commit": "f2645c13205abb9ee3dbcee68416645c69b863c8" }
 }
