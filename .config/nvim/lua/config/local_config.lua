@@ -3,6 +3,8 @@
 --                                                                 LOCAL CONFIG
 --=============================================================================
 -- Store all local configs in a directory in data stdpath
+--
+-- :LocalConfig
 -------------------------------------------------------------------------------
 
 local local_configs_path = vim.fn.stdpath "data" .. "/local_configs"
@@ -105,21 +107,30 @@ local function remove_local_config()
   end
 end
 
-vim.api.nvim_create_user_command("LocalConfig", function()
-  find_local_config(false)
-end, {})
+local functions = {
+  find = { find_local_config, { false } },
+  source = { find_local_config, { true } },
+  create = { create_local_config, {} },
+  remove = { remove_local_config, {} },
+}
 
-vim.api.nvim_create_user_command("CreateLocalConfig", function()
-  create_local_config()
-end, {})
-
-vim.api.nvim_create_user_command("RemoveLocalConfig", function()
-  remove_local_config()
-end, {})
-
-vim.api.nvim_create_user_command("SourceLocalConfig", function()
-  find_local_config(true)
-end, {})
+vim.api.nvim_create_user_command("LocalConfig", function(opts)
+  if not functions[opts.args] then
+    find_local_config(false)
+    return
+  end
+  local func = functions[opts.args]
+  func[1](unpack(func[2]))
+end, {
+  nargs = "?",
+  complete = function()
+    local args = {}
+    for k, _ in pairs(functions) do
+      table.insert(args, k)
+    end
+    return args
+  end,
+})
 
 vim.api.nvim_create_autocmd("User", {
   pattern = "VeryLazy",

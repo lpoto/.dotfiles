@@ -12,7 +12,6 @@ Displays both tabline and statusline.
 Shows git branch, file encoding and tabs in tabline,
 and other information in the statusline.
 --]]
-
 return {
   "nvim-lualine/lualine.nvim",
   event = { "BufNewFile", "BufReadPre" },
@@ -51,6 +50,7 @@ return {
       },
       sections = {},
       inactive_sections = {},
+      theme = vim.g.lualine_theme,
     }
 
     lualine.setup(setup)

@@ -19,7 +19,7 @@ M.init = function()
   vim.keymap.set("n", "<leader>gl", M.git_log)
   vim.keymap.set("n", "<leader>gS", M.git_stash)
   vim.keymap.set("n", "<leader>gc", M.git_commit)
-  vim.keymap.set("n", "<leader>ga", M.git_commit_ammend)
+  vim.keymap.set("n", "<leader>ga", M.git_commit_amend)
   vim.keymap.set("n", "<leader>gp", M.git_pull)
   vim.keymap.set("n", "<leader>gP", M.git_push)
 end
@@ -95,8 +95,8 @@ function M.git_commit()
   M.git_command "commit"
 end
 
-function M.git_commit_ammend()
-  M.git_command "commit --ammend"
+function M.git_commit_amend()
+  M.git_command "commit --amend"
 end
 
 function M.git_push()
