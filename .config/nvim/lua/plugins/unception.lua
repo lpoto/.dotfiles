@@ -48,7 +48,7 @@ function M.run_command(cmd)
         vim.api.nvim_buf_set_option(0, "modified", false)
       end
       vim.fn.termopen(cmd, {
-        detach = false,
+        detach = true,
         env = {
           VISUAL = "nvim",
           EDITOR = "nvim",
