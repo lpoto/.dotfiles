@@ -43,7 +43,7 @@ function M.run_command(cmd)
   vim.schedule(function()
     local ok, e = pcall(function()
       if new_tab then
-        vim.api.nvim_exec("tabnew", false)
+        vim.api.nvim_exec("keepjumps tabnew", false)
       else
         vim.api.nvim_buf_set_option(0, "modified", false)
       end
