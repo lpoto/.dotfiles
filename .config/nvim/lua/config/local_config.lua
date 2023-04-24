@@ -11,7 +11,6 @@ local function escape_path(path)
   return vim.fn.substitute(path, "/", "_", "g")
 end
 
-
 local function open_local_config(path)
   vim.fn.execute("keepjumps tabe " .. path)
   vim.api.nvim_buf_set_option(vim.fn.bufnr(), "bufhidden", "wipe")
@@ -34,7 +33,11 @@ local function find_local_config(source)
         vim.api.nvim_exec("source " .. escaped, false)
         return
       end
-      local choice = vim.fn.confirm("Do you want to open config for " .. path .. "?", "&Yes\n&No", 2)
+      local choice = vim.fn.confirm(
+        "Do you want to open config for " .. path .. "?",
+        "&Yes\n&No",
+        2
+      )
       if choice == 1 then
         open_local_config(escaped)
         return
@@ -55,9 +58,13 @@ local function create_local_config()
   local escaped = local_configs_path .. "/" .. escape_path(file)
 
   if vim.fn.filereadable(escaped) == 1 then
-    vim.notify("Local config for '" .. path .. "' already exists!", vim.log.levels.WARN, {
-      title = "Local Config",
-    })
+    vim.notify(
+      "Local config for '" .. path .. "' already exists!",
+      vim.log.levels.WARN,
+      {
+        title = "Local Config",
+      }
+    )
     return
   end
   local dir = vim.fs.dirname(escaped)
@@ -75,7 +82,11 @@ local function remove_local_config()
     local escaped = local_configs_path .. "/" .. escape_path(file)
 
     if vim.fn.filereadable(escaped) == 1 then
-      local choice = vim.fn.confirm("Do you want to delete config for " .. path .. "?", "&Yes\n&No", 2)
+      local choice = vim.fn.confirm(
+        "Do you want to delete config for " .. path .. "?",
+        "&Yes\n&No",
+        2
+      )
       if choice == 1 then
         if vim.fn.delete(escaped) ~= -1 then
           local txt = "Local config for '" .. path .. "' deleted"
@@ -115,5 +126,5 @@ vim.api.nvim_create_autocmd("User", {
   once = true,
   callback = function()
     find_local_config(true)
-  end
+  end,
 })

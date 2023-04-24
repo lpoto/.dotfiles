@@ -52,6 +52,7 @@ function M.config()
       ["<S-TAB>"] = cmp.mapping.select_prev_item {
         behavior = cmp.SelectBehavior.Select,
       },
+      ["<C-x>"] = cmp.mapping.close(),
     },
     sources = {
       {

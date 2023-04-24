@@ -1,4 +1,9 @@
 #!/bin/sh
+#
+# This script will build tmux from source and install it to
+# ~/.build/tmux.
+# This script may also be run to update and already built tmux
+# installation.
 
 cur_pwd=${PWD}
 
@@ -9,6 +14,7 @@ then
 fi
 
 cd "$(dirname "$0")"
+scripts=$PWD
 cd ../../
 
 if [ -d "./.build/tmux/tmux" ];
@@ -61,7 +67,8 @@ sh autogen.sh
     LDFLAGS="-L${PWD}/.build/tmux/lib"
 make -j && make install
 
-echo "==> Build complete."
+echo
+echo "==> Build complete. (run '${scripts}/tmux' to update tmux)"
 
 cd ${cur_pwd}
 
