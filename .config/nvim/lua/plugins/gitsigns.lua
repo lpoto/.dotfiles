@@ -21,14 +21,9 @@ M.init = function()
   vim.keymap.set("n", "<leader>gc", M.git_commit)
   vim.keymap.set("n", "<leader>gp", M.git_pull)
   vim.keymap.set("n", "<leader>gP", M.git_push)
-
-  vim.g.unception_block_while_host_edits = true
-  vim.g.unception_enable_flavor_text = false
 end
 
 function M.config()
-  M.unception_config()
-
   local gitsigns = require "gitsigns"
 
   gitsigns.setup {
@@ -51,20 +46,6 @@ function M.config()
       vim.keymap.set("n", "<leader>gr", gs.reset_buffer, opts)
     end,
   }
-end
-
-function M.unception_config()
-  vim.api.nvim_create_autocmd("User", {
-    pattern = "UnceptionEditRequestReceived",
-    callback = function()
-      vim.schedule(function()
-        if vim.bo.buftype ~= "" or vim.bo.filetype:match "^git" then
-          vim.bo.bufhidden = "wipe"
-          vim.bo.swapfile = false
-        end
-      end)
-    end,
-  })
 end
 
 local default_telescope_options
@@ -101,13 +82,11 @@ function M.git_status()
 end
 
 local fetch_git_data
-local run_command
-local run_command_with_prompt
 
 function M.git_command(suffix)
   suffix = suffix or ""
   fetch_git_data(function()
-    run_command_with_prompt("git ", suffix)
+    require("plugins.unception").run_command_with_prompt("git ", suffix)
   end)
 end
 
@@ -117,13 +96,19 @@ end
 
 function M.git_push()
   fetch_git_data(function(remote, branch)
-    run_command_with_prompt("git ", "push " .. remote .. " " .. branch)
+    require("plugins.unception").run_command_with_prompt(
+      "git ",
+      "push " .. remote .. " " .. branch
+    )
   end)
 end
 
 function M.git_pull()
   fetch_git_data(function(remote, branch)
-    run_command_with_prompt("git ", "pull " .. remote .. " " .. branch)
+    require("plugins.unception").run_command_with_prompt(
+      "git ",
+      "pull " .. remote .. " " .. branch
+    )
   end)
 end
 
@@ -195,59 +180,6 @@ function fetch_git_data(callback, on_error)
       })
     end,
   })
-end
-
----@param cmd string
-function run_command(cmd)
-  local f = function()
-    local new_tab = true
-    if vim.b.terminal_job_id then
-      local r = vim.fn.jobwait({ vim.b.terminal_job_id }, 0)
-      local _, n = next(r)
-      if n == -3 then
-        new_tab = false
-      end
-    end
-    vim.schedule(function()
-      local ok, e = pcall(function()
-        if new_tab then
-          vim.api.nvim_exec("tabnew", false)
-        else
-          vim.api.nvim_buf_set_option(0, "modified", false)
-        end
-        vim.fn.termopen(cmd, {
-          detach = false,
-          env = {
-            VISUAL = "nvim",
-            EDITOR = "nvim",
-          },
-        })
-      end)
-      if not ok and type(e) == "string" then
-        vim.notify(e, vim.log.levels.WARN, {
-          title = "Git Terminal",
-        })
-      end
-    end)
-  end
-  if not package.loaded["gitsigns"] then
-    M.config()
-    vim.defer_fn(f, 100)
-  else
-    f()
-  end
-end
-
-function run_command_with_prompt(cmd, suffix)
-  suffix = vim.fn.input {
-    prompt = cmd,
-    default = suffix,
-    cancelreturn = false,
-  }
-  if type(suffix) ~= "string" then
-    return
-  end
-  run_command(cmd .. " " .. suffix)
 end
 
 return M
