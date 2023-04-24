@@ -25,6 +25,7 @@ function M.config()
         if vim.bo.buftype ~= "" or vim.bo.filetype:match "^git" ~= nil then
           vim.bo.bufhidden = "wipe"
           vim.bo.swapfile = false
+          vim.bo.buflisted = false
         end
       end)
     end,
