@@ -124,26 +124,28 @@ default_mappings = function()
 end
 
 pickers = function()
+  local file_ignore_patterns = {
+    "plugged/",
+    "%.undo/",
+    "%.data/",
+    "%.local/",
+    "%.git/",
+    "node_modules/",
+    "target/",
+    "%.settings/",
+    "%.build/",
+    "dist/",
+    "%.angular/",
+    "__pycache__",
+    "github-copilot",
+  }
   return {
     find_files = {
       theme = "ivy",
       hidden = true,
       no_ignore = true,
       --previewer = true,
-      file_ignore_patterns = {
-        "plugged/",
-        ".undo/",
-        ".data/",
-        ".local/",
-        ".git/",
-        "node_modules/",
-        "target/",
-        ".settings/",
-        "dist/",
-        ".angular/",
-        "__pycache__",
-        "github-copilot",
-      },
+      file_ignore_patterns = file_ignore_patterns,
     },
     oldfiles = {
       hidden = true,
@@ -152,11 +154,17 @@ pickers = function()
     },
     live_grep = {
       hidden = true,
+      no_ignore = true,
       theme = "ivy",
+      file_ignore_patterns = file_ignore_patterns,
+      additional_args = function()
+        return { "--hidden" }
+      end,
     },
     quickfix = {
       hidden = true,
       theme = "ivy",
+      no_ignore = true,
       initial_mode = "normal",
     },
   }
