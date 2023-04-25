@@ -33,7 +33,7 @@ local function init_winbar()
       return vim.api.nvim_win_is_valid(win)
         and vim.api.nvim_win_get_buf(win) == buf
     end, vim.api.nvim_list_wins())
-    set_winbar(buf, vim.api.nvim_get_current_win())
+    set_winbar(vim.api.nvim_get_current_buf(), vim.api.nvim_get_current_win())
     for _, winid in ipairs(windows) do
       set_statusline(buf, winid)
     end
@@ -41,6 +41,7 @@ local function init_winbar()
 
   vim.api.nvim_create_autocmd({
     "WinEnter",
+    "QuickFixCmdPost",
     "BufEnter",
     "ModeChanged",
     "TermEnter",
@@ -72,6 +73,7 @@ vim.api.nvim_create_autocmd({
 })
 
 local _set_winbar
+local check_buftype
 local editing_winbar = {}
 
 --- @param buf number
@@ -88,10 +90,6 @@ function set_winbar(buf, winid)
         vim.api.nvim_get_current_win() ~= winid
         or not vim.api.nvim_win_is_valid(winid)
         or not vim.api.nvim_buf_is_valid(buf)
-        or (
-          vim.api.nvim_buf_get_option(buf, "buftype") ~= ""
-          and vim.api.nvim_buf_get_option(buf, "buftype") ~= "terminal"
-        )
       then
         return
       end
@@ -125,8 +123,7 @@ function set_inactive_winbar(buf, win)
         return
       end
 
-      local buftype = vim.api.nvim_buf_get_option(buf, "buftype")
-      if buftype ~= "" then
+      if not check_buftype(buf) then
         return
       end
       _set_inactive_winbar(buf, win)
@@ -155,17 +152,12 @@ function set_statusline(buf, winid)
   end)
 end
 
+local get_name
+
 function _set_inactive_winbar(buf, winid)
   local width = vim.fn.winwidth(winid)
-  local name = vim.api.nvim_buf_get_name(buf)
-  if name == "" then
-    name = "[No Name]"
-  end
-  local modified = vim.api.nvim_buf_get_option(buf, "modified")
+  local name = get_name(buf, false, width)
 
-  if vim.fn.strchars(name) > 0 and modified then
-    name = name .. " [+]"
-  end
   if width < 5 then
     vim.api.nvim_win_set_option(winid, "winbar", "-")
     return
@@ -291,20 +283,15 @@ end
 ---@param buf number
 ---@param winid number
 function _set_winbar(buf, winid)
-  local width = vim.fn.winwidth(winid)
-  local name = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(buf), ":t")
-  if name == "" then
-    name = "[No Name]"
+  if not check_buftype(buf) then
+    pcall(vim.api.nvim_win_set_option, winid, "winbar", "")
+    return
   end
-  local modified = vim.api.nvim_buf_get_option(buf, "modified")
-  local readonly = vim.api.nvim_buf_get_option(buf, "readonly")
+
+  local width = vim.fn.winwidth(winid)
+  local name = get_name(buf, true, width)
   local filetype = vim.api.nvim_buf_get_option(buf, "filetype")
 
-  if modified == true and vim.fn.strchars(name) + 4 <= width then
-    name = name .. " [+]"
-  elseif readonly == true and vim.fn.strchars(name) + 11 <= width then
-    name = name .. " [Readonly]"
-  end
   if vim.fn.strchars(name) <= width - 4 then
     name = "• " .. name .. " •"
   end
@@ -337,4 +324,46 @@ function mode_changed(match)
     return false
   end
   return true
+end
+
+---@param buf number
+---@param tail boolean
+---@param width number
+---@return string
+function get_name(buf, tail, width)
+  local name = vim.api.nvim_buf_get_name(buf)
+  if tail then
+    name = vim.fn.fnamemodify(name, ":t")
+  end
+  local modified = vim.api.nvim_buf_get_option(buf, "modified")
+  local readonly = vim.api.nvim_buf_get_option(buf, "readonly")
+  local buftype = vim.api.nvim_buf_get_option(buf, "buftype")
+  if buftype == "quickfix" then
+    name = "Quickfix"
+  elseif buftype == "help" then
+    name = "Help"
+  elseif name == "" then
+    name = "[No Name]"
+  end
+  if buftype == "" then
+    if modified == true and vim.fn.strchars(name) + 4 <= width then
+      name = name .. " [+]"
+    elseif readonly == true and vim.fn.strchars(name) + 11 <= width then
+      name = name .. " [Readonly]"
+    end
+  end
+  return name
+end
+
+function check_buftype(buf)
+  local buftype = vim.api.nvim_buf_get_option(buf, "buftype")
+  if
+    buftype == "terminal"
+    or buftype == ""
+    or buftype == "quickfix"
+    or buftype == "help"
+  then
+    return true
+  end
+  return false
 end
