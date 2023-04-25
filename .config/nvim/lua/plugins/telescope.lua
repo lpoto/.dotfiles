@@ -132,12 +132,15 @@ pickers = function()
     "%.git/",
     "node_modules/",
     "target/",
+    "%.target/",
     "%.settings/",
     "%.build/",
     "dist/",
+    "%.dist/",
     "%.angular/",
     "__pycache__",
     "github-copilot",
+    "%.github-copilot",
   }
   return {
     find_files = {
