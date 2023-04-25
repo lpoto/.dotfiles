@@ -19,6 +19,8 @@ local function init()
   safe_require "config.lazy"
   ------------------------------------------- Load automatic session management
   safe_require "config.sessions"
+  ---------------------------------------------------------- Load winbar config
+  safe_require "config.winbar"
 end
 
 ------------- Safely require a module, so other configs still load if one fails

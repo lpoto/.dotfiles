@@ -29,7 +29,7 @@ function M.config()
 
   gitsigns.setup {
     signcolumn = false,
-    numhl = true,
+    numhl = false,
     current_line_blame = true,
     current_line_blame_opts = {
       virt_text = true,
@@ -47,6 +47,11 @@ function M.config()
       vim.keymap.set("n", "<leader>gr", gs.reset_buffer, opts)
     end,
   }
+  vim.defer_fn(function()
+    vim.api.nvim_exec_autocmds("User", {
+      pattern = "GitsignsReady",
+    })
+  end, 100)
 end
 
 local default_telescope_options
