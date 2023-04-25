@@ -43,6 +43,7 @@ local function init_winbar()
     "WinEnter",
     "BufEnter",
     "ModeChanged",
+    "TermEnter",
     "UIEnter",
     "WinResized",
     "BufModifiedSet",
@@ -87,7 +88,10 @@ function set_winbar(buf, winid)
         vim.api.nvim_get_current_win() ~= winid
         or not vim.api.nvim_win_is_valid(winid)
         or not vim.api.nvim_buf_is_valid(buf)
-        or vim.api.nvim_buf_get_option(buf, "buftype") ~= ""
+        or (
+          vim.api.nvim_buf_get_option(buf, "buftype") ~= ""
+          and vim.api.nvim_buf_get_option(buf, "buftype") ~= "terminal"
+        )
       then
         return
       end
@@ -243,6 +247,7 @@ end
 
 local modes = {
   ["n"] = "NORMAL",
+  ["nt"] = "NORMAL",
   ["no"] = "NORMAL",
   ["v"] = "VISUAL",
   ["V"] = "VISUAL LINE",
@@ -265,11 +270,18 @@ local modes = {
 
 local function mode()
   local current_mode = vim.api.nvim_get_mode().mode
-  return string.format(" %s ", modes[current_mode]):upper()
+  current_mode = modes[current_mode]
+  if not current_mode then
+    return ""
+  end
+  return string.format(" %s ", current_mode):upper()
 end
 
 local function get_left_winbar(width)
-  local m = " " .. (mode() or "") .. " •"
+  local m = mode()
+  if m:len() > 0 then
+    m = " " .. (mode() or "") .. " •"
+  end
   if vim.fn.strchars(m) > width then
     return string.rep("─", width)
   end
@@ -319,6 +331,8 @@ function mode_changed(match)
     or match == "ic:i"
     or match == "n:no"
     or match == "no:n"
+    or match == "nt:n"
+    or match == "n:nt"
   then
     return false
   end
