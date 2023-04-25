@@ -6,23 +6,16 @@
 Set up the winbar and statusline.
 
 -----------------------------------------------------------------------------]]
-local set_highlights
 local set_winbar
 local set_inactive_winbar
 local set_statusline
 local mode_changed
 
---- Set the highlights for winbar and statusline,
---- and their appearances.
---- Statusline is always disabled, and winbar is
---- shown in the current window, in inactive windows,
---- the winbar displays only the name of the file.
----
+--- Set the type of winbar and statusline.
 --- This is called only once, when entering a new
 --- buffer or file for the first time.
 local function init_winbar()
   vim.opt.laststatus = 0
-  set_highlights()
 
   local function set_winbar_and_statusline_callback(opts)
     if opts.event == "ModeChanged" and not mode_changed(opts.match) then
@@ -166,23 +159,6 @@ function _set_inactive_winbar(buf, winid)
     name = name:sub(name:len() - width + 1, name:len())
   end
   vim.api.nvim_win_set_option(winid, "winbar", name)
-end
-
-function set_highlights()
-  local hl = {
-    StatusLine = "WinSeparator",
-    StatusLineNC = "WinSeparator",
-    Winbar = "Normal",
-    WinbarNC = "WinSeparator",
-  }
-  for k, v in pairs(hl) do
-    if vim.wo.winhl:find(k) == nil then
-      if vim.wo.winhl ~= "" then
-        vim.wo.winhl = vim.wo.winhl .. ","
-      end
-      vim.wo.winhl = vim.wo.winhl .. k .. ":" .. v
-    end
-  end
 end
 
 local waiting = {}

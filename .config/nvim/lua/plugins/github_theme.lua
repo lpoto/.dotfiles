@@ -23,12 +23,17 @@ return {
           ["@field"] = { link = "Special" },
           Type = { fg = "#E6BE8A" },
           ["@type"] = { link = "Type" },
-          StatusLine = { link = "WinSeparator" },
           TabLine = { link = "WinSeparator" },
           TabLineFill = { link = "WinSeparator" },
+          StatusLine = { link = "WinSeparator" },
+          StatusLineNC = { link = "WinSeparator" },
         }
       end,
     }
+
+    -- Set highlights ignored by the theme
+    vim.api.nvim_set_hl(0, "WinBar", { fg = "#cccccc", bg = "NONE" })
+    vim.api.nvim_set_hl(0, "WinBarNC", { link = "WinSeparator" })
 
     vim.cmd.colorscheme "github_dark"
   end,
