@@ -6,31 +6,15 @@
 Set up the winbar and statusline.
 
 -----------------------------------------------------------------------------]]
-local set_winbar
-local set_inactive_winbar
-local set_statusline
-local mode_changed
+local set_winbar_and_statusline_callback
+local set_inactive_winbar_callback
 
 --- Set the type of winbar and statusline.
 --- This is called only once, when entering a new
 --- buffer or file for the first time.
 local function init_winbar()
+  -- NOTE: make statusline invisible
   vim.opt.laststatus = 0
-
-  local function set_winbar_and_statusline_callback(opts)
-    if opts.event == "ModeChanged" and not mode_changed(opts.match) then
-      return
-    end
-    local buf = opts.buf
-    local windows = vim.tbl_filter(function(win)
-      return vim.api.nvim_win_is_valid(win)
-        and vim.api.nvim_win_get_buf(win) == buf
-    end, vim.api.nvim_list_wins())
-    set_winbar(vim.api.nvim_get_current_buf(), vim.api.nvim_get_current_win())
-    for _, winid in ipairs(windows) do
-      set_statusline(buf, winid)
-    end
-  end
 
   vim.api.nvim_create_autocmd({
     "WinEnter",
@@ -43,15 +27,14 @@ local function init_winbar()
     "BufModifiedSet",
     "BufWrite",
   }, {
+    -- this handles the active winbar, and the statusline
+    -- that appears between 2 windows in normal split
     callback = set_winbar_and_statusline_callback,
   })
 
   vim.api.nvim_create_autocmd({ "WinLeave" }, {
-    callback = function()
-      local buf = vim.api.nvim_get_current_buf()
-      local winid = vim.api.nvim_get_current_win()
-      set_inactive_winbar(buf, winid)
-    end,
+    -- This handles the inactive winbar when leaving the window
+    callback = set_inactive_winbar_callback,
   })
 end
 
@@ -65,6 +48,45 @@ vim.api.nvim_create_autocmd({
   callback = init_winbar,
 })
 
+local set_winbar
+local set_inactive_winbar
+local set_statusline
+local mode_changed
+
+function set_winbar_and_statusline_callback(opts)
+  if opts.event == "ModeChanged" and not mode_changed(opts.match) then
+    return
+  end
+  local buf = opts.buf
+  -- NOTE: the active winbar should be set only for the current window
+  -- The inactive winbar is handled through the set_inactive_winbar_callback
+  -- when the WinLeave event is triggered, so we ignore it here.
+  set_winbar(vim.api.nvim_get_current_buf(), vim.api.nvim_get_current_win())
+
+  if opts.event == "WinResized" then
+    -- NOTE: when winResized event is triggered, we need to set the statusline
+    -- for all the opened windows, so the statusline's length always matches
+    -- the window's width.
+    -- NOTE: this is only relevant when there are windows in normal splits,
+    -- as when laststatus is set to 0, it only appears in such scenarios.
+    for _, winid in ipairs(vim.api.nvim_list_wins()) do
+      set_statusline(buf, winid)
+    end
+  end
+end
+
+function set_inactive_winbar_callback()
+  -- NOTE: this is called when the WinLeave event is triggered,
+  -- so it will run before actually leaving the window,
+  -- therefore we can use the current window and buffer numbers.
+  -- Using the current buf and win numbers is better than using
+  -- the ones passed through the event, as issues may occur when
+  -- the same buffer is opened in multiple windows.
+  local buf = vim.api.nvim_get_current_buf()
+  local winid = vim.api.nvim_get_current_win()
+  set_inactive_winbar(buf, winid)
+end
+
 local _set_winbar
 local check_buftype
 local editing_winbar = {}
@@ -72,6 +94,14 @@ local editing_winbar = {}
 --- @param buf number
 --- @param winid number
 function set_winbar(buf, winid)
+  -- NOTE: edit the winbar after a delay, so it doesn't get
+  -- updated multiple times in a short duration of time, as
+  -- a single action may trigger multiple events and it would
+  -- be redundant to do multiple winbar updates.
+  --
+  -- NOTE: we use the buffer and window numbers to identify
+  -- the winbar that is being edited, so we can still edit
+  -- the winbars of different windows at the same time.
   local key = vim.inspect(buf) .. vim.inspect(winid)
   if editing_winbar[key] then
     return
@@ -92,7 +122,7 @@ function set_winbar(buf, winid)
     if not ok and type(err) == "string" then
       vim.notify(err, vim.log.levels.ERROR, { title = "Winbar" })
     end
-  end, 1)
+  end, 10)
 end
 
 local _set_inactive_winbar
@@ -127,6 +157,9 @@ function set_inactive_winbar(buf, win)
   end)
 end
 
+--- Even when laststatus is set to 0, the statusline still
+--- appears between 2 windows in a normal split, so we just
+--- set the statusline to appear the same as a window separator.
 function set_statusline(buf, winid)
   vim.schedule(function()
     local ok, err = pcall(function()
@@ -331,6 +364,9 @@ function get_name(buf, tail, width)
   return name
 end
 
+--- Check whether the provided buffer number belongs
+--- to a buffer with buftype equal to terminal, quickfix,
+--- help or "".
 function check_buftype(buf)
   local buftype = vim.api.nvim_buf_get_option(buf, "buftype")
   if
