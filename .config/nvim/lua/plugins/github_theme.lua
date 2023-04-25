@@ -24,6 +24,8 @@ return {
           Type = { fg = "#E6BE8A" },
           ["@type"] = { link = "Type" },
           StatusLine = { link = "WinSeparator" },
+          TabLine = { link = "WinSeparator" },
+          TabLineFill = { link = "WinSeparator" },
         }
       end,
     }

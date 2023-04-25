@@ -97,7 +97,7 @@ function set_winbar(buf, winid)
     if not ok and type(err) == "string" then
       vim.notify(err, vim.log.levels.ERROR, { title = "Winbar" })
     end
-  end, 10)
+  end, 1)
 end
 
 local _set_inactive_winbar
@@ -154,6 +154,9 @@ end
 function _set_inactive_winbar(buf, winid)
   local width = vim.fn.winwidth(winid)
   local name = vim.api.nvim_buf_get_name(buf)
+  if name == "" then
+    name = "[No Name]"
+  end
   local modified = vim.api.nvim_buf_get_option(buf, "modified")
 
   if vim.fn.strchars(name) > 0 and modified then
@@ -278,6 +281,9 @@ end
 function _set_winbar(buf, winid)
   local width = vim.fn.winwidth(winid)
   local name = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(buf), ":t")
+  if name == "" then
+    name = "[No Name]"
+  end
   local modified = vim.api.nvim_buf_get_option(buf, "modified")
   local readonly = vim.api.nvim_buf_get_option(buf, "readonly")
   local filetype = vim.api.nvim_buf_get_option(buf, "filetype")
