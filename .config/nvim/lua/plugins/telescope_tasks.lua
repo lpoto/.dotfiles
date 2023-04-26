@@ -12,7 +12,6 @@ Keymaps:
   - "<leader>a" - Open the tasks prompt
   - "<leader>e" - Toggle latest output
 --]]
-
 local M = {
   "lpoto/telescope-tasks.nvim",
 }
@@ -43,6 +42,7 @@ function M.config()
         output = {
           style = "float",
           layout = "center",
+          scale = 0.5,
         },
         --data_dir = false
         initial_mode = "normal",
