@@ -6,8 +6,16 @@
 Set up the winbar and statusline.
 
 -----------------------------------------------------------------------------]]
+local ignore_filetype_patterns = {
+  "Telescope.*",
+  "telescope.*",
+  "alpha",
+}
+
 local set_winbar_and_statusline_callback
 local set_inactive_winbar_callback
+local autocommands = {}
+local timer = nil
 
 --- Set the type of winbar and statusline.
 --- This is called only once, when entering a new
@@ -16,27 +24,43 @@ local function init_winbar()
   -- NOTE: make statusline invisible
   vim.opt.laststatus = 0
 
-  vim.api.nvim_create_autocmd({
-    "WinEnter",
-    "BufEnter",
-    "ModeChanged",
-    "DiagnosticChanged",
-    "TermEnter",
-    "UIEnter",
-    "WinResized",
-    "BufModifiedSet",
-    "BufWrite",
-  }, {
-    -- this handles the active winbar, and the statusline
-    -- that appears between 2 windows in normal split
-    callback = set_winbar_and_statusline_callback,
-  })
+  table.insert(
+    autocommands,
+    vim.api.nvim_create_autocmd({
+      "WinEnter",
+      "BufEnter",
+      "ModeChanged",
+      "TermEnter",
+      "UIEnter",
+      "WinResized",
+      "BufWrite",
+    }, {
+      -- this handles the active winbar, and the statusline
+      -- that appears between 2 windows in normal split
+      callback = set_winbar_and_statusline_callback,
+    })
+  )
 
-  vim.api.nvim_create_autocmd({ "WinLeave" }, {
-    -- This handles the inactive winbar when leaving the window
-    callback = set_inactive_winbar_callback,
-  })
+  table.insert(
+    autocommands,
+    vim.api.nvim_create_autocmd({ "WinLeave" }, {
+      -- This handles the inactive winbar when leaving the window
+      callback = set_inactive_winbar_callback,
+    })
+  )
+
+  timer = vim.loop.new_timer()
+  timer:start(3000, 3000, function()
+    vim.schedule(function()
+      set_winbar_and_statusline_callback {
+        event = "Timer",
+        buf = vim.api.nvim_get_current_buf(),
+      }
+    end)
+  end)
 end
+
+local handle_error
 
 --NOTE: initialize winbar only when entering a new
 -- file or before reading a new buffer for the first time
@@ -45,7 +69,12 @@ vim.api.nvim_create_autocmd({
   "BufReadPre",
 }, {
   once = true,
-  callback = init_winbar,
+  callback = function()
+    local ok, err = pcall(init_winbar)
+    if not ok then
+      handle_error(err)
+    end
+  end,
 })
 
 local set_winbar
@@ -53,6 +82,7 @@ local set_inactive_winbar
 local set_statusline
 local mode_changed
 local check_buftype
+local unset_winbar
 
 function set_winbar_and_statusline_callback(opts)
   if opts.event == "ModeChanged" and not mode_changed(opts.match) then
@@ -65,6 +95,7 @@ function set_winbar_and_statusline_callback(opts)
   if not check_buftype(buf) then
     -- NOTE: do not set winbar for buffers with buftype that is not
     -- empty or terminal or quickfix or help.
+    unset_winbar(buf)
     return
   end
   local winid = vim.api.nvim_get_current_win()
@@ -105,6 +136,7 @@ function set_inactive_winbar_callback(opts)
   local winid = vim.api.nvim_get_current_win()
   local buf = opts.buf
   if not check_buftype(buf) then
+    unset_winbar(buf)
     return
   end
   set_inactive_winbar(buf, winid)
@@ -140,8 +172,8 @@ function set_winbar(buf, winid)
       _set_winbar(buf, winid)
     end)
     editing_winbar[key] = nil
-    if not ok and type(err) == "string" then
-      vim.notify(err, vim.log.levels.ERROR, { title = "Winbar" })
+    if not ok then
+      handle_error(err, "Winbar")
     end
   end)
 end
@@ -181,8 +213,8 @@ function set_inactive_winbar(buf, winid)
       _set_inactive_winbar(buf, winid)
     end)
     editing_inactive_winbar[key] = nil
-    if not ok and type(err) == "string" then
-      vim.notify(err, vim.log.levels.ERROR, { title = "Inactive Winbar" })
+    if not ok then
+      handle_error(err, "Winbar")
     end
   end)
 end
@@ -213,8 +245,8 @@ function set_statusline(winid)
       vim.api.nvim_win_set_option(winid, "statusline", string.rep("_", width))
     end)
     editing_statusline[winid] = nil
-    if not ok and type(err) == "string" then
-      vim.notify(err, vim.log.levels.ERROR, { title = "Statusline" })
+    if not ok then
+      handle_error(err, "Winbar")
     end
   end)
 end
@@ -235,32 +267,11 @@ function _set_inactive_winbar(buf, winid)
   vim.api.nvim_win_set_option(winid, "winbar", name)
 end
 
-local waiting = {}
-
-local function get_right_winbar(width, buf, winid)
+local function get_right_winbar(width, buf)
   local s = ""
   local git_head = vim.g.gitsigns_head
   local has_git_status, git_status =
     pcall(vim.api.nvim_buf_get_var, buf, "gitsigns_status")
-
-  if git_head == nil or git_head == "" or not has_git_status then
-    if not waiting[buf] then
-      waiting[buf] = true
-      vim.defer_fn(function()
-        if not waiting[buf] then
-          return
-        end
-        if
-          vim.api.nvim_get_current_buf() == buf
-          and vim.api.nvim_get_current_win() == winid
-        then
-          set_winbar(buf, winid)
-        end
-      end, 1000)
-    end
-  else
-    waiting[buf] = false
-  end
 
   if
     git_head ~= nil
@@ -336,9 +347,15 @@ local get_diagnostics_string
 ---@param buf number
 ---@param winid number
 function _set_winbar(buf, winid)
+  local filetype = vim.api.nvim_buf_get_option(buf, "filetype")
+  for _, pattern in ipairs(ignore_filetype_patterns) do
+    if filetype:match(pattern) then
+      vim.api.nvim_win_set_option(winid, "winbar", "")
+      return
+    end
+  end
   local width = vim.fn.winwidth(winid)
   local name = get_name(buf, true, width)
-  local filetype = vim.api.nvim_buf_get_option(buf, "filetype")
 
   if vim.fn.strchars(name) <= width - 4 then
     name = "• " .. name .. " •"
@@ -356,7 +373,7 @@ function _set_winbar(buf, winid)
   local right_n = n - left_n
   local bar = get_left_winbar(left_n)
     .. name
-    .. get_right_winbar(right_n, buf, winid)
+    .. get_right_winbar(right_n, buf)
   vim.api.nvim_win_set_option(winid, "winbar", bar)
 end
 
@@ -400,7 +417,8 @@ function get_name(buf, tail, width)
   if buftype == "" then
     if modified == true and vim.fn.strchars(name) + 4 <= width then
       name = name .. " [+]"
-    elseif readonly == true and vim.fn.strchars(name) + 11 <= width then
+    end
+    if readonly == true and vim.fn.strchars(name) + 11 <= width then
       name = name .. " [Readonly]"
     end
     local d = get_diagnostics_string(buf, width - 1)
@@ -442,4 +460,45 @@ function get_diagnostics_string(buf, max_width)
     return ""
   end
   return s
+end
+
+function unset_winbar(buf)
+  pcall(function()
+    vim.api.nvim_win_set_option(vim.fn.bufwinid(buf), "winbar", "")
+  end)
+end
+
+function handle_error(msg, title)
+  vim.schedule(function()
+    vim.notify(msg, vim.log.levels.ERROR, {
+      title = title,
+    })
+    vim.defer_fn(function()
+      vim.notify(
+        "Error occured, unsetting winbar and statusline",
+        vim.log.levels.ERROR,
+        {
+          title = title,
+        }
+      )
+      pcall(function()
+        for _, winid in ipairs(vim.api.nvim_list_wins()) do
+          vim.api.nvim_win_set_option(winid, "winbar", "")
+          vim.api.nvim_win_set_option(winid, "statusline", "")
+        end
+      end)
+      pcall(function()
+        if timer ~= nil then
+          timer:close()
+        end
+      end)
+      if type(autocommands) == "table" and next(autocommands) then
+        for _, autocommand in ipairs(autocommands) do
+          pcall(function()
+            vim.api.nvim_del_autocmd(autocommand)
+          end)
+        end
+      end
+    end, 100)
+  end)
 end
