@@ -101,7 +101,6 @@ function set_inactive_winbar_callback(buf)
   -- Using the current buf and win numbers is better than using
   -- the ones passed through the event, as issues may occur when
   -- the same buffer is opened in multiple windows.
-  local buf = vim.api.nvim_get_current_buf()
   local winid = vim.api.nvim_get_current_win()
   if not check_buftype(buf) then
     return
