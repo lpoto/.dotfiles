@@ -77,9 +77,9 @@ function set_winbar_and_statusline_callback(opts)
     -- NOTE: when setting the active winbar, also set the inactive winbar
     -- of all other windows that contain the same buffer
     for _, winid2 in
-      ipairs(vim.tbl_filter(function(w)
-        return w ~= winid and buf == vim.api.nvim_win_get_buf(w)
-      end, vim.api.nvim_list_wins() or {}))
+    ipairs(vim.tbl_filter(function(w)
+      return w ~= winid and buf == vim.api.nvim_win_get_buf(w)
+    end, vim.api.nvim_list_wins() or {}))
     do
       set_inactive_winbar(buf, winid2)
     end
@@ -94,7 +94,7 @@ function set_winbar_and_statusline_callback(opts)
   end
 end
 
-function set_inactive_winbar_callback(buf)
+function set_inactive_winbar_callback(opts)
   -- NOTE: this is called when the WinLeave event is triggered,
   -- so it will run before actually leaving the window,
   -- therefore we can use the current window and buffer numbers.
@@ -102,6 +102,7 @@ function set_inactive_winbar_callback(buf)
   -- the ones passed through the event, as issues may occur when
   -- the same buffer is opened in multiple windows.
   local winid = vim.api.nvim_get_current_win()
+  local buf = opts.buf
   if not check_buftype(buf) then
     return
   end
@@ -129,9 +130,9 @@ function set_winbar(buf, winid)
       -- as there may be a delay between the time the event is triggered
       -- and the time the function is called, due to the scheduling.
       if
-        vim.api.nvim_get_current_win() ~= winid
-        or not vim.api.nvim_win_is_valid(winid)
-        or not vim.api.nvim_buf_is_valid(buf)
+          vim.api.nvim_get_current_win() ~= winid
+          or not vim.api.nvim_win_is_valid(winid)
+          or not vim.api.nvim_buf_is_valid(buf)
       then
         return
       end
@@ -170,8 +171,8 @@ function set_inactive_winbar(buf, winid)
       -- as there may be a delay between the time the event is triggered
       -- and the time the function is called, due to the scheduling.
       if
-        not vim.api.nvim_win_is_valid(winid)
-        or not vim.api.nvim_buf_is_valid(buf)
+          not vim.api.nvim_win_is_valid(winid)
+          or not vim.api.nvim_buf_is_valid(buf)
       then
         return
       end
@@ -239,7 +240,7 @@ local function get_right_winbar(width, buf, winid)
   local s = ""
   local git_head = vim.g.gitsigns_head
   local has_git_status, git_status =
-    pcall(vim.api.nvim_buf_get_var, buf, "gitsigns_status")
+      pcall(vim.api.nvim_buf_get_var, buf, "gitsigns_status")
 
   if git_head == nil or git_head == "" or not has_git_status then
     if not waiting[buf] then
@@ -249,8 +250,8 @@ local function get_right_winbar(width, buf, winid)
           return
         end
         if
-          vim.api.nvim_get_current_buf() == buf
-          and vim.api.nvim_get_current_win() == winid
+            vim.api.nvim_get_current_buf() == buf
+            and vim.api.nvim_get_current_win() == winid
         then
           set_winbar(buf, winid)
         end
@@ -261,15 +262,15 @@ local function get_right_winbar(width, buf, winid)
   end
 
   if
-    git_head ~= nil
-    and git_head ~= ""
-    and vim.fn.strchars(git_head) < width - 2
+      git_head ~= nil
+      and git_head ~= ""
+      and vim.fn.strchars(git_head) < width - 2
   then
     s = s .. "•  " .. git_head
     if
-      has_git_status
-      and git_status ~= ""
-      and vim.fn.strchars(s) + 4 < width
+        has_git_status
+        and git_status ~= ""
+        and vim.fn.strchars(s) + 4 < width
     then
       s = s .. " [~]"
     end
@@ -350,23 +351,23 @@ function _set_winbar(buf, winid)
   local left_n = math.floor(n / 2)
   local right_n = n - left_n
   local bar = get_left_winbar(left_n)
-    .. name
-    .. get_right_winbar(right_n, buf, winid)
+      .. name
+      .. get_right_winbar(right_n, buf, winid)
   vim.api.nvim_win_set_option(winid, "winbar", bar)
 end
 
 function mode_changed(match)
   if
-    match == "i:ic"
-    or match == "ic:i"
-    or match == "n:no"
-    or match == "n:ntT"
-    or match == "ntT:n"
-    or match == "n:niV"
-    or match == "niV:n"
-    or match == "no:n"
-    or match == "nt:n"
-    or match == "n:nt"
+      match == "i:ic"
+      or match == "ic:i"
+      or match == "n:no"
+      or match == "n:ntT"
+      or match == "ntT:n"
+      or match == "n:niV"
+      or match == "niV:n"
+      or match == "no:n"
+      or match == "nt:n"
+      or match == "n:nt"
   then
     return false
   end
@@ -410,10 +411,10 @@ function check_buftype(buf)
   end
   local buftype = vim.api.nvim_buf_get_option(buf, "buftype")
   if
-    buftype == "terminal"
-    or buftype == "quickfix"
-    or buftype == "help"
-    or buftype == ""
+      buftype == "terminal"
+      or buftype == "quickfix"
+      or buftype == "help"
+      or buftype == ""
   then
     return true
   end
