@@ -18,9 +18,11 @@ function M.config()
   local treesitter = require "nvim-treesitter.configs"
 
   treesitter.setup {
-    ensure_installed = "all",
     sync_install = true,
     auto_install = true,
+    --  ensure_installed = "all",  -- enabling this will install all parses when
+    -- first opening neovim, it's better to keep it default, so each
+    -- parser is installed when it's filetype is opened for the first time
     highlight = {
       enable = true,
       additional_vim_regex_highlighting = false,
