@@ -115,7 +115,7 @@ function M.init()
   vim.keymap.set("i", "<CR>", function()
     if package.loaded["cmp"] then
       local cmp = require "cmp"
-      if cmp.visible() and #cmp.get_entries() > 1 then
+      if cmp.visible() then
         vim.schedule(function()
           cmp.confirm {
             behavior = cmp.ConfirmBehavior.Replace,
@@ -131,7 +131,7 @@ function M.init()
   vim.keymap.set("i", "<C-x>", function()
     if package.loaded["cmp"] then
       local cmp = require "cmp"
-      if cmp.visible() and #cmp.get_entries() > 1 then
+      if cmp.visible() then
         vim.schedule(function()
           cmp.close()
         end)
