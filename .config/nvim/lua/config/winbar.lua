@@ -50,7 +50,7 @@ local function init_winbar()
   )
 
   timer = vim.loop.new_timer()
-  timer:start(3000, 3000, function()
+  timer:start(2000, 2000, function()
     vim.schedule(function()
       set_winbar_and_statusline_callback {
         event = "Timer",
