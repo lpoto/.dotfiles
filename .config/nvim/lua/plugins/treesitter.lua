@@ -9,7 +9,6 @@
 Treesitter interface for Neovim. Provides inproved
 highlights, ...
 --]]
-
 local M = {
   "nvim-treesitter/nvim-treesitter",
   event = "VeryLazy",
@@ -29,15 +28,15 @@ function M.config()
     indent = {
       enable = false,
     },
-    -- incremental_selection = {
-    --   enable = true,
-    --   keymaps = {
-    --     init_selection = "<leader>v",
-    --     node_incremental = "<leader>v",
-    --     scope_incremental = "<leader>v",
-    --     node_decremental = "<A-v>",
-    --   },
-    -- },
+    incremental_selection = {
+      enable = true,
+      keymaps = {
+        init_selection = "<CR>",
+        node_incremental = "<CR>",
+        --scope_incremental = "<CR>",
+        node_decremental = "<BS>",
+      },
+    },
   }
 end
 
