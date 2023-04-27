@@ -109,9 +109,9 @@ function set_winbar_and_statusline_callback(opts)
     -- NOTE: when setting the active winbar, also set the inactive winbar
     -- of all other windows that contain the same buffer
     for _, winid2 in
-      ipairs(vim.tbl_filter(function(w)
-        return w ~= winid and buf == vim.api.nvim_win_get_buf(w)
-      end, vim.api.nvim_list_wins() or {}))
+    ipairs(vim.tbl_filter(function(w)
+      return w ~= winid and buf == vim.api.nvim_win_get_buf(w)
+    end, vim.api.nvim_list_wins() or {}))
     do
       set_inactive_winbar(buf, winid2)
     end
@@ -163,9 +163,9 @@ function set_winbar(buf, winid)
       -- as there may be a delay between the time the event is triggered
       -- and the time the function is called, due to the scheduling.
       if
-        vim.api.nvim_get_current_win() ~= winid
-        or not vim.api.nvim_win_is_valid(winid)
-        or not vim.api.nvim_buf_is_valid(buf)
+          vim.api.nvim_get_current_win() ~= winid
+          or not vim.api.nvim_win_is_valid(winid)
+          or not vim.api.nvim_buf_is_valid(buf)
       then
         return
       end
@@ -204,8 +204,8 @@ function set_inactive_winbar(buf, winid)
       -- as there may be a delay between the time the event is triggered
       -- and the time the function is called, due to the scheduling.
       if
-        not vim.api.nvim_win_is_valid(winid)
-        or not vim.api.nvim_buf_is_valid(buf)
+          not vim.api.nvim_win_is_valid(winid)
+          or not vim.api.nvim_buf_is_valid(buf)
       then
         return
       end
@@ -271,18 +271,18 @@ local function get_right_winbar(width, buf)
   local s = ""
   local git_head = vim.g.gitsigns_head
   local has_git_status, git_status =
-    pcall(vim.api.nvim_buf_get_var, buf, "gitsigns_status")
+      pcall(vim.api.nvim_buf_get_var, buf, "gitsigns_status")
 
   if
-    git_head ~= nil
-    and git_head ~= ""
-    and vim.fn.strchars(git_head) < width - 2
+      git_head ~= nil
+      and git_head ~= ""
+      and vim.fn.strchars(git_head) < width - 2
   then
-    s = s .. "•  " .. git_head
+    s = s .. "• " .. git_head
     if
-      has_git_status
-      and git_status ~= ""
-      and vim.fn.strchars(s) + 4 < width
+        has_git_status
+        and git_status ~= ""
+        and vim.fn.strchars(s) + 4 < width
     then
       s = s .. " [~]"
     end
@@ -299,26 +299,26 @@ local function get_right_winbar(width, buf)
 end
 
 local modes = {
-  ["n"] = "NORMAL",
-  ["nt"] = "NORMAL",
-  ["no"] = "NORMAL",
-  ["v"] = "VISUAL",
-  ["V"] = "VISUAL LINE",
-  [""] = "VISUAL BLOCK",
-  ["s"] = "SELECT",
-  ["S"] = "SELECT LINE",
-  ["i"] = "INSERT",
-  ["ic"] = "INSERT",
-  ["R"] = "REPLACE",
-  ["Rv"] = "VISUAL REPLACE",
-  ["c"] = "COMMAND",
-  ["cv"] = "VIM EX",
-  ["ce"] = "EX",
-  ["r"] = "PROMPT",
-  ["rm"] = "MOAR",
-  ["r?"] = "CONFIRM",
-  ["!"] = "SHELL",
-  ["t"] = "TERMINAL",
+      ["n"] = "NORMAL",
+      ["nt"] = "NORMAL",
+      ["no"] = "NORMAL",
+      ["v"] = "VISUAL",
+      ["V"] = "VISUAL LINE",
+      [""] = "VISUAL BLOCK",
+      ["s"] = "SELECT",
+      ["S"] = "SELECT LINE",
+      ["i"] = "INSERT",
+      ["ic"] = "INSERT",
+      ["R"] = "REPLACE",
+      ["Rv"] = "VISUAL REPLACE",
+      ["c"] = "COMMAND",
+      ["cv"] = "VIM EX",
+      ["ce"] = "EX",
+      ["r"] = "PROMPT",
+      ["rm"] = "MOAR",
+      ["r?"] = "CONFIRM",
+      ["!"] = "SHELL",
+      ["t"] = "TERMINAL",
 }
 
 local function mode()
@@ -372,23 +372,23 @@ function _set_winbar(buf, winid)
   local left_n = math.floor(n / 2)
   local right_n = n - left_n
   local bar = get_left_winbar(left_n)
-    .. name
-    .. get_right_winbar(right_n, buf)
+      .. name
+      .. get_right_winbar(right_n, buf)
   vim.api.nvim_win_set_option(winid, "winbar", bar)
 end
 
 function mode_changed(match)
   if
-    match == "i:ic"
-    or match == "ic:i"
-    or match == "n:no"
-    or match == "n:ntT"
-    or match == "ntT:n"
-    or match == "n:niV"
-    or match == "niV:n"
-    or match == "no:n"
-    or match == "nt:n"
-    or match == "n:nt"
+      match == "i:ic"
+      or match == "ic:i"
+      or match == "n:no"
+      or match == "n:ntT"
+      or match == "ntT:n"
+      or match == "n:niV"
+      or match == "niV:n"
+      or match == "no:n"
+      or match == "nt:n"
+      or match == "n:nt"
   then
     return false
   end
@@ -423,8 +423,8 @@ function get_name(buf, tail, width)
     end
     local d = get_diagnostics_string(buf, width - 1)
     if
-      d:len() > 0
-      and vim.fn.strchars(name) + vim.fn.strchars(d) + 1 <= width
+        d:len() > 0
+        and vim.fn.strchars(name) + vim.fn.strchars(d) + 1 <= width
     then
       name = name .. " " .. d
     end
@@ -440,10 +440,10 @@ function check_buftype(buf)
   end
   local buftype = vim.api.nvim_buf_get_option(buf, "buftype")
   if
-    buftype == "terminal"
-    or buftype == "quickfix"
-    or buftype == "help"
-    or buftype == ""
+      buftype == "terminal"
+      or buftype == "quickfix"
+      or buftype == "help"
+      or buftype == ""
   then
     return true
   end
