@@ -49,6 +49,8 @@ function M.run_command(cmd)
       else
         vim.api.nvim_buf_set_option(0, "modified", false)
       end
+      vim.bo.bufhidden = "wipe"
+      vim.bo.buflisted = false
       vim.fn.termopen(cmd, {
         detach = true,
         env = {
