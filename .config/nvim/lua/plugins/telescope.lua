@@ -170,6 +170,9 @@ pickers = function()
       theme = "ivy",
       no_ignore = true,
     },
+    diagnostics = {
+      theme = "ivy",
+    },
     live_grep = {
       hidden = true,
       no_ignore = true,
