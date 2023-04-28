@@ -26,7 +26,8 @@ lspconfig.start_language_server("jdtls", {
       "build.gradle.kts",
     }, { upward = true })
     if not f or not next(f) then
-      -- Return "/" so only syntax errors are  reported
+      -- Return "/" so only syntax errors are reported when
+      -- no project config file is found
       return "/"
     end
     return vim.fs.dirname(f[1])

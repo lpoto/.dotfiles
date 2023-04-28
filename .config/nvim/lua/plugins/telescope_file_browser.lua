@@ -7,8 +7,8 @@
 --[[
 
 Keymaps:
- - "<leader>tb"   - file browser relative to current file
- - "<leader>tB"   - file browser relative to current directory
+ - "<leader>N"   - file browser relative to current file
+ - "<C-n>"       - file browser relative to current directory
 
 --]]
 local M = {
@@ -17,7 +17,7 @@ local M = {
 
 M.keys = {
   {
-    "<leader>tb",
+    "<leader>N",
     function()
       require("telescope").extensions.file_browser.file_browser {
         path = "%:p:h",
@@ -26,7 +26,7 @@ M.keys = {
     mode = "n",
   },
   {
-    "<leader>tB",
+    "<C-n>",
     function()
       require("telescope").extensions.file_browser.file_browser()
     end,

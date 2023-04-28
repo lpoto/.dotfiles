@@ -11,11 +11,12 @@ Telescope is a highly extendable fuzzy finder over lists.
 Items are shown in a popup with a prompt to search over.
 
 Keymaps:
- - "<leader>t"   - find files   (or <leader>n)
- - "<leader>to"   - old files
- - "<leader>tg"   - live grep
- - "<leader>td"   - show diagnostics
- - "<leader>tq"   - quickfix
+ - "<leader>n"   - find files   (or <leader>n)
+ - "<leader>b"   - buffers
+ - "<leader>o"   - old files
+ - "<leader>l"   - live grep
+ - "<leader>d"   - show diagnostics
+ - "<leader>q"   - quickfix
 
  Use <C-q> in a telescope prompt to send the results to quickfix.
 --]]
@@ -30,13 +31,6 @@ local M = {
 
 M.keys = {
   {
-    "<leader>t",
-    function()
-      require("telescope.builtin").find_files()
-    end,
-    mode = "n",
-  },
-  {
     "<leader>n",
     function()
       require("telescope.builtin").find_files()
@@ -44,28 +38,35 @@ M.keys = {
     mode = "n",
   },
   {
-    "<leader>to",
+    "<leader>b",
+    function()
+      require("telescope.builtin").buffers()
+    end,
+    mode = "n",
+  },
+  {
+    "<leader>o",
     function()
       require("telescope.builtin").oldfiles()
     end,
     mode = "n",
   },
   {
-    "<leader>tq",
+    "<leader>q",
     function()
       require("telescope.builtin").quickfix()
     end,
     mode = "n",
   },
   {
-    "<leader>td",
+    "<leader>d",
     function()
       require("telescope.builtin").diagnostics()
     end,
     mode = "n",
   },
   {
-    "<leader>tg",
+    "<leader>l",
     function()
       require("telescope.builtin").live_grep()
     end,
@@ -149,6 +150,20 @@ pickers = function()
       no_ignore = true,
       --previewer = true,
       file_ignore_patterns = file_ignore_patterns,
+    },
+    buffers = {
+      theme = "ivy",
+      sort_mru = true,
+      ignore_current_buffer = false,
+      mappings = {
+        i = {
+          ["<c-d>"] = require("telescope.actions").delete_buffer,
+        },
+        n = {
+          ["<c-d>"] = require("telescope.actions").delete_buffer,
+          ["d"] = require("telescope.actions").delete_buffer,
+        },
+      },
     },
     oldfiles = {
       hidden = true,

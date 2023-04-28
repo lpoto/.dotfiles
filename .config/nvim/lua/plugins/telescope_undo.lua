@@ -8,22 +8,20 @@
 --[[
 View and search your undo tree
 
-Keymaps:
-  - "<leader>tu" - Open the undo tree prompt
+commands:
+  - :Undo - show undo tree
 --]]
 
 local M = {
   "debugloop/telescope-undo.nvim",
+  cmd = "Undo",
 }
-M.keys = {
-  {
-    "<leader>tu",
-    function()
-      require("telescope").extensions.undo.undo()
-    end,
-    mode = "n",
-  },
-}
+
+function M.init()
+  vim.api.nvim_create_user_command("Undo", function()
+    require("telescope").extensions.undo.undo()
+  end, {})
+end
 
 function M.config()
   local telescope = require "telescope"
