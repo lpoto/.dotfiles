@@ -1,4 +1,4 @@
-.local/
+.storage/
 .build/
 libevent*
 tmp/

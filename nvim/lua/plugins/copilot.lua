@@ -8,6 +8,7 @@
 local M = {
   "zbirenbaum/copilot.lua",
   event = "User RealInsertEnter",
+  cmd = "Copilot",
 }
 
 function M.config()

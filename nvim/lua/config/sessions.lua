@@ -82,9 +82,9 @@ function M.init()
         -- when restoring the session.
         for _, pattern in ipairs(M.ignore_filetype_patterns) do
           if
-              buftype:len() > 0
-              or filetype:match(pattern)
-              or filetype:len() == 0
+            buftype:len() > 0
+            or filetype:match(pattern)
+            or filetype:len() == 0
           then
             pcall(vim.api.nvim_buf_delete, buf, { force = true })
             removed = removed + 1

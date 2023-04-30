@@ -7,9 +7,6 @@ https://github.com/TimUntersberger/neogit
 local M = {
   "lewis6991/gitsigns.nvim",
   event = { "User RealBufEnter" },
-  dependencies = {
-    "samjwill/nvim-unception",
-  },
 }
 
 M.init = function()
