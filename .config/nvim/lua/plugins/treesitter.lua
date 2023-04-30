@@ -9,7 +9,6 @@
 Treesitter interface for Neovim. Provides inproved
 highlights, ...
 --]]
-
 local M = {
   "nvim-treesitter/nvim-treesitter",
   event = "VeryLazy",
@@ -19,9 +18,12 @@ function M.config()
   local treesitter = require "nvim-treesitter.configs"
 
   treesitter.setup {
-    ensure_installed = "all",
-    --sync_install = true,
+    -- NOTE: the following 5 parsers should always be installed
+    -- when opening nvim for the first time.
+    ensure_installed = { "c", "lua", "vim", "vimdoc", "query" },
+    -- Parsers will be installed when entering the matching filetype.
     auto_install = true,
+    sync_install = false,
     highlight = {
       enable = true,
       additional_vim_regex_highlighting = false,
@@ -29,15 +31,15 @@ function M.config()
     indent = {
       enable = false,
     },
-    -- incremental_selection = {
-    --   enable = true,
-    --   keymaps = {
-    --     init_selection = "<leader>v",
-    --     node_incremental = "<leader>v",
-    --     scope_incremental = "<leader>v",
-    --     node_decremental = "<A-v>",
-    --   },
-    -- },
+    incremental_selection = {
+      enable = true,
+      keymaps = {
+        init_selection = "<CR>",
+        node_incremental = "<CR>",
+        --scope_incremental = "<CR>",
+        node_decremental = "<BS>",
+      },
+    },
   }
 end
 

@@ -1,16 +1,22 @@
 --=============================================================================
 -------------------------------------------------------------------------------
---                                                                   TYPESCRIPT
+--                                                                         YAML
 --[[===========================================================================
-Loaded when a typescript file is opened
+Loaded when a yaml file is opened
 -----------------------------------------------------------------------------]]
-if vim.g.ftplugin_typescript_loaded then
+if vim.g.ftplugin_yaml_loaded then
   return
 end
-vim.g.ftplugin_typescript_loaded = true
+vim.g.ftplugin_yaml_loaded = true
 
 local lspconfig = require "plugins.lspconfig"
-lspconfig.start_language_server "tsserver"
-
 local null_ls = require "plugins.null-ls"
-null_ls.register_formatter "prettier"
+
+lspconfig.start_language_server("yamlls", {
+  settings = {
+    yaml = {
+      keyOrdering = false,
+    },
+  },
+})
+null_ls.register_formatter "yamlfmt"

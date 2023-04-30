@@ -1,16 +1,16 @@
 --=============================================================================
 -------------------------------------------------------------------------------
---                                                                   TYPESCRIPT
+--                                                                            C
 --[[===========================================================================
-Loaded when a typescript file is opened
+Loaded when a c file is opened
 -----------------------------------------------------------------------------]]
-if vim.g.ftplugin_typescript_loaded then
+if vim.g.ftplugin_c_loaded then
   return
 end
-vim.g.ftplugin_typescript_loaded = true
+vim.g.ftplugin_c_loaded = true
 
 local lspconfig = require "plugins.lspconfig"
-lspconfig.start_language_server "tsserver"
-
 local null_ls = require "plugins.null-ls"
-null_ls.register_formatter "prettier"
+
+lspconfig.start_language_server "clangd"
+null_ls.register_formatter "clang_format"

@@ -3,13 +3,12 @@
 --                                                                 LOCAL CONFIG
 --=============================================================================
 -- Store all local configs in a directory in data stdpath
+--
+-- :LocalConfig
 -------------------------------------------------------------------------------
 
-local local_configs_path = vim.fn.stdpath "data" .. "/local_configs"
-
-local function escape_path(path)
-  return vim.fn.substitute(path, "/", "_", "g")
-end
+local util = require "config.util"
+local local_configs_path = util.path(vim.fn.stdpath "data", "local_configs")
 
 local function open_local_config(path)
   vim.fn.execute("keepjumps tabe " .. path)
@@ -23,7 +22,7 @@ local function find_local_config(source)
 
   while path:len() > 1 do
     local file = path .. ".lua"
-    local escaped = local_configs_path .. "/" .. escape_path(file)
+    local escaped = util.path(local_configs_path, util.escape_path(file))
 
     if vim.fn.filereadable(escaped) == 1 then
       found = true
@@ -55,7 +54,7 @@ end
 local function create_local_config()
   local path = vim.fn.getcwd()
   local file = path .. ".lua"
-  local escaped = local_configs_path .. "/" .. escape_path(file)
+  local escaped = util.path(local_configs_path, util.escape_path(file))
 
   if vim.fn.filereadable(escaped) == 1 then
     vim.notify(
@@ -79,7 +78,7 @@ local function remove_local_config()
 
   while path:len() > 1 do
     local file = path .. ".lua"
-    local escaped = local_configs_path .. "/" .. escape_path(file)
+    local escaped = util.path(local_configs_path, util.escape_path(file))
 
     if vim.fn.filereadable(escaped) == 1 then
       local choice = vim.fn.confirm(
@@ -105,21 +104,30 @@ local function remove_local_config()
   end
 end
 
-vim.api.nvim_create_user_command("LocalConfig", function()
-  find_local_config(false)
-end, {})
+local functions = {
+  find = { find_local_config, { false } },
+  source = { find_local_config, { true } },
+  create = { create_local_config, {} },
+  remove = { remove_local_config, {} },
+}
 
-vim.api.nvim_create_user_command("CreateLocalConfig", function()
-  create_local_config()
-end, {})
-
-vim.api.nvim_create_user_command("RemoveLocalConfig", function()
-  remove_local_config()
-end, {})
-
-vim.api.nvim_create_user_command("SourceLocalConfig", function()
-  find_local_config(true)
-end, {})
+vim.api.nvim_create_user_command("LocalConfig", function(opts)
+  if not functions[opts.args] then
+    find_local_config(false)
+    return
+  end
+  local func = functions[opts.args]
+  func[1](unpack(func[2]))
+end, {
+  nargs = "?",
+  complete = function()
+    local args = {}
+    for k, _ in pairs(functions) do
+      table.insert(args, k)
+    end
+    return args
+  end,
+})
 
 vim.api.nvim_create_autocmd("User", {
   pattern = "VeryLazy",

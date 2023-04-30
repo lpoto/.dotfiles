@@ -11,27 +11,26 @@ dotfiles=$(dirname $(dirname "$0"))
 tmux_path=${dotfiles}/.build/tmux/tmux/tmux
 
 if [ ! -f "${tmux_path}" ]; then
-    echo "Tmux not found at ${tmux_path}"
-    read -p "Build it from source? [Y/N] " REPLY
-    echo
+	echo "Tmux not found at ${tmux_path}"
+	read -p "Build it from source? [Y/N] " REPLY
+	echo
 
-    if [ "$REPLY" != "y" ] && [ "$REPLY" != "Y" ]; then
-        echo "Not building tmux, exiting ..."
-        exit
-    fi
-    echo "==> building tmux..."
-    echo
-    ${dotfiles}/scripts/build/tmux
-    echo
-    echo "==> starting tmux ..."
-    sleep 3
+	if [ "$REPLY" != "y" ] && [ "$REPLY" != "Y" ]; then
+		echo "Not building tmux, exiting ..."
+		exit
+	fi
+	echo "==> building tmux..."
+	echo
+	${dotfiles}/scripts/build/tmux
+	echo
+	echo "==> starting tmux ..."
+	sleep 3
 fi
 
 args=$@
 if [ $# -eq 0 ]; then
-    args="new"
+	args="new"
 fi
-
 
 LD_LIBRARY_PATH=${dotfiles}/.build/tmux/lib:${LD_LIBRARY_PATH}
 
@@ -39,5 +38,5 @@ dotfiles_bin="${dotfiles}/bin"
 PATH="${dotfiles_bin}:${PATH}"
 
 LD_LIBRARY_PATH=${LD_LIBRARY_PATH} \
-    PATH=${PATH} \
-    ${tmux_path} source ${dotfiles}/.config/tmux/tmux.conf \; $args
+	PATH=${PATH} \
+	${tmux_path} source ${dotfiles}/.config/tmux/tmux.conf \; $args

@@ -26,29 +26,49 @@ function M.config()
           accept = "<C-Space>",
           next = "<C-k>",
           prev = "<C-j>",
-          dismiss = "<C-x>",
         },
       },
     }
-    M.keymap()
   end, 100)
 end
 
---- When copilot suggestion is visible and cmp popup is not visible,
---- <Tab> will accept the suggestion.
-function M.keymap()
-  vim.keymap.set("i", "<Tab>", function()
-    if
-      (package.loaded["cmp"] and require("cmp").visible())
-      or not package.loaded["copilot"]
-      or not require("copilot.suggestion").is_visible()
-    then
-      return "<Tab>"
-    end
-    vim.schedule(function()
-      require("copilot.suggestion").accept()
-    end)
-  end, { expr = true })
+function M.show_prev_expression_func(key)
+  if not package.loaded["copilot"] then
+    return key
+  end
+  local suggestion = require "copilot.suggestion"
+  if not suggestion.is_visible() then
+    return key
+  end
+  vim.schedule(function()
+    suggestion.prev()
+  end)
+end
+
+function M.accept_suggestion_expression_func(key)
+  if not package.loaded["copilot"] then
+    return key
+  end
+  local suggestion = require "copilot.suggestion"
+  if not suggestion.is_visible() then
+    return key
+  end
+  vim.schedule(function()
+    suggestion.accept()
+  end)
+end
+
+function M.dismiss_suggestion_expression_func(key)
+  if not package.loaded["copilot"] then
+    return key
+  end
+  local suggestion = require "copilot.suggestion"
+  if not suggestion.is_visible() then
+    return key
+  end
+  vim.schedule(function()
+    suggestion.dismiss()
+  end)
 end
 
 return M

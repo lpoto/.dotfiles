@@ -1,33 +1,30 @@
 #!/bin/sh
 #
 # This script will build neovim from source and install it to
-# ~/.build/neovim.
+# ./.build/neovim.
 # This script may also be run to update and already built neovim
 # installation.
 
-
 cur_pwd=${PWD}
 
-if [ "$USER" = "root" ]
-then
-    echo "==> WARN: This should not be run as root."
-    exit 2
+if [ "$USER" = "root" ]; then
+	echo "==> WARN: This should not be run as root."
+	exit 2
 fi
 
 cd "$(dirname "$0")"
 scripts=$PWD
 cd ../../
 
-if [ -d "./.build/neovim" ];
-then
-    echo "==> ./.build/neovim exists, pulling latest version ..."
-    sleep 1
-    cd ./.build/neovim && git pull
+if [ -d "./.build/neovim" ]; then
+	echo "==> ./.build/neovim exists, pulling latest version ..."
+	sleep 1
+	cd ./.build/neovim && git pull
 else
-    echo "==> ./.build/neovim does not exist, cloning ..."
-    sleep 1
-    git clone https://github.com/neovim/neovim ./.build/neovim
-    cd ./.build/neovim
+	echo "==> ./.build/neovim does not exist, cloning ..."
+	sleep 1
+	git clone https://github.com/neovim/neovim ./.build/neovim
+	cd ./.build/neovim
 fi
 echo "==> Starting build ..."
 sleep 2

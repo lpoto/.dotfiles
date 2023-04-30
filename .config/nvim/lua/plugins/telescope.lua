@@ -11,11 +11,12 @@ Telescope is a highly extendable fuzzy finder over lists.
 Items are shown in a popup with a prompt to search over.
 
 Keymaps:
- - "<leader>t"   - find files   (or <leader>n)
- - "<leader>to"   - old files
- - "<leader>tg"   - live grep
- - "<leader>td"   - show diagnostics
- - "<leader>tq"   - quickfix
+ - "<leader>n"   - find files   (or <leader>n)
+ - "<leader>b"   - buffers
+ - "<leader>o"   - old files
+ - "<leader>l"   - live grep
+ - "<leader>d"   - show diagnostics
+ - "<leader>q"   - quickfix
 
  Use <C-q> in a telescope prompt to send the results to quickfix.
 --]]
@@ -30,13 +31,6 @@ local M = {
 
 M.keys = {
   {
-    "<leader>t",
-    function()
-      require("telescope.builtin").find_files()
-    end,
-    mode = "n",
-  },
-  {
     "<leader>n",
     function()
       require("telescope.builtin").find_files()
@@ -44,28 +38,35 @@ M.keys = {
     mode = "n",
   },
   {
-    "<leader>to",
+    "<leader>b",
+    function()
+      require("telescope.builtin").buffers()
+    end,
+    mode = "n",
+  },
+  {
+    "<leader>o",
     function()
       require("telescope.builtin").oldfiles()
     end,
     mode = "n",
   },
   {
-    "<leader>tq",
+    "<leader>q",
     function()
       require("telescope.builtin").quickfix()
     end,
     mode = "n",
   },
   {
-    "<leader>td",
+    "<leader>d",
     function()
       require("telescope.builtin").diagnostics()
     end,
     mode = "n",
   },
   {
-    "<leader>tg",
+    "<leader>l",
     function()
       require("telescope.builtin").live_grep()
     end,
@@ -83,7 +84,7 @@ function M.config()
     defaults = {
       file_sorter = require("telescope.sorters").get_fzy_sorter,
       generic_sorter = require("telescope.sorters").get_fzy_sorter,
-      prompt_prefix = "🔍",
+      prompt_prefix = "?  ",
       color_devicons = false,
       file_previewer = require("telescope.previewers").vim_buffer_cat.new,
       grep_previewer = require("telescope.previewers").vim_buffer_vimgrep.new,
@@ -124,25 +125,45 @@ default_mappings = function()
 end
 
 pickers = function()
+  local util = require "config.util"
+  local file_ignore_patterns = {
+    util.dir "plugged",
+    util.dir "%.undo",
+    util.dir "%.data",
+    util.dir "%.local",
+    util.dir "%.git",
+    util.dir "node_modules",
+    util.dir "target",
+    util.dir "%.target",
+    util.dir "%.settings",
+    util.dir "%.build",
+    util.dir "dist",
+    util.dir "%.dist",
+    util.dir "%.angular",
+    util.dir "__pycache__",
+    "github-copilot",
+    "%.github-copilot",
+  }
   return {
     find_files = {
       theme = "ivy",
       hidden = true,
       no_ignore = true,
       --previewer = true,
-      file_ignore_patterns = {
-        "plugged/",
-        ".undo/",
-        ".data/",
-        ".local/",
-        ".git/",
-        "node_modules/",
-        "target/",
-        ".settings/",
-        "dist/",
-        ".angular/",
-        "__pycache__",
-        "github-copilot",
+      file_ignore_patterns = file_ignore_patterns,
+    },
+    buffers = {
+      theme = "ivy",
+      sort_mru = true,
+      ignore_current_buffer = false,
+      mappings = {
+        i = {
+          ["<c-d>"] = require("telescope.actions").delete_buffer,
+        },
+        n = {
+          ["<c-d>"] = require("telescope.actions").delete_buffer,
+          ["d"] = require("telescope.actions").delete_buffer,
+        },
       },
     },
     oldfiles = {
@@ -150,13 +171,22 @@ pickers = function()
       theme = "ivy",
       no_ignore = true,
     },
+    diagnostics = {
+      theme = "ivy",
+    },
     live_grep = {
       hidden = true,
+      no_ignore = true,
       theme = "ivy",
+      file_ignore_patterns = file_ignore_patterns,
+      additional_args = function()
+        return { "--hidden" }
+      end,
     },
     quickfix = {
       hidden = true,
       theme = "ivy",
+      no_ignore = true,
       initial_mode = "normal",
     },
   }

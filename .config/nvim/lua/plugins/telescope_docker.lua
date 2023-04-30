@@ -6,40 +6,39 @@
 --_____________________________________________________________________________
 
 --[[
-Handle docker containers, images and compose files from a prompot.
+Handle docker containers, images and compose files from a prompt.
 
-Keymaps:
-  - "<leader>d" - containers
-  - "<leader>di" - images
-  - "<leader>dc" - docker-compose files
+commands:
+  :Docker {containers|images|compose} - show a list of containers,
+                                       images or compose files
 --]]
 local M = {
   "lpoto/telescope-docker.nvim",
+  cmd = "Docker",
 }
 
-M.keys = {
-  {
-    "<leader>d",
-    function()
-      require("telescope").extensions.docker.docker()
-    end,
-    mode = "n",
-  },
-  {
-    "<leader>di",
-    function()
+function M.init()
+  vim.api.nvim_create_user_command("Docker", function(opts)
+    if type(opts.args) ~= "string" then
+      return
+    end
+    if opts.args:match "im" then
       require("telescope").extensions.docker.images()
-    end,
-    mode = "n",
-  },
-  {
-    "<leader>dc",
-    function()
+      return
+    end
+    if opts.args:match "comp" then
       require("telescope").extensions.docker.compose()
+      return
+    end
+    require("telescope").extensions.docker.docker()
+  end, {
+
+    nargs = "?",
+    complete = function()
+      return { "containers", "images", "compose" }
     end,
-    mode = "n",
-  },
-}
+  })
+end
 
 function M.config()
   local telescope = require "telescope"
@@ -49,24 +48,11 @@ function M.config()
         theme = "ivy",
         log_level = vim.log.levels.INFO,
         initial_mode = "normal",
-        init_term = M.init_term,
       },
     },
   }
 
   telescope.load_extension "docker"
-end
-
-function M.init_term(cmd, env)
-  local cmd2 = ""
-  for k, v in pairs(env or {}) do
-    cmd2 = cmd2 .. k .. "=" .. v .. " "
-  end
-  if type(cmd) == "table" then
-    cmd = table.concat(cmd, " ")
-  end
-  cmd = cmd2 .. cmd
-  require("plugins.unception").run_command(cmd)
 end
 
 return M

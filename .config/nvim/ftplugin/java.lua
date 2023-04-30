@@ -15,22 +15,15 @@ local null_ls = require "plugins.null-ls"
 -- NOTE: jdtls required java 17 +
 lspconfig.start_language_server("jdtls", {
   cmd = { "jdtls" },
-  root_dir = function()
-    local f = vim.fs.find({
-      --"build.xml", -- Ant
-      "pom.xml", -- Maven
-      "settings.gradle", -- Gradle
-      "settings.gradle.kts", -- Gradle
-      "mvn", -- mvnw
-      "build.gradle",
-      "build.gradle.kts",
-    }, { upward = true })
-    if not f or not next(f) then
-      -- Return "/" so only syntax errors are  reported
-      return "/"
-    end
-    return vim.fs.dirname(f[1])
-  end,
+  root_dir = require("config.util").root_fn({
+    --"build.xml", -- Ant
+    "pom.xml", -- Maven
+    "settings.gradle", -- Gradle
+    "settings.gradle.kts", -- Gradle
+    "mvn", -- mvnw
+    "build.gradle",
+    "build.gradle.kts",
+  }, vim.loop.os_homedir()),
 })
 
 null_ls.register_formatter "clang_format"

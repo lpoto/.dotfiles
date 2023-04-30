@@ -55,25 +55,25 @@ function buttons()
   return {
     type = "group",
     val = {
-      button(":Sessions", "⟳  Sessions", "Sessions"),
-      button("<leader>to", "🗃 Old Files", function()
+      button(":Sessions", "Sessions", "Sessions"),
+      button("<leader>to", "Old Files", function()
         require("telescope.builtin").oldfiles()
       end),
-      button("<leader>tf", "  Find Files", function()
+      button("<leader>tf", "Find Files", function()
         require("telescope.builtin").find_files()
       end),
-      button("<leader>tb", "  File Browser", function()
+      button("<leader>tb", "File Browser", function()
         require("telescope").extensions.file_browser.file_browser()
       end),
-      button("<leader>tg", "☌  Live Grep", function()
+      button("<leader>tg", "Live Grep", function()
         require("telescope.builtin").live_grep()
       end),
-      button("<leader>gg", "  Git status", function()
+      button("<leader>gg", "Git status", function()
         require("plugins.gitsigns").git_status()
       end),
-      button(":Lazy", "  Plugins", "Lazy"),
-      button(":Mason", "  Package Manager", "Mason"),
-      button(":Noice", "⚠  Notifications", "Noice"),
+      button(":Lazy", "Plugins", "Lazy"),
+      button(":Mason", "Package Manager", "Mason"),
+      button(":Noice", "Notifications", "Noice"),
     },
     opts = {
       spacing = 0,
@@ -97,8 +97,6 @@ function footer()
   }
 end
 
-local get_version
-
 function M.config()
   local alpha = require "alpha"
   alpha.setup {
@@ -109,7 +107,7 @@ function M.config()
       {
         type = "text",
         val = {
-          get_version(),
+          require("config.util").nvim_version(),
         },
         opts = {
           position = "center",
@@ -152,18 +150,6 @@ function button(sc, txt, on_press)
     end,
     opts = opts,
   }
-end
-
-function get_version()
-  local version = vim.version()
-
-  local s = version.major
-  s = s .. "." .. version.minor
-  s = s .. "." .. version.patch
-  if version.prerelease then
-    s = s .. " (prerelease)"
-  end
-  return s
 end
 
 return M
