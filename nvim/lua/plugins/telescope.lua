@@ -129,6 +129,7 @@ pickers = function()
   local file_ignore_patterns = {
     util.dir "plugged",
     util.dir "%.undo",
+    util.dir "%.storage",
     util.dir "%.data",
     util.dir "%.local",
     util.dir "%.git",

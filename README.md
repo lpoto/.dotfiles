@@ -1,7 +1,7 @@
 ```bash
-DOTFILES_PATH=${HOME}/.dotfiles
+NVIM_PATH=${HOME}/.nvim
 
-git clone git@github.com:lpoto/.dotfiles.git ${DOTFILES_PATH}
+git clone git@github.com:lpoto/nvim.git ${NVIM_PATH}
 
-export PATH=${DOTFILES_PATH}/bin:${PATH}
+export PATH=${NVIM_PATH}/bin:${PATH}
 ```
