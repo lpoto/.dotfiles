@@ -15,16 +15,10 @@ local null_ls = require "plugins.null-ls"
 null_ls.register_formatter "phpcbf"
 
 lspconfig.start_language_server("phpactor", {
-  root_dir = function()
-    local f = vim.fs.find({
-      ".git",
-      "composer.json",
-      "composer.lock",
-      "vendor",
-    }, { upward = true })
-    if not f or not next(f) then
-      return vim.fn.getcwd()
-    end
-    return vim.fs.dirname(f[1])
-  end,
+  root_dir = require("config.util").root_fn {
+    ".git",
+    "composer.json",
+    "composer.lock",
+    "vendor",
+  },
 })

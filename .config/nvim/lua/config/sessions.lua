@@ -9,10 +9,12 @@ Commands:
 
 NOTE: session is saved automatically when yout quit neovim.
 -----------------------------------------------------------------------------]]
+local util = require "config.util"
+
 local M = {}
 
 ---@type string: Path to the directory where sessions are saved
-M.session_dir = table.concat({ vim.fn.stdpath "data", "sessions" }, "/")
+M.session_dir = util.path(vim.fn.stdpath "data", "sessions")
 
 ---@type table: A table of filetype patterns that will be ignored
 ---when saving sessions
@@ -80,9 +82,9 @@ function M.init()
         -- when restoring the session.
         for _, pattern in ipairs(M.ignore_filetype_patterns) do
           if
-            buftype:len() > 0
-            or filetype:match(pattern)
-            or filetype:len() == 0
+              buftype:len() > 0
+              or filetype:match(pattern)
+              or filetype:len() == 0
           then
             pcall(vim.api.nvim_buf_delete, buf, { force = true })
             removed = removed + 1
@@ -98,8 +100,8 @@ function M.init()
         return
       end
 
-      local name = vim.fn.getcwd():gsub("/", "%%")
-      local file = table.concat({ M.session_dir, name .. ".vim" }, "/")
+      local name = util.escape_path(vim.fn.getcwd())
+      local file = util.path(M.session_dir, name .. ".vim")
       pcall(
         vim.api.nvim_exec,
         "mksession! " .. vim.fn.fnameescape(file),
@@ -122,8 +124,8 @@ local function get_sessions()
   end
   -- NOTE: Sort session so that the most recent is at the top
   table.sort(sessions, function(a, b)
-    a = table.concat({ M.session_dir, a }, "/")
-    b = table.concat({ M.session_dir, b }, "/")
+    a = util.path(M.session_dir, a)
+    b = util.path(M.session_dir, b)
     return vim.loop.fs_stat(a).mtime.sec > vim.loop.fs_stat(b).mtime.sec
   end)
   return sessions
@@ -148,7 +150,7 @@ local function session_finder(results)
         display = function(e)
           local time = vim.fn.strftime(
             "%c",
-            vim.fn.getftime(table.concat({ M.session_dir, e.value }, "/"))
+            vim.fn.getftime(util.path(M.session_dir, e.value))
           )
 
           local displayer = entry_display.create {
@@ -161,7 +163,7 @@ local function session_finder(results)
           -- NOTE: replate % signs with / in the displayed
           -- session name, so it better represents the session's
           -- working directory.
-          local value = e.value:gsub(".vim$", ""):gsub("%%", "/")
+          local value = util.unescape_path(e.value:gsub(".vim$", ""))
           return displayer {
             { time, "Comment" },
             value,
@@ -182,7 +184,7 @@ local function delete_selected_session(prompt_bufnr)
     return
   end
 
-  local session_file = table.concat({ M.session_dir, selection.value }, "/")
+  local session_file = util.path(M.session_dir, selection.value)
 
   if vim.fn.delete(session_file) ~= 0 then
     -- Notify that the session could not be deleted
@@ -213,7 +215,7 @@ local function select_session(prompt_bufnr)
   end
   -- Close the prompt when selecting a session
   actions.close(prompt_bufnr)
-  local session_file = table.concat({ M.session_dir, selection.value }, "/")
+  local session_file = util.path(M.session_dir, selection.value)
   -- NOTE: ensure the session file exists
   if vim.fn.filereadable(session_file) == 1 then
     -- if the session file exists, load it

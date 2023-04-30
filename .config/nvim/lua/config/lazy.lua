@@ -4,9 +4,11 @@
 --[[===========================================================================
 
 Ensure that Lazy.nvim (https://github.com/folke/lazy.nvim) is installed, then
-set it up and load the plugins. 
+set it up and load the plugins.
 
 -----------------------------------------------------------------------------]]
+local util = require "config.util"
+
 local ensure_lazy, get_lazy_options
 
 ---Ensure the lazy.nvim plugin manager is installed. If not,
@@ -40,13 +42,10 @@ function get_lazy_options()
     defaults = {
       lazy = true,
     },
-    lockfile = table.concat(
-      { vim.fn.stdpath "config", ".lazy.lock.json" },
-      "/"
-    ),
-    root = vim.fn.stdpath "data" .. "/lazy",
+    lockfile = util.path(vim.fn.stdpath "config", ".lazy.lock.json"),
+    root = util.path(vim.fn.stdpath "data", "lazy"),
     dev = {
-      dir = vim.fn.stdpath "data" .. "/lazy",
+      dir = util.path(vim.fn.stdpath "data", "lazy"),
     },
     checker = {
       enabled = true,
@@ -76,4 +75,4 @@ function get_lazy_options()
   }
 end
 
-load_lazy(vim.fn.stdpath "data" .. "/lazy/lazy.nvim")
+load_lazy(util.path(vim.fn.stdpath "data", "lazy", "lazy.nvim"))

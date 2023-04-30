@@ -125,21 +125,22 @@ default_mappings = function()
 end
 
 pickers = function()
+  local util = require "config.util"
   local file_ignore_patterns = {
-    "plugged/",
-    "%.undo/",
-    "%.data/",
-    "%.local/",
-    "%.git/",
-    "node_modules/",
-    "target/",
-    "%.target/",
-    "%.settings/",
-    "%.build/",
-    "dist/",
-    "%.dist/",
-    "%.angular/",
-    "__pycache__",
+    util.dir "plugged",
+    util.dir "%.undo",
+    util.dir "%.data",
+    util.dir "%.local",
+    util.dir "%.git",
+    util.dir "node_modules",
+    util.dir "target",
+    util.dir "%.target",
+    util.dir "%.settings",
+    util.dir "%.build",
+    util.dir "dist",
+    util.dir "%.dist",
+    util.dir "%.angular",
+    util.dir "__pycache__",
     "github-copilot",
     "%.github-copilot",
   }

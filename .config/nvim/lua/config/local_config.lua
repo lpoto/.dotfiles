@@ -7,11 +7,8 @@
 -- :LocalConfig
 -------------------------------------------------------------------------------
 
-local local_configs_path = vim.fn.stdpath "data" .. "/local_configs"
-
-local function escape_path(path)
-  return vim.fn.substitute(path, "/", "_", "g")
-end
+local util = require "config.util"
+local local_configs_path = util.path(vim.fn.stdpath "data", "local_configs")
 
 local function open_local_config(path)
   vim.fn.execute("keepjumps tabe " .. path)
@@ -25,7 +22,7 @@ local function find_local_config(source)
 
   while path:len() > 1 do
     local file = path .. ".lua"
-    local escaped = local_configs_path .. "/" .. escape_path(file)
+    local escaped = util.path(local_configs_path, util.escape_path(file))
 
     if vim.fn.filereadable(escaped) == 1 then
       found = true
@@ -57,7 +54,7 @@ end
 local function create_local_config()
   local path = vim.fn.getcwd()
   local file = path .. ".lua"
-  local escaped = local_configs_path .. "/" .. escape_path(file)
+  local escaped = util.path(local_configs_path, util.escape_path(file))
 
   if vim.fn.filereadable(escaped) == 1 then
     vim.notify(
@@ -81,7 +78,7 @@ local function remove_local_config()
 
   while path:len() > 1 do
     local file = path .. ".lua"
-    local escaped = local_configs_path .. "/" .. escape_path(file)
+    local escaped = util.path(local_configs_path, util.escape_path(file))
 
     if vim.fn.filereadable(escaped) == 1 then
       local choice = vim.fn.confirm(

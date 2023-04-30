@@ -31,9 +31,7 @@ function M.init()
       return
     end
     require("telescope").extensions.docker.docker()
-
-  end,
-  {
+  end, {
 
     nargs = "?",
     complete = function()
