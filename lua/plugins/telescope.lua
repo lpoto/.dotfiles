@@ -142,8 +142,7 @@ pickers = function()
     util.dir "%.dist",
     util.dir "%.angular",
     util.dir "__pycache__",
-    "github-copilot",
-    "%.github-copilot",
+    util.dir "github-copilot",
   }
   return {
     find_files = {

@@ -32,17 +32,19 @@ if [ ! -f "${nvim_bin_path}" ]; then
   sleep 3
 fi
 
-DOTFILES_CONFIG_HOME=${nvim_config_path}
-DOTFILES_DATA_HOME=${nvim_config_path}/.storage/share
-DOTFILES_RUNTIME_DIR=${nvim_config_path}/.storage/state
-DOTFILES_STATE_HOME=${nvim_config_path}/.storage/state
+NVIM_APPNAME="/"
+NVIM_CONFIG_HOME=${nvim_config_path}
+NVIM_DATA_HOME=${nvim_config_path}/.storage/share
+NVIM_RUNTIME_DIR=${nvim_config_path}/.storage/state
+NVIM_STATE_HOME=${nvim_config_path}/.storage/state
 
 nvim_config_path_bin="${nvim_config_path}/bin"
 PATH="${nvim_config_path_bin}:${PATH}"
 
-XDG_CONFIG_HOME=${DOTFILES_CONFIG_HOME} \
-  XDG_DATA_HOME=${DOTFILES_DATA_HOME} \
-  XDG_RUNTIME_DIR=${DOTFILES_RUNTIME_DIR} \
-  XDG_STATE_HOME=${DOTFILES_STATE_HOME} \
+XDG_CONFIG_HOME=${NVIM_CONFIG_HOME} \
+  XDG_DATA_HOME=${NVIM_DATA_HOME} \
+  XDG_RUNTIME_DIR=${NVIM_RUNTIME_DIR} \
+  XDG_STATE_HOME=${NVIM_STATE_HOME} \
+  NVIM_APPNAME=${NVIM_APPNAME} \
   PATH=${PATH} \
   ${nvim_bin_path} $@

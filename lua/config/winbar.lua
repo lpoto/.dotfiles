@@ -173,7 +173,7 @@ function set_winbar(buf, winid)
     end)
     editing_winbar[key] = nil
     if not ok then
-      handle_error(err, "Winbar")
+      handle_error(err)
     end
   end)
 end
@@ -214,7 +214,7 @@ function set_inactive_winbar(buf, winid)
     end)
     editing_inactive_winbar[key] = nil
     if not ok then
-      handle_error(err, "Winbar")
+      handle_error(err)
     end
   end)
 end
@@ -246,7 +246,7 @@ function set_statusline(winid)
     end)
     editing_statusline[winid] = nil
     if not ok then
-      handle_error(err, "Winbar")
+      handle_error(err)
     end
   end)
 end
@@ -468,19 +468,13 @@ function unset_winbar(buf)
   end)
 end
 
-function handle_error(msg, title)
+function handle_error(msg)
   vim.schedule(function()
-    vim.notify(msg, vim.log.levels.ERROR, {
-      title = title,
-    })
+    local log = require("config.util"):logger "Winbar"
+    log:error(msg)
+
     vim.defer_fn(function()
-      vim.notify(
-        "Error occured, unsetting winbar and statusline",
-        vim.log.levels.ERROR,
-        {
-          title = title,
-        }
-      )
+      log:warn "Error occured, unsetting winbar and statusline"
       pcall(function()
         for _, winid in ipairs(vim.api.nvim_list_wins()) do
           vim.api.nvim_win_set_option(winid, "winbar", "")

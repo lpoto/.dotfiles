@@ -27,25 +27,10 @@ local M = {
 }
 
 function M.init()
-  vim.keymap.set("n", "K", function()
-    vim.lsp.buf.hover()
-  end)
-  vim.keymap.set("n", "<C-d>", function()
-    vim.diagnostic.open_float()
-  end)
-  vim.keymap.set("n", "gd", function()
-    vim.lsp.buf.definition()
-  end)
-end
-
----Show definition of symbol under cursor, unless
----there are any diagnostics on the current line.
----Then display those diagnostics instead.
-function M.show_definition()
-  if vim.diagnostic.open_float() then
-    return
-  end
-  vim.lsp.buf.hover()
+  vim.keymap.set("n", "K", vim.lsp.buf.hover)
+  vim.keymap.set("n", "<C-d>", vim.diagnostic.open_float)
+  vim.keymap.set("n", "<leader>D", vim.diagnostic.open_float)
+  vim.keymap.set("n", "gd", vim.lsp.buf.definition)
 end
 
 ---Start the provided language server, if no opts
@@ -55,6 +40,7 @@ end
 ---@param server string: Name of the server to start
 ---@param opts table?: Optional server configuration
 function M.start_language_server(server, opts)
+  local log = require("config.util").logger("Start", server)
   local lspconfig = require "lspconfig"
   opts = opts or {}
 
@@ -65,13 +51,13 @@ function M.start_language_server(server, opts)
   end
 
   if lspconfig[server] == nil then
-    vim.notify("LSP server not found: " .. server, vim.log.levels.WARN)
+    log:warn("LSP server not found: ", server)
     return
   end
 
   local lsp = lspconfig[server]
   if lsp == nil then
-    vim.notify("LSP server not found: " .. server, vim.log.levels.WARN)
+    log:warn("LSP server not found: ", server)
     return
   end
 
@@ -79,7 +65,7 @@ function M.start_language_server(server, opts)
 
   local ok, e = pcall(vim.fn.execute, "LspStart", true)
   if ok == false then
-    vim.notify("Failed to start LSP: " .. e, vim.log.levels.WARN)
+    log:warn("Failed to start LSP", e)
   end
 end
 

@@ -16,7 +16,6 @@ vim.keymap.set("n", "<leader>w", "<cmd>wincmd w<cr>")
 
 ----------------------------------------------------------------------- JUMPING
 -- center cursor when jumping, jump forward with tab, backward with shift-tab
--- count j and k commands with a number larger than 5 as jumps
 -- Navigate quickfix with <leader>k and <leader>j
 
 vim.keymap.set("n", "n", "nzzzv")
@@ -25,16 +24,6 @@ vim.keymap.set("n", "J", "mzJ'z")
 vim.keymap.set("n", "<leader>k", "<cmd>cnext<CR>zzzv")
 vim.keymap.set("n", "<leader>j", "<cmd>cprev<CR>zzzv")
 vim.keymap.set("n", "<S-TAB>", "<C-O>zzzv")
-vim.keymap.set(
-  "n",
-  "<expr> k",
-  '(v:count > 5 ? "m\'" . v:count : "") . \'k\''
-)
-vim.keymap.set(
-  "n",
-  "<expr> j",
-  '(v:count > 5 ? "m\'" . v:count : "") . \'j\''
-)
 
 --- Don't modify jumplist when jumping with { and }
 vim.keymap.set(

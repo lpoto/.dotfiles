@@ -56,15 +56,8 @@ function M.init()
     callback = function()
       if vim.fn.isdirectory(M.session_dir) == 0 then
         -- NOTE: ensure that the sessions directory exists
-        local ok, e = pcall(vim.fn.mkdir, M.session_dir, "p")
-        if ok == false then
-          vim.notify(
-            "Failed to create sessions directory: " .. e,
-            vim.log.levels.ERROR,
-            {
-              title = M.title,
-            }
-          )
+        local ok, _ = pcall(vim.fn.mkdir, M.session_dir, "p")
+        if not ok then
           return
         end
       end
@@ -184,20 +177,18 @@ local function delete_selected_session(prompt_bufnr)
     return
   end
 
+  local log = util.logger(M.title, "-", "Delete")
+
   local session_file = util.path(M.session_dir, selection.value)
 
   if vim.fn.delete(session_file) ~= 0 then
     -- Notify that the session could not be deleted
-    vim.notify("Failed to delete session", vim.log.levels.WARN, {
-      title = M.title,
-    })
+    log:warn "Failed to delete session"
   else
     -- Notify that the session was successfully deleted
     -- and refresh the picker with a new finder, so
     -- the removed session is no longer displayed.
-    vim.notify("Session deleted", vim.log.levels.INFO, {
-      title = M.title,
-    })
+    log:info "Session deleted"
     -- TODO: maybe this could be done more elegantly
     -- by using a different method that just deletes a row
     picker:refresh(session_finder(get_sessions()), { reset_prompt = true })
@@ -208,6 +199,7 @@ end
 local function select_session(prompt_bufnr)
   local action_state = require "telescope.actions.state"
   local actions = require "telescope.actions"
+  local log = util.logger(M.title, "-", "Select")
 
   local selection = action_state.get_selected_entry()
   if selection == nil then
@@ -222,9 +214,7 @@ local function select_session(prompt_bufnr)
     vim.cmd("silent! source " .. vim.fn.fnameescape(session_file))
   else
     -- Notify that the selected session is no longer available
-    vim.notify("Session file is not readable", vim.log.levels.WARN, {
-      title = M.title,
-    })
+    log:warn "Session file is not readable"
   end
 end
 
@@ -234,6 +224,7 @@ end
 function M.list_sessions(theme)
   local pickers = require "telescope.pickers"
   local actions = require "telescope.actions"
+  local log = util.logger(M.title, "-", "List")
 
   ---NOTE: use ivy theme by default
   theme = theme or require("telescope.themes").get_ivy()
@@ -241,9 +232,7 @@ function M.list_sessions(theme)
   local sessions = get_sessions()
   if next(sessions) == nil then
     -- NOTE: Do not open the telescope prompt if there are no sessions
-    vim.notify("There are no available sessions", vim.log.levels.WARN, {
-      title = M.title,
-    })
+    log:warn "There are no available sessions"
     return
   end
 
