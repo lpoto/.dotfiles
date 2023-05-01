@@ -15,7 +15,6 @@ Commands:
   - :NullLsInfo - Show information about the current null-ls session
   - :NullLsLog  - Open the log file
 --]]
-
 local M = {
   "jose-elias-alvarez/null-ls.nvim",
   cmd = { "NullLsInfo", "NullLsLog" },
@@ -45,9 +44,7 @@ function M.format()
     }
   end)
   if not ok and type(e) == "string" then
-    vim.notify(e, vim.log.levels.WARN, {
-      title = "Format",
-    })
+    require("config.util").logger("NullLs - Format"):warn(e)
   end
 end
 
@@ -67,16 +64,11 @@ local expand_opts
 function M.register_builtin_source(type, opts)
   opts = expand_opts(opts)
   local ok, e = pcall(function()
+    local log = require("config.util").logger "NullLs - Register"
     local null_ls = require "null-ls"
     local s = null_ls.builtins[type][opts.source]
     if not s then
-      vim.notify(
-        "No such builtin source: " .. opts.source,
-        vim.log.levels.WARN,
-        {
-          title = "NullLs",
-        }
-      )
+      log:warn("No such builtin source:", opts.source)
       return
     end
     if opts.config and next(opts.config) then
@@ -88,9 +80,7 @@ function M.register_builtin_source(type, opts)
     }
   end)
   if not ok and type(e) == "string" then
-    vim.notify(e, vim.log.levels.ERROR, {
-      title = "NullLs",
-    })
+    log:error(e)
   end
 end
 

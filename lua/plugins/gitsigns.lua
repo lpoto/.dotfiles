@@ -143,13 +143,10 @@ function attach_git_status_mappings(_, map)
 end
 
 function fetch_git_data(callback, on_error)
+  local log = require("config.util").logger "Fetch git data"
   on_error = on_error
     or function()
-      vim.schedule(function()
-        vim.notify("Could not fetch git data", vim.log.levels.WARN, {
-          "Git",
-        })
-      end)
+      log:warn "Could not fetch git data"
     end
   local remote = {}
   vim.fn.jobstart("git remote show", {

@@ -23,6 +23,7 @@ return {
           ["@field"] = { link = "Special" },
           Type = { fg = "#E6BE8A" },
           ["@type"] = { link = "Type" },
+          NonText = { link = "Type" },
           TabLine = { link = "WinSeparator" },
           TabLineFill = { link = "WinSeparator" },
           StatusLine = { link = "WinSeparator" },

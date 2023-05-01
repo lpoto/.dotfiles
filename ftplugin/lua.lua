@@ -29,7 +29,9 @@ lspconfig.start_language_server("lua_ls", {
         globals = { "vim" },
       },
       workspace = {
-        ignoreDir = { util.dir ".data" },
+        ignoreDir = {
+          util.dir ".storage",
+        },
         library = vim.api.nvim_get_runtime_file("", true),
         checkThirdParty = false,
       },

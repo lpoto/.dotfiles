@@ -60,9 +60,7 @@ function M.run_command(cmd)
       })
     end)
     if not ok and type(e) == "string" then
-      vim.notify(e, vim.log.levels.WARN, {
-        title = "Terminal Command",
-      })
+      require("config.util").logger("Unception - Run command"):warn(e)
     end
   end)
 end
