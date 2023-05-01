@@ -162,7 +162,9 @@ end
 ---The sessions may then be selected (loaded) or deleted.
 ---@param opts table?: Optional telescope picker opts
 function M.list_sessions(opts)
+  local entry_display = require "telescope.pickers.entry_display"
   local actions = require "telescope.actions"
+  local action_state = require "telescope.actions.state"
 
   opts = opts or require("telescope.themes").get_ivy()
   opts = vim.tbl_extend("force", {
@@ -170,16 +172,30 @@ function M.list_sessions(opts)
     selection_strategy = "row",
     cwd = M.session_dir,
     previewer = false,
-    path_display = function(_, path)
+    entry_maker = function(line)
       local time =
-        vim.fn.strftime("%c", vim.fn.getftime(util.path(M.session_dir, path)))
-      local s = util.unescape_path(vim.fn.fnamemodify(path, ":r"))
-      local w = vim.api.nvim_get_option "columns" - 5
-      w = vim.fn.floor(w) - vim.fn.strchars(time) - vim.fn.strchars(s)
-      if w > 1 then
-        s = s .. string.rep(" ", w - 1)
-      end
-      return string.format("%s %s", s, time)
+        vim.fn.strftime("%c", vim.fn.getftime(util.path(M.session_dir, line)))
+      return {
+        value = line,
+        ordinal = time .. " " .. line,
+        display = function(e)
+          local displayer = entry_display.create {
+            separator = " ",
+            items = {
+              { width = string.len(time) + 1 },
+              { remaining = true },
+            },
+          }
+          -- NOTE: replate % signs with / in the displayed
+          -- session name, so it better represents the session's
+          -- working directory.
+          local value = util.unescape_path(vim.fn.fnamemodify(e.value, ":r"))
+          return displayer {
+            { time, "Comment" },
+            value,
+          }
+        end,
+      }
     end,
     attach_mappings = function(prompt_bufnr, map)
       -- NOTE: load the session under the cursor
@@ -202,6 +218,35 @@ function M.list_sessions(opts)
     end,
   }, opts)
   require("telescope.builtin").find_files(opts)
+  local max_reps = 10
+  local f
+  f = function(rep)
+    -- NOTE: this is a hack to ensure that the session
+    -- under the current working directory is selected
+    -- when opening the session list.
+    -- If it exists...
+    if rep >= max_reps then
+      return
+    end
+    vim.defer_fn(function()
+      local picker = action_state.get_current_picker(vim.fn.bufnr())
+      if picker == nil then
+        return
+      end
+      for k, v in pairs(picker.finder.results) do
+        if
+          util.unescape_path(vim.fn.fnamemodify(v.value, ":r"))
+          == vim.fn.getcwd()
+        then
+          picker:set_selection(k - 1)
+          rep = max_reps
+          break
+        end
+      end
+      f(rep + 1)
+    end, 10)
+  end
+  f(0)
 end
 
 return M.init()
