@@ -82,8 +82,6 @@ function M.config()
 
   telescope.setup {
     defaults = {
-      file_sorter = require("telescope.sorters").get_fzy_sorter,
-      generic_sorter = require("telescope.sorters").get_fzy_sorter,
       prompt_prefix = "?  ",
       color_devicons = false,
       file_previewer = require("telescope.previewers").vim_buffer_cat.new,
@@ -142,7 +140,7 @@ pickers = function()
     util.dir "%.dist",
     util.dir "%.angular",
     util.dir "__pycache__",
-    util.dir "github-copilot",
+    util.dir "github.copilot",
   }
   return {
     find_files = {

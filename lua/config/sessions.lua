@@ -6,6 +6,7 @@ Automated session management with telescope.
 
 Commands:
   - :Sessions - Display all available sessions
+              (<CR> - load session, <C-d> - delete session)
 
 NOTE: session is saved automatically when yout quit neovim.
 -----------------------------------------------------------------------------]]
@@ -104,69 +105,6 @@ function M.init()
   })
 end
 
---- Get a table of all available sessions located
---- in the persistence.nivm's session directory.
---- The sessions are sorted by last modified time,
---- so the most recent session is at the top.
-local function get_sessions()
-  local sessions = {}
-  for k, v in vim.fs.dir(M.session_dir) do
-    if v == "file" then
-      table.insert(sessions, k)
-    end
-  end
-  -- NOTE: Sort session so that the most recent is at the top
-  table.sort(sessions, function(a, b)
-    a = util.path(M.session_dir, a)
-    b = util.path(M.session_dir, b)
-    return vim.loop.fs_stat(a).mtime.sec > vim.loop.fs_stat(b).mtime.sec
-  end)
-  return sessions
-end
-
---- Create a telescope finder for all available sessions.
---- The dinfer displays the session name and the last modified time.
-local function session_finder(results)
-  local entry_display = require "telescope.pickers.entry_display"
-  local finders = require "telescope.finders"
-
-  -- Build a telescope finder for the available sessions
-  -- The finder displays the results provided as an argument
-  -- to this function. It displays the session name and the
-  -- last modified time and the keybinding to delte the session.
-  return finders.new_table {
-    results = results,
-    entry_maker = function(line)
-      return {
-        value = line,
-        ordinal = line,
-        display = function(e)
-          local time = vim.fn.strftime(
-            "%c",
-            vim.fn.getftime(util.path(M.session_dir, e.value))
-          )
-
-          local displayer = entry_display.create {
-            separator = " ",
-            items = {
-              { width = string.len(time) + 1 },
-              { remaining = true },
-            },
-          }
-          -- NOTE: replate % signs with / in the displayed
-          -- session name, so it better represents the session's
-          -- working directory.
-          local value = util.unescape_path(e.value:gsub(".vim$", ""))
-          return displayer {
-            { time, "Comment" },
-            value,
-          }
-        end,
-      }
-    end,
-  }
-end
-
 ---Delete the session selected in a telescope prompt
 local function delete_selected_session(prompt_bufnr)
   local action_state = require "telescope.actions.state"
@@ -191,7 +129,9 @@ local function delete_selected_session(prompt_bufnr)
     log:info "Session deleted"
     -- TODO: maybe this could be done more elegantly
     -- by using a different method that just deletes a row
-    picker:refresh(session_finder(get_sessions()), { reset_prompt = true })
+    picker:delete_selection(function(item)
+      return item and next(item) and item[1] == selection.value
+    end)
   end
 end
 
@@ -220,30 +160,27 @@ end
 
 ---List all available sessions in a telescope prompt.
 ---The sessions may then be selected (loaded) or deleted.
----@param theme table?: Optional telescope theme
-function M.list_sessions(theme)
-  local pickers = require "telescope.pickers"
+---@param opts table?: Optional telescope picker opts
+function M.list_sessions(opts)
   local actions = require "telescope.actions"
-  local log = util.logger(M.title, "-", "List")
 
-  ---NOTE: use ivy theme by default
-  theme = theme or require("telescope.themes").get_ivy()
-
-  local sessions = get_sessions()
-  if next(sessions) == nil then
-    -- NOTE: Do not open the telescope prompt if there are no sessions
-    log:warn "There are no available sessions"
-    return
-  end
-
-  -- NOTE: build the telescope picker for
-  -- displaying the available sessions
-  local sessions_picker = pickers.new(theme, {
+  opts = opts or require("telescope.themes").get_ivy()
+  opts = vim.tbl_extend("force", {
     prompt_title = M.title,
-    results_title = "<CR> - Load session, <C-d> - Delete session",
     selection_strategy = "row",
-    finder = session_finder(sessions),
-    generic_sorter = require("telescope.sorters").get_fzy_sorter,
+    cwd = M.session_dir,
+    previewer = false,
+    path_display = function(_, path)
+      local time =
+        vim.fn.strftime("%c", vim.fn.getftime(util.path(M.session_dir, path)))
+      local s = util.unescape_path(vim.fn.fnamemodify(path, ":r"))
+      local w = vim.api.nvim_get_option "columns" - 5
+      w = vim.fn.floor(w) - vim.fn.strchars(time) - vim.fn.strchars(s)
+      if w > 1 then
+        s = s .. string.rep(" ", w - 1)
+      end
+      return string.format("%s %s", s, time)
+    end,
     attach_mappings = function(prompt_bufnr, map)
       -- NOTE: load the session under the cursor
       -- when pressing <CR>
@@ -252,16 +189,19 @@ function M.list_sessions(theme)
       end)
       -- NOTE: delete the session under
       -- the cursor when <Ctrl-d> is pressed
-      for _, mode in ipairs { "n", "i" } do
-        map(mode, "<C-d>", function()
-          delete_selected_session(prompt_bufnr)
-        end)
-      end
+      map("n", "<C-d>", function()
+        delete_selected_session(prompt_bufnr)
+      end)
+      map("n", "d", function()
+        delete_selected_session(prompt_bufnr)
+      end)
+      map("i", "<C-d>", function()
+        delete_selected_session(prompt_bufnr)
+      end)
       return true
     end,
-  })
-
-  sessions_picker:find()
+  }, opts)
+  require("telescope.builtin").find_files(opts)
 end
 
 return M.init()
