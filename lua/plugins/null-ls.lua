@@ -62,9 +62,9 @@ local expand_opts
 ---@param type string
 ---@param opts string|table
 function M.register_builtin_source(type, opts)
-  opts = expand_opts(opts)
+  local log = require("config.util").logger "NullLs - Register"
   local ok, e = pcall(function()
-    local log = require("config.util").logger "NullLs - Register"
+    opts = expand_opts(opts)
     local null_ls = require "null-ls"
     local s = null_ls.builtins[type][opts.source]
     if not s then
@@ -79,7 +79,7 @@ function M.register_builtin_source(type, opts)
       sources = { s },
     }
   end)
-  if not ok and type(e) == "string" then
+  if not ok then
     log:error(e)
   end
 end

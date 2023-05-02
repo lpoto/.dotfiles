@@ -40,33 +40,42 @@ end
 ---@param server string: Name of the server to start
 ---@param opts table?: Optional server configuration
 function M.start_language_server(server, opts)
-  local log = require("config.util").logger("Start", server)
-  local lspconfig = require "lspconfig"
-  opts =
-    vim.tbl_deep_extend("force", opts or {}, vim.g[server .. "_config"] or {})
+  local log = require("config.util").logger("LSP", server)
+  local ok, e = pcall(function()
+    vim.schedule(function()
+      log:info("Starting", server)
+      local lspconfig = require "lspconfig"
+      opts = vim.tbl_deep_extend(
+        "force",
+        opts or {},
+        vim.g[server .. "_config"] or {}
+      )
 
-  if opts.capabilities == nil then
-    opts.capabilities = require("cmp_nvim_lsp").default_capabilities()
-  elseif opts.capabilities == false then
-    opts.capabilities = nil
-  end
+      local cmp_lsp = require "cmp_nvim_lsp"
+      if opts.capabilities == nil then
+        opts.capabilities = cmp_lsp.default_capabilities()
+      elseif opts.capabilities == false then
+        opts.capabilities = nil
+      end
 
-  if lspconfig[server] == nil then
-    log:warn("LSP server not found: ", server)
-    return
-  end
+      if lspconfig[server] == nil then
+        log:warn("LSP server not found: ", server)
+        return
+      end
 
-  local lsp = lspconfig[server]
-  if lsp == nil then
-    log:warn("LSP server not found: ", server)
-    return
-  end
+      local lsp = lspconfig[server]
+      if lsp == nil then
+        log:warn("LSP server not found: ", server)
+        return
+      end
 
-  lsp.setup(opts)
+      lsp.setup(opts)
 
-  local ok, e = pcall(vim.fn.execute, "LspStart", true)
-  if ok == false then
-    log:warn("Failed to start LSP", e)
+      vim.fn.execute("LspStart", true)
+    end)
+  end)
+  if not ok then
+    log:warn("Failed to start:", e)
   end
 end
 

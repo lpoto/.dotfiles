@@ -75,9 +75,4 @@ function get_jars_to_include(root_fn)
   return jars_to_add
 end
 
-local ok, e = pcall(function()
-  vim.schedule(start_jdtls)
-end)
-if not ok then
-  util.logger("jdtls"):warn("Failed to start jdtls", e)
-end
+vim.schedule(start_jdtls)
