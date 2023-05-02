@@ -42,7 +42,8 @@ end
 function M.start_language_server(server, opts)
   local log = require("config.util").logger("Start", server)
   local lspconfig = require "lspconfig"
-  opts = opts or {}
+  opts =
+    vim.tbl_deep_extend("force", opts or {}, vim.g[server .. "_config"] or {})
 
   if opts.capabilities == nil then
     opts.capabilities = require("cmp_nvim_lsp").default_capabilities()
