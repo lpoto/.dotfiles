@@ -123,14 +123,10 @@ local function delete_selected_session(prompt_bufnr)
     -- Notify that the session could not be deleted
     log:warn "Failed to delete session"
   else
-    -- Notify that the session was successfully deleted
-    -- and refresh the picker with a new finder, so
-    -- the removed session is no longer displayed.
     log:info "Session deleted"
-    -- TODO: maybe this could be done more elegantly
-    -- by using a different method that just deletes a row
+    -- Filter out the deleted session from the picker
     picker:delete_selection(function(item)
-      return item and next(item) and item[1] == selection.value
+      return selection == item
     end)
   end
 end
