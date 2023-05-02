@@ -138,6 +138,8 @@ pickers = function()
     util.dir "%.build",
     util.dir "dist",
     util.dir "%.dist",
+    util.dir "build",
+    util.dir "%.build",
     util.dir "%.angular",
     util.dir "__pycache__",
     util.dir "github.copilot",
