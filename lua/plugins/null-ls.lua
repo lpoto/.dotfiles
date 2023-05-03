@@ -28,6 +28,13 @@ M.keys = {
     end,
     mode = "n",
   },
+  {
+    "<leader>f",
+    function()
+      require("plugins.null-ls").format(true)
+    end,
+    mode = "v",
+  },
 }
 
 function M.config()
@@ -36,12 +43,20 @@ function M.config()
   null_ls.setup()
 end
 
-function M.format()
+---@param selection boolean: Format only current selection
+function M.format(selection)
   local ok, e = pcall(function()
-    vim.lsp.buf.format {
-      timeout_ms = 10000,
+    local opts = {
+      timeout_ms = 5000,
       async = true,
     }
+    if selection then
+      opts.range = {
+        ["start"] = vim.api.nvim_buf_get_mark(0, "<"),
+        ["end"] = vim.api.nvim_buf_get_mark(0, ">"),
+      }
+    end
+    vim.lsp.buf.format(opts)
   end)
   if not ok and type(e) == "string" then
     require("config.util").logger("NullLs - Format"):warn(e)
