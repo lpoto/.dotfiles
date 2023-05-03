@@ -30,16 +30,21 @@ local function find_local_config(source)
         -- NOTE: when source is true, source the first found local
         -- config, otherwise ask the user whether to open it or not.
         vim.api.nvim_exec("source " .. escaped, false)
-        return
-      end
-      local choice = vim.fn.confirm(
-        "Do you want to open config for " .. path .. "?",
-        "&Yes\n&No",
-        2
-      )
-      if choice == 1 then
-        open_local_config(escaped)
-        return
+        if vim.g.keep_sourcing_local_config then
+          vim.g.keep_sourcing_local_config = nil
+        else
+          return
+        end
+      else
+        local choice = vim.fn.confirm(
+          "Do you want to open config for " .. path .. "?",
+          "&Yes\n&No",
+          2
+        )
+        if choice == 1 then
+          open_local_config(escaped)
+          return
+        end
       end
     end
     path = vim.fs.dirname(path)
@@ -56,8 +61,8 @@ local function create_local_config()
 
   if vim.fn.filereadable(escaped) == 1 then
     util
-      .logger("Create Local Config")
-      :warn("Local config already exists for:", path)
+        .logger("Create Local Config")
+        :warn("Local config already exists for:", path)
     return
   end
   local dir = vim.fs.dirname(escaped)
