@@ -10,7 +10,7 @@ end
 vim.g.ftplugin_java_loaded = true
 
 local null_ls = require "plugins.null-ls"
-null_ls.register_formatter "clang_format"
+null_ls.register_formatter(vim.g.java_formatter or "google_java_format")
 
 local lspconfig = require "plugins.lspconfig"
 
