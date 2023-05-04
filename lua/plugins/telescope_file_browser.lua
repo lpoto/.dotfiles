@@ -45,6 +45,8 @@ function M.config()
         hijack_netrw = true,
         no_ignore = true,
         grouped = true,
+        file_ignore_patterns = {},
+        respect_gitignore = false,
       },
     },
   }

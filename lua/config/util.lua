@@ -28,6 +28,7 @@ end
 --- @param patterns string[]
 --- @param default string?
 --- @param opts table?
+--- @return function
 function util.root_fn(patterns, default, opts)
   return function()
     local f = vim.fs.find(
