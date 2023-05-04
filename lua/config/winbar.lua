@@ -280,7 +280,11 @@ local function get_right_winbar(width, buf, winid)
     end
   end
   local cursor = vim.api.nvim_win_get_cursor(winid)
-  local cursor_str = "───• [" .. cursor[1] .. "," .. cursor[2] .. "] "
+  local row = cursor[1]
+  -- NOTE: columns are 0-indexed but rows are 1-indexed
+  -- so we add 1 to the column number.
+  local col = cursor[2] + 1
+  local cursor_str = "───• [" .. row .. "," .. col .. "] "
   if vim.fn.strchars(s) + vim.fn.strchars(cursor_str) + 2 <= width then
     if vim.fn.strchars(s) > 0 then
       s = s .. " •"
