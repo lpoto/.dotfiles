@@ -3,9 +3,7 @@
 --                                                               NVIM-TELESCOPE
 --=============================================================================
 -- https://github.com/nvim-telescope/telescope.nvim
---_____________________________________________________________________________
-
---[[
+--[[___________________________________________________________________________
 
 Telescope is a highly extendable fuzzy finder over lists.
 Items are shown in a popup with a prompt to search over.
@@ -18,9 +16,13 @@ Keymaps:
  - "<leader>d"   - show diagnostics
  - "<leader>q"   - quickfix
 
+ - "<leader>gl"  - git commits
+ - "<leader>gb"  - git branches
+ - "<leader>gS"  - git stash
+ - "<leader>gg"  - git status
+
  Use <C-q> in a telescope prompt to send the results to quickfix.
---]]
---
+-----------------------------------------------------------------------------]]
 local M = {
   "nvim-telescope/telescope.nvim",
   cmd = "Telescope",
@@ -29,53 +31,26 @@ local M = {
   },
 }
 
-M.keys = {
-  {
-    "<leader>n",
-    function()
-      require("telescope.builtin").find_files()
-    end,
-    mode = "n",
-  },
-  {
-    "<leader>b",
-    function()
-      require("telescope.builtin").buffers()
-    end,
-    mode = "n",
-  },
-  {
-    "<leader>o",
-    function()
-      require("telescope.builtin").oldfiles()
-    end,
-    mode = "n",
-  },
-  {
-    "<leader>q",
-    function()
-      require("telescope.builtin").quickfix()
-    end,
-    mode = "n",
-  },
-  {
-    "<leader>d",
-    function()
-      require("telescope.builtin").diagnostics()
-    end,
-    mode = "n",
-  },
-  {
-    "<leader>l",
-    function()
-      require("telescope.builtin").live_grep()
-    end,
-    mode = "n",
-  },
-}
+M.theme = "ivy"
 
-local default_mappings
-local pickers
+function M.builtin(name)
+  return function()
+    require("telescope.builtin")[name]()
+  end
+end
+
+M.keys = {
+  { "<leader>n",  M.builtin "find_files",   mode = "n" },
+  { "<leader>b",  M.builtin "buffers",      mode = "n" },
+  { "<leader>o",  M.builtin "oldfiles",     mode = "n" },
+  { "<leader>q",  M.builtin "quickfix",     mode = "n" },
+  { "<leader>d",  M.builtin "diagnostics",  mode = "n" },
+  { "<leader>l",  M.builtin "live_grep",    mode = "n" },
+  { "<leader>gg", M.builtin "git_status",   mode = "n" },
+  { "<leader>gl", M.builtin "git_commits",  mode = "n" },
+  { "<leader>gS", M.builtin "git_stash",    mode = "n" },
+  { "<leader>gb", M.builtin "git_branches", mode = "n" },
+}
 
 function M.config()
   local telescope = require "telescope"
@@ -87,13 +62,13 @@ function M.config()
       file_previewer = require("telescope.previewers").vim_buffer_cat.new,
       grep_previewer = require("telescope.previewers").vim_buffer_vimgrep.new,
       qflist_previewer = require("telescope.previewers").vim_buffer_qflist.new,
-      mappings = default_mappings(),
+      mappings = M.default_mappings(),
     },
-    pickers = pickers(),
+    pickers = M.pickers(),
   }
 end
 
-default_mappings = function()
+function M.default_mappings()
   local actions = require "telescope.actions"
   return {
     i = {
@@ -122,7 +97,7 @@ default_mappings = function()
   }
 end
 
-pickers = function()
+function M.pickers()
   local util = require "config.util"
   local file_ignore_patterns = {
     util.dir "plugged",
@@ -150,14 +125,14 @@ pickers = function()
   }
   return {
     find_files = {
-      theme = "ivy",
+      theme = M.theme,
       hidden = true,
       no_ignore = true,
       --previewer = true,
       file_ignore_patterns = file_ignore_patterns,
     },
     buffers = {
-      theme = "ivy",
+      theme = M.theme,
       sort_mru = true,
       ignore_current_buffer = false,
       mappings = {
@@ -172,16 +147,16 @@ pickers = function()
     },
     oldfiles = {
       hidden = true,
-      theme = "ivy",
+      theme = M.theme,
       no_ignore = true,
     },
     diagnostics = {
-      theme = "ivy",
+      theme = M.theme,
     },
     live_grep = {
       hidden = true,
       no_ignore = true,
-      theme = "ivy",
+      theme = M.theme,
       file_ignore_patterns = file_ignore_patterns,
       additional_args = function()
         return { "--hidden" }
@@ -189,11 +164,45 @@ pickers = function()
     },
     quickfix = {
       hidden = true,
-      theme = "ivy",
+      theme = M.theme,
       no_ignore = true,
       initial_mode = "normal",
     },
+    git_status = {
+      theme = M.theme,
+      attach_mappings = M.attach_git_status_mappings,
+      selection_strategy = "row",
+      initial_mode = "normal",
+    },
+    git_branches = {
+      theme = M.theme,
+      selection_strategy = "row",
+    },
+    git_commits = {
+      theme = M.theme,
+      selection_strategy = "row",
+    },
+    git_stash = {
+      theme = M.theme,
+      selection_strategy = "row",
+    },
   }
+end
+
+function M.attach_git_status_mappings(_, map)
+  local actions = require "telescope.actions"
+  actions.select_default:replace(actions.git_staging_toggle)
+  map("n", "e", actions.file_edit)
+  map("i", "<C-e>", actions.file_edit)
+  map("i", "<Tab>", actions.move_selection_next)
+  map("i", "<Tab>", actions.move_selection_next)
+  map("n", "<Tab>", actions.move_selection_next)
+  map("i", "<S-Tab>", actions.move_selection_previous)
+  map("n", "<S-Tab>", actions.move_selection_previous)
+  map("n", "s", actions.git_staging_toggle)
+  map("i", "<C-s>", actions.git_staging_toggle)
+  map("n", "<C-s>", actions.git_staging_toggle)
+  return true
 end
 
 return M

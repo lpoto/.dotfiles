@@ -26,6 +26,9 @@ return {
           NonText = { link = "Type" },
           TabLine = { link = "WinSeparator" },
           TabLineFill = { link = "WinSeparator" },
+          GitSignsAdd = { fg = "#569166" },
+          GitSignsChange = { fg = "#658aba" },
+          GitSignsDelete = { fg = "#a15c62" },
         }
       end,
     }
