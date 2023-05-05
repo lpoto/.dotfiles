@@ -18,5 +18,3 @@ util.require "config.local_config"
 util.require "config.lazy"
 --------------------------------------------- Load automatic session management
 util.require "config.sessions"
------------------------------------------------------------- Load winbar config
-util.require "config.winbar"

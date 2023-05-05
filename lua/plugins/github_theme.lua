@@ -26,8 +26,6 @@ return {
           NonText = { link = "Type" },
           TabLine = { link = "WinSeparator" },
           TabLineFill = { link = "WinSeparator" },
-          StatusLine = { link = "WinSeparator" },
-          StatusLineNC = { link = "WinSeparator" },
         }
       end,
     }
