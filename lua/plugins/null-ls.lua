@@ -48,7 +48,7 @@ function M.format(selection)
   local ok, e = pcall(function()
     local opts = {
       timeout_ms = 5000,
-      async = true,
+      async = false,
     }
     if selection then
       opts.range = {
