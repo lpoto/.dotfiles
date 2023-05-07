@@ -167,4 +167,24 @@ function util.concat(...)
   return s
 end
 
+---@param s1 string
+---@param s2 string
+function util.matching_chars(s1, s2)
+  local i = 1
+  local j = 1
+  local matching = ""
+  while i <= s1:len() and j <= s2:len() do
+    local c1 = s1:sub(i, i)
+    local c2 = s2:sub(j, j)
+    if c1 == c2 then
+      matching = matching .. c1
+      i = i + 1
+      j = j + 1
+    else
+      break
+    end
+  end
+  return matching
+end
+
 return util

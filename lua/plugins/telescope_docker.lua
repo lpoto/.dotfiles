@@ -33,8 +33,13 @@ function M.command()
     require("telescope").extensions.docker.docker()
   end, {
     nargs = "?",
-    complete = function()
-      return { "containers", "images", "compose" }
+    complete = function(c)
+      local util = require "config.util"
+      local items = { "containers", "images", "compose" }
+      table.sort(items, function(a, b)
+        return util.matching_chars(c, a) > util.matching_chars(c, b)
+      end)
+      return items
     end,
   })
 end
