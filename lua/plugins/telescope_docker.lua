@@ -17,7 +17,7 @@ local M = {
   cmd = "Docker",
 }
 
-function M.init()
+function M.command()
   vim.api.nvim_create_user_command("Docker", function(opts)
     if type(opts.args) ~= "string" then
       return
@@ -32,7 +32,6 @@ function M.init()
     end
     require("telescope").extensions.docker.docker()
   end, {
-
     nargs = "?",
     complete = function()
       return { "containers", "images", "compose" }
@@ -41,6 +40,8 @@ function M.init()
 end
 
 function M.config()
+  M.command()
+
   local telescope = require "telescope"
   telescope.setup {
     extensions = {
