@@ -170,6 +170,9 @@ end
 ---@param s1 string
 ---@param s2 string
 function util.string_matching_score(s1, s2)
+  if type(s1) ~= "string" or type(s2) ~= "string" then
+    return 0
+  end
   local score = 0
   for i = 1, s2:len() do
     local c1 = s2:sub(i, i)

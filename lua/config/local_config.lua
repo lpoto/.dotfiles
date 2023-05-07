@@ -115,11 +115,15 @@ vim.api.nvim_create_user_command("LocalConfig", function(opts)
   func[1](unpack(func[2]))
 end, {
   nargs = "?",
-  complete = function()
+  complete = function(c)
     local args = {}
     for k, _ in pairs(functions) do
       table.insert(args, k)
     end
+    table.sort(args, function(a, b)
+      return util.string_matching_score(c, a)
+        > util.string_matching_score(c, b)
+    end)
     return args
   end,
 })
