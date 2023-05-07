@@ -1,18 +1,10 @@
 --=============================================================================
 -------------------------------------------------------------------------------
---                                                                          PHP
+--                                                                         JSON
 --[[===========================================================================
-Loaded when a php file is opened
+Loaded when a json file is opened
 -----------------------------------------------------------------------------]]
 require("config.util").ftplugin {
-  formatter = "phpcbf",
-  language_server = {
-    "phpactor",
-    root_dir = require("config.util").root_fn {
-      ".git",
-      "composer.json",
-      "composer.lock",
-      "vendor",
-    },
-  },
+  language_server = "jsonls",
+  formatter = "prettier",
 }

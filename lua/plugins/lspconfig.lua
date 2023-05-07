@@ -37,13 +37,29 @@ end
 ---are provided, {} will be used.
 ---opts.capabilities will be automatically set to
 ---cmp's default capabilities if not found.
----@param server string: Name of the server to start
----@param opts table?: Optional server configuration
-function M.start_language_server(server, opts)
-  local log = require("config.util").logger("LSP", server)
+---@param opts table|string?: Optional server configuration
+function M.start_language_server(opts)
+  local util = require "config.util"
+  local log = util.logger "Start Language Server"
+  opts = opts or {}
+  local server = opts
+  if type(server) == "table" then
+    server = opts.name
+  end
+  if type(server) ~= "string" and type(opts) == "table" then
+    server = opts.server
+  end
+  if type(server) ~= "string" and type(opts) == "table" then
+    server = opts[1]
+  end
+  if type(opts) ~= "table" then
+    opts = {}
+  end
+  log = util.logger("LSP", server)
+
   local ok, e = pcall(function()
     vim.schedule(function()
-      log:info("Starting", server)
+      log:info("Starting language server:", server)
       local lspconfig = require "lspconfig"
       opts = vim.tbl_deep_extend(
         "force",

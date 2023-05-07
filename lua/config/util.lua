@@ -167,4 +167,90 @@ function util.concat(...)
   return s
 end
 
+---@param s1 string
+---@param s2 string
+function util.string_matching_score(s1, s2)
+  if type(s1) ~= "string" or type(s2) ~= "string" then
+    return 0
+  end
+  local score = 0
+  for i = 1, s2:len() do
+    local c1 = s2:sub(i, i)
+    for j = 1, s1:len() do
+      local c2 = s1:sub(j, j)
+      if c1 == c2 then
+        local add = math.max(1, 5 - i)
+        score = score + add
+        break
+      end
+    end
+  end
+  return score
+end
+
+local loaded = {}
+local _ftplugin
+
+---@class FtpluginOpts
+---@field language_server string|table?
+---@field formatter string|table?
+---@field linter string|table?
+---
+---@param opts FtpluginOpts
+function util.ftplugin(opts)
+  vim.defer_fn(function()
+    _ftplugin(opts)
+  end, 100)
+end
+
+function _ftplugin(opts)
+  local filetype = vim.bo.filetype
+  -- Load ftplugin only when opening a buffer
+  -- with "" buftype for the first time.
+  local buftype = vim.bo.buftype
+  if buftype ~= "" or loaded[filetype] then
+    return
+  end
+  loaded[filetype] = true
+
+  opts = opts or {}
+  if type(opts) ~= "table" then
+    opts = {}
+  end
+
+  -- Allow setting the language server, formatter and linter
+  -- with global variables, so the default config may be overriden
+  -- in local configs
+  opts.language_server = vim.g[filetype .. "_language_server"]
+    or opts.language_server
+  opts.formatter = vim.g[filetype .. "_formatter"] or opts.formatter
+  opts.linter = vim.g[filetype .. "_linter"] or opts.linter
+
+  -- Safe require lspconfig and null-ls and start language server
+  -- and add formatters/linters only on successful require
+  local lspconfig = util.require "plugins.lspconfig"
+  if type(lspconfig) == "table" then
+    if
+      type(opts.language_server) == "string"
+      or type(opts.language_server) == "table"
+    then
+      lspconfig.start_language_server(opts.language_server)
+    end
+  end
+  if not opts.formatter and not opts.linter then
+    return
+  end
+  local null_ls = util.require "plugins.null-ls"
+  if type(null_ls) == "table" then
+    if
+      type(opts.formatter) == "string" or type(opts.formatter) == "table"
+    then
+      null_ls.register_formatter(opts.formatter)
+    end
+    if type(opts.linter) == "string" or type(opts.linter) == "table" then
+      null_ls.register_linter(opts.linter)
+    end
+  end
+end
+
 return util
