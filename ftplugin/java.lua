@@ -26,25 +26,25 @@ require("config.util").ftplugin {
       "build.gradle.kts",
       ".git",
     },
-    settings = {
-      java = {
-        project = {
-          referencedLibraries = vim.g.java_referenced_libraries,
-          --[[
+    --[[
 
-         NOTE: This is a workaround for older java projects using
-                   ant or something similar.
+    NOTE: jdtls will work fine with gradle and maven, but it might
+          not work with ant or other older build tools.
 
-         As an example, you may add something similar to a project's
-         local config:
+          As a workaround, you may add something similar to a project's
+          local config:
 
-            vim.g.java_referenced_libraries = {
-              "/path_to_project/lib/**",
+          vim.g.jdtls_config = {
+            settings = {
+              java = {
+                project = {
+                  referencedLibraries = {
+                    "/path_to_project/lib/**",
+                  }
+                }
+              }
             }
-
-        --]]
-        },
-      },
-    },
+          }
+    --]]
   },
 }
