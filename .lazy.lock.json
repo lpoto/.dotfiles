@@ -23,7 +23,7 @@
   "simplebar.nvim": { "branch": "main", "commit": "7d2d86fba7843f4734a4a7e0bc4c092e6ec58e03" },
   "telescope-docker.nvim": { "branch": "main", "commit": "460f1d13a87bd7b8edae8965b2966a822c6fec41" },
   "telescope-file-browser.nvim": { "branch": "master", "commit": "4054a5d0ab85475bf75df00cf10754d2e54b5532" },
-  "telescope-tasks.nvim": { "branch": "main", "commit": "1e95364ed1ca3b42885e963ae0a9b7e350e26e8b" },
+  "telescope-tasks.nvim": { "branch": "main", "commit": "e2c3f84e152ce0f9b5b9060ac0df8e90e6a8eb0e" },
   "telescope-undo.nvim": { "branch": "main", "commit": "231b5ebb4328d2768c830c9a8d1b9c696116848d" },
   "telescope.nvim": { "branch": "master", "commit": "d77b37f4520e5fc2cf4c74c12e42ed4b589bd367" }
 }

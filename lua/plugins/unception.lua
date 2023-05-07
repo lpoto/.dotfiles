@@ -13,6 +13,7 @@ terminal emulator.
   - <leader>ga - git commit --amend
   - <leader>gP - git push
   - <leader>gp - git pull
+  - <leader>gf - git fetch
 
 ------------------------------------------------------------------------------]]
 local M = {
@@ -29,6 +30,7 @@ M.init = function()
   vim.keymap.set("n", "<leader>ga", M.git_commit_amend)
   vim.keymap.set("n", "<leader>gp", M.git_pull)
   vim.keymap.set("n", "<leader>gP", M.git_push)
+  vim.keymap.set("n", "<leader>gf", M.git_fetch)
 end
 
 function M.config()
@@ -69,6 +71,10 @@ function M.git_push()
       "push " .. remote .. " " .. branch
     )
   end)
+end
+
+function M.git_fetch()
+  M.git_command "fetch"
 end
 
 function M.git_pull()
