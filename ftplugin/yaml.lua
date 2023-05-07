@@ -4,7 +4,7 @@
 --[[===========================================================================
 Loaded when a yaml file is opened
 -----------------------------------------------------------------------------]]
-if vim.g.ftplugin_yaml_loaded then
+if vim.g.ftplugin_yaml_loaded or vim.bo.buftype ~= "" then
   return
 end
 vim.g.ftplugin_yaml_loaded = true
