@@ -169,22 +169,20 @@ end
 
 ---@param s1 string
 ---@param s2 string
-function util.matching_chars(s1, s2)
-  local i = 1
-  local j = 1
-  local matching = ""
-  while i <= s1:len() and j <= s2:len() do
-    local c1 = s1:sub(i, i)
-    local c2 = s2:sub(j, j)
-    if c1 == c2 then
-      matching = matching .. c1
-      i = i + 1
-      j = j + 1
-    else
-      break
+function util.string_matching_score(s1, s2)
+  local score = 0
+  for i = 1, s2:len() do
+    local c1 = s2:sub(i, i)
+    for j = 1, s1:len() do
+      local c2 = s1:sub(j, j)
+      if c1 == c2 then
+        local add = math.max(1, 5 - i)
+        score = score + add
+        break
+      end
     end
   end
-  return matching
+  return score
 end
 
 return util

@@ -22,11 +22,11 @@ function M.command()
     if type(opts.args) ~= "string" then
       return
     end
-    if opts.args:match "im" then
+    if opts.args:match "^i" then
       require("telescope").extensions.docker.images()
       return
     end
-    if opts.args:match "comp" then
+    if opts.args:match "^c.*m" then
       require("telescope").extensions.docker.compose()
       return
     end
@@ -37,7 +37,8 @@ function M.command()
       local util = require "config.util"
       local items = { "containers", "images", "compose" }
       table.sort(items, function(a, b)
-        return util.matching_chars(c, a) > util.matching_chars(c, b)
+        return util.string_matching_score(c, a)
+            > util.string_matching_score(c, b)
       end)
       return items
     end,
