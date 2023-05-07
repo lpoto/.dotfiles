@@ -61,8 +61,8 @@ local function create_local_config()
 
   if vim.fn.filereadable(escaped) == 1 then
     util
-        .logger("Create Local Config")
-        :warn("Local config already exists for:", path)
+      .logger("Create Local Config")
+      :warn("Local config already exists for:", path)
     return
   end
   local dir = vim.fs.dirname(escaped)

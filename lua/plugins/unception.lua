@@ -134,9 +134,9 @@ end
 function M.fetch_git_data(callback, on_error)
   local log = require("config.util").logger "Fetch git data"
   on_error = on_error
-      or function()
-        log:warn "Could not fetch git data"
-      end
+    or function()
+      log:warn "Could not fetch git data"
+    end
   local remote = {}
   vim.fn.jobstart("git remote show", {
     detach = false,

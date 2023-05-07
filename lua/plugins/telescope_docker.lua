@@ -38,7 +38,7 @@ function M.command()
       local items = { "containers", "images", "compose" }
       table.sort(items, function(a, b)
         return util.string_matching_score(c, a)
-            > util.string_matching_score(c, b)
+          > util.string_matching_score(c, b)
       end)
       return items
     end,
