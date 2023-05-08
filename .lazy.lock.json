@@ -16,14 +16,14 @@
   "null-ls.nvim": { "branch": "main", "commit": "71797bb303ac99a4435592e15068f127970513d7" },
   "nvim-cmp": { "branch": "main", "commit": "935b4069ce73b60ba9075bf05ee6ab50ed3af1a9" },
   "nvim-lspconfig": { "branch": "master", "commit": "5ba7ab746d814413c84ed98c0214c71cd28f130a" },
-  "nvim-treesitter": { "branch": "master", "commit": "402f1b8d3b424bb2379fc2fde522cd782de68cf4" },
+  "nvim-treesitter": { "branch": "master", "commit": "0ec48923e526d55892b7a1564a01b5111e5e9ba0" },
   "nvim-unception": { "branch": "main", "commit": "0cbf11a6c5c4314e88245b69d460f85f30885d2e" },
   "plenary.nvim": { "branch": "master", "commit": "9ac3e9541bbabd9d73663d757e4fe48a675bb054" },
   "pretty-fold.nvim": { "branch": "master", "commit": "a7d8b424abe0eedf50116c460fbe6dfd5783b1d5" },
   "simplebar.nvim": { "branch": "main", "commit": "7d2d86fba7843f4734a4a7e0bc4c092e6ec58e03" },
-  "telescope-docker.nvim": { "branch": "main", "commit": "1f0babb1f16503ec5e66e31118e38a8f991d6575" },
+  "telescope-docker.nvim": { "branch": "main", "commit": "a300587995d055b6a5f83f17adbeb651575aa39e" },
   "telescope-file-browser.nvim": { "branch": "master", "commit": "4054a5d0ab85475bf75df00cf10754d2e54b5532" },
-  "telescope-tasks.nvim": { "branch": "main", "commit": "e2c3f84e152ce0f9b5b9060ac0df8e90e6a8eb0e" },
+  "telescope-tasks.nvim": { "branch": "main", "commit": "7f7080e7dd597eeaf81cabb4addd8b6ca9d6037e" },
   "telescope-undo.nvim": { "branch": "main", "commit": "231b5ebb4328d2768c830c9a8d1b9c696116848d" },
   "telescope.nvim": { "branch": "master", "commit": "d77b37f4520e5fc2cf4c74c12e42ed4b589bd367" }
 }
