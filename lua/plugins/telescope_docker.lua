@@ -26,16 +26,20 @@ function M.command()
       require("telescope").extensions.docker.images()
       return
     end
+    if opts.args:match "^f" then
+      require("telescope").extensions.docker.files()
+      return
+    end
     if opts.args:match "^c.*m" then
       require("telescope").extensions.docker.compose()
       return
     end
-    require("telescope").extensions.docker.docker()
+    require("telescope").extensions.docker.containers()
   end, {
     nargs = "?",
     complete = function(c)
       local util = require "config.util"
-      local items = { "containers", "images", "compose" }
+      local items = { "containers", "images", "compose", "files" }
       table.sort(items, function(a, b)
         return util.string_matching_score(c, a)
           > util.string_matching_score(c, b)
