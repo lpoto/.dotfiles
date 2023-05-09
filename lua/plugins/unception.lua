@@ -57,7 +57,7 @@ function M.git_command(suffix)
 end
 
 function M.git_commit()
-  M.git_command "commit"
+  M.git_command "commit "
 end
 
 function M.git_commit_amend()
@@ -74,7 +74,7 @@ function M.git_push()
 end
 
 function M.git_fetch()
-  M.git_command "fetch"
+  M.git_command "fetch "
 end
 
 function M.git_pull()
