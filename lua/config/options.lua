@@ -80,3 +80,10 @@ vim.opt.statusline = table.concat({
   "%15([%l,%c%)]", -- show line and column
   " %3p%% ", -- show percentage through file
 }, "")
+
+----------------------------------------------------------------------- FOLDING
+--- Code may be folded with "za"
+vim.opt.foldmethod = "indent"
+vim.opt.foldexpr = "0"
+vim.opt.foldlevel = 9999
+vim.wo.foldenable = false
