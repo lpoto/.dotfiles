@@ -29,14 +29,10 @@ return {
           GitSignsAdd = { fg = "#569166" },
           GitSignsChange = { fg = "#658aba" },
           GitSignsDelete = { fg = "#a15c62" },
+          StatusLine = { fg = "#9f9f9f", bg = "NONE" },
         }
       end,
     }
-
-    -- Set highlights ignored by the theme
-    vim.api.nvim_set_hl(0, "WinBar", { fg = "#c2c2c2", bg = "NONE" })
-    vim.api.nvim_set_hl(0, "WinBarNC", { link = "WinSeparator" })
-
     vim.cmd.colorscheme "github_dark"
   end,
 }

@@ -67,6 +67,16 @@ vim.cmd 'let &t_8f = "\\<Esc>[38;2;%lu;%lu;%lum"'
 vim.cmd 'let &t_8b = "\\<Esc>[48;2;%lu;%lu;%lum"'
 
 -------------------------------------------------------------------- STATUSLINE
--- disable statusline by default, it may then be enabled by plugins
-
-vim.opt.laststatus = 0
+vim.opt.laststatus = 3
+vim.opt.statusline = table.concat({
+  " %-5{%v:lua.string.upper(v:lua.vim.fn.mode())%}", -- show mode
+  "%f", -- show filename, relative to cwd
+  "%-m ", -- show modified flar (or readonly)
+  " %{%len(v:lua.vim.diagnostic.get(0)) > 0 ? " -- show diagnostics
+    .. "'!' .. len(v:lua.vim.diagnostic.get(0)) : '' %}",
+  " %= ",
+  " %{get(b:,'gitsigns_head','')} ", -- show git branch
+  "%{get(b:,'gitsigns_status','')} ", -- show git diff
+  "%15([%l,%c%)]", -- show line and column
+  " %3p%% ", -- show percentage through file
+}, "")
