@@ -79,7 +79,7 @@ function M.init()
   vim.keymap.set("i", "<Tab>", function()
     if package.loaded["cmp"] then
       local cmp = require "cmp"
-      if cmp.visible() and #cmp.get_entries() > 1 then
+      if cmp.visible() then
         vim.schedule(function()
           cmp.select_next_item {
             behavior = cmp.SelectBehavior.Select,

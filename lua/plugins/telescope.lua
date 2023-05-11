@@ -68,21 +68,6 @@ function M.config()
     pickers = M.pickers(),
   }
   telescope.load_extension "fzf"
-
-  M.folding_hack()
-end
-
---- This is a hack to prevent telescope disabling
---- folding when opening a new buffer.
----
---- https://github.com/nvim-telescope/telescope.nvim/issues/699
-function M.folding_hack()
-  vim.api.nvim_create_autocmd("BufEnter", {
-    pattern = "*",
-    callback = function()
-      pcall(vim.api.nvim_exec, "normal zx zR", true)
-    end,
-  })
 end
 
 function M.default_mappings()

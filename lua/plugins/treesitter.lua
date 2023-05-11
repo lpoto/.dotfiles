@@ -11,7 +11,7 @@ highlights, ...
 --]]
 local M = {
   "nvim-treesitter/nvim-treesitter",
-  event = {"BufRead", "BufNewFile"},
+  event = { "BufRead", "BufNewFile" },
 }
 
 function M.config()
