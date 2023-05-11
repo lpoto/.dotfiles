@@ -46,26 +46,6 @@ vim.opt.wildmenu = true -- display matching files with tab completion
 
 vim.opt.jumpoptions = "stack" -- make jumplist behave like stack
 
----------------------------------------------------------------------------- UI
-
-vim.opt.background = "dark"
-vim.opt.number = true
---vim.opt.relativenumber = true
-vim.opt.wrap = false
-vim.opt.scrolloff = 8
-vim.opt.incsearch = true
-vim.opt.title = false
-vim.opt.signcolumn = "number"
-vim.opt.showmode = false
-vim.opt.guicursor = "a:blinkon0"
-vim.opt.cursorline = true
-vim.opt.cursorcolumn = false
---vim.opt.colorcolumn = +1
-vim.t_Co = 256
-vim.opt.termguicolors = true
-vim.cmd 'let &t_8f = "\\<Esc>[38;2;%lu;%lu;%lum"'
-vim.cmd 'let &t_8b = "\\<Esc>[48;2;%lu;%lu;%lum"'
-
 -------------------------------------------------------------------- STATUSLINE
 vim.opt.laststatus = 3
 vim.opt.statusline = table.concat({
@@ -87,3 +67,51 @@ vim.opt.foldmethod = "indent"
 vim.opt.foldexpr = "0"
 vim.opt.foldlevel = 9999
 vim.wo.foldenable = false
+
+---------------------------------------------------------------------------- UI
+
+vim.opt.background = "dark"
+vim.opt.number = true
+--vim.opt.relativenumber = true
+vim.opt.wrap = false
+vim.opt.scrolloff = 8
+vim.opt.incsearch = true
+vim.opt.title = false
+vim.opt.signcolumn = "number"
+vim.opt.showmode = false
+vim.opt.guicursor = "a:blinkon0"
+vim.opt.cursorline = true
+vim.opt.cursorcolumn = false
+--vim.opt.colorcolumn = +1
+vim.t_Co = 256
+vim.opt.termguicolors = true
+vim.cmd 'let &t_8f = "\\<Esc>[38;2;%lu;%lu;%lum"'
+vim.cmd 'let &t_8b = "\\<Esc>[48;2;%lu;%lu;%lum"'
+
+---------------- Set relative number and cursorline only for the active window,
+------------------------------------- and disable them when leaving the window.
+vim.api.nvim_create_autocmd({ "VimEnter", "WinEnter", "BufWinEnter" }, {
+  callback = function()
+    if vim.wo.number then
+      vim.wo.relativenumber = true
+      vim.wo.cursorline = true
+    end
+  end,
+})
+vim.api.nvim_create_autocmd({ "WinLeave" }, {
+  callback = function()
+    if vim.wo.number then
+      vim.wo.relativenumber = false
+      vim.wo.cursorline = false
+    end
+  end,
+})
+--------------------------------------------------------- Highlight yanked text
+vim.api.nvim_create_autocmd("TextYankPost", {
+  callback = function()
+    require("vim.highlight").on_yank {
+      higroup = "IncSearch",
+      timeout = 40,
+    }
+  end,
+})

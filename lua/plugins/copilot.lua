@@ -7,7 +7,7 @@
 
 local M = {
   "zbirenbaum/copilot.lua",
-  event = "User RealInsertEnter",
+  event = { "BufRead", "BufNewFile" },
   cmd = "Copilot",
 }
 

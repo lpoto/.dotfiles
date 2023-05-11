@@ -27,7 +27,7 @@ mappings:
 --]]
 local M = {
   "hrsh7th/nvim-cmp",
-  event = "User RealInsertEnter",
+  event = {"BufRead", "BufNewFile"},
   dependencies = {
     "hrsh7th/cmp-nvim-lsp",
     "hrsh7th/cmp-path",
