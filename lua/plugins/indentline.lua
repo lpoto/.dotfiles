@@ -10,7 +10,6 @@ Indent guides for Neovim.
 
 Provides vertical indentation lines for code.
 --]]
-
 return {
   "lukas-reineke/indent-blankline.nvim",
   event = { "BufNewFile", "BufReadPre" },
@@ -20,7 +19,6 @@ return {
       --use │ for indentline
       char = "│",
       buftype_exclude = { "terminal" },
-      show_current_context = true,
       --show_current_context_start = true,
       char_highlight_list = {
         "IndentBlanklineIndent",
@@ -34,11 +32,6 @@ return {
         "alpha",
       },
     }
-    vim.api.nvim_set_hl(0, "IndentBlanklineIndent", { fg = "#2b2a2a" })
-    vim.api.nvim_set_hl(
-      0,
-      "IndentBlanklineContextChar",
-      { fg = "#3b3939", bold = true }
-    )
+    vim.api.nvim_set_hl(0, "IndentBlanklineIndent", { fg = "#191919" })
   end,
 }
