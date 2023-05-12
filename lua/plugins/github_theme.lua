@@ -23,16 +23,16 @@ return {
           ["@field"] = { link = "Special" },
           Type = { fg = "#E6BE8A" },
           ["@type"] = { link = "Type" },
-          NonText = { link = "Type" },
           TabLine = { link = "WinSeparator" },
           TabLineFill = { link = "WinSeparator" },
           GitSignsAdd = { fg = "#569166" },
           GitSignsChange = { fg = "#658aba" },
           GitSignsDelete = { fg = "#a15c62" },
           StatusLine = { fg = "#9f9f9f", bg = "NONE" },
+          Whitespace = { fg = "#292929", bg = "NONE" },
+          NonText = { link = "Whitespace" },
         }
       end,
     }
-    vim.cmd.colorscheme "github_dark"
   end,
 }
