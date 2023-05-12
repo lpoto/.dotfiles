@@ -8,7 +8,7 @@
 -- popupmenu
 --
 -- commands:
---   :Noice - Open the messages history
+--   :Noice - Open the messages history or "<leader>m"
 ------------------------------------------------------------------------------
 
 local M = {
@@ -22,7 +22,8 @@ local M = {
 function M.config()
   require("noice").setup {
     lsp = {
-      -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
+      -- override markdown rendering so that **cmp** and other
+      -- plugins use **Treesitter**
       override = {
         ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
         ["vim.lsp.util.stylize_markdown"] = true,
@@ -48,11 +49,25 @@ function M.config()
       },
     },
   }
+  vim.defer_fn(function()
+    vim.keymap.set("n", "<leader>m", M.notification_history)
+    vim.api.nvim_create_user_command("Noice", M.notification_history, {})
+  end, 100)
+end
+
+local telescope_config_loaded = false
+function M.telescope_config()
+  if telescope_config_loaded then
+    return
+  end
+  telescope_config_loaded = true
+  require("telescope").load_extension "noice"
 end
 
 ---Display notify history in a telescope prompt
 function M.notification_history()
-  vim.api.nvim_exec("Noice telescope", false)
+  M.telescope_config()
+  vim.api.nvim_exec("Telescope noice theme=ivy", false)
 end
 
 return M

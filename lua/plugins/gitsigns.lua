@@ -9,7 +9,7 @@ https://github.com/lewis6991/gitsigns.nvim
 -----------------------------------------------------------------------------]]
 local M = {
   "lewis6991/gitsigns.nvim",
-  event = { "User RealBufEnter" },
+  event = { "BufRead", "BufNewFile" },
 }
 
 function M.config()

@@ -23,17 +23,12 @@ M.ignore_filetype_patterns = {
   "git.*",
   "qf",
   "help",
-  "undotree",
-  "dashboard",
-  "Neogit.*",
   "Telecope.*",
   "lazy",
-  "null-ls-info",
+  "null-ls.*",
   "Lsp.*",
   "mason",
-  "SidebarNvim",
   "noice",
-  "Neogit.*",
   "Diffview.*",
 }
 
@@ -55,6 +50,8 @@ function M.init()
     once = true,
     group = vim.api.nvim_create_augroup(M.title, { clear = true }),
     callback = function()
+      -- When leaving neovim, save the current session
+      -- to the session directory.
       if vim.fn.isdirectory(M.session_dir) == 0 then
         -- NOTE: ensure that the sessions directory exists
         local ok, _ = pcall(vim.fn.mkdir, M.session_dir, "p")
@@ -63,27 +60,40 @@ function M.init()
         end
       end
 
-      -- When leaving neovim, save the current session
-      -- to the session directory.
+      -- NOTE: delete all arguments from the argument list
+      -- before saving the session.
+      -- This is necessary, as files opened with unception
+      -- are added to the argument list, and we do not want
+      -- to save them.
+      vim.api.nvim_exec("%argdelete", true)
 
+      -- NOTE: iterate open buffers and delete those that
+      -- are not valid, or are not files, or are files
+      -- with ignored filetypes.
       local buffers = vim.api.nvim_list_bufs()
       local removed = 0
 
-      for _, buf in ipairs(buffers) do
-        local filetype = vim.api.nvim_buf_get_option(buf, "filetype")
-        local buftype = vim.api.nvim_buf_get_option(buf, "buftype")
-        -- NOTE: remove some buffers that are not needed
-        -- when restoring the session.
+      local check_buffer = function(buf)
+        if not vim.api.nvim_buf_is_valid(buf) then
+          return false
+        end
+        local filetype = vim.api.nvim_buf_get_option(buf, "filetype") or ""
+        local buftype = vim.api.nvim_buf_get_option(buf, "buftype") or ""
+        if buftype:len() > 0 or filetype:len() == 0 then
+          return false
+        end
         for _, pattern in ipairs(M.ignore_filetype_patterns) do
-          if
-            buftype:len() > 0
-            or filetype:match(pattern)
-            or filetype:len() == 0
-          then
-            pcall(vim.api.nvim_buf_delete, buf, { force = true })
-            removed = removed + 1
-            break
+          if filetype:match(pattern) then
+            return false
           end
+        end
+        return true
+      end
+
+      for _, buf in ipairs(buffers) do
+        if not check_buffer(buf) then
+          pcall(vim.api.nvim_buf_delete, buf, { force = true })
+          removed = removed + 1
         end
       end
 

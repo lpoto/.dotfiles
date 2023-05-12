@@ -31,6 +31,11 @@ vim.opt.shiftwidth = 4 -- number of spaces used for each step of indent
 vim.opt.smartindent = true -- smart indent the next line
 vim.opt.expandtab = true -- use spaces in tabs
 
+----------------------------------------------------------------------- FOLDING
+
+-- Fold visual selection with zf, toggle fold with za ...
+vim.opt.foldmethod = "manual"
+
 ------------------------------------------------------------------ AUTOCOMPLETE
 
 vim.opt.shortmess = vim.opt.shortmess + "c" -- don't give ins-completion-menu
@@ -45,6 +50,21 @@ vim.opt.path = ".,,**" -- search down into subfolders
 vim.opt.wildmenu = true -- display matching files with tab completion
 
 vim.opt.jumpoptions = "stack" -- make jumplist behave like stack
+
+-------------------------------------------------------------------- STATUSLINE
+vim.opt.laststatus = 3
+vim.opt.statusline = table.concat({
+  " %-5{%v:lua.string.upper(v:lua.vim.fn.mode())%}", -- show mode
+  "%f", -- show filename, relative to cwd
+  "%-m ", -- show modified flar (or readonly)
+  " %{%len(v:lua.vim.diagnostic.get(0)) > 0 ? " -- show diagnostics
+    .. "'!' .. len(v:lua.vim.diagnostic.get(0)) : '' %}",
+  " %= ",
+  " %{get(g:,'gitsigns_head','')} ", -- show git branch
+  "%{get(b:,'gitsigns_status','')} ", -- show git diff
+  "%15([%l,%c%)]", -- show line and column
+  " %3p%% ", -- show percentage through file
+}, "")
 
 ---------------------------------------------------------------------------- UI
 
@@ -66,7 +86,33 @@ vim.opt.termguicolors = true
 vim.cmd 'let &t_8f = "\\<Esc>[38;2;%lu;%lu;%lum"'
 vim.cmd 'let &t_8b = "\\<Esc>[48;2;%lu;%lu;%lum"'
 
--------------------------------------------------------------------- STATUSLINE
--- disable statusline by default, it may then be enabled by plugins
+vim.opt.listchars:append { tab = "│ ", multispace = "│ " }
+vim.opt.list = true
 
-vim.opt.laststatus = 0
+---------------- Set relative number and cursorline only for the active window,
+------------------------------------- and disable them when leaving the window.
+vim.api.nvim_create_autocmd({ "VimEnter", "WinEnter", "BufWinEnter" }, {
+  callback = function()
+    if vim.wo.number then
+      vim.wo.relativenumber = true
+      vim.wo.cursorline = true
+    end
+  end,
+})
+vim.api.nvim_create_autocmd({ "WinLeave" }, {
+  callback = function()
+    if vim.wo.number then
+      vim.wo.relativenumber = false
+      vim.wo.cursorline = false
+    end
+  end,
+})
+--------------------------------------------------------- Highlight yanked text
+vim.api.nvim_create_autocmd("TextYankPost", {
+  callback = function()
+    require("vim.highlight").on_yank {
+      higroup = "IncSearch",
+      timeout = 40,
+    }
+  end,
+})

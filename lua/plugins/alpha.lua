@@ -69,7 +69,7 @@ function buttons()
         require("telescope.builtin").live_grep()
       end),
       button("<leader>gg", "Git status", function()
-        require("plugins.gitsigns").git_status()
+        require("telescope.builtin").git_status()
       end),
       button(":Lazy", "Plugins", "Lazy"),
       button(":Mason", "Package Manager", "Mason"),

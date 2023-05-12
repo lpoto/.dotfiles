@@ -7,7 +7,7 @@
 
 local M = {
   "zbirenbaum/copilot.lua",
-  event = "User RealInsertEnter",
+  event = { "BufRead", "BufNewFile" },
   cmd = "Copilot",
 }
 
@@ -28,6 +28,12 @@ function M.config()
           next = "<C-k>",
           prev = "<C-j>",
         },
+      },
+      filetypes = {
+        ["*"] = function()
+          local ok, n = pcall(vim.fn.getfsize, vim.fn.expand "%")
+          return ok and n < 50000
+        end,
       },
     }
   end, 100)

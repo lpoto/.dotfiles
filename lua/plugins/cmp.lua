@@ -27,10 +27,11 @@ mappings:
 --]]
 local M = {
   "hrsh7th/nvim-cmp",
-  event = "User RealInsertEnter",
+  event = { "BufRead", "BufNewFile" },
   dependencies = {
     "hrsh7th/cmp-nvim-lsp",
     "hrsh7th/cmp-path",
+    "hrsh7th/cmp-buffer",
     "L3MON4d3/LuaSnip",
     "saadparwaiz1/cmp_luasnip",
   },
@@ -49,15 +50,10 @@ function M.config()
       end,
     },
     sources = {
-      {
-        name = "nvim_lsp",
-      },
-      {
-        name = "luasnip",
-      },
-      {
-        name = "path",
-      },
+      { name = "nvim_lsp" },
+      { name = "luasnip" },
+      { name = "path" },
+      { name = "buffer" },
     },
     window = {
       completion = cmp.config.window.bordered(),
@@ -83,7 +79,7 @@ function M.init()
   vim.keymap.set("i", "<Tab>", function()
     if package.loaded["cmp"] then
       local cmp = require "cmp"
-      if cmp.visible() and #cmp.get_entries() > 1 then
+      if cmp.visible() then
         vim.schedule(function()
           cmp.select_next_item {
             behavior = cmp.SelectBehavior.Select,

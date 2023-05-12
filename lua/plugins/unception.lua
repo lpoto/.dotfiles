@@ -39,11 +39,15 @@ function M.config()
     once = false,
     callback = function()
       vim.schedule(function()
-        if vim.bo.buftype ~= "" or vim.bo.filetype:match "^git" ~= nil then
+        pcall(function()
+          -- NOTE: do not save buffers opened
+          -- in the terminal emulator, scratch
+          -- them immediately when they are
+          -- closed.
           vim.bo.bufhidden = "wipe"
           vim.bo.swapfile = false
           vim.bo.buflisted = false
-        end
+        end)
       end)
     end,
   })
@@ -57,31 +61,31 @@ function M.git_command(suffix)
 end
 
 function M.git_commit()
-  M.git_command "commit"
+  M.git_command "commit "
 end
 
 function M.git_commit_amend()
-  M.git_command "commit --amend"
+  M.git_command "commit --amend "
 end
 
 function M.git_push()
   M.fetch_git_data(function(remote, branch)
     require("plugins.unception").run_command_with_prompt(
       "git ",
-      "push " .. remote .. " " .. branch
+      "push " .. remote .. " " .. branch .. " "
     )
   end)
 end
 
 function M.git_fetch()
-  M.git_command "fetch"
+  M.git_command "fetch "
 end
 
 function M.git_pull()
   M.fetch_git_data(function(remote, branch)
     require("plugins.unception").run_command_with_prompt(
       "git ",
-      "pull " .. remote .. " " .. branch
+      "pull " .. remote .. " " .. branch .. " "
     )
   end)
 end
