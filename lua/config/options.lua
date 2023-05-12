@@ -55,7 +55,7 @@ vim.opt.statusline = table.concat({
   " %{%len(v:lua.vim.diagnostic.get(0)) > 0 ? " -- show diagnostics
     .. "'!' .. len(v:lua.vim.diagnostic.get(0)) : '' %}",
   " %= ",
-  " %{get(b:,'gitsigns_head','')} ", -- show git branch
+  " %{get(g:,'gitsigns_head','')} ", -- show git branch
   "%{get(b:,'gitsigns_status','')} ", -- show git diff
   "%15([%l,%c%)]", -- show line and column
   " %3p%% ", -- show percentage through file
