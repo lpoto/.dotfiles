@@ -31,6 +31,7 @@ return {
           StatusLine = { fg = "#9f9f9f", bg = "NONE" },
           Whitespace = { fg = "#292929", bg = "NONE" },
           NonText = { link = "Whitespace" },
+          Folded = { bg = "NONE", fg = "#658aba" },
         }
       end,
     }

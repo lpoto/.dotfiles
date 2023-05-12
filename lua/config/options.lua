@@ -31,6 +31,11 @@ vim.opt.shiftwidth = 4 -- number of spaces used for each step of indent
 vim.opt.smartindent = true -- smart indent the next line
 vim.opt.expandtab = true -- use spaces in tabs
 
+----------------------------------------------------------------------- FOLDING
+
+-- Fold visual selection with zf, toggle fold with za ...
+vim.opt.foldmethod = "manual"
+
 ------------------------------------------------------------------ AUTOCOMPLETE
 
 vim.opt.shortmess = vim.opt.shortmess + "c" -- don't give ins-completion-menu
