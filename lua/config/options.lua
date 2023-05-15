@@ -30,6 +30,7 @@ vim.opt.softtabstop = 4 -- set the number of spaces that a tab counts for
 vim.opt.shiftwidth = 4 -- number of spaces used for each step of indent
 vim.opt.smartindent = true -- smart indent the next line
 vim.opt.expandtab = true -- use spaces in tabs
+vim.opt.autoindent = true
 
 ----------------------------------------------------------------------- FOLDING
 
@@ -86,7 +87,7 @@ vim.opt.termguicolors = true
 vim.cmd 'let &t_8f = "\\<Esc>[38;2;%lu;%lu;%lum"'
 vim.cmd 'let &t_8b = "\\<Esc>[48;2;%lu;%lu;%lum"'
 
-vim.opt.listchars:append { tab = "│ ", multispace = "│ " }
+vim.opt.listchars:append { tab = "│ ", multispace = ". " }
 vim.opt.list = true
 
 ---------------- Set relative number and cursorline only for the active window,

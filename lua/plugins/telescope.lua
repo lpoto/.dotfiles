@@ -161,7 +161,7 @@ function M.pickers()
       theme = M.theme,
       file_ignore_patterns = file_ignore_patterns,
       additional_args = function()
-        return { "--hidden" }
+        return { "--hidden", "-u" }
       end,
     },
     quickfix = {
