@@ -8,27 +8,54 @@
 cur_pwd=${PWD}
 
 if [ "$USER" = "root" ]; then
-	echo "==> WARN: This should not be run as root."
-	exit 2
+  echo "==> WARN: This should not be run as root."
+  exit 2
 fi
 
+# TODO: check if make, cmake, git and ninja are
+# installed
+
+# cd to the parent directory of this script
 cd "$(dirname "$0")"
 scripts=$PWD
+# cd to the root of the project
 cd ../../
 
 if [ -d "./.build/neovim" ]; then
-	echo "==> ./.build/neovim exists, pulling latest version ..."
-	sleep 1
-	cd ./.build/neovim && git pull
+  # If neovim is already cloned, pull the latest version
+  echo "==> ./.build/neovim exists, pulling latest version ..."
+  sleep 1
+  cd ./.build/neovim && git pull
 else
-	echo "==> ./.build/neovim does not exist, cloning ..."
-	sleep 1
-	git clone https://github.com/neovim/neovim ./.build/neovim
-	cd ./.build/neovim
+  # If neovim is not cloned, clone it
+  echo "==> ./.build/neovim does not exist, cloning ..."
+  sleep 1
+  git clone https://github.com/neovim/neovim ./.build/neovim
+  cd ./.build/neovim
 fi
-echo "==> Starting build ..."
+
+echo
+echo "==> Cleaning old build ..."
 sleep 2
-make CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX=${PWD}/build" install
+
+# If build and .deps directories exist, remove them
+# so the build is clean
+if [ -d "./build" ]; then
+  echo "==> Removing old build directory..."
+  rm -rf ./build
+fi
+if [ -d "./.deps" ]; then
+  echo "==> Removing old dependencies directory ..."
+  rm -rf ./.deps
+fi
+
+echo
+echo "==> Starting a new build ..."
+sleep 2
+# Build neovim insto a custom directory
+# And ensure to build in release mode, so it is fast
+# and does not include debug logs
+make CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX=${PWD}/build" CMAKE_BUILD_TYPE=Release install
 
 echo
 echo "==> Build complete. (run '${scripts}/nvim' to update neovim)"
