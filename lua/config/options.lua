@@ -30,6 +30,7 @@ vim.opt.softtabstop = 4 -- set the number of spaces that a tab counts for
 vim.opt.shiftwidth = 4 -- number of spaces used for each step of indent
 vim.opt.smartindent = true -- smart indent the next line
 vim.opt.expandtab = true -- use spaces in tabs
+vim.opt.autoindent = true
 
 ----------------------------------------------------------------------- FOLDING
 
