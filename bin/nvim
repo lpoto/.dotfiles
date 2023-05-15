@@ -26,7 +26,7 @@ if [ ! -f "${nvim_bin_path}" ]; then
   fi
   echo "==> building neovim ..."
   echo
-  ${nvim_config_path}/scripts/build/nvim
+  ${nvim_config_path}/scripts/build
   echo
   echo "==> opening neovim ..."
   sleep 3

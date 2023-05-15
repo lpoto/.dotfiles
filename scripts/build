@@ -19,20 +19,19 @@ fi
 cd "$(dirname "$0")"
 scripts=$PWD
 # cd to the root of the project
-cd ../../
+cd ../
 
-if [ -d "./.build/neovim" ]; then
-  # If neovim is already cloned, pull the latest version
-  echo "==> ./.build/neovim exists, pulling latest version ..."
-  sleep 1
-  cd ./.build/neovim && git pull
-else
-  # If neovim is not cloned, clone it
+if [ ! -d "./.build/neovim" ]; then
   echo "==> ./.build/neovim does not exist, cloning ..."
   sleep 1
-  git clone https://github.com/neovim/neovim ./.build/neovim
-  cd ./.build/neovim
+  git clone --depth 1 https://github.com/neovim/neovim ./.build/neovim
 fi
+cd ./.build/neovim
+echo "==> fetching origin tags/nightly ..."
+echo
+sleep 1
+git fetch --depth=1 origin +refs/tags/nightly:refs/tags/nightly
+git checkout tags/nightly
 
 echo
 echo "==> Cleaning old build ..."
@@ -51,6 +50,7 @@ fi
 
 echo
 echo "==> Starting a new build ..."
+echo
 sleep 2
 # Build neovim insto a custom directory
 # And ensure to build in release mode, so it is fast
@@ -58,6 +58,6 @@ sleep 2
 make CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX=${PWD}/build" CMAKE_BUILD_TYPE=Release install
 
 echo
-echo "==> Build complete. (run '${scripts}/nvim' to update neovim)"
+echo "==> Build complete. (run '${scripts}/build' to update neovim)"
 
 cd ${cur_pwd}
