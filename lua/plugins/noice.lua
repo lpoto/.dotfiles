@@ -50,7 +50,6 @@ function M.config()
   }
   vim.defer_fn(function()
     vim.keymap.set("n", "<leader>m", M.notification_history)
-    vim.api.nvim_create_user_command("Noice", M.notification_history, {})
   end, 100)
 end
 
