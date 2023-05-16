@@ -158,7 +158,9 @@ local function select_session(prompt_bufnr)
   if vim.fn.filereadable(session_file) == 1 then
     -- if the session file exists, load it
     vim.cmd("silent! source " .. vim.fn.fnameescape(session_file))
-    pcall(vim.api.nvim_exec, "stopinsert", true)
+    vim.defer_fn(function()
+      vim.api.nvim_exec("stopinsert", true)
+    end, 50)
   else
     -- Notify that the selected session is no longer available
     log:warn "Session file is not readable"
