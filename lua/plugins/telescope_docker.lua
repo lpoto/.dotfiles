@@ -1,17 +1,15 @@
 --=============================================================================
 -------------------------------------------------------------------------------
 --                                                        TELESCOPE-DOCKER-NVIM
---=============================================================================
--- https://github.com/lpoto/telescope-docker.nvim
---_____________________________________________________________________________
+--[[===========================================================================
+https://github.com/lpoto/telescope-docker.nvim
 
---[[
 Handle docker containers, images and compose files from a prompt.
 
 commands:
   :Docker {containers|images|compose} - show a list of containers,
                                        images or compose files
---]]
+-----------------------------------------------------------------------------]]
 local M = {
   "lpoto/telescope-docker.nvim",
   cmd = "Docker",

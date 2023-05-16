@@ -1,40 +1,35 @@
 --=============================================================================
 -------------------------------------------------------------------------------
 --                                                                 NULL-LS.NVIM
---=============================================================================
--- https://github.com/jose-elias-alvarez/null-ls.nvim
---_____________________________________________________________________________
+--[[===========================================================================
+https://github.com/jose-elias-alvarez/null-ls.nvim
 
---[[
 Injects lsp diagnostics, code actions, formatting,...
 
 Keymaps:
-  - <leader>f  - Format current file and save
+  - <leader>f  - Format current file and save (or selection if in visual mode)
 
 Commands:
   - :NullLsInfo - Show information about the current null-ls session
   - :NullLsLog  - Open the log file
---]]
+-----------------------------------------------------------------------------]]
 local M = {
   "jose-elias-alvarez/null-ls.nvim",
   cmd = { "NullLsInfo", "NullLsLog" },
 }
 
+local format
+function M.format_selection()
+  return format(true)
+end
+
+function M.format()
+  return format(false)
+end
+
 M.keys = {
-  {
-    "<leader>f",
-    function()
-      require("plugins.null-ls").format()
-    end,
-    mode = "n",
-  },
-  {
-    "<leader>f",
-    function()
-      require("plugins.null-ls").format(true)
-    end,
-    mode = "v",
-  },
+  { "<leader>f", M.format, mode = "n" },
+  { "<leader>f", M.format_selection, mode = "v" },
 }
 
 function M.config()
@@ -44,11 +39,11 @@ function M.config()
 end
 
 ---@param selection boolean: Format only current selection
-function M.format(selection)
+function format(selection)
   local ok, e = pcall(function()
     local opts = {
       timeout_ms = 5000,
-      async = false,
+      async = true,
     }
     if selection then
       opts.range = {

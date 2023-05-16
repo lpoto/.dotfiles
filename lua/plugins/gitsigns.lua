@@ -4,8 +4,7 @@
 --[[___________________________________________________________________________
 https://github.com/lewis6991/gitsigns.nvim
 
--- Show git blames of current line, allow staging hunks and buffers...
-
+Show git blames of current line, allow staging hunks and buffers...
 -----------------------------------------------------------------------------]]
 local M = {
   "lewis6991/gitsigns.nvim",

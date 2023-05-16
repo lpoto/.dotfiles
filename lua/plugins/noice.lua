@@ -1,16 +1,15 @@
 --=============================================================================
 -------------------------------------------------------------------------------
 --                                                                   NOICE.NVIM
---=============================================================================
--- https://github.com/folke/noice.nvim
---_____________________________________________________________________________
--- A plugin that completely replaces the UI for messages, cmdline and the
--- popupmenu
---
--- commands:
---   :Noice - Open the messages history or "<leader>m"
-------------------------------------------------------------------------------
+--[[===========================================================================
+https://github.com/folke/noice.nvim
 
+A plugin that completely replaces the UI for messages, cmdline and the
+popupmenu
+
+commands:
+  :Noice - Open the messages history or "<leader>m"
+-----------------------------------------------------------------------------]]
 local M = {
   "folke/noice.nvim",
   lazy = false,

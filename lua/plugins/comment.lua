@@ -1,11 +1,9 @@
 --=============================================================================
 -------------------------------------------------------------------------------
 --                                                                 COMMENT.NVIM
---=============================================================================
--- https://github.com/numToStr/Comment.nvim
---_____________________________________________________________________________
+--[[===========================================================================
+https://github.com/numToStr/Comment.nvim
 
---[[
 Smart and powerful comment plugin.
 
 Keymaps:
@@ -20,8 +18,7 @@ Keymaps:
  visual:
   `gc` - Toggles the region using linewise comment
   `gb` - Toggles the region using blockwise comment
-]]
-
+-----------------------------------------------------------------------------]]
 return {
   "numToStr/Comment.nvim",
   event = "ModeChanged *:[vV\x16]*",

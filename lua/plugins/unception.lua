@@ -3,7 +3,7 @@
 --                                                               NVIM-UNCEPTION
 --[[___________________________________________________________________________
 https://github.com/samjwill/nvim-unception
--------------------------------------------------------------------------------
+
 Open files from neovim's terminal emulator without nesting sessions.
 
 Add some convenient git commands, as now commit files may be opened in the
@@ -14,7 +14,6 @@ terminal emulator.
   - <leader>gP - git push
   - <leader>gp - git pull
   - <leader>gf - git fetch
-
 ------------------------------------------------------------------------------]]
 local M = {
   "samjwill/nvim-unception",

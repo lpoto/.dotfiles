@@ -1,11 +1,9 @@
 --=============================================================================
 -------------------------------------------------------------------------------
 --                                                                     NVIM-CMP
---=============================================================================
--- https://github.com/hrsh7th/nvim-cmp
---_____________________________________________________________________________
+--[[===========================================================================
+https://github.com/hrsh7th/nvim-cmp
 
---[[
 A completion engine plugin. Completion sources are installed from
 external repositories, cmp-nvim-lsp,...
 
@@ -14,17 +12,9 @@ and autopairs, that autocompletes the matching braces, quotes, etc.
 
 To enable this for a lsp server, add the following to  the
 lsp server's config:
- capabilities = require('cmp_nvim_lsp').default_capabilities()
+ capabilities = require('plugins.cmp').capabilities()
 
-mappings:
-  <Tab> - when cmp popup visible, select next item, else if
-      copilot suggestion visible, accept suggestion.
-  <S-Tab> - when cmp popup visible, select previous item, else if
-      copilot suggestion visible, show previous expression.
-  <CR> - when cmp popup visible, select current item.
-  <C-x> - when cmp popup visible, close cmp popup, else if
-      copilot suggestion visible, dismiss suggestion.
---]]
+-----------------------------------------------------------------------------]]
 local M = {
   "hrsh7th/nvim-cmp",
   event = { "BufRead", "BufNewFile" },
@@ -59,83 +49,18 @@ function M.config()
       completion = cmp.config.window.bordered(),
       documentation = cmp.config.window.bordered(),
     },
+    preselect = cmp.PreselectMode.None,
+    mapping = cmp.mapping.preset.insert {
+      ["<TAB>"] = cmp.mapping.select_next_item(),
+      ["<S-TAB>"] = cmp.mapping.select_prev_item(),
+      ["<CR>"] = cmp.mapping.confirm { select = true },
+      ["<C-x>"] = cmp.mapping.close(),
+    },
   }
 end
 
---- Set keymaps for cmp. This is a workaround, as setting them in
---- the cmp.setup function causes them to not work when entering
---- insert mode for the first time.
----
---- Some of these mappings are shared with github copilot.
----
---- Tab - when cmp popup visible, select next item, else if
----      copilot suggestion visible, accept suggestion.
---- Shift-Tab - when cmp popup visible, select previous item, else if
----     copilot suggestion visible, show previous expression.
---- Enter - when cmp popup visible, select current item.
---- C-x - when cmp popup visible, close cmp popup, else if
----    copilot suggestion visible, dismiss suggestion.
-function M.init()
-  vim.keymap.set("i", "<Tab>", function()
-    if package.loaded["cmp"] then
-      local cmp = require "cmp"
-      if cmp.visible() then
-        vim.schedule(function()
-          cmp.select_next_item {
-            behavior = cmp.SelectBehavior.Select,
-            count = 1,
-          }
-        end)
-        return
-      end
-    end
-    return require("plugins.copilot").accept_suggestion_expression_func "<Tab>"
-  end, { expr = true })
-
-  vim.keymap.set("i", "<S-Tab>", function()
-    if package.loaded["cmp"] then
-      local cmp = require "cmp"
-      if cmp.visible() and #cmp.get_entries() > 1 then
-        vim.schedule(function()
-          cmp.select_prev_item {
-            behavior = cmp.SelectBehavior.Select,
-            count = 1,
-          }
-        end)
-        return
-      end
-    end
-    return require("plugins.copilot").show_prev_expression_func "<S-Tab>"
-  end, { expr = true })
-
-  vim.keymap.set("i", "<CR>", function()
-    if package.loaded["cmp"] then
-      local cmp = require "cmp"
-      if cmp.visible() then
-        vim.schedule(function()
-          cmp.confirm {
-            behavior = cmp.ConfirmBehavior.Replace,
-            select = true,
-          }
-        end)
-        return
-      end
-    end
-    return "<CR>"
-  end, { expr = true })
-
-  vim.keymap.set("i", "<C-x>", function()
-    if package.loaded["cmp"] then
-      local cmp = require "cmp"
-      if cmp.visible() then
-        vim.schedule(function()
-          cmp.close()
-        end)
-        return
-      end
-    end
-    return require("plugins.copilot").dismiss_suggestion_expression_func "<C-x>"
-  end, { expr = true })
+function M.capabilities()
+  return require("cmp_nvim_lsp").default_capabilities()
 end
 
 return M

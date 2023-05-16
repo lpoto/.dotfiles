@@ -1,16 +1,14 @@
 --=============================================================================
 -------------------------------------------------------------------------------
 --                                                       TELESCOPE-FILE_BROWSER
---=============================================================================
--- https://github.com/nvim-telescope/telescope-file-browser.nvim
---_____________________________________________________________________________
---[[
+--[[===========================================================================
+https://github.com/nvim-telescope/telescope-file-browser.nvim
 
 Keymaps:
  - "<leader>N"   - file browser relative to current file
  - "<C-n>"       - file browser relative to current directory
 
---]]
+-----------------------------------------------------------------------------]]
 local M = {
   "nvim-telescope/telescope-file-browser.nvim",
 }

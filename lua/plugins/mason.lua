@@ -1,11 +1,9 @@
 --=============================================================================
 -------------------------------------------------------------------------------
 --                                                                   MASON.NVIM
---=============================================================================
--- https://github.com/williamboman/mason.nvim
---_____________________________________________________________________________
+--[[===========================================================================
+https://github.com/williamboman/mason.nvim
 
---[[
 Package manager for neovim.
 Easily install and manage lsp servers, linters and formatters.
 
@@ -15,8 +13,7 @@ Commands:
   - :MasonUninstall <package> - Uninstalls a package
   - :MasonUninstallAll        - Uninstalls all packages
   - :MasonLog                 - Open the log file
---]]
-
+-----------------------------------------------------------------------------]]
 return {
   "williamboman/mason.nvim",
   lazy = false,
