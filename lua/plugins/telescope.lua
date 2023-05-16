@@ -27,7 +27,6 @@ local M = {
   cmd = "Telescope",
   dependencies = {
     "nvim-lua/plenary.nvim",
-    { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
   },
 }
 
@@ -66,7 +65,6 @@ function M.config()
     },
     pickers = M.pickers(),
   }
-  telescope.load_extension "fzf"
 end
 
 function M.default_mappings()
