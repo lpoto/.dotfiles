@@ -117,3 +117,18 @@ vim.api.nvim_create_autocmd("TextYankPost", {
     }
   end,
 })
+
+-------------------------------------------------------------------------------
+--- This is a temporary hack to fix the issue with auto entering
+--- insert mode
+
+vim.api.nvim_create_autocmd("BufEnter", {
+  callback = function()
+    if vim.bo.buftype ~= "" then
+      return
+    end
+    vim.defer_fn(function()
+      vim.api.nvim_exec("stopinsert", false)
+    end, 50)
+  end,
+})
