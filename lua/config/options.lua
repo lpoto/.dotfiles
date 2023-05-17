@@ -129,6 +129,6 @@ vim.api.nvim_create_autocmd("BufEnter", {
     end
     vim.defer_fn(function()
       vim.api.nvim_exec("stopinsert", false)
-    end, 50)
+    end, 10)
   end,
 })
