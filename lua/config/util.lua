@@ -30,13 +30,14 @@ end
 --- @param opts table?
 --- @return function
 function util.root_fn(patterns, default, opts)
+  opts = opts or {}
+  if opts.path == nil then
+    opts.path = vim.fn.expand "%:p:h"
+  end
+
   return function()
-    local f = vim.fs.find(
-      patterns,
-      vim.tbl_extend("force", {
-        upward = true,
-      }, opts or {})
-    )
+    local f =
+      vim.fs.find(patterns, vim.tbl_extend("force", { upward = true }, opts))
     if not f or not next(f) then
       return default or vim.fn.getcwd()
     end
