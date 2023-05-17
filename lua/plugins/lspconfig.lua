@@ -41,13 +41,25 @@ function M.start_language_server(opts)
 
   local server
   server, opts = expand_opts(opts)
+  if not server or server:len() == 0 then
+    log:warn "No server provided"
+    return
+  end
 
   log = util.logger("LSP", server)
 
   local ok, e = pcall(function()
     vim.schedule(function()
       log:info("Starting language server:", server)
+
       local lspconfig = require "lspconfig"
+
+      local lsp = lspconfig[server]
+      if lsp == nil then
+        log:warn("LSP server not found: ", server)
+        return
+      end
+
       opts = vim.tbl_deep_extend(
         "force",
         opts or {},
@@ -56,12 +68,6 @@ function M.start_language_server(opts)
 
       opts.capabilities = opts.capabilities
         or require("plugins.cmp").capabilities()
-
-      local lsp = lspconfig[server]
-      if lsp == nil then
-        log:warn("LSP server not found: ", server)
-        return
-      end
 
       lsp.setup(opts)
 
@@ -74,11 +80,11 @@ function M.start_language_server(opts)
 end
 
 function expand_opts(opts)
+  local server = opts
   if type(opts) ~= "table" then
     opts = {}
   end
 
-  local server = opts
   if type(server) == "table" then
     server = opts.name
   end
