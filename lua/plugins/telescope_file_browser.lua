@@ -44,6 +44,7 @@ function M.config()
         no_ignore = true,
         grouped = true,
         file_ignore_patterns = {},
+        dir_icon = "",
         respect_gitignore = false,
       },
     },
