@@ -65,6 +65,10 @@ function M.config()
     },
     pickers = M.pickers(),
   }
+
+  vim.api.nvim_exec_autocmds("User", {
+    pattern = "TelescopeLoaded"
+  })
 end
 
 function M.default_mappings()

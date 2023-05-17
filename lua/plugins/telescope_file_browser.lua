@@ -13,23 +13,19 @@ local M = {
   "nvim-telescope/telescope-file-browser.nvim",
 }
 
+function M.file_browser()
+  require("telescope").extensions.file_browser.file_browser()
+end
+
+function M.relative_file_browser()
+  require("telescope").extensions.file_browser.file_browser {
+    path = "%:p:h",
+  }
+end
+
 M.keys = {
-  {
-    "<leader>N",
-    function()
-      require("telescope").extensions.file_browser.file_browser {
-        path = "%:p:h",
-      }
-    end,
-    mode = "n",
-  },
-  {
-    "<C-n>",
-    function()
-      require("telescope").extensions.file_browser.file_browser()
-    end,
-    mode = "n",
-  },
+  { "<leader>N", M.relative_file_browser, mode = "n" },
+  { "<C-n>", M.file_browser, mode = "n" },
 }
 
 function M.config()
