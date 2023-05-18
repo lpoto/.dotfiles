@@ -8,6 +8,8 @@ local util = require "config.util"
 util.require "config.options"
 ----------------------------------------------------------- Load custom keymaps
 util.require "config.keymaps"
+------------------------------------------------------ Load custom autocommands
+util.require "config.autocommands"
 ---------------------------------------------------------- Source local configs
 util.require "config.local_config"
 ----------------------------------------------- Load the plugins with lazy.nvim

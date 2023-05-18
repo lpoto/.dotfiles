@@ -74,7 +74,10 @@ function M.init()
       local removed = 0
 
       local check_buffer = function(buf)
-        if not vim.api.nvim_buf_is_valid(buf) then
+        if
+          not vim.api.nvim_buf_is_valid(buf)
+          or not vim.api.nvim_buf_is_loaded(buf)
+        then
           return false
         end
         local filetype = vim.api.nvim_buf_get_option(buf, "filetype") or ""

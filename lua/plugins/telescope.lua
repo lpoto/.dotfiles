@@ -32,15 +32,20 @@ local M = {
 
 M.theme = "ivy"
 
-function M.builtin(name)
+function M.builtin(name, opts)
   return function()
-    require("telescope.builtin")[name]()
+    require("telescope.builtin")[name](opts)
   end
 end
 
 M.keys = {
   { "<leader>n", M.builtin "find_files", mode = "n" },
   { "<leader>b", M.builtin "buffers", mode = "n" },
+  {
+    "<leader>B",
+    M.builtin("buffers", { show_all_buffers = true }),
+    mode = "n",
+  },
   { "<leader>o", M.builtin "oldfiles", mode = "n" },
   { "<leader>q", M.builtin "quickfix", mode = "n" },
   { "<leader>d", M.builtin "diagnostics", mode = "n" },
@@ -67,7 +72,7 @@ function M.config()
   }
 
   vim.api.nvim_exec_autocmds("User", {
-    pattern = "TelescopeLoaded"
+    pattern = "TelescopeLoaded",
   })
 end
 
@@ -138,6 +143,8 @@ function M.pickers()
       theme = M.theme,
       sort_mru = true,
       ignore_current_buffer = false,
+      show_all_buffers = false,
+      sort_lastused = true,
       mappings = {
         i = {
           ["<c-d>"] = require("telescope.actions").delete_buffer,
