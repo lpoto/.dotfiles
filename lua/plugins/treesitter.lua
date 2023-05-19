@@ -16,9 +16,19 @@ function M.config()
   local treesitter = require "nvim-treesitter.configs"
 
   treesitter.setup {
-    -- NOTE: the following 5 parsers should always be installed
+    -- NOTE: the following parsers should always be installed
     -- when opening nvim for the first time.
-    ensure_installed = { "c", "lua", "vim", "vimdoc", "query" },
+    ensure_installed = {
+      "c",
+      "lua",
+      "vim",
+      "vimdoc",
+      "query",
+      "regex",
+      "bash",
+      "markdown",
+      "markdown_inline",
+    },
     -- Parsers will be installed when entering the matching filetype.
     auto_install = true,
     sync_install = false,
