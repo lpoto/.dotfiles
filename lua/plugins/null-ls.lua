@@ -95,14 +95,26 @@ function M.register_builtin_source(type, opts)
 end
 
 expand_opts = function(opts)
+  local o = {}
   if type(opts) == "string" then
-    return {
-      source = opts,
-      filetype = vim.bo.filetype,
-    }
+    o.source = opts
+    o.filetype = vim.bo.filetype
+  else
+    opts = opts or {}
+
+    o.source = opts[1]
+    if type(o.source) ~= "string" then
+      o.source = opts.source
+    end
+
+    opts.source = nil
+    opts[1] = nil
+    opts.filetype = nil
+
+    o.filetype = opts.filetype or vim.bo.filetype
+    o.config = opts
   end
-  opts.filetype = opts.filetype or vim.bo.filetype
-  return opts
+  return o
 end
 
 return M

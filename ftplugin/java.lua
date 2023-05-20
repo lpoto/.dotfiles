@@ -4,8 +4,12 @@
 --[[===========================================================================
 Loaded when a java file is opened
 -----------------------------------------------------------------------------]]
-require("config.util").ftplugin {
-  formatter = "google_java_format",
+local util = require "config.util"
+util.ftplugin {
+  formatter = {
+    "google_java_format",
+    extra_args = { "--aosp" },
+  },
   language_server = {
     "jdtls",
     ---NOTE: Ensure you are using java 17 or above while using jdtls, as
@@ -14,7 +18,11 @@ require("config.util").ftplugin {
     ---     Make sure to often clean the workspace, and java and jdtls
     ---     cache (check ~/.jdtls and ~/.cache, ....) to prevent jdtls
     ---     from crashing.
-    cmd = { "jdtls" },
+    cmd = {
+      "jdtls",
+      "-data",
+      util.path(os.getenv "HOME", ".cache", "jdtls", "workspace"),
+    },
     root_dir = require("config.util").root_fn {
       "build.xml",
       "pom.xml",
