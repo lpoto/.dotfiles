@@ -38,7 +38,7 @@ function M.config()
       tasks = {
         theme = "ivy",
         output = {
-          style = "float",
+          style = "tab",
           layout = "center",
           scale = 0.75,
         },
