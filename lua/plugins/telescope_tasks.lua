@@ -40,7 +40,7 @@ function M.config()
         output = {
           style = "float",
           layout = "center",
-          scale = 0.7,
+          scale = 0.75,
         },
         --data_dir = false
         initial_mode = "normal",

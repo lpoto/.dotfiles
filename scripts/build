@@ -12,6 +12,21 @@ if [ "$USER" = "root" ]; then
   exit 2
 fi
 
+latest=false
+
+while [ $# -ne 0 ]; do
+  arg="$1"
+  case "$arg" in
+  --latest)
+    latest=true
+    ;;
+  -l)
+    latest=true
+    ;;
+  esac
+  shift
+done
+
 # TODO: check if make, cmake, git and ninja are
 # installed
 
@@ -27,11 +42,21 @@ if [ ! -d "./.build/neovim" ]; then
   git clone --depth 1 https://github.com/neovim/neovim ./.build/neovim
 fi
 cd ./.build/neovim
-echo "==> fetching origin tags/nightly ..."
-echo
-sleep 1
-git fetch --depth=1 origin +refs/tags/nightly:refs/tags/nightly
-git checkout tags/nightly
+
+if [ "$latest" != true ]; then
+  echo "==> fetching origin tags/nightly ..."
+  echo
+  sleep 2
+  git fetch --depth=1 origin +refs/tags/nightly:refs/tags/nightly
+  git checkout tags/nightly
+else
+  echo "==> '--latest' option provided"
+  echo "==> fetching origin master ..."
+  echo
+  sleep 2
+  git checkout master
+  git pull origin master
+fi
 
 echo
 echo "==> Cleaning old build ..."
