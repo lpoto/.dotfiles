@@ -13,6 +13,7 @@ if [ "$USER" = "root" ]; then
 fi
 
 latest=false
+stable=false
 
 while [ $# -ne 0 ]; do
   arg="$1"
@@ -20,8 +21,8 @@ while [ $# -ne 0 ]; do
   --latest)
     latest=true
     ;;
-  -l)
-    latest=true
+  --stable)
+    stable=true
     ;;
   esac
   shift
@@ -43,19 +44,31 @@ if [ ! -d "./.build/neovim" ]; then
 fi
 cd ./.build/neovim
 
-if [ "$latest" != true ]; then
-  echo "==> fetching origin tags/nightly ..."
+build_type="NIGHTLY"
+
+if [ "$stable" == true ]; then
+  build_type="STABLE"
+  echo "==> '--stable' option provided"
+  echo "==> fetching origin tags/stable ..."
   echo
   sleep 2
-  git fetch --depth=1 origin +refs/tags/nightly:refs/tags/nightly
-  git checkout tags/nightly
-else
+  git fetch --depth=1 origin +refs/tags/stable:refs/tags/stable
+  git checkout tags/stable
+elif [ "$latest" == true ]; then
+  build_type="LATEST"
   echo "==> '--latest' option provided"
   echo "==> fetching origin master ..."
   echo
   sleep 2
   git checkout master
   git pull origin master
+else
+  build_type="NIGHTLY"
+  echo "==> fetching origin tags/nightly ..."
+  echo
+  sleep 2
+  git fetch --depth=1 origin +refs/tags/nightly:refs/tags/nightly
+  git checkout tags/nightly
 fi
 
 echo
@@ -75,6 +88,7 @@ fi
 
 echo
 echo "==> Starting a new build ..."
+echo "==> build type: ${build_type}"
 echo
 sleep 2
 # Build neovim insto a custom directory
@@ -83,6 +97,6 @@ sleep 2
 make CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX=${PWD}/build" CMAKE_BUILD_TYPE=Release install
 
 echo
-echo "==> Build complete. (run '${scripts}/build' to update neovim)"
+echo "==> Build complete (${build_type}). (run '${scripts}/build [--stable, --latest]' to update neovim)"
 
 cd ${cur_pwd}
