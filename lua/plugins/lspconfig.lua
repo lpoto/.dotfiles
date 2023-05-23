@@ -50,8 +50,6 @@ function M.start_language_server(opts)
 
   local ok, e = pcall(function()
     vim.schedule(function()
-      log:info("Starting language server:", server)
-
       local lspconfig = require "lspconfig"
 
       local lsp = lspconfig[server]
@@ -65,6 +63,13 @@ function M.start_language_server(opts)
         opts or {},
         vim.g[server .. "_config"] or {}
       )
+
+      opts.on_attach = opts.on_attach
+        or function()
+          vim.defer_fn(function()
+            log:info("Attaching to language server: ", server)
+          end, 50)
+        end
 
       opts.capabilities = opts.capabilities
         or require("plugins.cmp").capabilities()

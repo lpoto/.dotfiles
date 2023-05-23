@@ -53,6 +53,10 @@ function get_lazy_options()
       enabled = true,
       notify = false,
     },
+    change_detection = {
+      enabled = true,
+      notify = false,
+    },
     diff = {
       cmd = "terminal_git",
     },
