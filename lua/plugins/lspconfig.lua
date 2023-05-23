@@ -36,17 +36,12 @@ local expand_opts
 ---cmp's default capabilities if not found.
 ---@param opts table|string?: Optional server configuration
 function M.start_language_server(opts)
-  local util = require "config.util"
-  local log = util.logger "Start Language Server"
-
   local server
   server, opts = expand_opts(opts)
   if not server or server:len() == 0 then
-    log:warn "No server provided"
+    vim.notify("No server provided", "warn", "LSP")
     return
   end
-
-  log = util.logger("LSP", server)
 
   local ok, e = pcall(function()
     vim.schedule(function()
@@ -54,7 +49,11 @@ function M.start_language_server(opts)
 
       local lsp = lspconfig[server]
       if lsp == nil then
-        log:warn("LSP server not found: ", server)
+        vim.notify(
+          "LSP server not found:" .. vim.inspect(server),
+          "warn",
+          "LSP"
+        )
         return
       end
 
@@ -63,13 +62,6 @@ function M.start_language_server(opts)
         opts or {},
         vim.g[server .. "_config"] or {}
       )
-
-      opts.on_attach = opts.on_attach
-        or function()
-          vim.defer_fn(function()
-            log:info("Attaching to language server: ", server)
-          end, 50)
-        end
 
       opts.capabilities = opts.capabilities
         or require("plugins.cmp").capabilities()
@@ -80,7 +72,11 @@ function M.start_language_server(opts)
     end)
   end)
   if not ok then
-    log:warn("Failed to start:", e)
+    vim.notify(
+      "Failed to start " .. vim.inspect(server) .. ": " .. vim.inspect(e),
+      "error",
+      "LSP"
+    )
   end
 end
 

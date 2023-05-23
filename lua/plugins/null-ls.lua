@@ -54,7 +54,7 @@ function format(selection)
     vim.lsp.buf.format(opts)
   end)
   if not ok and type(e) == "string" then
-    require("config.util").logger("NullLs - Format"):warn(e)
+    vim.notify(vim.inspect(e), "warn", { title = "NullLs - Format" })
   end
 end
 
@@ -72,13 +72,18 @@ local expand_opts
 ---@param type string
 ---@param opts string|table
 function M.register_builtin_source(type, opts)
-  local log = require("config.util").logger "NullLs - Register"
   local ok, e = pcall(function()
     opts = expand_opts(opts)
     local null_ls = require "null-ls"
     local s = null_ls.builtins[type][opts.source]
     if not s then
-      log:warn("No such builtin source:", opts.source)
+      vim.notify(
+        "No such builtin source: " .. vim.inspect(opts.source),
+        "warn",
+        {
+          title = "NullLs",
+        }
+      )
       return
     end
     if opts.config and next(opts.config) then
@@ -90,7 +95,9 @@ function M.register_builtin_source(type, opts)
     }
   end)
   if not ok then
-    log:error(e)
+    vim.notify("Error registering builtin source: " .. vim.inspect(e), "warn", {
+      title = "NullLs",
+    })
   end
 end
 

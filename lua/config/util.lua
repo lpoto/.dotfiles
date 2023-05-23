@@ -11,9 +11,15 @@ local util = {}
 --- @param module string
 function util.require(module)
   local ok, v = pcall(require, module)
-  if not ok and type(v) == "string" then
+  if not ok then
     vim.defer_fn(function()
-      util.logger("Util - Require"):error("Failed to load", module, "-", v)
+      vim.notify(
+        "Failed to load " .. vim.inspect(module) .. ": " .. vim.inspect(v),
+        "error",
+        {
+          title = "Util - Require",
+        }
+      )
     end, 500)
     return nil
   end
@@ -112,59 +118,6 @@ function util.dir(name)
   local separator = util.path_separator()
   local s = vim.fn.fnamemodify(name .. separator .. "x.lua", ":h")
   return s .. separator
-end
-
----@class Logger
----@field name string
-util.Logger = {}
-util.Logger.__index = util.Logger
-
----Create a new logger.
----@param ... any: The name of the logger.
----@return Logger
-function util.logger(...)
-  local logger = setmetatable({
-    name = util.concat(...),
-  }, util.Logger)
-  return logger
-end
-
-function util.Logger:info(...)
-  self:notify(vim.log.levels.INFO, ...)
-end
-
-function util.Logger:warn(...)
-  self:notify(vim.log.levels.WARN, ...)
-end
-
-function util.Logger:error(...)
-  self:notify(vim.log.levels.WARN, ...)
-end
-
-function util.Logger:notify(lvl, ...)
-  local msg = util.concat(...)
-  vim.schedule(function()
-    if msg:len() > 0 then
-      vim.notify(msg, lvl, {
-        title = self.name,
-      })
-    end
-  end)
-end
-
-function util.concat(...)
-  local s = ""
-  for _, v in ipairs { select(1, ...) } do
-    if type(v) ~= "string" then
-      v = vim.inspect(v)
-    end
-    if s:len() > 0 then
-      s = s .. " " .. v
-    else
-      s = v
-    end
-  end
-  return s
 end
 
 ---@param s1 string

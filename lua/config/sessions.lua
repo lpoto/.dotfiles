@@ -128,15 +128,15 @@ local function delete_selected_session(prompt_bufnr)
     return
   end
 
-  local log = util.logger(M.title, "-", "Delete")
-
   local session_file = util.path(M.session_dir, selection.value)
 
   if vim.fn.delete(session_file) ~= 0 then
     -- Notify that the session could not be deleted
-    log:warn "Failed to delete session"
+    vim.notify("Failed to delete session", vim.log.levels.WARN, {
+      title = M.title,
+    })
   else
-    log:info "Session deleted"
+    vim.notify("Session deleted", vim.log.levels.INFO, { title = M.title })
     -- Filter out the deleted session from the picker
     picker:delete_selection(function(item)
       return selection == item
@@ -148,7 +148,6 @@ end
 local function select_session(prompt_bufnr)
   local action_state = require "telescope.actions.state"
   local actions = require "telescope.actions"
-  local log = util.logger(M.title, "-", "Select")
 
   local selection = action_state.get_selected_entry()
   if selection == nil then
@@ -163,7 +162,9 @@ local function select_session(prompt_bufnr)
     vim.cmd("silent! source " .. vim.fn.fnameescape(session_file))
   else
     -- Notify that the selected session is no longer available
-    log:warn "Session file is not readable"
+    vim.notify("Session no longer available", vim.log.levels.WARN, {
+      title = M.title,
+    })
   end
 end
 

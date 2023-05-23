@@ -117,7 +117,11 @@ function M.run_command(cmd)
       })
     end)
     if not ok and type(e) == "string" then
-      require("config.util").logger("Unception - Run command"):warn(e)
+      vim.notify(
+        e,
+        vim.log.levels.WARN,
+        { title = "Unception - Run command" }
+      )
     end
   end)
 end
@@ -135,10 +139,11 @@ function M.run_command_with_prompt(cmd, suffix)
 end
 
 function M.fetch_git_data(callback, on_error)
-  local log = require("config.util").logger "Fetch git data"
   on_error = on_error
     or function()
-      log:warn "Could not fetch git data"
+      vim.notify("Could not fetch git data", vim.log.levels.WARN, {
+        title = "Unception - Git",
+      })
     end
   local remote = {}
   vim.fn.jobstart("git remote show", {

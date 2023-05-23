@@ -63,18 +63,21 @@ local last_buf = nil
 --- (Un)lock the current buffer with <C-l>. Locked buffers will
 --- not be unloaded
 vim.keymap.set("n", "<C-l>", function()
-  local log = require("config.util").logger "Buffer-Lock"
   local buf = vim.api.nvim_get_current_buf()
 
   if locked_buffers[buf] then
     locked_buffers[buf] = nil
     locked_count = locked_count - 1
-    log:info "Unlocked current buffer"
+    vim.notify("Unlocked current buffer", vim.log.levels.INFO, {
+      title = "Buffer Lock",
+    })
     return
   end
   locked_buffers[buf] = true
   locked_count = locked_count + 1
-  log:info "Locked current buffer"
+  vim.notify("Locked current buffer", vim.log.levels.INFO, {
+    title = "Buffer Lock",
+  })
 end, {})
 
 vim.api.nvim_create_autocmd({ "BufWipeout" }, {
