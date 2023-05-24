@@ -153,13 +153,16 @@ local function select_session(prompt_bufnr)
   if selection == nil then
     return
   end
+
   -- Close the prompt when selecting a session
   actions.close(prompt_bufnr)
   local session_file = util.path(M.session_dir, selection.value)
   -- NOTE: ensure the session file exists
   if vim.fn.filereadable(session_file) == 1 then
     -- if the session file exists, load it
-    vim.cmd("silent! source " .. vim.fn.fnameescape(session_file))
+    vim.defer_fn(function()
+      vim.api.nvim_exec("source " .. vim.fn.fnameescape(session_file), true)
+    end, 10)
   else
     -- Notify that the selected session is no longer available
     vim.notify("Session no longer available", vim.log.levels.WARN, {
