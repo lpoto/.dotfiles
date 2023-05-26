@@ -17,7 +17,20 @@ local M = {
 ---NOTE: This plugin requires the `ascii-image-converter` command to be
 ---      executable. Do not load the plugin if it is not.
 function M.cond()
-  return vim.fn.executable "ascii-image-converter" == 1
+  if vim.fn.executable "ascii-image-converter" == 1 then
+    return true
+  end
+  vim.defer_fn(function()
+    vim.notify(
+      "The `ascii-image-converter` command is not executable. "
+        .. "Please install it to use the preview images.",
+      vim.log.levels.WARN,
+      {
+        title = "Image.nvim",
+      }
+    )
+  end, 1000)
+  return false
 end
 
 M.extensions = { "png", "jpg", "jpeg", "bmp", "webp", "tif", "tiff" }
