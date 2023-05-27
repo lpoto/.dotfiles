@@ -4,7 +4,7 @@
 --[[===========================================================================
 Loaded when a css file is opened
 -----------------------------------------------------------------------------]]
-require("config.util").ftplugin {
+Util.ftplugin {
   language_server = "cssls",
   formatter = "prettier",
 }

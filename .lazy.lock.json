@@ -13,7 +13,7 @@
   "image.nvim": { "branch": "main", "commit": "eef32a352d490374d19edfaef4bc0ad4f7a11074" },
   "lazy.nvim": { "branch": "main", "commit": "a93d8983c4335b6ae7d6e7d516a191d929186d5b" },
   "mason.nvim": { "branch": "main", "commit": "08b2fd308e0107eab9f0b59d570b69089fd0b522" },
-  "noice.nvim": { "branch": "main", "commit": "8e804080414e230a07f76cb13a6873109cacb6bf" },
+  "noice.nvim": { "branch": "main", "commit": "3e1400f172cf67041f6845d86413de56fb90e685" },
   "nui.nvim": { "branch": "main", "commit": "2b2732528e4a79eb8542568bd51d25f710395bd6" },
   "null-ls.nvim": { "branch": "main", "commit": "77e53bc3bac34cc273be8ed9eb9ab78bcf67fa48" },
   "nvim-cmp": { "branch": "main", "commit": "1088b3743b83ffd8973ad65e6b5fed010da0ffd2" },

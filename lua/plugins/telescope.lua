@@ -30,11 +30,13 @@ local M = {
   },
 }
 
-M.theme = "ivy"
+local theme = "ivy"
 
 function M.builtin(name, opts)
   return function()
-    require("telescope.builtin")[name](opts)
+    Util.require("telescope.builtin", function(builtin)
+      builtin[name](opts)
+    end)
   end
 end
 
@@ -57,75 +59,81 @@ M.keys = {
 }
 
 function M.config()
-  local telescope = require "telescope"
+  Util.require(
+    { "telescope", "telescope.previewers" },
+    function(telescope, previewers)
+      telescope.setup {
+        defaults = {
+          prompt_prefix = "?  ",
+          color_devicons = false,
+          file_previewer = previewers.vim_buffer_cat.new,
+          grep_previewer = previewers.vim_buffer_vimgrep.new,
+          qflist_previewer = previewers.vim_buffer_qflist.new,
+          mappings = M.default_mappings(),
+        },
+        pickers = M.pickers(),
+      }
 
-  telescope.setup {
-    defaults = {
-      prompt_prefix = "?  ",
-      color_devicons = false,
-      file_previewer = require("telescope.previewers").vim_buffer_cat.new,
-      grep_previewer = require("telescope.previewers").vim_buffer_vimgrep.new,
-      qflist_previewer = require("telescope.previewers").vim_buffer_qflist.new,
-      mappings = M.default_mappings(),
-    },
-    pickers = M.pickers(),
-  }
-
-  vim.api.nvim_exec_autocmds("User", {
-    pattern = "TelescopeLoaded",
-  })
+      vim.api.nvim_exec_autocmds("User", {
+        pattern = "TelescopeLoaded",
+      })
+    end
+  )
 end
 
 function M.default_mappings()
-  local actions = require "telescope.actions"
-  return {
-    i = {
-      -- NOTE: when a telescope window is opened, use ctrl + q to
-      -- send the current results to a quickfix window, then immediately
-      -- open quickfix in a telescope window
-      ["<C-q>"] = function()
-        require("telescope.actions").send_to_qflist(vim.fn.bufnr())
-        require("telescope.builtin").quickfix()
-      end,
-      ["<Tab>"] = actions.move_selection_next,
-      ["<S-Tab>"] = actions.move_selection_previous,
-    },
-    n = {
-      ["<Tab>"] = actions.move_selection_next,
-      ["<S-Tab>"] = actions.move_selection_previous,
-      ["<leader>j"] = function(bufnr)
-        actions.move_selection_next(bufnr)
-        actions.toggle_selection(bufnr)
-      end,
-      ["<leader>k"] = function(bufnr)
-        actions.toggle_selection(bufnr)
-        actions.move_selection_previous(bufnr)
-      end,
-    },
-  }
+  return Util.require(
+    { "telescope.actions", "telescope.builtin" },
+    function(actions, builtin)
+      return {
+        i = {
+          -- NOTE: when a telescope window is opened, use ctrl + q to
+          -- send the current results to a quickfix window, then immediately
+          -- open quickfix in a telescope window
+          ["<C-q>"] = function()
+            actions.send_to_qflist(vim.fn.bufnr())
+            builtin.quickfix()
+          end,
+          ["<Tab>"] = actions.move_selection_next,
+          ["<S-Tab>"] = actions.move_selection_previous,
+        },
+        n = {
+          ["<Tab>"] = actions.move_selection_next,
+          ["<S-Tab>"] = actions.move_selection_previous,
+          ["<leader>j"] = function(bufnr)
+            actions.move_selection_next(bufnr)
+            actions.toggle_selection(bufnr)
+          end,
+          ["<leader>k"] = function(bufnr)
+            actions.toggle_selection(bufnr)
+            actions.move_selection_previous(bufnr)
+          end,
+        },
+      }
+    end
+  )
 end
 
 function M.pickers()
-  local util = require "config.util"
   local file_ignore_patterns = {
-    util.dir "plugged",
-    util.dir "%.undo",
-    util.dir "%.storage",
-    util.dir "%.data",
-    util.dir "%.local",
-    util.dir "%.git",
-    util.dir "node_modules",
-    util.dir "target",
-    util.dir "%.target",
-    util.dir "%.settings",
-    util.dir "%.build",
-    util.dir "dist",
-    util.dir "%.dist",
-    util.dir "build",
-    util.dir "%.build",
-    util.dir "%.angular",
-    util.dir "__pycache__",
-    util.dir "github.copilot",
+    Util.dir "plugged",
+    Util.dir "%.undo",
+    Util.dir "%.storage",
+    Util.dir "%.data",
+    Util.dir "%.local",
+    Util.dir "%.git",
+    Util.dir "node_modules",
+    Util.dir "target",
+    Util.dir "%.target",
+    Util.dir "%.settings",
+    Util.dir "%.build",
+    Util.dir "dist",
+    Util.dir "%.dist",
+    Util.dir "build",
+    Util.dir "%.build",
+    Util.dir "%.angular",
+    Util.dir "__pycache__",
+    Util.dir "github.copilot",
     "%.project$",
     "%.classpath$",
     "%.factorypath$",
@@ -134,87 +142,90 @@ function M.pickers()
     "%.dll$",
     "%.jnilib$",
   }
-  return {
-    find_files = {
-      theme = M.theme,
-      hidden = true,
-      no_ignore = true,
-      --previewer = true,
-      file_ignore_patterns = file_ignore_patterns,
-    },
-    buffers = {
-      theme = M.theme,
-      sort_mru = true,
-      ignore_current_buffer = false,
-      show_all_buffers = false,
-      sort_lastused = true,
-      mappings = {
-        i = {
-          ["<c-d>"] = require("telescope.actions").delete_buffer,
-        },
-        n = {
-          ["<c-d>"] = require("telescope.actions").delete_buffer,
-          ["d"] = require("telescope.actions").delete_buffer,
+  return Util.require("telescope.actions", function(actions)
+    return {
+      find_files = {
+        theme = theme,
+        hidden = true,
+        no_ignore = true,
+        --previewer = true,
+        file_ignore_patterns = file_ignore_patterns,
+      },
+      buffers = {
+        theme = theme,
+        sort_mru = true,
+        ignore_current_buffer = false,
+        show_all_buffers = false,
+        sort_lastused = true,
+        mappings = {
+          i = {
+            ["<c-d>"] = actions.delete_buffer,
+          },
+          n = {
+            ["<c-d>"] = actions.delete_buffer,
+            ["d"] = actions.delete_buffer,
+          },
         },
       },
-    },
-    oldfiles = {
-      hidden = true,
-      theme = M.theme,
-      no_ignore = true,
-    },
-    diagnostics = {
-      theme = M.theme,
-    },
-    live_grep = {
-      hidden = true,
-      no_ignore = true,
-      theme = M.theme,
-      file_ignore_patterns = file_ignore_patterns,
-      additional_args = function()
-        return { "--hidden", "-u" }
-      end,
-    },
-    quickfix = {
-      hidden = true,
-      theme = M.theme,
-      no_ignore = true,
-      initial_mode = "normal",
-    },
-    git_status = {
-      theme = M.theme,
-      attach_mappings = M.attach_git_status_mappings,
-      selection_strategy = "row",
-      initial_mode = "normal",
-    },
-    git_branches = {
-      theme = M.theme,
-      selection_strategy = "row",
-    },
-    git_commits = {
-      theme = M.theme,
-      selection_strategy = "row",
-    },
-    git_stash = {
-      theme = M.theme,
-      selection_strategy = "row",
-    },
-  }
+      oldfiles = {
+        hidden = true,
+        theme = theme,
+        no_ignore = true,
+      },
+      diagnostics = {
+        theme = theme,
+      },
+      live_grep = {
+        hidden = true,
+        no_ignore = true,
+        theme = theme,
+        file_ignore_patterns = file_ignore_patterns,
+        additional_args = function()
+          return { "--hidden", "-u" }
+        end,
+      },
+      quickfix = {
+        hidden = true,
+        theme = theme,
+        no_ignore = true,
+        initial_mode = "normal",
+      },
+      git_status = {
+        theme = theme,
+        attach_mappings = M.attach_git_status_mappings,
+        selection_strategy = "row",
+        initial_mode = "normal",
+      },
+      git_branches = {
+        theme = theme,
+        selection_strategy = "row",
+      },
+      git_commits = {
+        theme = theme,
+        selection_strategy = "row",
+      },
+      git_stash = {
+        theme = theme,
+        selection_strategy = "row",
+      },
+    }
+  end)
 end
 
 function M.attach_git_status_mappings(_, map)
-  local actions = require "telescope.actions"
-  actions.select_default:replace(actions.git_staging_toggle)
-  map("n", "e", actions.file_edit)
-  map("i", "<C-e>", actions.file_edit)
-  map("i", "<Tab>", actions.move_selection_next)
-  map("i", "<Tab>", actions.move_selection_next)
-  map("n", "<Tab>", actions.move_selection_next)
-  map("i", "<S-Tab>", actions.move_selection_previous)
-  map("n", "<S-Tab>", actions.move_selection_previous)
-  map("n", "s", actions.git_staging_toggle)
-  map("i", "<C-s>", actions.git_staging_toggle)
-  map("n", "<C-s>", actions.git_staging_toggle)
+  Util.require("telescope.actions", function(actions)
+    actions.select_default:replace(actions.git_staging_toggle)
+    map("n", "e", actions.file_edit)
+    map("i", "<C-e>", actions.file_edit)
+    map("i", "<Tab>", actions.move_selection_next)
+    map("i", "<Tab>", actions.move_selection_next)
+    map("n", "<Tab>", actions.move_selection_next)
+    map("i", "<S-Tab>", actions.move_selection_previous)
+    map("n", "<S-Tab>", actions.move_selection_previous)
+    map("n", "s", actions.git_staging_toggle)
+    map("i", "<C-s>", actions.git_staging_toggle)
+    map("n", "<C-s>", actions.git_staging_toggle)
+  end)
   return true
 end
 

@@ -20,27 +20,24 @@ function M.command()
     if type(opts.args) ~= "string" then
       return
     end
+    local f = "containers"
     if opts.args:match "^i" then
-      require("telescope").extensions.docker.images()
-      return
+      f = "images"
+    elseif opts.args:match "^f" then
+      f = "files"
+    elseif opts.args:match "^c.*m" then
+      f = "compose"
     end
-    if opts.args:match "^f" then
-      require("telescope").extensions.docker.files()
-      return
-    end
-    if opts.args:match "^c.*m" then
-      require("telescope").extensions.docker.compose()
-      return
-    end
-    require("telescope").extensions.docker.containers()
+    Util.require("telescope", function(telescope)
+      telescope.extensions.docker[f]()
+    end)
   end, {
     nargs = "?",
     complete = function(c)
-      local util = require "config.util"
       local items = { "containers", "images", "compose", "files" }
       table.sort(items, function(a, b)
-        return util.string_matching_score(c, a)
-          > util.string_matching_score(c, b)
+        return Util.string_matching_score(c, a)
+          > Util.string_matching_score(c, b)
       end)
       return items
     end,
@@ -50,18 +47,19 @@ end
 function M.config()
   M.command()
 
-  local telescope = require "telescope"
-  telescope.setup {
-    extensions = {
-      docker = {
-        theme = "ivy",
-        log_level = vim.log.levels.INFO,
-        initial_mode = "normal",
+  Util.require("telescope", function(telescope)
+    telescope.setup {
+      extensions = {
+        docker = {
+          theme = "ivy",
+          log_level = vim.log.levels.INFO,
+          initial_mode = "normal",
+        },
       },
-    },
-  }
+    }
 
-  telescope.load_extension "docker"
+    telescope.load_extension "docker"
+  end)
 end
 
 return M

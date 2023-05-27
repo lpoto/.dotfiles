@@ -4,7 +4,7 @@
 --[[===========================================================================
 Loaded when a yaml file is opened
 -----------------------------------------------------------------------------]]
-require("config.util").ftplugin {
+Util.ftplugin {
   formatter = "yamlfmt",
   language_server = {
     "yamlls",

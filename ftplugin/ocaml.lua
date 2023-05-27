@@ -4,7 +4,7 @@
 --[[===========================================================================
 Loaded when a ocaml file is opened
 -----------------------------------------------------------------------------]]
-require("config.util").ftplugin {
+Util.ftplugin {
   language_server = "ocamllsp",
   formatter = "ocamlformat",
 }

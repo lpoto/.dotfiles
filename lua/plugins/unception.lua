@@ -55,7 +55,9 @@ end
 function M.git_command(suffix)
   suffix = suffix or ""
   M.fetch_git_data(function()
-    require("plugins.unception").run_command_with_prompt("git ", suffix)
+    Util.require("plugins.unception", function(unception)
+      unception.run_command_with_prompt("git ", suffix)
+    end)
   end)
 end
 
@@ -69,10 +71,12 @@ end
 
 function M.git_push()
   M.fetch_git_data(function(remote, branch)
-    require("plugins.unception").run_command_with_prompt(
-      "git ",
-      "push " .. remote .. " " .. branch .. " "
-    )
+    Util.require("plugins.unception", function(unception)
+      unception.run_command_with_prompt(
+        "git ",
+        "push " .. remote .. " " .. branch .. " "
+      )
+    end)
   end)
 end
 
@@ -82,10 +86,12 @@ end
 
 function M.git_pull()
   M.fetch_git_data(function(remote, branch)
-    require("plugins.unception").run_command_with_prompt(
-      "git ",
-      "pull " .. remote .. " " .. branch .. " "
-    )
+    Util.require("plugins.unception", function(unception)
+      unception.run_command_with_prompt(
+        "git ",
+        "pull " .. remote .. " " .. branch .. " "
+      )
+    end)
   end)
 end
 
@@ -117,11 +123,7 @@ function M.run_command(cmd)
       })
     end)
     if not ok and type(e) == "string" then
-      vim.notify(
-        e,
-        vim.log.levels.WARN,
-        { title = "Unception - Run command" }
-      )
+      Util.log("Unception.run_command"):info(e)
     end
   end)
 end
@@ -141,9 +143,7 @@ end
 function M.fetch_git_data(callback, on_error)
   on_error = on_error
     or function()
-      vim.notify("Could not fetch git data", vim.log.levels.WARN, {
-        title = "Unception - Git",
-      })
+      Util.log("Unception.fetch_git_data"):warn "Could not fetch git data"
     end
   local remote = {}
   vim.fn.jobstart("git remote show", {

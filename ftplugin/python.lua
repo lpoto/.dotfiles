@@ -4,8 +4,8 @@
 --[[===========================================================================
 Loaded when a python file is opened
 -----------------------------------------------------------------------------]]
-require("config.util").ftplugin {
+Util.ftplugin {
   language_server = "pylsp",
   formatter = "autopep8",
-  linter = "flake8",
+  --linter = "flake8",
 }

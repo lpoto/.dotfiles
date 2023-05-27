@@ -4,7 +4,7 @@
 --[[===========================================================================
 Loaded when a sh file is opened
 -----------------------------------------------------------------------------]]
-require("config.util").ftplugin {
+Util.ftplugin {
   language_server = "bashls",
   formatter = "shfmt",
 }

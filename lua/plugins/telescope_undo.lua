@@ -16,20 +16,25 @@ local M = {
 
 function M.init()
   vim.api.nvim_create_user_command("Undo", function()
-    require("telescope").extensions.undo.undo()
+    Util.require("telescope", function(telescope)
+      telescope.extensions.undo.undo()
+    end)
   end, {})
 end
 
 function M.config()
-  local telescope = require "telescope"
-  local themes = require "telescope.themes"
-  telescope.setup {
-    extensions = {
-      undo = themes.get_ivy(),
-    },
-  }
+  Util.require(
+    { "telescope", "telescope.themes" },
+    function(telescope, themes)
+      telescope.setup {
+        extensions = {
+          undo = themes.get_ivy(),
+        },
+      }
 
-  telescope.load_extension "undo"
+      telescope.load_extension "undo"
+    end
+  )
 end
 
 return M

@@ -4,7 +4,7 @@
 --[[===========================================================================
 Loaded when a json file is opened
 -----------------------------------------------------------------------------]]
-require("config.util").ftplugin {
+Util.ftplugin {
   language_server = "jsonls",
   formatter = "prettier",
 }

@@ -6,26 +6,6 @@ Util functions
 -----------------------------------------------------------------------------]]
 local util = {}
 
---- catch errors from require and display them in a notification,
---- so multiple modules may be loaded even if one fails
---- @param module string
-function util.require(module)
-  local ok, v = pcall(require, module)
-  if not ok then
-    vim.defer_fn(function()
-      vim.notify(
-        "Failed to load " .. vim.inspect(module) .. ": " .. vim.inspect(v),
-        "error",
-        {
-          title = "Util - Require",
-        }
-      )
-    end, 500)
-    return nil
-  end
-  return v
-end
-
 --- Return a function that tries to search upward
 --- for the provided patterns and returns the first
 --- matching directory containing that pattern.
@@ -120,25 +100,37 @@ function util.dir(name)
   return s .. separator
 end
 
----@param s1 string
----@param s2 string
-function util.string_matching_score(s1, s2)
-  if type(s1) ~= "string" or type(s2) ~= "string" then
-    return 0
+--- catch errors from require and display them in a notification,
+--- so multiple modules may be loaded even if one fails
+---
+--- Callback will be called only if all modules are loaded successfully.
+---
+--- @param module string|table
+--- @param callback function?
+function util.require(module, callback)
+  if type(module) == "string" then
+    module = { module }
+  elseif type(module) ~= "table" then
+    util.log("Util.require"):warn "module must be a string or table"
   end
-  local score = 0
-  for i = 1, s2:len() do
-    local c1 = s2:sub(i, i)
-    for j = 1, s1:len() do
-      local c2 = s1:sub(j, j)
-      if c1 == c2 then
-        local add = math.max(1, 5 - i)
-        score = score + add
-        break
-      end
+  local res = {}
+  for _, m in ipairs(module) do
+    local ok, v = pcall(require, m)
+    if not ok then
+      util.log("Util.require", 250):warn("Error loading", m, "-", v)
+      return
     end
+    table.insert(res, v)
   end
-  return score
+  if type(callback) == "function" then
+    local ok, v = pcall(callback, unpack(res))
+    if not ok then
+      util.log("Util.require.callback", 250):error(v)
+      return
+    end
+    return v
+  end
+  return unpack(res)
 end
 
 local loaded = {}
@@ -181,29 +173,112 @@ function _ftplugin(opts)
 
   -- Safe require lspconfig and null-ls and start language server
   -- and add formatters/linters only on successful require
-  local lspconfig = util.require "plugins.lspconfig"
-  if type(lspconfig) == "table" then
-    if
-      type(opts.language_server) == "string"
-      or type(opts.language_server) == "table"
-    then
-      lspconfig.start_language_server(opts.language_server)
+  util.require("plugins.lspconfig", function(lspconfig)
+    if type(lspconfig) == "table" then
+      if
+        type(opts.language_server) == "string"
+        or type(opts.language_server) == "table"
+      then
+        lspconfig.start_language_server(opts.language_server)
+      end
     end
-  end
+  end)
   if not opts.formatter and not opts.linter then
     return
   end
-  local null_ls = util.require "plugins.null-ls"
-  if type(null_ls) == "table" then
-    if
-      type(opts.formatter) == "string" or type(opts.formatter) == "table"
-    then
-      null_ls.register_formatter(opts.formatter)
+
+  util.require("plugins.null-ls", function(null_ls)
+    if type(null_ls) == "table" then
+      if
+        type(opts.formatter) == "string" or type(opts.formatter) == "table"
+      then
+        null_ls.register_formatter(opts.formatter)
+      end
+      if type(opts.linter) == "string" or type(opts.linter) == "table" then
+        null_ls.register_linter(opts.linter)
+      end
     end
-    if type(opts.linter) == "string" or type(opts.linter) == "table" then
-      null_ls.register_linter(opts.linter)
+  end)
+end
+
+---@param s1 string
+---@param s2 string
+function util.string_matching_score(s1, s2)
+  if type(s1) ~= "string" or type(s2) ~= "string" then
+    return 0
+  end
+  local score = 0
+  for i = 1, s2:len() do
+    local c1 = s2:sub(i, i)
+    for j = 1, s1:len() do
+      local c2 = s1:sub(j, j)
+      if c1 == c2 then
+        local add = math.max(1, 5 - i)
+        score = score + add
+        break
+      end
     end
   end
+  return score
+end
+
+function util.concat(...)
+  local s = ""
+  for _, v in ipairs { select(1, ...) } do
+    if type(v) ~= "string" then
+      v = vim.inspect(v)
+    end
+    if s:len() > 0 then
+      s = s .. " " .. v
+    else
+      s = v
+    end
+  end
+  return s
+end
+
+---@class Log
+---@field title string?
+---@field delay number?
+local Log = {}
+Log.__index = Log
+
+function Log:info(...)
+  self:notify(vim.log.levels.INFO, ...)
+end
+
+function Log:warn(...)
+  self:notify(vim.log.levels.WARN, ...)
+end
+
+function Log:error(...)
+  self:notify(vim.log.levels.ERROR, ...)
+end
+
+function Log:notify(level, ...)
+  local msg = util.concat(...)
+  local delay = self.delay or 0
+  vim.defer_fn(function()
+    if msg:len() > 0 then
+      vim.notify(msg, level, {
+        title = self.title,
+      })
+    end
+  end, delay)
+end
+
+---@param title string?: Title of the notification
+---@param delay number?: Delay in milliseconds, default: 0
+---@return Log
+function util.log(title, delay)
+  local o = {}
+  if type(title) == "string" then
+    o.title = title
+  end
+  if type(delay) == "number" then
+    o.delay = delay
+  end
+  return setmetatable(o, Log)
 end
 
 return util

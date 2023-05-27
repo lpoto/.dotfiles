@@ -19,38 +19,40 @@ local M = {
 }
 
 function M.config()
-  require("noice").setup {
-    lsp = {
-      -- override markdown rendering so that **cmp** and other
-      -- plugins use **Treesitter**
-      override = {
-        ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
-        ["vim.lsp.util.stylize_markdown"] = true,
-        ["cmp.entry.get_documentation"] = true,
+  Util.require("noice", function(noice)
+    noice.setup {
+      lsp = {
+        -- override markdown rendering so that **cmp** and other
+        -- plugins use **Treesitter**
+        override = {
+          ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+          ["vim.lsp.util.stylize_markdown"] = true,
+          ["cmp.entry.get_documentation"] = true,
+        },
       },
-    },
-    -- you can enable a preset for easier configuration
-    presets = {
-      bottom_search = true, -- use a classic bottom cmdline for search
-      command_palette = true, -- position the cmdline and popupmenu together
-      long_message_to_split = true, -- long messages will be sent to a split
-      inc_rename = true, -- enables an input dialog for inc-rename.nvim
-      lsp_doc_border = true, -- add a border to hover docs and signature help
-    },
-    cmdline = {
-      format = {
-        cmdline = { icon = ">" },
-        search_down = { icon = " ?" },
-        search_up = { icon = " ?" },
-        filter = { icon = "$" },
-        lua = { icon = "lua" },
-        help = { icon = "?" },
+      -- you can enable a preset for easier configuration
+      presets = {
+        bottom_search = true, -- use a classic bottom cmdline for search
+        command_palette = true, -- position the cmdline and popupmenu together
+        long_message_to_split = true, -- long messages will be sent to a split
+        inc_rename = true, -- enables an input dialog for inc-rename.nvim
+        lsp_doc_border = true, -- add a border to hover docs and signature help
       },
-    },
-  }
-  vim.defer_fn(function()
-    vim.keymap.set("n", "<leader>m", M.notification_history)
-  end, 100)
+      cmdline = {
+        format = {
+          cmdline = { icon = ">" },
+          search_down = { icon = " ?" },
+          search_up = { icon = " ?" },
+          filter = { icon = "$" },
+          lua = { icon = "lua" },
+          help = { icon = "?" },
+        },
+      },
+    }
+    vim.defer_fn(function()
+      vim.keymap.set("n", "<leader>m", M.notification_history)
+    end, 100)
+  end)
 end
 
 local telescope_config_loaded = false
@@ -59,7 +61,10 @@ function M.telescope_config()
     return
   end
   telescope_config_loaded = true
-  require("telescope").load_extension "noice"
+
+  Util.require("telescope", function(telescope)
+    telescope.load_extension "noice"
+  end)
 end
 
 ---Display notify history in a telescope prompt

@@ -16,9 +16,8 @@ local buttons
 local footer
 
 function header()
-  local util = require "config.util"
   local ascii_file =
-    util.path(vim.fn.stdpath "config", ".storage", "ascii_art.txt")
+    Util.path(vim.fn.stdpath "config", ".storage", "ascii_art.txt")
   local hdr = {}
   if vim.fn.filereadable(ascii_file) == 1 then
     local ok
@@ -69,19 +68,29 @@ function buttons()
     val = {
       button(":Sessions", "Sessions", "Sessions"),
       button("<leader>to", "Old Files", function()
-        require("telescope.builtin").oldfiles()
+        Util.require("telescope.builtin", function(builtin)
+          builtin.oldfiles()
+        end)
       end),
       button("<leader>tf", "Find Files", function()
-        require("telescope.builtin").find_files()
+        Util.require("telescope.builtin", function(builtin)
+          builtin.find_files()
+        end)
       end),
       button("<leader>tb", "File Browser", function()
-        require("telescope").extensions.file_browser.file_browser()
+        Util.require("telescope", function(telescope)
+          telescope.extensions.file_browser.file_browser()
+        end)
       end),
       button("<leader>tg", "Live Grep", function()
-        require("telescope.builtin").live_grep()
+        Util.require("telescope.builtin", function(builtin)
+          builtin.live_grep()
+        end)
       end),
       button("<leader>gg", "Git status", function()
-        require("telescope.builtin").git_status()
+        Util.require("telescope.builtin", function(builtin)
+          builtin.git_status()
+        end)
       end),
       button(":Lazy", "Plugins", "Lazy"),
       button(":Mason", "Package Manager", "Mason"),
@@ -94,48 +103,51 @@ function buttons()
 end
 
 function footer()
-  local stats = require("lazy").stats()
-  return {
-    type = "text",
-    val = {
-      "Loaded " .. stats.count .. " plugins in " .. (math.floor(
-        stats.startuptime * 100 + 0.5
-      ) / 100) .. "ms",
-    },
-    opts = {
-      position = "center",
-      hl = "Comment",
-    },
-  }
+  return Util.require("lazy", function(lazy)
+    local stats = lazy.stats()
+    return {
+      type = "text",
+      val = {
+        "Loaded " .. stats.count .. " plugins in " .. (math.floor(
+          stats.startuptime * 100 + 0.5
+        ) / 100) .. "ms",
+      },
+      opts = {
+        position = "center",
+        hl = "Comment",
+      },
+    }
+  end) or {}
 end
 
 function M.config()
-  local alpha = require "alpha"
-  alpha.setup {
-    layout = {
-      { type = "padding", val = 2 },
-      header(),
-      { type = "padding", val = 1 },
-      {
-        type = "text",
-        val = {
-          require("config.util").nvim_version(),
+  Util.require("alpha", function(alpha)
+    alpha.setup {
+      layout = {
+        { type = "padding", val = 2 },
+        header(),
+        { type = "padding", val = 1 },
+        {
+          type = "text",
+          val = {
+            Util.nvim_version(),
+          },
+          opts = {
+            position = "center",
+            hl = "Number",
+          },
         },
-        opts = {
-          position = "center",
-          hl = "Number",
-        },
+        { type = "padding", val = 1 },
+        buttons(),
+        { type = "padding", val = 2 },
+        footer(),
       },
-      { type = "padding", val = 1 },
-      buttons(),
-      { type = "padding", val = 2 },
-      footer(),
-    },
-  }
-  -- NOTE: need to manually call alpha, as
-  -- it is loaded after the vim enter event
-  -- (it is loaded later so the plugins info is available)
-  alpha.start(true, alpha.default_config)
+    }
+    -- NOTE: need to manually call alpha, as
+    -- it is loaded after the vim enter event
+    -- (it is loaded later so the plugins info is available)
+    alpha.start(true, alpha.default_config)
+  end)
 end
 
 function button(sc, txt, on_press)

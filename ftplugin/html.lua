@@ -4,7 +4,7 @@
 --[[===========================================================================
 Loaded when a html file is opened
 -----------------------------------------------------------------------------]]
-require("config.util").ftplugin {
+Util.ftplugin {
   language_server = "html",
   formatter = "prettier",
 }

@@ -4,8 +4,7 @@
 --[[===========================================================================
 Loaded when a java file is opened
 -----------------------------------------------------------------------------]]
-local util = require "config.util"
-util.ftplugin {
+Util.ftplugin {
   formatter = {
     "google_java_format",
     extra_args = { "--aosp" },
@@ -21,9 +20,9 @@ util.ftplugin {
     cmd = {
       "jdtls",
       "-data",
-      util.path(os.getenv "HOME", ".cache", "jdtls", "workspace"),
+      Util.path(os.getenv "HOME", ".cache", "jdtls", "workspace"),
     },
-    root_dir = require("config.util").root_fn {
+    root_dir = Util.root_fn {
       "build.xml",
       "pom.xml",
       "mvn",

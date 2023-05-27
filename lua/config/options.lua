@@ -1,14 +1,11 @@
 --=============================================================================
 -------------------------------------------------------------------------------
 --                                                                      OPTIONS
---[[===========================================================================
-Define all the general neovim options
+--=============================================================================
+----------------------------------Set the default global options for the editor
 
------------------------------------------------------------------------------]]
-vim.g["mapleader"] = " " -------------------------------  map <leader> to space
+vim.g.mapleader = " " --------------------------------  map <leader> to <Space>
 
----Set the default global options for the editor
----(save/undo, indenting, autocomplete, searching, ui)
 vim.opt.errorbells = false -- disable error sounds
 vim.opt.updatetime = 50 -- shorten updatetime from 4s to 50ms
 vim.opt.timeoutlen = 300 -- shorten timeout for key combinations
@@ -21,7 +18,7 @@ vim.opt.splitright = true --open new window on the right in vertical split
 vim.opt.swapfile = false -- load buffers without creating swap files
 vim.opt.backup = false -- do not automatically save
 vim.opt.undofile = true -- allow undo after reoppening the file
-vim.opt.undodir = require("config.util").path(vim.fn.stdpath "data", ".undo")
+vim.opt.undodir = Util.path(vim.fn.stdpath "data", ".undo")
 
 --------------------------------------------------------------------- INDENTING
 
@@ -52,21 +49,6 @@ vim.opt.wildmenu = true -- display matching files with tab completion
 
 vim.opt.jumpoptions = "stack" -- make jumplist behave like stack
 
--------------------------------------------------------------------- STATUSLINE
-vim.opt.laststatus = 3
-vim.opt.statusline = table.concat({
-  " %-5{%v:lua.string.upper(v:lua.vim.fn.mode())%}", -- show mode
-  "%f", -- show filename, relative to cwd
-  "%-m ", -- show modified flar (or readonly)
-  " %{%len(v:lua.vim.diagnostic.get(0)) > 0 ? " -- show diagnostics
-    .. "'!' .. len(v:lua.vim.diagnostic.get(0)) : '' %}",
-  " %= ",
-  " %{get(g:,'gitsigns_head','')} ", -- show git branch
-  "%{get(b:,'gitsigns_status','')} ", -- show git diff
-  "%15([%l,%c%)]", -- show line and column
-  " %3p%% ", -- show percentage through file
-}, "")
-
 ---------------------------------------------------------------------------- UI
 
 vim.opt.background = "dark"
@@ -93,3 +75,18 @@ vim.opt.listchars:append {
   leadmultispace = "│ ",
 }
 vim.opt.list = true
+
+-------------------------------------------------------------------- STATUSLINE
+vim.opt.laststatus = 3
+vim.opt.statusline = table.concat({
+  " %-5{%v:lua.string.upper(v:lua.vim.fn.mode())%}", -- show mode
+  "%f", -- show filename, relative to cwd
+  "%-m ", -- show modified flar (or readonly)
+  " %{%len(v:lua.vim.diagnostic.get(0)) > 0 ? " -- show diagnostics
+    .. "'!' .. len(v:lua.vim.diagnostic.get(0)) : '' %}",
+  " %= ",
+  " %{get(g:,'gitsigns_head','')} ", -- show git branch
+  "%{get(b:,'gitsigns_status','')} ", -- show git diff
+  "%15([%l,%c%)]", -- show line and column
+  " %3p%% ", -- show percentage through file
+}, "")

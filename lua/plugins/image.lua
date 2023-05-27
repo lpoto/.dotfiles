@@ -23,16 +23,10 @@ function M.cond()
   if vim.fn.executable "ascii-image-converter" == 1 then
     return true
   end
-  vim.defer_fn(function()
-    vim.notify(
-      "The `ascii-image-converter` command is not executable. "
-        .. "Please install it to use the preview images.",
-      vim.log.levels.WARN,
-      {
-        title = "Image.nvim",
-      }
-    )
-  end, 1000)
+  Util.log("Image.nvim", 1000):warn(
+    "The `ascii-image-converter` command is not executable.",
+    "Please install it to use the preview images."
+  )
   return false
 end
 
@@ -75,13 +69,14 @@ function M.config()
     return false
   end
   M.loaded = true
-  local image = require "image"
-  image.setup {
-    render = {
-      background_color = true,
-      foreground_color = true,
-    },
-  }
+  Util.require("image", function(image)
+    image.setup {
+      render = {
+        background_color = true,
+        foreground_color = true,
+      },
+    }
+  end)
   return true
 end
 
@@ -93,63 +88,64 @@ function M.__telescope_preview_hook(filepath, bufnr, opts)
   if not opts or not opts.ft or opts.ft:len() > 0 then
     return true
   end
-  local config = require "image.config"
-  local pattern = "*." .. vim.fn.fnamemodify(filepath, ":e")
-  if not vim.tbl_contains(config.SUPPORTED_FILE_PATTERNS, pattern) then
-    return true
-  end
-
-  local dimensions = require "image.dimensions"
-  local api = require "image.api"
-  local async = require "plenary.async"
-
-  local o = config.DEFAULT_OPTS
-
-  local win_id = opts.winid
-  local buf_path = filepath
-  async.run(function()
-    local ascii_width, ascii_height =
-      dimensions.calculate_ascii_width_height(win_id, buf_path, o)
-
-    local width = vim.api.nvim_win_get_width(win_id)
-    local height = vim.api.nvim_win_get_height(win_id)
-    for i = 2.5, 1.10, -0.10 do
-      -- Try to fine tune the size of the ASCII art
-      -- so that it fits the preview window better.
-      if ascii_width * i < width and ascii_height * i < height - 1 then
-        ascii_width = math.floor(ascii_width * i)
-        ascii_height = math.floor(ascii_height * i)
-        break
+  Util.require(
+    { "image.config", "image.dimensions", "image.api", "plenary.async" },
+    function(config, dimensions, api, async)
+      local pattern = "*." .. vim.fn.fnamemodify(filepath, ":e")
+      if not vim.tbl_contains(config.SUPPORTED_FILE_PATTERNS, pattern) then
+        return true
       end
+
+      local o = config.DEFAULT_OPTS
+
+      local win_id = opts.winid
+      local buf_path = filepath
+      async.run(function()
+        local ascii_width, ascii_height =
+          dimensions.calculate_ascii_width_height(win_id, buf_path, o)
+
+        local width = vim.api.nvim_win_get_width(win_id)
+        local height = vim.api.nvim_win_get_height(win_id)
+        for i = 2.5, 1.10, -0.10 do
+          -- Try to fine tune the size of the ASCII art
+          -- so that it fits the preview window better.
+          if ascii_width * i < width and ascii_height * i < height - 1 then
+            ascii_width = math.floor(ascii_width * i)
+            ascii_height = math.floor(ascii_height * i)
+            break
+          end
+        end
+        local padding = math.floor((width - ascii_width) / 2)
+
+        local label = "   " .. vim.fn.fnamemodify(filepath, ":t")
+
+        local ascii_data =
+          api.get_ascii_data(buf_path, ascii_width, ascii_height, o)
+        if padding > 0 then
+          for i = 1, #ascii_data do
+            ascii_data[i] = string.rep(" ", padding) .. ascii_data[i]
+          end
+        end
+
+        table.insert(ascii_data, 1, label)
+
+        vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, ascii_data)
+      end, function() end)
     end
-    local padding = math.floor((width - ascii_width) / 2)
-
-    local label = "   " .. vim.fn.fnamemodify(filepath, ":t")
-
-    local ascii_data =
-      api.get_ascii_data(buf_path, ascii_width, ascii_height, o)
-    if padding > 0 then
-      for i = 1, #ascii_data do
-        ascii_data[i] = string.rep(" ", padding) .. ascii_data[i]
-      end
-    end
-
-    table.insert(ascii_data, 1, label)
-
-    vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, ascii_data)
-  end, function() end)
+  )
   return false
 end
 
 function M.telescope_setup()
-  local telescope = require "telescope"
-  telescope.setup {
-    defaults = {
-      preview = {
-        filetype_hook = M.__telescope_preview_hook,
+  Util.require("telescope", function(telescope)
+    telescope.setup {
+      defaults = {
+        preview = {
+          filetype_hook = M.__telescope_preview_hook,
+        },
       },
-    },
-  }
+    }
+  end)
 end
 
 return M

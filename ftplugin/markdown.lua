@@ -4,7 +4,7 @@
 --[[===========================================================================
 Loaded when a markdown file is opened
 -----------------------------------------------------------------------------]]
-require("config.util").ftplugin {
+Util.ftplugin {
   --language_server = "marksman",
   formatter = "prettier",
 }

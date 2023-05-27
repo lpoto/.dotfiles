@@ -25,10 +25,12 @@ vim.api.nvim_create_autocmd({ "WinLeave" }, {
 --------------------------------------------------------- Highlight yanked text
 vim.api.nvim_create_autocmd("TextYankPost", {
   callback = function()
-    require("vim.highlight").on_yank {
-      higroup = "IncSearch",
-      timeout = 40,
-    }
+    Util.require("vim.highlight", function(hl)
+      hl.on_yank {
+        higroup = "IncSearch",
+        timeout = 40,
+      }
+    end)
   end,
 })
 
@@ -64,20 +66,17 @@ local last_buf = nil
 --- not be unloaded
 vim.keymap.set("n", "<C-l>", function()
   local buf = vim.api.nvim_get_current_buf()
+  local log = Util.log "Buffer Lock"
 
   if locked_buffers[buf] then
     locked_buffers[buf] = nil
     locked_count = locked_count - 1
-    vim.notify("Unlocked current buffer", vim.log.levels.INFO, {
-      title = "Buffer Lock",
-    })
+    log:info "Unlocked current buffer"
     return
   end
   locked_buffers[buf] = true
   locked_count = locked_count + 1
-  vim.notify("Locked current buffer", vim.log.levels.INFO, {
-    title = "Buffer Lock",
-  })
+  log:info "Locked current buffer"
 end, {})
 
 vim.api.nvim_create_autocmd({ "BufWipeout" }, {

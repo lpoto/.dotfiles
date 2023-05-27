@@ -2,17 +2,12 @@
 -------------------------------------------------------------------------------
 --                                                                         INIT
 --=============================================================================
-local util = require "config.util"
 
------------------------------------------------------------ Load custom options
-util.require "config.options"
------------------------------------------------------------ Load custom keymaps
-util.require "config.keymaps"
------------------------------------------------------- Load custom autocommands
-util.require "config.autocommands"
----------------------------------------------------------- Source local configs
-util.require "config.local_config"
------------------------------------------------ Load the plugins with lazy.nvim
-util.require "config.lazy"
---------------------------------------------- Load automatic session management
-util.require "config.sessions"
+Util = require "util"
+-- NOTE:  Safely require modiles with Util.require, so that they are loaded
+-- even if one of them fails to load.
+
+Util.require "config.options" --------------------- Load default editor options
+Util.require "config.keymaps" ----- Load custom keymaps (not including plugins)
+Util.require "config.autocommands" ------------------- Load custom autocommands
+Util.require "config.lazy" ------------------------ Load plugins with lazy.nvim

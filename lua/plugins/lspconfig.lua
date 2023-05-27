@@ -39,21 +39,15 @@ function M.start_language_server(opts)
   local server
   server, opts = expand_opts(opts)
   if not server or server:len() == 0 then
-    vim.notify("No server provided", "warn", "LSP")
+    Util.log("LSP"):warn "No server provided"
     return
   end
 
-  local ok, e = pcall(function()
-    vim.schedule(function()
-      local lspconfig = require "lspconfig"
-
+  vim.schedule(function()
+    Util.require("lspconfig", function(lspconfig)
       local lsp = lspconfig[server]
       if lsp == nil then
-        vim.notify(
-          "LSP server not found:" .. vim.inspect(server),
-          "warn",
-          "LSP"
-        )
+        Util.log("LSP"):warn("Language server not found:", server)
         return
       end
 
@@ -64,20 +58,15 @@ function M.start_language_server(opts)
       )
 
       opts.capabilities = opts.capabilities
-        or require("plugins.cmp").capabilities()
+        or Util.require("plugins.cmp", function(cmp)
+          return cmp.capabilities()
+        end)
 
       lsp.setup(opts)
 
       vim.api.nvim_exec("LspStart", true)
     end)
   end)
-  if not ok then
-    vim.notify(
-      "Failed to start " .. vim.inspect(server) .. ": " .. vim.inspect(e),
-      "error",
-      "LSP"
-    )
-  end
 end
 
 function expand_opts(opts)

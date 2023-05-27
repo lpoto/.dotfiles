@@ -7,8 +7,6 @@ Ensure that Lazy.nvim (https://github.com/folke/lazy.nvim) is installed, then
 set it up and load the plugins.
 
 -----------------------------------------------------------------------------]]
-local util = require "config.util"
-
 local ensure_lazy, get_lazy_options
 
 ---Ensure the lazy.nvim plugin manager is installed. If not,
@@ -17,15 +15,15 @@ local ensure_lazy, get_lazy_options
 local function load_lazy(lazy_path)
   ensure_lazy(lazy_path)
   vim.opt.runtimepath:prepend(lazy_path)
-  require("lazy").setup("plugins", get_lazy_options())
+  Util.require("lazy", function(lazy)
+    lazy.setup("plugins", get_lazy_options())
+  end)
 end
 
 function ensure_lazy(lazy_path)
   if not vim.loop.fs_stat(lazy_path) then
-    local info = function(msg)
-      vim.notify(msg, "info", { title = "Ensure Lazy.nvim" })
-    end
-    info "Lazy.nvim not found, installing..."
+    local log = Util.log "Ensure Lazy.nvim"
+    log:info "Lazy.nvim not found, installing..."
     ---@type table
     local args = {
       "git",
@@ -35,9 +33,9 @@ function ensure_lazy(lazy_path)
       "git@github.com:folke/lazy.nvim.git",
       lazy_path,
     }
-    info("Running:" .. vim.inspect(args))
+    log:info("Running:" .. vim.inspect(args))
     vim.fn.system(args)
-    info "Lazy.nvim installed"
+    log:info "Lazy.nvim installed"
   end
 end
 
@@ -46,10 +44,10 @@ function get_lazy_options()
     defaults = {
       lazy = true,
     },
-    lockfile = util.path(vim.fn.stdpath "config", ".lazy.lock.json"),
-    root = util.path(vim.fn.stdpath "data", "lazy"),
+    lockfile = Util.path(vim.fn.stdpath "config", ".lazy.lock.json"),
+    root = Util.path(vim.fn.stdpath "data", "lazy"),
     dev = {
-      dir = util.path(vim.fn.stdpath "data", "lazy"),
+      dir = Util.path(vim.fn.stdpath "data", "lazy"),
     },
     checker = {
       enabled = true,
@@ -83,4 +81,4 @@ function get_lazy_options()
   }
 end
 
-load_lazy(util.path(vim.fn.stdpath "data", "lazy", "lazy.nvim"))
+load_lazy(Util.path(vim.fn.stdpath "data", "lazy", "lazy.nvim"))

@@ -18,39 +18,44 @@ M.keys = {
   {
     "<leader>a",
     function()
-      require("telescope").extensions.tasks.tasks()
+      Util.require("telescope", function(telescope)
+        telescope.extensions.tasks.tasks()
+      end)
     end,
     mode = "n",
   },
   {
     "<leader>e",
     function()
-      require("telescope").extensions.tasks.actions.toggle_last_output()
+      Util.require("telescope", function(telescope)
+        telescope.extensions.tasks.actions.toggle_last_output()
+      end)
     end,
     mode = "n",
   },
 }
 
 function M.config()
-  local telescope = require "telescope"
-  telescope.setup {
-    extensions = {
-      tasks = {
-        theme = "ivy",
-        output = {
-          style = "tab",
-          layout = "center",
-          scale = 0.75,
+  Util.require("telescope", function(telescope)
+    telescope.setup {
+      extensions = {
+        tasks = {
+          theme = "ivy",
+          output = {
+            style = "tab",
+            layout = "center",
+            scale = 0.75,
+          },
+          --data_dir = false
+          initial_mode = "normal",
         },
-        --data_dir = false
-        initial_mode = "normal",
       },
-    },
-  }
+    }
 
-  telescope.load_extension "tasks"
+    telescope.load_extension "tasks"
 
-  telescope.extensions.tasks.generators.default.all()
+    telescope.extensions.tasks.generators.default.all()
+  end)
 end
 
 return M

@@ -4,11 +4,11 @@
 --[[===========================================================================
 Loaded when a php file is opened
 -----------------------------------------------------------------------------]]
-require("config.util").ftplugin {
+Util.ftplugin {
   formatter = "phpcbf",
   language_server = {
     "phpactor",
-    root_dir = require("config.util").root_fn {
+    root_dir = Util.root_fn {
       ".git",
       "composer.json",
       "composer.lock",

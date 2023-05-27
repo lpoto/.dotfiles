@@ -4,7 +4,7 @@
 --[[===========================================================================
 Loaded when a rust file is opened
 -----------------------------------------------------------------------------]]
-require("config.util").ftplugin {
+Util.ftplugin {
   formatter = "rustfmt",
   language_server = "rust_analyzer",
 }

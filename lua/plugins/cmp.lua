@@ -28,39 +28,43 @@ local M = {
 }
 
 function M.config()
-  local cmp = require "cmp"
-
-  cmp.setup {
-    completion = {
-      completeopt = "menu,menuone,noinsert,noselect",
-    },
-    snippet = {
-      expand = function(args)
-        require("luasnip").lsp_expand(args.body)
-      end,
-    },
-    sources = {
-      { name = "nvim_lsp" },
-      { name = "luasnip" },
-      { name = "path" },
-      { name = "buffer" },
-    },
-    window = {
-      completion = cmp.config.window.bordered(),
-      documentation = cmp.config.window.bordered(),
-    },
-    preselect = cmp.PreselectMode.None,
-    mapping = cmp.mapping.preset.insert {
-      ["<TAB>"] = cmp.mapping.select_next_item(),
-      ["<S-TAB>"] = cmp.mapping.select_prev_item(),
-      ["<CR>"] = cmp.mapping.confirm { select = true },
-      ["<C-x>"] = cmp.mapping.close(),
-    },
-  }
+  Util.require("cmp", function(cmp)
+    cmp.setup {
+      completion = {
+        completeopt = "menu,menuone,noinsert,noselect",
+      },
+      snippet = {
+        expand = function(args)
+          Util.require("luasnip", function(luasnip)
+            luasnip.lsp_expand(args.body)
+          end)
+        end,
+      },
+      sources = {
+        { name = "nvim_lsp" },
+        { name = "luasnip" },
+        { name = "path" },
+        { name = "buffer" },
+      },
+      window = {
+        completion = cmp.config.window.bordered(),
+        documentation = cmp.config.window.bordered(),
+      },
+      preselect = cmp.PreselectMode.None,
+      mapping = cmp.mapping.preset.insert {
+        ["<TAB>"] = cmp.mapping.select_next_item(),
+        ["<S-TAB>"] = cmp.mapping.select_prev_item(),
+        ["<CR>"] = cmp.mapping.confirm { select = true },
+        ["<C-x>"] = cmp.mapping.close(),
+      },
+    }
+  end)
 end
 
 function M.capabilities()
-  return require("cmp_nvim_lsp").default_capabilities()
+  return Util.require("cmp_nvim_lsp", function(cmp_nvim_lsp)
+    return cmp_nvim_lsp.default_capabilities()
+  end)
 end
 
 return M

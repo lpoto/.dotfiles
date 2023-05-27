@@ -20,6 +20,8 @@ return {
   -- Don't set it as optional so the path to installed binaries
   -- is added to the PATH environment variable on startup.
   config = function()
-    require("mason").setup()
+    Util.require("mason", function(mason)
+      mason.setup()
+    end)
   end,
 }

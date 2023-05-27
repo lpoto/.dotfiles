@@ -4,7 +4,7 @@
 --[[===========================================================================
 Loaded when a c file is opened
 -----------------------------------------------------------------------------]]
-require("config.util").ftplugin {
+Util.ftplugin {
   language_server = "clangd",
   formatter = "clang_format",
 }

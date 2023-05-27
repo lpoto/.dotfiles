@@ -4,7 +4,7 @@
 --[[===========================================================================
 Loaded when a typescript file is opened
 -----------------------------------------------------------------------------]]
-require("config.util").ftplugin {
+Util.ftplugin {
   language_server = "tsserver",
   formatter = "prettier",
 }

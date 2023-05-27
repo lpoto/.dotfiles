@@ -4,7 +4,7 @@
 --[[===========================================================================
 Loaded when a go file is opened
 -----------------------------------------------------------------------------]]
-require("config.util").ftplugin {
+Util.ftplugin {
   language_server = "gopls",
   formatter = "goimports",
   linter = "golangci_lint",
