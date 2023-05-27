@@ -31,6 +31,8 @@ return {
             Whitespace = { fg = "#292929", bg = "NONE" },
             NonText = { link = "Whitespace" },
             Folded = { bg = "NONE", fg = "#658aba" },
+            NormalFloat = { bg = "NONE" },
+            FloatBorder = { link = "WinSeparator" },
           }
         end,
       }
