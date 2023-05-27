@@ -47,8 +47,12 @@ function M.config()
         { name = "buffer" },
       },
       window = {
-        completion = cmp.config.window.bordered(),
-        documentation = cmp.config.window.bordered(),
+        completion = cmp.config.window.bordered {
+          winhighlight = "NormalFloat:WinSeparator,FloatBorder:WinSeparator",
+        },
+        documentation = cmp.config.window.bordered {
+          winhighlight = "NormalFloat:WinSeparator,FloatBorder:WinSeparator",
+        },
       },
       preselect = cmp.PreselectMode.None,
       mapping = cmp.mapping.preset.insert {
