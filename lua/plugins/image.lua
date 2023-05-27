@@ -12,6 +12,9 @@ Requires:
 -----------------------------------------------------------------------------]]
 local M = {
   "samodostal/image.nvim",
+  dependencies = {
+    { "m00qek/baleia.nvim", tag = "v1.3.0" },
+  },
 }
 
 ---NOTE: This plugin requires the `ascii-image-converter` command to be
@@ -73,7 +76,12 @@ function M.config()
   end
   M.loaded = true
   local image = require "image"
-  image.setup {}
+  image.setup {
+    render = {
+      background_color = true,
+      foreground_color = true,
+    },
+  }
   return true
 end
 
