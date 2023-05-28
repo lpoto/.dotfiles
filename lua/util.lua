@@ -55,23 +55,37 @@ function util.path_separator()
 end
 
 ---Joins arbitrary number of paths together.
----@param ... string The paths to join.
+---@param ... any The paths to join.
 ---@return string
 function util.path(...)
   local args = { ... }
-  if #args == 0 then
+  local ok, v = pcall(function()
+    if #args == 0 then
+      return ""
+    end
+    local separator = util.path_separator()
+    local all_parts = {}
+    if type(args[1]) == "string" and args[1]:sub(1, 1) == separator then
+      all_parts[1] = ""
+    end
+    for _, arg in ipairs(args) do
+      if type(arg) == "string" then
+        args = vim.fn.split(arg, separator)
+        for _, part in ipairs(args) do
+          if part:len() > 0 then
+            local arg_parts = vim.fn.split(part, separator)
+            vim.list_extend(all_parts, arg_parts)
+          end
+        end
+      end
+    end
+    return table.concat(all_parts, separator)
+  end)
+  if not ok then
+    util.log():warn("Failed to join paths:", v)
     return ""
   end
-  local separator = util.path_separator()
-  local all_parts = {}
-  if type(args[1]) == "string" and args[1]:sub(1, 1) == separator then
-    all_parts[1] = ""
-  end
-  for _, arg in ipairs(args) do
-    local arg_parts = vim.fn.split(arg, separator)
-    vim.list_extend(all_parts, arg_parts)
-  end
-  return table.concat(all_parts, separator)
+  return v
 end
 
 ---Escape the path separator in a path with the provided replacement,
@@ -245,6 +259,25 @@ function util.concat(...)
     end
   end
   return s
+end
+
+local stdpath = vim.fn.stdpath
+---@param what string
+---@return string|table
+function util.stdpath(what)
+  local config = stdpath "config"
+  local storage = Util.path(config, ".storage")
+  local n = {
+    config = config,
+    cache = Util.path(storage, "cache"),
+    data = Util.path(storage, "share"),
+    log = Util.path(storage, "log"),
+    run = Util.path(storage, "state"),
+    state = Util.path(storage, "state"),
+    config_dirs = {},
+    data_dirs = {},
+  }
+  return util.path(n[what] or stdpath(what))
 end
 
 ---@class Log

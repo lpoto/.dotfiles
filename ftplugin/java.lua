@@ -20,7 +20,7 @@ Util.ftplugin {
     cmd = {
       "jdtls",
       "-data",
-      Util.path(os.getenv "HOME", ".cache", "jdtls", "workspace"),
+      Util.path(vim.fn.stdpath "cache", "jdtls", "workspace"),
     },
     root_dir = Util.root_fn {
       "build.xml",
