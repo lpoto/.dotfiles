@@ -140,6 +140,8 @@ local _ftplugin
 ---@field language_server string|table?
 ---@field formatter string|table?
 ---@field linter string|table?
+---@field filetype string?
+---@field init function?
 ---
 ---@param opts FtpluginOpts
 function util.ftplugin(opts)
@@ -149,7 +151,13 @@ function util.ftplugin(opts)
 end
 
 function _ftplugin(opts)
-  local filetype = vim.bo.filetype
+  if type(opts) ~= "table" then
+    opts = {}
+  end
+  local filetype = opts.filetype
+  if type(filetype ~= "string") then
+    filetype = vim.bo.filetype
+  end
   -- Load ftplugin only when opening a buffer
   -- with "" buftype for the first time.
   local buftype = vim.bo.buftype
@@ -158,9 +166,11 @@ function _ftplugin(opts)
   end
   loaded[filetype] = true
 
-  opts = opts or {}
-  if type(opts) ~= "table" then
-    opts = {}
+  if type(opts.init) == "function" then
+    local ok, err = pcall(opts.init)
+    if not ok then
+      util.log(200):error(err)
+    end
   end
 
   -- Allow setting the language server, formatter and linter
