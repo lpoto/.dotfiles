@@ -54,7 +54,7 @@ function format(selection)
     vim.lsp.buf.format(opts)
   end)
   if not ok and type(e) == "string" then
-    Util.log("null-ls.format"):warn(e)
+    Util.log():warn(e)
   end
 end
 
@@ -77,7 +77,7 @@ function M.register_builtin_source(type, opts)
 
     local s = null_ls.builtins[type][opts.source]
     if not s then
-      Util.log("null-ls"):warn("No such builtin source:", opts.source)
+      Util.log():warn("No such builtin source:", opts.source)
       return
     end
     if opts.config and next(opts.config) then

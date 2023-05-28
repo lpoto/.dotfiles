@@ -123,7 +123,7 @@ function M.run_command(cmd)
       })
     end)
     if not ok and type(e) == "string" then
-      Util.log("Unception.run_command"):info(e)
+      Util.log():info(e)
     end
   end)
 end
@@ -143,7 +143,7 @@ end
 function M.fetch_git_data(callback, on_error)
   on_error = on_error
     or function()
-      Util.log("Unception.fetch_git_data"):warn "Could not fetch git data"
+      Util.log():warn "Could not fetch git data"
     end
   local remote = {}
   vim.fn.jobstart("git remote show", {

@@ -139,7 +139,7 @@ local function select_session(prompt_bufnr)
         end, 10)
       else
         -- Notify that the selected session is no longer available
-        Util.log(M.title):warn "Session no longer available"
+        Util.log():warn "Session no longer available"
       end
     end
   )
@@ -158,9 +158,9 @@ local function delete_selected_session(prompt_bufnr)
     local session_file = Util.path(session_dir, selection.value)
 
     if vim.fn.delete(session_file) ~= 0 then
-      Util.log(M.title):warn "Failed to delete session"
+      Util.log():warn "Failed to delete session"
     else
-      Util.log(M.title):info "Session deleted"
+      Util.log():info "Session deleted"
       -- Filter out the deleted session from the picker
       picker:delete_selection(function(item)
         return selection == item

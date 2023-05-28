@@ -23,7 +23,7 @@ function M.cond()
   if vim.fn.executable "ascii-image-converter" == 1 then
     return true
   end
-  Util.log("Image.nvim", 1000):warn(
+  Util.log(1000):warn(
     "The `ascii-image-converter` command is not executable.",
     "Please install it to use the preview images."
   )

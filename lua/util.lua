@@ -242,35 +242,24 @@ end
 ---@field delay number?
 local Log = {}
 Log.__index = Log
+local __notify
 
 function Log:info(...)
-  self:notify(vim.log.levels.INFO, ...)
+  __notify(vim.log.levels.INFO, self.title, self.delay, ...)
 end
 
 function Log:warn(...)
-  self:notify(vim.log.levels.WARN, ...)
+  __notify(vim.log.levels.WARN, self.title, self.delay, ...)
 end
 
 function Log:error(...)
-  self:notify(vim.log.levels.ERROR, ...)
+  __notify(vim.log.levels.ERROR, self.title, self.delay, ...)
 end
 
-function Log:notify(level, ...)
-  local msg = util.concat(...)
-  local delay = self.delay or 0
-  vim.defer_fn(function()
-    if msg:len() > 0 then
-      vim.notify(msg, level, {
-        title = self.title,
-      })
-    end
-  end, delay)
-end
-
----@param title string?: Title of the notification
 ---@param delay number?: Delay in milliseconds, default: 0
+---@param title string?: Title of the notification
 ---@return Log
-function util.log(title, delay)
+function util.log(delay, title)
   local o = {}
   if type(title) == "string" then
     o.title = title
@@ -279,6 +268,42 @@ function util.log(title, delay)
     o.delay = delay
   end
   return setmetatable(o, Log)
+end
+
+function __notify(level, title, delay, ...)
+  local n = debug.getinfo(3)
+
+  local msg = util.concat(...)
+  delay = delay or 0
+
+  if type(title) ~= "string" then
+    if type(n) == "table" then
+      local ok = false
+      if type(n.short_src) == "string" then
+        title = vim.fn.fnamemodify(n.short_src, ":t")
+        ok = true
+      end
+      if type(n.name) == "string" then
+        if ok then
+          title = title .. ":" .. n.name
+        else
+          title = n.name
+          ok = true
+        end
+      end
+      if ok and type(n.currentline) == "number" then
+        title = title .. ":" .. n.currentline
+      end
+    end
+  end
+
+  vim.defer_fn(function()
+    if msg:len() > 0 then
+      vim.notify(msg, level, {
+        title = title,
+      })
+    end
+  end, delay)
 end
 
 return util

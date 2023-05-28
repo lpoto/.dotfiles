@@ -60,7 +60,7 @@ function find_local_config(source)
     path = vim.fs.dirname(path)
   end
   if not found and not source then
-    Util.log("Local Config"):warn "No local config found!"
+    Util.log():warn "No local config found!"
   end
 end
 
@@ -70,7 +70,7 @@ local function create_local_config()
   local escaped = Util.path(local_configs_path, Util.escape_path(file))
 
   if vim.fn.filereadable(escaped) == 1 then
-    Util.log("Local Config"):warn("Local config already exists for:", path)
+    Util.log():warn("Config already exists for:", path)
     return
   end
   local dir = vim.fs.dirname(escaped)
@@ -95,10 +95,9 @@ local function remove_local_config()
       )
       if choice == 1 then
         if vim.fn.delete(escaped) ~= -1 then
-          Util.log("Local Config"):info("Local config deleted for:", path)
+          Util.log():info("Config deleted for:", path)
         else
-          Util.log("Local Config")
-            :warn("Could not delete local config for:", path)
+          Util.log():warn("Could not delete config for:", path)
         end
       end
       return

@@ -22,8 +22,7 @@ end
 
 function ensure_lazy(lazy_path)
   if not vim.loop.fs_stat(lazy_path) then
-    local log = Util.log "Ensure Lazy.nvim"
-    log:info "Lazy.nvim not found, installing..."
+    Util.log():info "Lazy.nvim not found, installing..."
     ---@type table
     local args = {
       "git",
@@ -33,9 +32,9 @@ function ensure_lazy(lazy_path)
       "git@github.com:folke/lazy.nvim.git",
       lazy_path,
     }
-    log:info("Running:" .. vim.inspect(args))
+    Util.log():info("Running:" .. vim.inspect(args))
     vim.fn.system(args)
-    log:info "Lazy.nvim installed"
+    Util.log():info "Lazy.nvim installed"
   end
 end
 

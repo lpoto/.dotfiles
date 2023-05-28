@@ -39,7 +39,7 @@ function M.start_language_server(opts)
   local server
   server, opts = expand_opts(opts)
   if not server or server:len() == 0 then
-    Util.log("LSP"):warn "No server provided"
+    Util.log():warn "No server provided"
     return
   end
 
@@ -47,7 +47,7 @@ function M.start_language_server(opts)
     Util.require("lspconfig", function(lspconfig)
       local lsp = lspconfig[server]
       if lsp == nil then
-        Util.log("LSP"):warn("Language server not found:", server)
+        Util.log():warn("Language server not found:", server)
         return
       end
 
