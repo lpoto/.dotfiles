@@ -49,7 +49,11 @@ local buffer_timestamps = {}
 local last_buf = nil
 
 function init_autocommands()
+  local augroup = vim.api.nvim_create_augroup("BufferRetirement", {
+    clear = true,
+  })
   vim.api.nvim_create_autocmd({ "BufWipeout" }, {
+    group = augroup,
     callback = function()
       if vim.bo.buftype == "" then
         local buf = vim.api.nvim_get_current_buf()
@@ -61,6 +65,7 @@ function init_autocommands()
   })
 
   vim.api.nvim_create_autocmd("BufEnter", {
+    group = augroup,
     callback = function()
       if vim.bo.buftype ~= "" then
         return
