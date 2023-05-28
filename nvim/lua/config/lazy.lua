@@ -43,7 +43,10 @@ function get_lazy_options()
     defaults = {
       lazy = true,
     },
-    lockfile = Util.path(vim.fn.stdpath "config", ".lazy.lock.json"),
+    lockfile = Util.path(
+      vim.fs.dirname(vim.fn.stdpath "config"),
+      ".lazy.lock.json"
+    ),
     root = Util.path(vim.fn.stdpath "data", "lazy"),
     dev = {
       dir = Util.path(vim.fn.stdpath "data", "lazy"),

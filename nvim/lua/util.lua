@@ -265,15 +265,17 @@ local stdpath = vim.fn.stdpath
 ---@param what string
 ---@return string|table
 function util.stdpath(what)
-  local config = stdpath "config"
+  local app_name = os.getenv "NVIM_APPNAME"
+  local config = vim.fs.dirname(stdpath "config")
   local storage = Util.path(config, ".storage")
+
   local n = {
-    config = config,
-    cache = Util.path(storage, "cache"),
-    data = Util.path(storage, "share"),
-    log = Util.path(storage, "log"),
-    run = Util.path(storage, "state"),
-    state = Util.path(storage, "state"),
+    config = Util.path(config, app_name),
+    cache = Util.path(storage, "cache", app_name),
+    data = Util.path(storage, "share", app_name),
+    log = Util.path(storage, "log", app_name),
+    run = Util.path(storage, "state", app_name),
+    state = Util.path(storage, "state", app_name),
     config_dirs = {},
     data_dirs = {},
   }

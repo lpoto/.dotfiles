@@ -32,7 +32,7 @@ if [ ! -f "${nvim_bin_path}" ]; then
   sleep 3
 fi
 
-NVIM_APPNAME="/" # this way neovim won't create additional nvim folders
+NVIM_APPNAME="nvim"
 NVIM_CONFIG_HOME=${nvim_config_path}
 # group all the neovim data in the same .storage folder
 NVIM_DATA_HOME=${nvim_config_path}/.storage/share
