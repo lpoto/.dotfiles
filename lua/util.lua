@@ -111,13 +111,13 @@ function util.require(module, callback)
   if type(module) == "string" then
     module = { module }
   elseif type(module) ~= "table" then
-    util.log("Util.require"):warn "module must be a string or table"
+    util.log():warn "module must be a string or table"
   end
   local res = {}
   for _, m in ipairs(module) do
     local ok, v = pcall(require, m)
     if not ok then
-      util.log("Util.require", 250):warn("Error loading", m, "-", v)
+      util.log(250):warn("Error loading", m, "-", v)
       return
     end
     table.insert(res, v)
@@ -125,7 +125,7 @@ function util.require(module, callback)
   if type(callback) == "function" then
     local ok, v = pcall(callback, unpack(res))
     if not ok then
-      util.log("Util.require.callback", 250):error(v)
+      util.log(250):error(v)
       return
     end
     return v
