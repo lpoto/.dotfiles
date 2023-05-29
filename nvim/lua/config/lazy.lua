@@ -28,8 +28,8 @@ function ensure_lazy(lazy_path)
       "git",
       "clone",
       "--filter=blob:none",
-      "--single-branch",
-      "git@github.com:folke/lazy.nvim.git",
+      "https://github.com/folke/lazy.nvim.git",
+      "--branch=stable",
       lazy_path,
     }
     Util.log():info("Running:" .. vim.inspect(args))
