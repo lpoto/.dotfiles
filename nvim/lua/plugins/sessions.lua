@@ -181,7 +181,7 @@ function list_sessions(opts)
   }, function(actions, action_state, entry_display, builtin)
     opts = opts or require("telescope.themes").get_ivy()
     opts = vim.tbl_extend("force", {
-      prompt_title = M.title,
+      prompt_title = title,
       selection_strategy = "row",
       cwd = session_dir,
       previewer = false,
