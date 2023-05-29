@@ -76,18 +76,3 @@ vim.opt.listchars:append {
   leadmultispace = "│ ",
 }
 vim.opt.list = true
-
--------------------------------------------------------------------- STATUSLINE
-vim.opt.laststatus = 3
-vim.opt.statusline = table.concat({
-  " %-5{%v:lua.string.upper(v:lua.vim.fn.mode())%}", -- show mode
-  "%f", -- show filename, relative to cwd
-  "%-m ", -- show modified flar (or readonly)
-  " %{%len(v:lua.vim.diagnostic.get(0)) > 0 ? " -- show diagnostics
-    .. "'!' .. len(v:lua.vim.diagnostic.get(0)) : '' %}",
-  " %= ",
-  " %{get(g:,'gitsigns_head','')} ", -- show git branch
-  "%{get(b:,'gitsigns_status','')} ", -- show git diff
-  "%15([%l,%c%)]", -- show line and column
-  " %3p%% ", -- show percentage through file
-}, "")

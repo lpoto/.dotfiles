@@ -9,7 +9,7 @@
 
 local M = {
   dev = true,
-  dir = vim.fn.expand "<sfile>",
+  dir = Util.path(vim.fn.stdpath "config", "lua", "plugins", "local_config"),
   event = "VeryLazy",
 }
 
