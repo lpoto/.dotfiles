@@ -12,17 +12,24 @@ if [ "$USER" = "root" ]; then
   exit 2
 fi
 
-latest=false
-stable=false
+build_type="NIGHTLY"
+branch="tags/nightly"
+origin="+refs/tags/nightly:refs/tags/nightly"
+tag=true
 
 while [ $# -ne 0 ]; do
   arg="$1"
   case "$arg" in
   --latest)
-    latest=true
+    build_type="LATEST"
+    branch="master"
+    origin="master"
+    tag=false
     ;;
   --stable)
-    stable=true
+    build_type="STABLE"
+    branch="tags/stable"
+    origin="+refs/tags/stable:refs/tags/stable"
     ;;
   esac
   shift
@@ -44,31 +51,17 @@ if [ ! -d "./.build/neovim" ]; then
 fi
 cd ./.build/neovim
 
-build_type="NIGHTLY"
-
-if [ "$stable" == true ]; then
-  build_type="STABLE"
-  echo "==> '--stable' option provided"
-  echo "==> fetching origin tags/stable ..."
-  echo
-  sleep 2
-  git fetch --depth=1 origin +refs/tags/stable:refs/tags/stable
-  git checkout tags/stable
-elif [ "$latest" == true ]; then
-  build_type="LATEST"
-  echo "==> '--latest' option provided"
-  echo "==> fetching origin master ..."
-  echo
-  sleep 2
-  git checkout master
-  git pull origin master
-else
-  build_type="NIGHTLY"
-  echo "==> fetching origin tags/nightly ..."
-  echo
-  sleep 2
-  git fetch --depth=1 origin +refs/tags/nightly:refs/tags/nightly
-  git checkout tags/nightly
+echo
+echo "==> build type: ${build_type}"
+echo "==> fetching origin ${branch}"
+echo
+sleep 2
+git fetch --depth=1 origin ${origin}
+git checkout ${branch}
+if [ tag = false ]; then
+  git clean -fd
+  git reset --hard origin/${branch}
+  git pull origin ${origin} --ff-only
 fi
 
 echo
