@@ -15,13 +15,15 @@ local M = {
 
 local setup_statusline
 local setup_tabline
+local group_id = nil
 
 function M.config()
   setup_statusline()
   setup_tabline()
 
+  group_id = vim.api.nvim_create_augroup("RedrawTabline", { clear = true })
   vim.api.nvim_create_autocmd({ "CursorMoved", "ModeChanged" }, {
-    group = vim.api.nvim_create_augroup("RedrawTabline", { clear = true }),
+    group = group_id,
     callback = function()
       -- NOTE: sometimes the tabline is not redrawn when we want it to be
       -- so we force it to redraw here.
@@ -30,78 +32,111 @@ function M.config()
   })
 end
 
-local trim
-local width
+function setup_statusline()
+  vim.o.laststatus = 0
+  -- NOTE: in normal splits, statusline is still visible
+  -- even when laststatus=0, so we make it appear the same
+  -- as the window separator.
+  vim.opt.statusline =
+    "%-5{%v:lua.string.rep('_', v:lua.vim.fn.winwidth(0))%}"
+end
+
+local append_to_tabline
+local append_tabline_section_separator
+local section_count = 1
+local empty_section = false
+
+function setup_tabline()
+  vim.o.showtabline = 2
+
+  append_to_tabline("mode", "TabLine")
+  append_tabline_section_separator()
+  append_to_tabline("diagnostic_info", "DiagnosticInfo", 0.20)
+  append_to_tabline("diagnostic_warn", "DiagnosticWarn", 0.30)
+  append_to_tabline("diagnostic_error", "DiagnosticError", 0.40)
+  append_tabline_section_separator()
+  append_to_tabline("filename", "TabLineSel")
+  append_tabline_section_separator()
+  append_to_tabline("tabcount", "TabLineFill")
+  append_to_tabline("gitsigns", "TabLine", nil, 20)
+  append_tabline_section_separator()
+  append_to_tabline("cursor", "TabLine")
+end
+
+function append_to_tabline(section, highlight, width, padding)
+  if type(highlight) == "string" then
+    vim.opt.tabline:append(string.format("%%#%s#", highlight))
+  end
+  padding = padding or 8
+  vim.opt.tabline:append(
+    "%"
+      .. padding
+      .. "{%v:lua.require('plugins.tabline').tabline_sections.get('"
+      .. section
+      .. "', "
+      .. (width or 1)
+      .. ")%}"
+  )
+  empty_section = false
+end
+
+function append_tabline_section_separator()
+  vim.opt.tabline:append " %= "
+  if empty_section then
+    return
+  end
+  section_count = section_count + 1
+  empty_section = true
+end
+
+local get_width
 local get_mode
-local align_center
-local pad_right
 local pad_left
+local align_center
 
-local width_left = 0.10
-local width_diagnostic_info = 0.04
-local width_diagnostic_warn = 0.04
-local width_diagnostic_warn_add = 0
-local width_diagnostic_error = 0.05
-local width_diagnostic_error_add = 0
-local width_right1 = 0.18
-local width_right2 = 0.10
-local width_center1 = 0.40
-local width_center2 = 0.10
+M.tabline_sections = {}
 
-function M.left()
-  local w = width(width_left)
-  local cur_w = w
-  local s = ""
+function M.tabline_sections.get(name, width)
+  local section = M.tabline_sections[name]
+  if not section then
+    Util.log():error("Tabline section does not exist:", name)
+    return ""
+  end
+  local ok, result = pcall(section, width)
+  if not ok then
+    Util.log():error("Error in tabline section:", name, result)
+    return ""
+  end
+  return result
+end
+
+function M.tabline_sections.mode()
+  local w = get_width() - 10
   local mode = get_mode()
   local n = vim.fn.strchars(mode)
-  if n > 0 and cur_w >= n then
-    s = s .. mode
-    cur_w = cur_w - n
+  if n > 0 and w > n then
+    return mode
   end
-  return pad_left(pad_right(s, w - 2), w)
+  return ""
 end
 
 local diagnostic
-function M.diagnostic_info()
-  local s = diagnostic(width(width_diagnostic_info), "I", {
+function M.tabline_sections.diagnostic_info(n)
+  return diagnostic(get_width(n), "I", {
     vim.diagnostic.severity.INFO,
     vim.diagnostic.severity.HINT,
-  }, pad_left)
-  if trim(s):len() == 0 then
-    width_diagnostic_warn_add = width_diagnostic_info
-  else
-    width_diagnostic_warn_add = 0
-  end
-  return s
+  })
 end
 
-function M.diagnostic_warn()
-  local s = diagnostic(
-    width(width_diagnostic_warn) + width_diagnostic_warn_add,
-    "W",
-    { vim.diagnostic.severity.WARN },
-    align_center
-  )
-  if trim(s):len() == 0 then
-    width_diagnostic_error_add = width_diagnostic_warn
-      + width_diagnostic_warn_add
-  else
-    width_diagnostic_error_add = 0
-  end
-  return s
+function M.tabline_sections.diagnostic_warn(n)
+  return diagnostic(get_width(n), "W", { vim.diagnostic.severity.WARN })
 end
 
-function M.diagnostic_error()
-  return diagnostic(
-    width(width_diagnostic_error) + width_diagnostic_error_add,
-    "E",
-    { vim.diagnostic.severity.ERROR },
-    pad_right
-  )
+function M.tabline_sections.diagnostic_error(n)
+  return diagnostic(get_width(n), "E", { vim.diagnostic.severity.ERROR })
 end
 
-function diagnostic(w, sign, severity, pad)
-  local cur_w = w
+function diagnostic(w, sign, severity)
   local s = ""
   local diagnostics = 0
   for _, sev in ipairs(severity) do
@@ -109,18 +144,19 @@ function diagnostic(w, sign, severity, pad)
   end
   local diag_string = ""
   if diagnostics > 0 then
-    diag_string = string.format(" %s%d", sign, diagnostics)
+    diag_string = string.format("%s%d", sign, diagnostics)
+  else
+    diag_string = "   "
   end
   local n = vim.fn.strchars(diag_string)
-  if n > 0 and cur_w >= n then
+  if n > 0 and w > n then
     s = s .. diag_string
-    cur_w = cur_w - n
   end
-  return pad(s, w)
+  return s
 end
 
-function M.right1()
-  local w = width(width_right1)
+function M.tabline_sections.gitsigns()
+  local w = get_width() - 5
   local cur_w = w
   local s = ""
   local branch = vim.g.gitsigns_head or ""
@@ -134,29 +170,31 @@ function M.right1()
   if n > 0 and cur_w >= n + 1 then
     s = s .. " " .. status
     cur_w = cur_w - n - 1
-  end
-  return align_center(s, w)
-end
-
-function M.right2()
-  local w = width(width_right2)
-  local cursor = vim.api.nvim_win_get_cursor(0)
-  local cursor_str = string.format("[%d,%d]", cursor[1], cursor[2] + 1)
-  local s = pad_left(cursor_str, w - 2, true)
-  if trim(s):len() > 0 then
-    return pad_right(s, w)
+  else
+    s = align_center(s, math.min(w, vim.fn.strchars(s) + 6))
   end
   return s
 end
 
-function M.center1()
-  local w = width(width_center1)
+function M.tabline_sections.cursor()
+  local w = get_width() - 5
+  local cursor = vim.api.nvim_win_get_cursor(0)
+  local cursor_str = string.format("[%d,%d]", cursor[1], cursor[2] + 1)
+  local n = vim.fn.strchars(cursor_str)
+  if n > w then
+    return ""
+  end
+  return align_center(cursor_str, 10)
+end
+
+function M.tabline_sections.filename()
+  local w = math.max(15, get_width() + 25)
   local cur_w = w
   local s = ""
   local bufnr = vim.api.nvim_get_current_buf()
   local buftype = vim.api.nvim_buf_get_option(bufnr, "buftype")
   if buftype ~= "" and buftype ~= "terminal" then
-    return pad_right(s, w)
+    return s
   end
   local modified = vim.api.nvim_buf_get_option(bufnr, "modified") and " [+]"
     or ""
@@ -166,21 +204,35 @@ function M.center1()
   if name:len() == 0 then
     name = "[No Name]"
   else
-    name = vim.fn.fnamemodify(name, ":~:.")
+    local ok, v = pcall(vim.fn.fnamemodify, name, ":~:.")
+    if ok then
+      name = v
+    end
   end
 
   local n = vim.fn.strchars(name)
-  if n >= cur_w then
-    name = vim.fn.fnamemodeify(name, ":t")
-  elseif n < cur_w / 3 then
-    name = pad_right(name, math.max(math.floor(cur_w / 4), 5))
+  local tail = vim.fn.fnamemodify(name, ":t")
+  local tail_n = vim.fn.strchars(tail)
+  local c = 0
+  while n + 3 >= cur_w and tail_n + 3 < n do
+    name = string.format("...%s", string.sub(name, 3 + c))
+    c = 3
+    n = vim.fn.strchars(name)
   end
+  if n >= cur_w then
+    local ok, v = pcall(vim.fn.fnamemodify, name, ":t")
+    if ok then
+      name = v
+    end
+  end
+  local x = 4
+  name = pad_left(name, vim.fn.strchars(name) + x)
+
   n = vim.fn.strchars(name)
   if n <= cur_w then
     s = name
     cur_w = cur_w - n
   end
-  local x = 4
   n = vim.fn.strchars(modified)
   if n > 0 and cur_w >= n then
     s = s .. modified
@@ -192,102 +244,50 @@ function M.center1()
       s = s .. readonly
       cur_w = cur_w - n
       x = x - n
+    elseif 4 >= n then
+      s = s .. string.rep(" ", 4)
     end
   end
-
-  return pad_right(pad_left(s, w - x), w)
+  return s
 end
 
-function M.center2()
-  local w = width(width_center2)
+function M.tabline_sections.tabcount()
+  local w = get_width() - 5
   local tabs = #vim.api.nvim_list_tabpages()
   local s = ""
   if tabs > 1 then
-    s = "Tab [" .. vim.api.nvim_tabpage_get_number(0) .. "/" .. tabs .. "]"
+    s = "Tab [" .. vim.api.nvim_tabpage_get_number(0) .. "/" .. tabs .. "]  "
   end
-  return align_center(s, w)
+  local n = vim.fn.strchars(s)
+  if n < 0 or w < n then
+    s = ""
+  end
+  return s
 end
 
-function setup_statusline()
-  vim.o.laststatus = 0
-  -- NOTE: in normal splits, statusline is still visible
-  -- even when laststatus=0, so we make it appear the same
-  -- as the window separator.
-  vim.opt.statusline =
-    "%-5{%v:lua.string.rep('_', v:lua.vim.fn.winwidth(0))%}"
-end
-
-function setup_tabline()
-  vim.o.showtabline = 2
-
-  vim.opt.tabline:append "%#TabLine#"
-  vim.opt.tabline:append "%{%v:lua.require('plugins.tabline').left()%}"
-  vim.opt.tabline:append "%#DiagnosticInfo#"
-  vim.opt.tabline:append "%{%v:lua.require('plugins.tabline').diagnostic_info()%}"
-  vim.opt.tabline:append "%#DiagnosticWarn#"
-  vim.opt.tabline:append "%{%v:lua.require('plugins.tabline').diagnostic_warn()%}"
-  vim.opt.tabline:append "%#DiagnosticError#"
-  vim.opt.tabline:append "%{%v:lua.require('plugins.tabline').diagnostic_error()%}"
-  vim.opt.tabline:append "%#TabLineSel#"
-  vim.opt.tabline:append "%{%v:lua.require('plugins.tabline').center1()%}"
-  vim.opt.tabline:append " %= "
-  vim.opt.tabline:append "%#TabLineFill#"
-  vim.opt.tabline:append "%{%v:lua.require('plugins.tabline').center2()%}"
-  vim.opt.tabline:append "%#TabLine#"
-  vim.opt.tabline:append "%{%v:lua.require('plugins.tabline').right1()%}"
-  vim.opt.tabline:append "%{%v:lua.require('plugins.tabline').right2()%}"
-end
-
-function width(n)
+function get_width(n)
   local w = vim.o.columns
-  return math.floor(w * n)
+  w = math.floor(w / section_count)
+  if type(n) == "number" and n > 0 and n <= 1 then
+    w = math.floor(w * n)
+  end
+  return w - 3
 end
 
-function align_center(s, n, empty_when_too_large)
-  local s_len = vim.fn.strchars(s)
-  if s_len + 2 > n and empty_when_too_large then
-    if n <= 0 then
-      return ""
-    end
-    return string.rep(" ", n)
-  end
-  local n1 = math.floor((n - s_len) / 2)
-  if n1 > 0 then
-    s = string.rep(" ", n1) .. s
-  end
-  local n2 = n - s_len - n1
-  if n2 > 0 then
-    s = s .. string.rep(" ", n2)
+function pad_left(s, w)
+  local n = vim.fn.strchars(s)
+  if n < w then
+    return string.rep(" ", w - n) .. s
   end
   return s
 end
 
-function pad_right(s, n, empty_when_too_large)
-  local s_len = vim.fn.strchars(s)
-  if s_len > n and empty_when_too_large then
-    if n <= 0 then
-      return ""
-    end
-    return string.rep(" ", n)
-  end
-  local x = n - s_len
-  if x > 0 then
-    s = s .. string.rep(" ", x)
-  end
-  return s
-end
-
-function pad_left(s, n, empty_when_too_large)
-  local s_len = vim.fn.strchars(s)
-  if s_len > n and empty_when_too_large then
-    if n <= 0 then
-      return ""
-    end
-    return string.rep(" ", n)
-  end
-  local x = n - s_len
-  if x > 0 then
-    s = string.rep(" ", x) .. s
+function align_center(s, w)
+  local n = vim.fn.strchars(s)
+  if n < w then
+    local l = math.floor((w - n) / 2)
+    local r = w - n - l
+    return string.rep(" ", l) .. s .. string.rep(" ", r)
   end
   return s
 end
@@ -330,10 +330,6 @@ function get_mode()
     t = "TERMINAL",
   }
   return mapping[m] or m
-end
-
-function trim(s)
-  return s:match "^%s*(.-)%s*$"
 end
 
 return M
