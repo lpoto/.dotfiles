@@ -10,7 +10,7 @@ but global.
 local M = {
   dev = true,
   dir = Util.path(vim.fn.stdpath "config", "lua", "plugins", "tabline"),
-  event = "VeryLazy",
+  lazy = false,
 }
 
 local setup_statusline
