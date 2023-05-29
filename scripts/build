@@ -26,11 +26,23 @@ while [ $# -ne 0 ]; do
     origin="master"
     tag=false
     ;;
+  --master)
+    build_type="LATEST"
+    branch="master"
+    origin="master"
+    tag=false
+    ;;
   --stable)
     build_type="STABLE"
     branch="tags/stable"
     origin="+refs/tags/stable:refs/tags/stable"
     ;;
+  --nightly)
+    ;;
+  *)
+   echo "==> Invalid arguments, try '--latest', '--nightly' or '--stable'"
+   exit 1
+   ;;
   esac
   shift
 done
@@ -54,15 +66,19 @@ cd ./.build/neovim
 echo
 echo "==> build type: ${build_type}"
 echo "==> fetching origin ${branch}"
-echo
-sleep 2
+
 git fetch --depth=1 origin ${origin}
 git checkout ${branch}
-if [ tag = false ]; then
+
+if [ "$tag" = false ]; then
+  echo "==> cleaning branch ${branch}"
   git clean -fd
   git reset --hard origin/${branch}
+  echo "==> pulling origin ${origin}"
   git pull origin ${origin} --ff-only
 fi
+echo
+sleep 2
 
 echo
 echo "==> Cleaning old build ..."

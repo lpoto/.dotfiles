@@ -321,23 +321,22 @@ function __notify(level, title, delay, ...)
   local msg = util.concat(...)
   delay = delay or 0
 
-  if type(title) ~= "string" then
-    if type(n) == "table" then
-      local ok = false
-      if type(n.short_src) == "string" then
-        title = vim.fn.fnamemodify(n.short_src, ":t")
-        ok = true
-      end
-      if type(n.name) == "string" then
-        if ok then
-          title = title .. ":" .. n.name
-        else
-          title = n.name
-          ok = true
-        end
-      end
-      if ok and type(n.currentline) == "number" then
-        title = title .. ":" .. n.currentline
+  if type(n) == "table" and type(title) ~= "string" then
+    if type(n.short_src) == "string" then
+      title = vim.fn.fnamemodify(n.short_src, ":t")
+    end
+    local s = ""
+    if type(n.name) == "string" then
+      s = n.name
+    end
+    if type(n.currentline) == "number" then
+      s = s .. ":" .. n.currentline
+    end
+    if s:len() > 0 then
+      if type(title) ~= "string" or title:len() == 0 then
+        title = s
+      else
+        title = title .. " (" .. s .. ")"
       end
     end
   end
