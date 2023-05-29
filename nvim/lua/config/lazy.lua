@@ -22,7 +22,7 @@ end
 
 function ensure_lazy(lazy_path)
   if not vim.loop.fs_stat(lazy_path) then
-    Util.log():info "Lazy.nvim not found, installing..."
+    Util.log():debug "Lazy.nvim not found, installing..."
     ---@type table
     local args = {
       "git",
@@ -32,7 +32,7 @@ function ensure_lazy(lazy_path)
       "--branch=stable",
       lazy_path,
     }
-    Util.log():info("Running:" .. vim.inspect(args))
+    Util.log():debug("Running:" .. vim.inspect(args))
     vim.fn.system(args)
     Util.log():info "Lazy.nvim installed"
   end

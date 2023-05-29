@@ -123,7 +123,7 @@ function M.run_command(cmd)
       })
     end)
     if not ok and type(e) == "string" then
-      Util.log():info(e)
+      Util.log():warn(e)
     end
   end)
 end

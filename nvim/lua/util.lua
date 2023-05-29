@@ -289,16 +289,20 @@ local Log = {}
 Log.__index = Log
 local __notify
 
+function Log:debug(...)
+  __notify("debug", self.title, self.delay, ...)
+end
+
 function Log:info(...)
-  __notify(vim.log.levels.INFO, self.title, self.delay, ...)
+  __notify("info", self.title, self.delay, ...)
 end
 
 function Log:warn(...)
-  __notify(vim.log.levels.WARN, self.title, self.delay, ...)
+  __notify("warn", self.title, self.delay, ...)
 end
 
 function Log:error(...)
-  __notify(vim.log.levels.ERROR, self.title, self.delay, ...)
+  __notify("error", self.title, self.delay, ...)
 end
 
 ---@param delay number?: Delay in milliseconds, default: 0
