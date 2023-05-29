@@ -12,7 +12,7 @@ NOTE: session is saved automatically when yout quit neovim.
 -----------------------------------------------------------------------------]]
 local M = {
   dev = true,
-  dir = Util.path(vim.fn.stdpath "config", "lua", "plugins", "sessions"),
+  dir = vim.fn.expand "<sfile>",
   event = "VeryLazy",
 }
 

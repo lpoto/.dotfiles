@@ -7,7 +7,7 @@ Simple notes sidebar
 -----------------------------------------------------------------------------]]
 local M = {
   dev = true,
-  dir = Util.path(vim.fn.stdpath "config", "lua", "plugins", "notes"),
+  dir = vim.fn.expand "<sfile>",
 }
 
 local __notes
