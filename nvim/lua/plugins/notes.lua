@@ -18,8 +18,8 @@ end
 M.keys = { { "<leader>t", toggle_notes, mode = "n" } }
 
 local opts = {
-  min_width = math.min(50, math.floor(vim.o.columns / 2)),
-  max_width = 0.25,
+  min_width = math.min(40, math.floor(vim.o.columns / 2)),
+  width = 0.225,
   notes_file = Util.path(vim.fn.stdpath "data", "notes.md"),
 }
 
@@ -67,11 +67,11 @@ function __notes()
   if min_width < 1 then
     min_width = math.floor(vim.o.columns * min_width)
   end
-  local max_width = opts.max_width
-  if max_width < 1 then
-    max_width = math.floor(vim.o.columns * max_width)
+  local width = opts.width
+  if width < 1 and width > 0 then
+    width = math.floor(vim.o.columns * width)
   end
-  local width = math.max(min_width, max_width)
+  width = math.max(min_width, width)
 
   vim.api.nvim_win_set_width(notes_window, width)
 
