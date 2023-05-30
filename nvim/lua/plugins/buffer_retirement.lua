@@ -4,6 +4,11 @@
 --[[===========================================================================
 Unload inactive buffers
 
+Keymaps:
+  <C-l>                Lock current buffer (it won't be retired)
+  <leader>{i}          Go to locked buffer with index i
+  <leader>0            Go to next locked buffer
+
 -----------------------------------------------------------------------------]]
 local M = {
   dev = true,
@@ -16,35 +21,103 @@ local M = {
   event = { "BufRead", "BufNewFile" },
 }
 
+-- Max number of buffers to keep locked at the same time
+local max_locked_buffers = 9
+local locked_buffers = {}
+local wipe_buffers_patterns = {
+  "%.git",
+}
 -- Max number of buffers to keep loaded,
 -- locked buffers and current buffers will not be unloaded.
-local max_buf_count = 5
+local max_buf_count = function()
+  return math.max(#locked_buffers + 2, 5)
+end
 
 local lock_buffer
+local goto_next_locked
 local init_autocommands
 
 function M.config()
   vim.keymap.set("n", "<C-l>", lock_buffer, {})
+  for i = 0, max_locked_buffers do
+    vim.keymap.set("n", "<leader>" .. i, function()
+      if i == 0 then
+        return goto_next_locked()
+      end
+      return goto_next_locked(i)
+    end, {})
+  end
   init_autocommands()
 end
 
-local locked_buffers = {}
-local locked_count = 0
-local wipe_buffers_patterns = {
-  "%.git",
-}
+function clean_locked_buffers()
+  local to_clean = {}
+  for i, buf in ipairs(locked_buffers) do
+    if type(buf) ~= "number" or not vim.api.nvim_buf_is_valid(buf) then
+      table.insert(to_clean, i)
+    end
+  end
+  for i = #to_clean, 1, -1 do
+    table.remove(locked_buffers, to_clean[i])
+  end
+end
 
 function lock_buffer()
+  clean_locked_buffers()
   local buf = vim.api.nvim_get_current_buf()
-  if locked_buffers[buf] then
-    locked_buffers[buf] = nil
-    locked_count = locked_count - 1
-    Util.log():info "Unlocked current buffer"
+  for i, b in ipairs(locked_buffers) do
+    if b == buf then
+      table.remove(locked_buffers, i)
+      Util.log():info "Unlocked current buffer"
+      return
+    end
+  end
+  if #locked_buffers >= max_locked_buffers then
+    Util.log()
+      :warn("Only", max_locked_buffers, "buffers may be locked at once")
     return
   end
-  locked_buffers[buf] = true
-  locked_count = locked_count + 1
+
+  table.insert(locked_buffers, buf)
   Util.log():info "Locked current buffer"
+end
+
+function goto_next_locked(n)
+  clean_locked_buffers()
+  local buf = vim.api.nvim_get_current_buf()
+  local next_idx = n
+  if type(next_idx) ~= "number" then
+    local cur_idx = nil
+    for i, b in ipairs(locked_buffers) do
+      if b == buf then
+        cur_idx = i
+        break
+      end
+    end
+    next_idx = 1
+    if cur_idx ~= nil then
+      next_idx = cur_idx + 1
+    end
+    if next_idx > #locked_buffers then
+      next_idx = 1
+    end
+    if next_idx == cur_idx then
+      next_idx = next_idx + 1
+    end
+    if not locked_buffers[next_idx] then
+      Util.log():warn "No next locked buffer"
+      return
+    end
+  else
+    if not locked_buffers[next_idx] then
+      Util.log():warn("No locked buffer with index", n)
+      return
+    elseif locked_buffers[next_idx] == buf then
+      Util.log():warn("Locked buffer with index", n, "is current buffer")
+      return
+    end
+  end
+  vim.api.nvim_set_current_buf(locked_buffers[next_idx])
 end
 
 local buffer_count = {}
@@ -99,7 +172,7 @@ function retire_buffers()
   last_buf = cur_buf
 
   vim.schedule(function()
-    local m = max_buf_count
+    local m = max_buf_count()
 
     --- Count the times the buffer has been entered recently,
     --- and the last time it was entered, so that we can
