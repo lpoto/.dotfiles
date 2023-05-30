@@ -33,6 +33,9 @@ local ignore_filetype_patterns = {
 local list_sessions
 
 function M.config()
+  vim.opt.sessionoptions =
+    "buffers,curdir,folds,globals,help,tabpages,winsize,terminal"
+
   vim.api.nvim_create_user_command("Sessions", function()
     list_sessions()
   end, {})
@@ -71,10 +74,7 @@ function M.config()
       local removed = 0
 
       local check_buffer = function(buf)
-        if
-          not vim.api.nvim_buf_is_valid(buf)
-          or not vim.api.nvim_buf_is_loaded(buf)
-        then
+        if not vim.api.nvim_buf_is_valid(buf) then
           return false
         end
         local filetype = vim.api.nvim_buf_get_option(buf, "filetype") or ""
