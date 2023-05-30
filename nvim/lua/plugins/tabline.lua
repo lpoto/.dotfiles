@@ -49,13 +49,13 @@ local empty_section = false
 function setup_tabline()
   vim.o.showtabline = 2
 
-  append_to_tabline("mode", "TabLine", 0.07, 0.07, 9, "left")
+  append_to_tabline("mode", "TabLine", 0.07, 0.07, nil, "left")
   append_to_tabline("diagnostic_info", "DiagnosticInfo", 5, 0.05)
   append_to_tabline("diagnostic_warn", "DiagnosticWarn", 5, 0.06)
   append_to_tabline("diagnostic_error", "DiagnosticError", 5, 0.06)
   append_tabline_section_separator()
   append_to_tabline("filename", "TabLineSel", 0.25, 0.25, 100, "right")
-  append_to_tabline("tabcount", "TabLineFill", 0.15, 0.15)
+  append_to_tabline("tabcount", "TabLineFill", 0.15, 0.15, 15)
   append_to_tabline("gitsigns_head", "TabLine", 0.19, 0.19, 50, "right")
   append_to_tabline("gitsigns_status", "TabLineFill", 0.10, 0.10, nil, "left")
   append_to_tabline("cursor", "TabLine", 0.07, 0.07, nil, "right")
