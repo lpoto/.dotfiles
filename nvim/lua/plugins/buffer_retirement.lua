@@ -87,7 +87,9 @@ end
 
 function LockedBuffers:clean()
   self.__locked_buffers = vim.tbl_filter(function(b)
-    return type(b) == "number" and vim.api.nvim_buf_is_valid(b)
+    return type(b) == "number"
+      and vim.api.nvim_buf_is_valid(b)
+      and vim.api.nvim_buf_get_option(b, "buftype") == ""
   end, self.__locked_buffers)
   self:__set(self.__locked_buffers)
 end
@@ -116,6 +118,10 @@ function LockedBuffers:lock_buffer()
   local buf = vim.api.nvim_get_current_buf()
   if self:remove(buf) then
     Util.log():info "Unlocked current buffer"
+    return
+  end
+  if vim.api.nvim_buf_get_option(buf, "buftype") ~= "" then
+    Util.log():warn "Cannot lock a non-file buffer"
     return
   end
   if self:add(buf) then
@@ -213,6 +219,8 @@ function retire_buffers()
   last_buf = cur_buf
 
   vim.schedule(function()
+    LockedBuffers:clean()
+
     local m = max_buf_count()
 
     --- Count the times the buffer has been entered recently,
