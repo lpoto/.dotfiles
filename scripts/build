@@ -37,15 +37,36 @@ while [ $# -ne 0 ]; do
     branch="tags/stable"
     origin="+refs/tags/stable:refs/tags/stable"
     ;;
-  --nightly)
-    ;;
+  --nightly) ;;
   *)
-   echo "==> Invalid arguments, try '--latest', '--nightly' or '--stable'"
-   exit 1
-   ;;
+    echo "==> Invalid arguments, try '--latest', '--nightly' or '--stable'"
+    exit 1
+    ;;
   esac
   shift
 done
+
+echo "==> Checking prerequisites ..."
+echo
+do_exit=false
+for cmd in cmake make ninja git; do
+  if ! command -v $cmd >/dev/null 2>&1; then
+    echo "==> ERROR: '$cmd' is not installed."
+    do_exit=true
+  else
+    echo "==> '$cmd' is installed."
+  fi
+done
+if [ "$do_exit" = true ]; then
+  echo
+  echo "==> Please install the required executables and try again."
+  exit 1
+fi
+
+echo
+echo "==> Fetching neovim source ..."
+sleep 2
+echo
 
 # TODO: check if make, cmake, git and ninja are
 # installed
@@ -58,6 +79,7 @@ cd ../
 
 if [ ! -d "./.build/neovim" ]; then
   echo "==> ./.build/neovim does not exist, cloning ..."
+  echo
   sleep 1
   git clone --depth 1 https://github.com/neovim/neovim ./.build/neovim
 fi
@@ -66,15 +88,19 @@ cd ./.build/neovim
 echo
 echo "==> build type: ${build_type}"
 echo "==> fetching origin ${branch}"
+echo
 
 git fetch --depth=1 origin ${origin}
 git checkout ${branch}
 
 if [ "$tag" = false ]; then
   echo "==> cleaning branch ${branch}"
+  echo
   git clean -fd
   git reset --hard origin/${branch}
+  echo
   echo "==> pulling origin ${origin}"
+  echo
   git pull origin ${origin} --ff-only
 fi
 echo
@@ -83,6 +109,7 @@ sleep 2
 echo
 echo "==> Cleaning old build ..."
 sleep 2
+echo
 
 # If build and .deps directories exist, remove them
 # so the build is clean
