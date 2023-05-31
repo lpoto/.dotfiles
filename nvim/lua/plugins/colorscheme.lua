@@ -33,7 +33,7 @@ function M.config()
     { "StatusLine", { link = "WinSeparator" } },
     { "StatusLineNC", { link = "StatusLine" } },
     { "TabLine", { fg = "#9F9F9F", bg = "NONE" } },
-    { "TabLineSel", { bg = "NONE", fg = "#79B8FF" } },
+    { "TabLineSel", { link = "Special" } },
     { "TabLineFill", { link = "WinSeparator" } },
     { "Whitespace", { fg = "#292929", bg = "NONE" } },
     { "NonText", { link = "Whitespace" } },
