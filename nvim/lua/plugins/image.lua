@@ -30,7 +30,7 @@ function M.cond()
   return false
 end
 
-M.extensions = { "png", "jpg", "jpeg", "bmp", "webp", "tif", "tiff" }
+M.extensions = { "png", "jpg", "jpeg", "bmp", "webp" }
 
 function M.init()
   if not M.cond() then
@@ -91,8 +91,8 @@ function M.__telescope_preview_hook(filepath, bufnr, opts)
   Util.require(
     { "image.config", "image.dimensions", "image.api", "plenary.async" },
     function(config, dimensions, api, async)
-      local pattern = "*." .. vim.fn.fnamemodify(filepath, ":e")
-      if not vim.tbl_contains(config.SUPPORTED_FILE_PATTERNS, pattern) then
+      local extension = vim.fn.fnamemodify(filepath, ":e")
+      if not vim.tbl_contains(M.extensions, extension) then
         return true
       end
 
