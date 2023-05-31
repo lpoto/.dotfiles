@@ -66,7 +66,9 @@ function LockedFiles:init()
   -- NOTE: use a global variable to store the locked buffers
   -- so that they are stored when saving a session with "globals" option.
   local s = vim.g.Buffer_retirement_locked_files or ""
-  self.__locked = vim.split(s, ";")
+  self.__locked = vim.tbl_filter(function(f)
+    return vim.fn.filereadable(f) == 1
+  end, vim.split(s, ";"))
 end
 
 function LockedFiles:list()
@@ -158,15 +160,15 @@ function LockedFiles:goto_next(n)
       next_idx = next_idx + 1
     end
     if not self.__locked[next_idx] then
-      Util.log():warn "No next locked buffer"
+      Util.log():warn "No next locked file"
       return
     end
   else
     if not self.__locked[next_idx] then
-      Util.log():warn("No locked buffer with index", n)
+      Util.log():warn("No locked file with index", next_idx)
       return
     elseif self.__locked[next_idx] == filename then
-      Util.log():warn("Locked file with index", n, "is current file")
+      Util.log():warn("Already on locked file with index", next_idx)
       return
     end
   end
