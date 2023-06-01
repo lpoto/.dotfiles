@@ -130,7 +130,7 @@ end
 
 function M.run_command_with_prompt(cmd, suffix)
   suffix = vim.fn.input {
-    prompt = cmd,
+    prompt = "$ " .. (cmd or ""),
     default = suffix,
     cancelreturn = false,
   }
