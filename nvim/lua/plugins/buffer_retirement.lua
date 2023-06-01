@@ -36,11 +36,6 @@ local LockedFiles = {
 }
 
 LockedFiles.__index = LockedFiles
--- Max number of buffers to keep loaded,
--- locked buffers and current buffers will not be unloaded.
-local max_buf_count = function()
-  return math.max(LockedFiles:size() + 2, 5)
-end
 
 function M.config()
   LockedFiles:init()
@@ -78,7 +73,7 @@ function LockedFiles:list()
   end
   local t = { "" }
   for i, v in ipairs(self.__locked) do
-    table.insert(t, i .. "  ->  " .. v)
+    table.insert(t, i .. "  ->  " .. vim.fn.fnamemodify(v, ":~:."))
   end
   Util.log():info(table.concat(t, "\n"))
 end
@@ -168,7 +163,6 @@ function LockedFiles:goto_next(n)
       Util.log():warn("No locked file with index", next_idx)
       return
     elseif self.__locked[next_idx] == filename then
-      Util.log():warn("Already on locked file with index", next_idx)
       return
     end
   end
@@ -221,6 +215,12 @@ function init_autocommands()
 end
 
 local included_in_wipe_buffers_patterns
+-- Max number of buffers to keep loaded,
+-- locked buffers and current buffers will not be unloaded.
+local max_buf_count = function()
+  return math.max(LockedFiles:size() + 2, 5)
+end
+
 function retire_buffers()
   if vim.bo.buftype ~= "" then
     return
