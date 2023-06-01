@@ -25,6 +25,8 @@ function M.command()
       f = "images"
     elseif opts.args:match "^f" then
       f = "files"
+    elseif opts.args:match "^m" then
+      f = "machines"
     elseif opts.args:match "^c.*m" then
       f = "compose"
     end
@@ -34,7 +36,7 @@ function M.command()
   end, {
     nargs = "?",
     complete = function(c)
-      local items = { "containers", "images", "compose", "files" }
+      local items = { "containers", "images", "compose", "files", "machines" }
       table.sort(items, function(a, b)
         return Util.string_matching_score(c, a)
           > Util.string_matching_score(c, b)
