@@ -2,15 +2,7 @@
 -------------------------------------------------------------------------------
 --                                                            BUFFER RETIREMENT
 --[[===========================================================================
-Unload inactive buffers
-
-Keymaps:
-  <C-l>                Lock current file (it's buffer won't be retired)
-  <leader>{i}          Go to locked file with index i
-  <leader>0            Go to next locked file
-
-commands:
-  :LockedFiles         List locked files
+Keey only a limited number of buffers loaded.
 
 -----------------------------------------------------------------------------]]
 local M = {
@@ -27,153 +19,14 @@ local M = {
 local wipe_buffers_patterns = {
   "%.git",
 }
+-- Max number of buffers to keep loaded,
+-- harpoon marks and current buffers will not be unloaded.
+local max_buf_count = 5
 
 local init_autocommands
 
-local LockedFiles = {
-  max_locked = 5,
-  __locked = {},
-}
-
-LockedFiles.__index = LockedFiles
-
 function M.config()
-  LockedFiles:init()
-
-  vim.keymap.set("n", "<C-l>", function()
-    LockedFiles:lock()
-  end, {})
-  for i = 0, LockedFiles.max_locked do
-    vim.keymap.set("n", "<leader>" .. i, function()
-      if i == 0 then
-        return LockedFiles:goto_next()
-      end
-      return LockedFiles:goto_next(i)
-    end, {})
-  end
-  vim.api.nvim_create_user_command("LockedFiles", function()
-    LockedFiles:list()
-  end, {})
   init_autocommands()
-end
-
-function LockedFiles:init()
-  -- NOTE: use a global variable to store the locked buffers
-  -- so that they are stored when saving a session with "globals" option.
-  local s = vim.g.Buffer_retirement_locked_files or ""
-  self.__locked = vim.tbl_filter(function(f)
-    return vim.fn.filereadable(f) == 1
-  end, vim.split(s, ";"))
-end
-
-function LockedFiles:list()
-  if self:size() == 0 then
-    Util.log():warn "No locked buffers"
-    return
-  end
-  local t = { "" }
-  for i, v in ipairs(self.__locked) do
-    table.insert(t, i .. "  ->  " .. vim.fn.fnamemodify(v, ":~:."))
-  end
-  Util.log():info(table.concat(t, "\n"))
-end
-
-function LockedFiles:size()
-  return #self.__locked
-end
-
-function LockedFiles:find(buf)
-  local filename = vim.api.nvim_buf_get_name(buf)
-  for i, f in ipairs(self.__locked) do
-    if f == filename then
-      return i
-    end
-  end
-end
-
-function LockedFiles:add(buf)
-  if self:size() >= self.max_locked then
-    Util.log():warn "Max number of locked buffers reached"
-    return false
-  end
-  local filename = vim.api.nvim_buf_get_name(buf)
-  local buftype = vim.api.nvim_buf_get_option(buf, "buftype")
-  if type(filename) ~= "string" or filename:len() == 0 or buftype ~= "" then
-    Util.log():warn "Cannot lock a non-file"
-    return false
-  end
-  table.insert(self.__locked, filename)
-  self:__set(self.__locked)
-  return true
-end
-
-function LockedFiles:remove(buf)
-  local filename = vim.api.nvim_buf_get_name(buf)
-  for i, f in ipairs(self.__locked) do
-    if f == filename then
-      table.remove(self.__locked, i)
-      self:__set(self.__locked)
-      return true
-    end
-  end
-  return false
-end
-
-function LockedFiles:__set(lb)
-  if type(lb) == "table" then
-    self.__locked = lb
-    vim.g.Buffer_retirement_locked_files = table.concat(self.__locked, ";")
-  end
-end
-
-function LockedFiles:lock()
-  local buf = vim.api.nvim_get_current_buf()
-  if self:remove(buf) then
-    Util.log():info "Unlocked current file"
-    return
-  end
-  if self:add(buf) then
-    Util.log():info "Locked current file"
-  end
-end
-
-function LockedFiles:goto_next(n)
-  local buf = vim.api.nvim_get_current_buf()
-  local filename = vim.api.nvim_buf_get_name(buf)
-
-  local next_idx = n
-  if type(next_idx) ~= "number" then
-    local cur_idx = self:find(buf)
-    next_idx = 1
-    if cur_idx ~= nil then
-      next_idx = cur_idx + 1
-    end
-    if next_idx > #self.__locked then
-      next_idx = 1
-    end
-    if next_idx == cur_idx then
-      next_idx = next_idx + 1
-    end
-    if not self.__locked[next_idx] then
-      Util.log():warn "No next locked file"
-      return
-    end
-  else
-    if not self.__locked[next_idx] then
-      Util.log():warn("No locked file with index", next_idx)
-      return
-    elseif self.__locked[next_idx] == filename then
-      return
-    end
-  end
-  for _, b in ipairs(vim.api.nvim_list_bufs()) do
-    local name = vim.api.nvim_buf_get_name(b)
-    if name == self.__locked[next_idx] then
-      vim.api.nvim_set_current_buf(b)
-      return
-    end
-  end
-  vim.api.nvim_exec("edit " .. self.__locked[next_idx], false)
 end
 
 local buffer_timestamps = {}
@@ -198,7 +51,7 @@ function init_autocommands()
 
   local err_count = 0
 
-  vim.api.nvim_create_autocmd("BufEnter", {
+  vim.api.nvim_create_autocmd({ "BufEnter", "BufRead", "BufNewFile" }, {
     group = augroup,
     callback = function()
       local ok, err = pcall(retire_buffers)
@@ -215,11 +68,6 @@ function init_autocommands()
 end
 
 local included_in_wipe_buffers_patterns
--- Max number of buffers to keep loaded,
--- locked buffers and current buffers will not be unloaded.
-local max_buf_count = function()
-  return math.max(LockedFiles:size() + 2, 5)
-end
 
 function retire_buffers()
   if vim.bo.buftype ~= "" then
@@ -232,7 +80,7 @@ function retire_buffers()
   last_buf = cur_buf
 
   vim.schedule(function()
-    local m = max_buf_count()
+    local m = max_buf_count
 
     --- Count the times the buffer has been entered recently,
     --- and the last time it was entered, so that we can
@@ -268,7 +116,9 @@ function retire_buffers()
       if
         buf == cur_buf
         or vim.fn.bufwinid(buf) ~= -1
-        or LockedFiles:find(buf) ~= nil
+        or Util.require("plugins.harpoon", function(harpoon)
+          return harpoon.is_marked(buf)
+        end)
       then
         m = m - 1
         return false
