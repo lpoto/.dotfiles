@@ -25,12 +25,18 @@ function M.command()
       f = "images"
     elseif opts.args:match "^f" then
       f = "files"
-    elseif opts.args:match "^m" then
-      f = "machines"
     elseif opts.args:match "^s" then
       f = "swarm"
+    elseif opts.args:match "^v" then
+      f = "volumes"
+    elseif opts.args:match "^n" then
+      f = "networks"
     elseif opts.args:match "^c.*m" then
       f = "compose"
+    elseif opts.args:match "^m" then
+      f = "machines"
+    elseif opts.args:match "^c.*e" or opts.args:match "^c.*x" then
+      f = "contexts"
     elseif opts.args:match "^c" then
       f = "containers"
     end
@@ -40,8 +46,17 @@ function M.command()
   end, {
     nargs = "?",
     complete = function(c)
-      local items =
-        { "containers", "images", "compose", "files", "machines", "swarm" }
+      local items = {
+        "containers",
+        "images",
+        "compose",
+        "files",
+        "machines",
+        "swarm",
+        "volumes",
+        "networks",
+        "contexts",
+      }
       table.sort(items, function(a, b)
         return Util.string_matching_score(c, a)
           > Util.string_matching_score(c, b)
