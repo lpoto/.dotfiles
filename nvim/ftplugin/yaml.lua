@@ -5,7 +5,7 @@
 Loaded when a yaml file is opened
 -----------------------------------------------------------------------------]]
 Util.ftplugin {
-  formatter = "yamlfmt",
+  formatter = "prettier",
   language_server = {
     "yamlls",
     settings = {
