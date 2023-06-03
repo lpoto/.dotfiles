@@ -148,6 +148,8 @@ function util.require(module, callback)
 end
 
 local loaded = {}
+local ftplugins_waiting = {}
+local ftplugin_id = 0
 local _ftplugin
 
 ---@class FtpluginOpts
@@ -159,27 +161,39 @@ local _ftplugin
 ---
 ---@param opts FtpluginOpts
 function util.ftplugin(opts)
-  vim.defer_fn(function()
-    _ftplugin(opts)
-  end, 100)
-end
-
-function _ftplugin(opts)
   if type(opts) ~= "table" then
     opts = {}
   end
   local filetype = opts.filetype
-  if type(filetype ~= "string") then
+  local buftype = ""
+  if type(filetype) ~= "string" then
     filetype = vim.bo.filetype
+    buftype = vim.bo.buftype
   end
-  -- Load ftplugin only when opening a buffer
-  -- with "" buftype for the first time.
-  local buftype = vim.bo.buftype
   if buftype ~= "" or loaded[filetype] then
     return
   end
-  loaded[filetype] = true
+  opts.filetype = filetype
+  -- Wait before loading ftplugin a bit.
+  -- While waiting a ftplugin with the same filetype
+  -- will override the one waiting.
+  -- This is useful for chaning ftplugin configs
+  -- in local configs.
+  local id = ftplugin_id
+  ftplugins_waiting[filetype] = id
+  ftplugin_id = ftplugin_id + 1
+  vim.defer_fn(function()
+    if ftplugins_waiting[filetype] ~= id then
+      return
+    end
+    loaded[filetype] = true
+    ftplugins_waiting[filetype] = nil
+    _ftplugin(opts)
+  end, 250)
+end
 
+function _ftplugin(opts)
+  local filetype = opts.filetype or vim.bo.filetype
   if type(opts.init) == "function" then
     local ok, err = pcall(opts.init)
     if not ok then
