@@ -6,7 +6,7 @@
 ----------------------------------Set the default global options for the editor
 
 vim.g.mapleader = " " --------------------------------  map <leader> to <Space>
-vim.g.maplocalleader = "," ----------------------  map <localleader> to <Space>
+vim.g.maplocalleader = ";" ----------------------  map <localleader> to <Space>
 
 vim.opt.errorbells = false -- disable error sounds
 vim.opt.updatetime = 50 -- shorten updatetime from 4s to 50ms
