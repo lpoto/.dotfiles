@@ -75,7 +75,7 @@ echo
 cd "$(dirname "$0")"
 scripts=$PWD
 # cd to the root of the project
-cd ../
+cd ../../
 
 if [ ! -d "./.build/neovim" ]; then
   echo "==> ./.build/neovim does not exist, cloning ..."
@@ -133,6 +133,6 @@ sleep 2
 make CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX=${PWD}/build" CMAKE_BUILD_TYPE=Release install
 
 echo
-echo "==> Build complete (${build_type}). (run '${scripts}/build [--stable, --latest]' to update neovim)"
+echo "==> Build complete (${build_type}). (run '${scripts}/nvim [--stable, --latest]' to update neovim)"
 
 cd ${cur_pwd}

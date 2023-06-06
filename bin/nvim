@@ -13,9 +13,6 @@ nvim_config_path=$(dirname $(dirname $(realpath "$0")))
 nvim_bin_path=${nvim_config_path}/.build/neovim/build/bin/nvim
 
 if [ ! -f "${nvim_bin_path}" ]; then
-  # neovim installation not found, ask whether
-  # to build it from source, as the neovim config
-  # requires latest neovim version
   echo "Neovim not found at ${nvim_bin_path}"
   read -p "Build it from source? [Y/N] " REPLY
   echo
@@ -26,7 +23,7 @@ if [ ! -f "${nvim_bin_path}" ]; then
   fi
   echo "==> building neovim ..."
   echo
-  ${nvim_config_path}/scripts/build
+  ${nvim_config_path}/scripts/build/nvim
   echo
   echo "==> opening neovim ..."
   sleep 3
