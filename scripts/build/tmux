@@ -31,7 +31,7 @@ if [ "$do_exit" = true ]; then
   exit 1
 fi
 echo
-echo "==> This script requires 'libevent' and 'ncurses' to be installed."
+echo "==> This script requires 'libevent', 'ncurses' and 'utf8proc' to be installed."
 echo
 sleep 2
 
@@ -58,7 +58,8 @@ echo "==> Starting build ..."
 echo
 sleep 2
 sh autogen.sh
-./configure && make
+./configure --prefix=${PWD}/build  --enable-utf8proc
+make
 
 echo
 echo "==> Build complete. (run '${scripts}/tmux' to update tmux)"
