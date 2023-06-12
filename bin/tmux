@@ -8,7 +8,7 @@
 # as the source file.
 
 dotfiles=$(dirname $(dirname "$0"))
-tmux_path=${dotfiles}/.build/tmux/tmux/tmux
+tmux_path=${dotfiles}/.build/tmux/tmux
 
 if [ ! -f "${tmux_path}" ]; then
   echo "Tmux not found at ${tmux_path}"

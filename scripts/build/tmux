@@ -5,6 +5,8 @@
 # This script may also be run to update and already built tmux
 # installation.
 
+set -e
+
 cur_pwd=${PWD}
 
 if [ "$USER" = "root" ]; then
@@ -15,7 +17,7 @@ fi
 echo "==> Checking prerequisites ..."
 echo
 do_exit=false
-for cmd in make git wget tar; do
+for cmd in make automake autoconf pkg-config gcc; do
   if ! command -v $cmd >/dev/null 2>&1; then
     echo "==> ERROR: '$cmd' is not installed."
     do_exit=true
@@ -28,59 +30,35 @@ if [ "$do_exit" = true ]; then
   echo "==> Please install the required executables and try again."
   exit 1
 fi
+echo
+echo "==> This script requires 'libevent' and 'ncurses' to be installed."
+echo
+sleep 2
 
 cd "$(dirname "$0")"
 scripts=$PWD
 cd ../../
 
-if [ -d "./.build/tmux/tmux" ]; then
+if [ -d "./.build/tmux" ]; then
   echo "==> ./.build/tmux exists, pulling latest version ..."
+  echo
   sleep 1
-  cd ./.build/tmux/tmux && git pull
+  cd ./.build/tmux
+  git pull
 else
-  # install libevent under .build
-  echo "==> installing libevent ..."
-  sleep 1
-  path=${PWD}
-  mkdir -p .build &
-  >/dev/null
-  mkdir -p .build/tmux &
-  >/dev/null
-  cd .build/tmux
-  wget https://github.com/libevent/libevent/releases/download/release-2.1.11-stable/libevent-2.1.11-stable.tar.gz
-  tar zxvf libevent-2.1.11-stable.tar.gz
-  cd libevent-2.1.11-stable
-  ./configure --prefix="${path}/.build/tmux"
-  make -j && make install
-
-  cd ${path}
-  rm libevent-2.1.11-stable.tar.gz
-
-  # install ncurses under .build
-  echo "==> installing ncurses ..."
-  sleep 1
-  cd .build/tmux
-  wget https://ftp.gnu.org/pub/gnu/ncurses/ncurses-6.2.tar.gz
-  tar zxvf ncurses-6.2.tar.gz
-  cd ncurses-6.2/
-  ./configure --prefix="${path}/.build/tmux"
-  make -j && make install
-  cd ${path}
-  rm ncurses-6.2.tar.gz
-
   echo "==> ./.build/tmux does not exist, cloning ..."
+  echo
   sleep 1
-  git clone https://github.com/tmux/tmux.git .build/tmux/tmux
-  cd ./.build/tmux/tmux
+  git clone --depth 1 https://github.com/tmux/tmux.git .build/tmux
+  cd ./.build/tmux
 fi
 
+echo
 echo "==> Starting build ..."
+echo
 sleep 2
 sh autogen.sh
-./configure --prefix=${PWD}/.build/tmux \
-  CPPFLAGS="-I${PWD}/.build/tmux/include -I${PWD}/.build/tmux/include/ncurses" \
-  LDFLAGS="-L${PWD}/.build/tmux/lib"
-make -j && make install
+./configure && make
 
 echo
 echo "==> Build complete. (run '${scripts}/tmux' to update tmux)"

@@ -131,8 +131,6 @@ function M.pickers()
     Util.dir "%.build",
     Util.dir "dist",
     Util.dir "%.dist",
-    Util.dir "build",
-    Util.dir "%.build",
     Util.dir "%.angular",
     Util.dir "__pycache__",
     Util.dir "github.copilot",

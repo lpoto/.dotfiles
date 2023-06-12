@@ -5,6 +5,8 @@
 # This script may also be run to update and already built neovim
 # installation.
 
+set -e
+
 cur_pwd=${PWD}
 
 if [ "$USER" = "root" ]; then
