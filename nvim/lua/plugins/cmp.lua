@@ -58,7 +58,7 @@ function M.config()
       mapping = cmp.mapping.preset.insert {
         ["<TAB>"] = cmp.mapping.select_next_item(),
         ["<S-TAB>"] = cmp.mapping.select_prev_item(),
-        ["<CR>"] = cmp.mapping.confirm { select = true },
+        ["<CR>"] = cmp.mapping.confirm(),
         ["<C-x>"] = cmp.mapping.close(),
         ["<C-d>"] = cmp.mapping.scroll_docs(4),
         ["<C-u>"] = cmp.mapping.scroll_docs(-4),
