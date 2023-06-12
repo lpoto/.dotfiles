@@ -15,6 +15,7 @@ Keymaps:
   - "gd"    - jump to the definition of the symbol under cursor
   - "K" -  Show the definition of symbol under the cursor
   - "<C-d>" -  Show the diagnostics of the line under the cursor
+  - "<leader>r" -  Rename symbol under cursor
 -----------------------------------------------------------------------------]]
 local M = {
   "neovim/nvim-lspconfig",
@@ -26,6 +27,7 @@ function M.init()
   vim.keymap.set("n", "<C-d>", vim.diagnostic.open_float)
   vim.keymap.set("n", "<leader>D", vim.diagnostic.open_float)
   vim.keymap.set("n", "gd", vim.lsp.buf.definition)
+  vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename)
 end
 
 local expand_opts

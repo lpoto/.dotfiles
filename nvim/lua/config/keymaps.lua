@@ -45,9 +45,6 @@ vim.keymap.set("i", ".", ".<c-g>u")
 vim.keymap.set("i", "!", "!<c-g>u")
 vim.keymap.set("i", "?", "?<c-g>u")
 
--- Redo with <leader>r
-vim.keymap.set("n", "<leader>r", "<C-r>")
-
 --------------------------------------------------------------------- TERMINAL
 -- return to normal mode with <Esc>
 -- Toggle terminal in a new tab with <C-t>
