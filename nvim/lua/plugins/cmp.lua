@@ -27,6 +27,8 @@ local M = {
   },
 }
 
+local set_confirm_keymap
+
 function M.config()
   Util.require("cmp", function(cmp)
     cmp.setup {
@@ -58,12 +60,12 @@ function M.config()
       mapping = cmp.mapping.preset.insert {
         ["<TAB>"] = cmp.mapping.select_next_item(),
         ["<S-TAB>"] = cmp.mapping.select_prev_item(),
-        ["<CR>"] = cmp.mapping.confirm(),
         ["<C-x>"] = cmp.mapping.close(),
         ["<C-d>"] = cmp.mapping.scroll_docs(4),
         ["<C-u>"] = cmp.mapping.scroll_docs(-4),
       },
     }
+    set_confirm_keymap()
   end)
 end
 
@@ -71,6 +73,37 @@ function M.capabilities()
   return Util.require("cmp_nvim_lsp", function(cmp_nvim_lsp)
     return cmp_nvim_lsp.default_capabilities()
   end)
+end
+
+--- If copilot suggestion is visible and cmp has no selected entry,
+--- <CR> will accept suggestion, otherwise if there is no
+--- copilot suggestion and cmp is visible, <CR> will select
+--- the first cmp entry, otherwise <CR> will just do
+--- its default behavior.
+function set_confirm_keymap()
+  vim.keymap.set("i", "<CR>", function()
+    local suggestion = Util.require "copilot.suggestion"
+    local cmp = Util.require "cmp"
+    if
+      cmp
+      and (
+        cmp.visible() and cmp.get_selected_entry() ~= nil
+        or cmp.visible() and (not suggestion or not suggestion.is_visible())
+      )
+    then
+      vim.defer_fn(function()
+        cmp.confirm { select = true }
+      end, 5)
+      return true
+    end
+    if suggestion and suggestion.is_visible() then
+      vim.defer_fn(function()
+        suggestion.accept()
+      end, 5)
+      return true
+    end
+    return "<CR>"
+  end, { expr = true, remap = true })
 end
 
 return M
