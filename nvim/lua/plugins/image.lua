@@ -20,39 +20,41 @@ local M = {
 ---NOTE: This plugin requires the `ascii-image-converter` command to be
 ---      executable. Do not load the plugin if it is not.
 function M.cond()
-  if vim.fn.executable "ascii-image-converter" == 1 then
-    return true
-  end
-  Util.log(1000):warn(
-    "The `ascii-image-converter` command is not executable.",
-    "Please install it to use the preview images."
-  )
-  return false
+  return vim.fn.executable "ascii-image-converter" == 1
 end
 
 M.extensions = { "png", "jpg", "jpeg", "bmp", "webp" }
 
 function M.init()
-  if not M.cond() then
-    return
+  local cond = M.cond()
+  if cond then
+    local tid = nil
+    -- Load the plugin when Telescope is loaded
+    tid = vim.api.nvim_create_autocmd("User", {
+      once = true,
+      pattern = "TelescopeLoaded",
+      callback = function()
+        pcall(vim.api.nvim_del_autocmd, tid)
+        M.config()
+        M.telescope_setup()
+      end,
+    })
   end
-  local id = nil
-  -- Load the plugin when Telescope is loaded
-  vim.api.nvim_create_autocmd("User", {
-    once = true,
-    pattern = "TelescopeLoaded",
-    callback = function()
-      pcall(vim.api.nvim_del_autocmd, id)
-      M.config()
-      M.telescope_setup()
-    end,
-  })
   -- Lazy load image.nvim, load it only when opening an image file
+  local id
   id = vim.api.nvim_create_autocmd("BufRead", {
     callback = function()
       local extension = vim.fn.expand "%:p:e"
       if vim.tbl_contains(M.extensions, extension) then
         pcall(vim.api.nvim_del_autocmd, id)
+
+        if not cond then
+          Util.log():warn(
+            "image.nvim requires the `ascii-image-converter` "
+              .. "command to be executable"
+          )
+          return
+        end
         if M.config() then
           vim.api.nvim_exec_autocmds("BufRead", {
             group = "ImageOpen",
