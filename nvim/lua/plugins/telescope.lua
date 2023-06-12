@@ -43,19 +43,19 @@ end
 
 M.keys = {
   { "<leader>n", M.builtin "find_files", mode = "n" },
-  { "<leader>b", M.builtin "buffers",    mode = "n" },
+  { "<leader>b", M.builtin "buffers", mode = "n" },
   {
     "<leader>B",
     M.builtin("buffers", { show_all_buffers = true }),
     mode = "n",
   },
-  { "<leader>o",  M.builtin "oldfiles",     mode = "n" },
-  { "<leader>q",  M.builtin "quickfix",     mode = "n" },
-  { "<leader>d",  M.builtin "diagnostics",  mode = "n" },
-  { "<leader>l",  M.builtin "live_grep",    mode = "n" },
-  { "<leader>gg", M.builtin "git_status",   mode = "n" },
-  { "<leader>gl", M.builtin "git_commits",  mode = "n" },
-  { "<leader>gS", M.builtin "git_stash",    mode = "n" },
+  { "<leader>o", M.builtin "oldfiles", mode = "n" },
+  { "<leader>q", M.builtin "quickfix", mode = "n" },
+  { "<leader>d", M.builtin "diagnostics", mode = "n" },
+  { "<leader>l", M.builtin "live_grep", mode = "n" },
+  { "<leader>gg", M.builtin "git_status", mode = "n" },
+  { "<leader>gl", M.builtin "git_commits", mode = "n" },
+  { "<leader>gS", M.builtin "git_stash", mode = "n" },
   { "<leader>gb", M.builtin "git_branches", mode = "n" },
 }
 
