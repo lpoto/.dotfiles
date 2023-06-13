@@ -30,10 +30,7 @@ function M.config()
           },
         },
         filetypes = {
-          ["*"] = function()
-            local ok, n = pcall(vim.fn.getfsize, vim.fn.expand "%")
-            return ok and n < 50000
-          end,
+          ["*"] = true,
         },
       }
     end)
