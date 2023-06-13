@@ -11,7 +11,7 @@ local util = {}
 --- matching directory containing that pattern.
 --- If no match is found, return the default value or
 --- the current working directory if no default is provided.
---- @param patterns string[]
+--- @param patterns string[]?
 --- @param default string?
 --- @param opts table?
 --- @return function
@@ -21,10 +21,18 @@ function util.root_fn(patterns, default, opts)
     if opts.path == nil then
       opts.path = vim.fn.expand "%:p:h"
     end
-    local f =
-      vim.fs.find(patterns, vim.tbl_extend("force", { upward = true }, opts))
-    if not f or not next(f) then
-      return default or vim.fn.getcwd()
+    local f = nil
+    if type(patterns) == "table" and next(patterns) then
+      f = vim.fs.find(
+        patterns,
+        vim.tbl_extend("force", { upward = true }, opts)
+      )
+    end
+    if type(f) ~= "table" or not next(f) then
+      if type(default) == "string" then
+        return default
+      end
+      return vim.fn.getcwd()
     end
     return vim.fs.dirname(f[1])
   end
