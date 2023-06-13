@@ -90,7 +90,10 @@ end
 
 ---Escape the path separator in a path with the provided replacement,
 ---or "_" if no replacement is provided.
+---@param path string The path to escape.
+---@param separator_replacement string? The replacement for the separator.
 function util.escape_path(path, separator_replacement)
+  path = path:gsub("^" .. os.getenv "HOME", "HOME")
   local separator = util.path_separator()
   local replacement = separator_replacement or "_"
   local s = path:gsub(separator, replacement)
@@ -100,6 +103,7 @@ end
 ---Unescape the path separator in a path with the provided replacement,
 ---or "_" if no replacement is provided.
 function util.unescape_path(path, separator_replacement)
+  path = path:gsub("^HOME", os.getenv "HOME")
   local separator = util.path_separator()
   local replacement = separator_replacement or "_"
   local s = path:gsub(replacement, separator)
