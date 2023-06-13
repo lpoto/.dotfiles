@@ -129,6 +129,7 @@ function M.pickers()
     Util.dir "%.target",
     Util.dir "%.settings",
     Util.dir "%.build",
+    Util.dir "build",
     Util.dir "dist",
     Util.dir "%.dist",
     Util.dir "%.angular",
