@@ -34,7 +34,7 @@ local list_sessions
 
 function M.config()
   vim.opt.sessionoptions =
-    "buffers,curdir,folds,globals,help,tabpages,winsize,terminal"
+    "buffers,curdir,folds,help,tabpages,winsize,terminal"
 
   vim.api.nvim_create_user_command("Sessions", function()
     list_sessions()
