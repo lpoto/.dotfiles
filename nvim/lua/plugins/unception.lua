@@ -35,6 +35,7 @@ function M.init()
   vim.keymap.set("n", "<leader>gP", git_commands.push)
   vim.keymap.set("n", "<leader>gF", git_commands.push_force)
   vim.keymap.set("n", "<leader>gf", git_commands.fetch)
+  vim.keymap.set("n", "<leader>gt", git_commands.tag)
   vim.keymap.set("n", "<leader>gB", git_commands.branch)
 end
 
@@ -99,6 +100,10 @@ end
 
 function git_commands.branch()
   git_commands.default "branch "
+end
+
+function git_commands.tag()
+  git_commands.default "tag "
 end
 
 function git_commands.pull()
