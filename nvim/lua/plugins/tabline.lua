@@ -205,7 +205,8 @@ function M.tabline_sections.filename(w)
   local s = ""
   local bufnr = vim.api.nvim_get_current_buf()
   local buftype = vim.api.nvim_buf_get_option(bufnr, "buftype")
-  if buftype ~= "" and buftype ~= "terminal" then
+  local wintype = vim.fn.win_gettype()
+  if wintype ~= "" or buftype ~= "" and buftype ~= "terminal" then
     return s
   end
   local name = vim.api.nvim_buf_get_name(bufnr) or ""
