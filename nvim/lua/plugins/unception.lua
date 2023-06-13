@@ -29,6 +29,7 @@ M.init = function()
   vim.keymap.set("n", "<leader>ga", M.git_commit_amend)
   vim.keymap.set("n", "<leader>gp", M.git_pull)
   vim.keymap.set("n", "<leader>gP", M.git_push)
+  vim.keymap.set("n", "<leader>gF", M.git_push_force)
   vim.keymap.set("n", "<leader>gf", M.git_fetch)
 end
 
@@ -75,6 +76,17 @@ function M.git_push()
       unception.run_command_with_prompt(
         "git ",
         "push " .. remote .. " " .. branch .. " "
+      )
+    end)
+  end)
+end
+
+function M.git_push_force()
+  M.fetch_git_data(function(remote, branch)
+    Util.require("plugins.unception", function(unception)
+      unception.run_command_with_prompt(
+        "git ",
+        "push " .. remote .. " " .. branch .. " --force "
       )
     end)
   end)
@@ -142,9 +154,9 @@ end
 
 function M.fetch_git_data(callback, on_error)
   on_error = on_error
-    or function()
-      Util.log():warn "Could not fetch git data"
-    end
+      or function()
+        Util.log():warn "Could not fetch git data"
+      end
   local remote = {}
   vim.fn.jobstart("git remote show", {
     detach = false,

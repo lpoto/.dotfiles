@@ -36,6 +36,10 @@ function M.config()
     harpoon.setup {
       -- Separate marks based on git branch
       mark_branch = true,
+      menu = {
+        width = 120,
+        height = 12,
+      },
     }
   end)
 end
@@ -64,6 +68,10 @@ end
 
 function mark_file_with_harpoon()
   Util.require("harpoon.mark", function(harpoon)
+    if M.is_marked(vim.fn.bufnr()) then
+      Util.log():warn "File already marked with harpoon"
+      return
+    end
     harpoon.add_file()
     Util.log():info "Added file to harpoon"
   end)
