@@ -42,11 +42,10 @@ function M.config()
         tasks = {
           theme = "ivy",
           output = {
-            style = "tab",
+            style = "float",
             layout = "center",
-            scale = 0.75,
+            scale = 0.7,
           },
-          --data_dir = false
           initial_mode = "normal",
         },
       },
