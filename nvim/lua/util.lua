@@ -316,19 +316,23 @@ Log.__index = Log
 local __notify
 
 function Log:debug(...)
-  __notify("debug", self.title, self.delay, ...)
+  __notify("debug", self.title, self.delay, false, ...)
 end
 
 function Log:info(...)
-  __notify("info", self.title, self.delay, ...)
+  __notify("info", self.title, self.delay, false, ...)
 end
 
 function Log:warn(...)
-  __notify("warn", self.title, self.delay, ...)
+  __notify("warn", self.title, self.delay, false, ...)
 end
 
 function Log:error(...)
-  __notify("error", self.title, self.delay, ...)
+  __notify("error", self.title, self.delay, false, ...)
+end
+
+function Log:print(...)
+  __notify("error", self.title, self.delay, true, ...)
 end
 
 ---@param delay number?: Delay in milliseconds, default: 0
@@ -345,11 +349,14 @@ function util.log(delay, title)
   return setmetatable(o, Log)
 end
 
-function __notify(level, title, delay, ...)
-  local n = debug.getinfo(3)
 
+function __notify(level, title, delay, use_print, ...)
   local msg = util.concat(...)
+  if use_print then
+    return print(msg)
+  end
   delay = delay or 0
+  local n = debug.getinfo(3)
 
   if type(n) == "table" and type(title) ~= "string" then
     if type(n.short_src) == "string" then
