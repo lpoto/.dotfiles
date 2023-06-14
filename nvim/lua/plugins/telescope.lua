@@ -12,6 +12,7 @@ Keymaps:
  - "<leader>b"   - buffers
  - "<leader>o"   - old files
  - "<leader>l"   - live grep
+ - "<leader>L"   - live grep for word under cursor
  - "<leader>d"   - show diagnostics
  - "<leader>q"   - quickfix
 
@@ -53,6 +54,7 @@ M.keys = {
   { "<leader>q", M.builtin "quickfix", mode = "n" },
   { "<leader>d", M.builtin "diagnostics", mode = "n" },
   { "<leader>l", M.builtin "live_grep", mode = "n" },
+  { "<leader>L", M.builtin "grep_string", mode = "n" },
   { "<leader>gg", M.builtin "git_status", mode = "n" },
   { "<leader>gl", M.builtin "git_commits", mode = "n" },
   { "<leader>gS", M.builtin "git_stash", mode = "n" },
@@ -144,72 +146,67 @@ function M.pickers()
     "%.jnilib$",
   }
   return Util.require("telescope.actions", function(actions)
-    return {
-      find_files = {
-        theme = theme,
-        hidden = true,
-        no_ignore = true,
-        --previewer = true,
-        file_ignore_patterns = file_ignore_patterns,
-      },
-      buffers = {
-        theme = theme,
-        sort_mru = true,
-        ignore_current_buffer = false,
-        show_all_buffers = false,
-        sort_lastused = true,
-        mappings = {
-          i = {
-            ["<c-d>"] = actions.delete_buffer,
-          },
-          n = {
-            ["<c-d>"] = actions.delete_buffer,
-            ["d"] = actions.delete_buffer,
-          },
+    local o = {}
+    o.find_files = {
+      theme = theme,
+      hidden = true,
+      no_ignore = true,
+      --previewer = true,
+      file_ignore_patterns = file_ignore_patterns,
+    }
+    o.buffers = {
+      theme = theme,
+      sort_mru = true,
+      ignore_current_buffer = false,
+      show_all_buffers = false,
+      sort_lastused = true,
+      mappings = {
+        i = {
+          ["<c-d>"] = actions.delete_buffer,
+        },
+        n = {
+          ["<c-d>"] = actions.delete_buffer,
+          ["d"] = actions.delete_buffer,
         },
       },
-      oldfiles = {
-        hidden = true,
-        theme = theme,
-        no_ignore = true,
-      },
-      diagnostics = {
-        theme = theme,
-      },
-      live_grep = {
-        hidden = true,
-        no_ignore = true,
-        theme = theme,
-        file_ignore_patterns = file_ignore_patterns,
-        additional_args = function()
-          return { "--hidden", "-u" }
-        end,
-      },
-      quickfix = {
-        hidden = true,
-        theme = theme,
-        no_ignore = true,
-        initial_mode = "normal",
-      },
-      git_status = {
-        theme = theme,
-        attach_mappings = M.attach_git_status_mappings,
-        selection_strategy = "row",
-        initial_mode = "normal",
-      },
-      git_branches = {
-        theme = theme,
-        selection_strategy = "row",
-      },
-      git_commits = {
-        theme = theme,
-        selection_strategy = "row",
-      },
-      git_stash = {
-        theme = theme,
-        selection_strategy = "row",
-      },
     }
+    o.oldfiles = {
+      hidden = true,
+      theme = theme,
+      no_ignore = true,
+    }
+    o.diagnostics = {
+      theme = theme,
+    }
+    o.live_grep = {
+      hidden = true,
+      no_ignore = true,
+      theme = theme,
+      file_ignore_patterns = file_ignore_patterns,
+      additional_args = function()
+        return { "--hidden", "-u" }
+      end,
+    }
+    o.grep_string = o.live_grep
+    o.quickfix = {
+      hidden = true,
+      theme = theme,
+      no_ignore = true,
+      initial_mode = "normal",
+    }
+    o.git_status = {
+      theme = theme,
+      attach_mappings = M.attach_git_status_mappings,
+      selection_strategy = "row",
+      initial_mode = "normal",
+    }
+    o.git_branches = {
+      theme = theme,
+      selection_strategy = "row",
+    }
+    o.git_commits = o.git_branches
+    o.git_stash = o.git_branches
+    return o
   end)
 end
 
