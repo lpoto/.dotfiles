@@ -18,9 +18,10 @@ local M = {
   },
 }
 
+local notification_history
 function M.config()
   Util.require("noice", function(noice)
-    noice.setup {
+    noice.setup({
       lsp = {
         -- override markdown rendering so that **cmp** and other
         -- plugins use **Treesitter**
@@ -48,28 +49,27 @@ function M.config()
           help = { icon = "?" },
         },
       },
-    }
+    })
     vim.defer_fn(function()
-      vim.keymap.set("n", "<leader>m", M.notification_history)
+      vim.keymap.set("n", "<leader>m", notification_history)
     end, 100)
   end)
 end
 
 local telescope_config_loaded = false
-function M.telescope_config()
+local function telescope_config()
   if telescope_config_loaded then
     return
   end
   telescope_config_loaded = true
-
   Util.require("telescope", function(telescope)
-    telescope.load_extension "noice"
+    telescope.load_extension("noice")
   end)
 end
 
 ---Display notify history in a telescope prompt
-function M.notification_history()
-  M.telescope_config()
+function notification_history()
+  telescope_config()
   vim.api.nvim_exec("Telescope noice theme=ivy", false)
 end
 

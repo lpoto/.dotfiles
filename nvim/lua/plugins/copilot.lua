@@ -14,7 +14,7 @@ local M = {
 function M.config()
   vim.defer_fn(function()
     Util.require("copilot", function(copilot)
-      copilot.setup {
+      copilot.setup({
         panel = {
           enabled = false,
         },
@@ -23,16 +23,18 @@ function M.config()
           auto_trigger = true,
           debounce = 75,
           keymap = {
-            accept = "<C-Space>",
+            -- NOTE: accept is mapped to <CR> in
+            -- the cmp.lua plugin config.
+            accept = false,
+            dismiss = "<C-x>",
             next = "<C-k>",
             prev = "<C-j>",
-            dismiss = "<C-z>",
           },
         },
         filetypes = {
           ["*"] = true,
         },
-      }
+      })
     end)
   end, 250)
 end

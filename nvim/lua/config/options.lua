@@ -20,7 +20,7 @@ vim.opt.splitright = true --open new window on the right in vertical split
 vim.opt.swapfile = false -- load buffers without creating swap files
 vim.opt.backup = false -- do not automatically save
 vim.opt.undofile = true -- allow undo after reoppening the file
-vim.opt.undodir = Util.path(vim.fn.stdpath "data", "undo")
+vim.opt.undodir = Util.path():new(vim.fn.stdpath("data"), "undo")
 
 --------------------------------------------------------------------- INDENTING
 
@@ -68,12 +68,12 @@ vim.opt.cursorcolumn = false
 --vim.opt.colorcolumn = +1
 vim.t_Co = 256
 vim.opt.termguicolors = true
-vim.cmd 'let &t_8f = "\\<Esc>[38;2;%lu;%lu;%lum"'
-vim.cmd 'let &t_8b = "\\<Esc>[48;2;%lu;%lu;%lum"'
+vim.cmd('let &t_8f = "\\<Esc>[38;2;%lu;%lu;%lum"')
+vim.cmd('let &t_8b = "\\<Esc>[48;2;%lu;%lu;%lum"')
 
-vim.opt.listchars:append {
+vim.opt.listchars:append({
   tab = "│ ",
   multispace = ". ",
   leadmultispace = "│ ",
-}
+})
 vim.opt.list = true

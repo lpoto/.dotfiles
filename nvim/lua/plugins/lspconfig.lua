@@ -30,21 +30,15 @@ function M.init()
   vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename)
 end
 
-local expand_opts
-
----Start the provided language server, if no opts
----are provided, {} will be used.
----opts.capabilities will be automatically set to
----cmp's default capabilities if not found.
----@param opts table|string?: Optional server configuration
-function M.start_language_server(opts)
-  local server
-  server, opts = expand_opts(opts)
-  if not server or server:len() == 0 then
-    Util.log():warn "No server provided"
+---Override the default attach_language_server function.
+---@param server string
+---@param opts table?: Optional server configuration
+---@diagnostic disable-next-line: duplicate-set-field
+Util.misc().attach_language_server = function(server, opts)
+  if type(server) ~= "string" or server:len() == 0 then
+    Util.log():warn("No server provided")
     return
   end
-
   vim.schedule(function()
     Util.require("lspconfig", function(lspconfig)
       local lsp = lspconfig[server]
@@ -52,47 +46,17 @@ function M.start_language_server(opts)
         Util.log():warn("Language server not found:", server)
         return
       end
-
       opts = vim.tbl_deep_extend(
         "force",
         opts or {},
         vim.g[server .. "_config"] or {}
       )
-
       opts.capabilities = opts.capabilities
-        or Util.require("plugins.cmp", function(cmp)
-          return cmp.capabilities()
-        end)
-
+        or Util.misc().get_autocompletion_capabilities()
       lsp.setup(opts)
-
       vim.api.nvim_exec("LspStart", true)
     end)
   end)
-end
-
-function expand_opts(opts)
-  local server = opts
-  if type(opts) ~= "table" then
-    opts = {}
-  end
-
-  if type(server) == "table" then
-    server = opts.name
-  end
-  if type(server) ~= "string" and type(opts) == "table" then
-    server = opts.server
-  end
-  if type(server) ~= "string" and type(opts) == "table" then
-    server = opts[1]
-  end
-  if type(opts) ~= "table" then
-    opts = {}
-  end
-  if type(server) ~= "string" then
-    server = ""
-  end
-  return server, opts
 end
 
 return M

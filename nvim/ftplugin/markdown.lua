@@ -4,7 +4,4 @@
 --[[===========================================================================
 Loaded when a markdown file is opened
 -----------------------------------------------------------------------------]]
-Util.ftplugin {
-  --language_server = "marksman",
-  formatter = "prettier",
-}
+Util.ftplugin():new():attach_formatter("prettier")

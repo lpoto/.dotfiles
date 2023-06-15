@@ -37,7 +37,7 @@ M.keys = {
 
 function M.config()
   Util.require("telescope", function(telescope)
-    telescope.setup {
+    telescope.setup({
       extensions = {
         tasks = {
           theme = "ivy",
@@ -49,9 +49,9 @@ function M.config()
           initial_mode = "normal",
         },
       },
-    }
+    })
 
-    telescope.load_extension "tasks"
+    telescope.load_extension("tasks")
 
     telescope.extensions.tasks.generators.default.all()
   end)

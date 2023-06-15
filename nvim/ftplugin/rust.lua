@@ -4,7 +4,7 @@
 --[[===========================================================================
 Loaded when a rust file is opened
 -----------------------------------------------------------------------------]]
-Util.ftplugin {
-  formatter = "rustfmt",
-  language_server = "rust_analyzer",
-}
+Util.ftplugin()
+  :new()
+  :attach_formatter("rustfmt")
+  :attach_language_server("rust_analyzer")

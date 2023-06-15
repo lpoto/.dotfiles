@@ -12,12 +12,13 @@ NOTE: session is saved automatically when yout quit neovim.
 -----------------------------------------------------------------------------]]
 local M = {
   dev = true,
-  dir = Util.path(vim.fn.stdpath "config", "lua", "plugins", "sessions"),
+  dir = Util.path()
+    :new(vim.fn.stdpath("config"), "lua", "plugins", "sessions"),
   event = "VeryLazy",
 }
 
 local title = "Sessions"
-local session_dir = Util.path(vim.fn.stdpath "data", "sessions")
+local session_dir = Util.path():new(vim.fn.stdpath("data"), "sessions")
 local ignore_filetype_patterns = {
   "git.*",
   "qf",
@@ -104,8 +105,8 @@ function M.config()
         return
       end
 
-      local name = Util.escape_path(vim.fn.getcwd())
-      local file = Util.path(session_dir, name .. ".vim")
+      local name = Util.path():escape(vim.fn.getcwd())
+      local file = Util.path():new(session_dir, name .. ".vim")
       pcall(
         vim.api.nvim_exec,
         "mksession! " .. vim.fn.fnameescape(file),
@@ -127,7 +128,7 @@ local function select_session(prompt_bufnr)
 
       -- Close the prompt when selecting a session
       actions.close(prompt_bufnr)
-      local session_file = Util.path(session_dir, selection.value)
+      local session_file = Util.path():new(session_dir, selection.value)
       -- NOTE: ensure the session file exists
       if vim.fn.filereadable(session_file) == 1 then
         -- if the session file exists, load it
@@ -139,7 +140,7 @@ local function select_session(prompt_bufnr)
         end, 10)
       else
         -- Notify that the selected session is no longer available
-        Util.log():warn "Session no longer available"
+        Util.log():warn("Session no longer available")
       end
     end
   )
@@ -155,12 +156,12 @@ local function delete_selected_session(prompt_bufnr)
       return
     end
 
-    local session_file = Util.path(session_dir, selection.value)
+    local session_file = Util.path():new(session_dir, selection.value)
 
     if vim.fn.delete(session_file) ~= 0 then
-      Util.log():warn "Failed to delete session"
+      Util.log():warn("Failed to delete session")
     else
-      Util.log():info "Session deleted"
+      Util.log():info("Session deleted")
       -- Filter out the deleted session from the picker
       picker:delete_selection(function(item)
         return selection == item
@@ -186,28 +187,30 @@ function list_sessions(opts)
       cwd = session_dir,
       previewer = false,
       entry_maker = function(line)
-        local time =
-          vim.fn.strftime("%c", vim.fn.getftime(Util.path(session_dir, line)))
+        local time = vim.fn.strftime(
+          "%c",
+          vim.fn.getftime(Util.path():new(session_dir, line))
+        )
         return {
           value = line,
           ordinal = time .. " " .. line,
           display = function(e)
-            local displayer = entry_display.create {
+            local displayer = entry_display.create({
               separator = " ",
               items = {
                 { width = string.len(time) + 1 },
                 { remaining = true },
               },
-            }
+            })
             -- NOTE: replate % signs with / in the displayed
             -- session name, so it better represents the session's
             -- working directory.
-            local value =
-              Util.unescape_path(vim.fn.fnamemodify(e.value, ":r"))
-            return displayer {
+            local value = Util.path()
+              :unescape(vim.fn.fnamemodify(e.value, ":r"))
+            return displayer({
               { time, "Comment" },
               value,
-            }
+            })
           end,
         }
       end,
@@ -249,7 +252,7 @@ function list_sessions(opts)
         end
         for k, v in pairs(picker.finder.results) do
           if
-            Util.unescape_path(vim.fn.fnamemodify(v.value, ":r"))
+            Util.path():unescape(vim.fn.fnamemodify(v.value, ":r"))
             == vim.fn.getcwd()
           then
             picker:set_selection(k - 1)

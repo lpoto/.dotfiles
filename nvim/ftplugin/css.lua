@@ -4,7 +4,7 @@
 --[[===========================================================================
 Loaded when a css file is opened
 -----------------------------------------------------------------------------]]
-Util.ftplugin {
-  language_server = "cssls",
-  formatter = "prettier",
-}
+Util.ftplugin()
+  :new()
+  :attach_language_server("cssls")
+  :attach_formatter("prettier")

@@ -4,7 +4,7 @@
 --[[===========================================================================
 Loaded when a c++ file is opened
 -----------------------------------------------------------------------------]]
-Util.ftplugin {
-  language_server = "clangd",
-  formatter = "clang_format",
-}
+Util.ftplugin()
+  :new()
+  :attach_language_server("clangd")
+  :attach_formatter("clang_format")

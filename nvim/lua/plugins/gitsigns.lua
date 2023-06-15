@@ -13,7 +13,7 @@ local M = {
 
 function M.config()
   Util.require("gitsigns", function(gitsigns)
-    gitsigns.setup {
+    gitsigns.setup({
       signcolumn = false,
       numhl = true,
       current_line_blame = true,
@@ -31,7 +31,7 @@ function M.config()
         vim.keymap.set("n", "<leader>gu", gitsigns.undo_stage_hunk, opts)
         vim.keymap.set("n", "<leader>gr", gitsigns.reset_buffer, opts)
       end,
-    }
+    })
     vim.defer_fn(function()
       vim.api.nvim_exec_autocmds("User", {
         pattern = "GitsignsReady",

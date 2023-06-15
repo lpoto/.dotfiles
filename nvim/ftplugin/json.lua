@@ -4,7 +4,7 @@
 --[[===========================================================================
 Loaded when a json file is opened
 -----------------------------------------------------------------------------]]
-Util.ftplugin {
-  language_server = "jsonls",
-  formatter = "prettier",
-}
+Util.ftplugin()
+  :new()
+  :attach_formatter("prettier")
+  :attach_language_server("jsonls")

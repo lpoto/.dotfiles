@@ -11,20 +11,21 @@ local M = {
 
 local function scheme_config()
   return Util.require("github-theme", function(theme)
-    theme.setup {
+    theme.setup({
       theme_style = "dark",
       transparent = true,
       function_style = "italic",
-    }
+    })
     return true
   end)
 end
 
+local override
 function M.config()
   if not scheme_config() then
     return
   end
-  M.override {
+  override({
     { "Identifier", { link = "Normal" } },
     { "LineNr", { link = "WinSeparator" } },
     { "@field", { link = "Special" } },
@@ -40,22 +41,22 @@ function M.config()
     { "Folded", { bg = "NONE", fg = "#658ABA" } },
     { "NormalFloat", { bg = "NONE" } },
     { "FloatBorder", { link = "WinSeparator" } },
-  }
-  M.override {
+  })
+  override({
     { "GitSignsAdd", { fg = "#569166" } },
     { "GitSignsChange", { fg = "#658AbA" } },
     { "GitSignsDelete", { fg = "#A15C62" } },
-  }
-  M.override {
+  })
+  override({
     { "TelescopeBorder", { link = "WinSeparator" } },
     { "TelescopeTitle", { link = "TabLineSel" } },
-  }
+  })
 end
 
-function M.override(o)
+function override(o)
   local errs = {}
-  for _, override in ipairs(o) do
-    local ok, err = pcall(vim.api.nvim_set_hl, 0, unpack(override))
+  for _, ov in ipairs(o) do
+    local ok, err = pcall(vim.api.nvim_set_hl, 0, unpack(ov))
     if not ok then
       table.insert(errs, err)
     end

@@ -3,16 +3,11 @@
 --                                                                     NVIM-CMP
 --[[===========================================================================
 https://github.com/hrsh7th/nvim-cmp
-
 A completion engine plugin. Completion sources are installed from
 external repositories, cmp-nvim-lsp,...
 
 This also includes the vsnip plugin intergrated with cmp,
 and autopairs, that autocompletes the matching braces, quotes, etc.
-
-To enable this for a lsp server, add the following to  the
-lsp server's config:
- capabilities = require('plugins.cmp').capabilities()
 
 -----------------------------------------------------------------------------]]
 local M = {
@@ -31,7 +26,7 @@ local set_confirm_keymap
 
 function M.config()
   Util.require("cmp", function(cmp)
-    cmp.setup {
+    cmp.setup({
       completion = {
         completeopt = "menu,menuone,noinsert,noselect",
       },
@@ -49,27 +44,30 @@ function M.config()
         { name = "buffer" },
       },
       window = {
-        completion = cmp.config.window.bordered {
+        completion = cmp.config.window.bordered({
           winhighlight = "NormalFloat:WinSeparator,FloatBorder:WinSeparator",
-        },
-        documentation = cmp.config.window.bordered {
+        }),
+        documentation = cmp.config.window.bordered({
           winhighlight = "NormalFloat:WinSeparator,FloatBorder:WinSeparator",
-        },
+        }),
       },
       preselect = cmp.PreselectMode.None,
-      mapping = cmp.mapping.preset.insert {
+      mapping = cmp.mapping.preset.insert({
         ["<TAB>"] = cmp.mapping.select_next_item(),
         ["<S-TAB>"] = cmp.mapping.select_prev_item(),
         ["<C-x>"] = cmp.mapping.close(),
         ["<C-d>"] = cmp.mapping.scroll_docs(4),
         ["<C-u>"] = cmp.mapping.scroll_docs(-4),
-      },
-    }
+      }),
+    })
     set_confirm_keymap()
   end)
 end
 
-function M.capabilities()
+---Override the default autocompletion capabilities.
+---
+---@diagnostic disable-next-line: duplicate-set-field
+Util.misc().get_autocompletion_capabilities = function()
   return Util.require("cmp_nvim_lsp", function(cmp_nvim_lsp)
     return cmp_nvim_lsp.default_capabilities()
   end)
@@ -82,8 +80,8 @@ end
 --- its default behavior.
 function set_confirm_keymap()
   vim.keymap.set("i", "<CR>", function()
-    local suggestion = Util.require "copilot.suggestion"
-    local cmp = Util.require "cmp"
+    local suggestion = Util.require("copilot.suggestion")
+    local cmp = Util.require("cmp")
     if
       cmp
       and (
@@ -92,7 +90,7 @@ function set_confirm_keymap()
       )
     then
       vim.defer_fn(function()
-        cmp.confirm { select = true }
+        cmp.confirm({ select = true })
       end, 5)
       return true
     end

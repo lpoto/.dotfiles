@@ -18,18 +18,17 @@ local M = {
   cmd = { "NullLsInfo", "NullLsLog" },
 }
 
-local format
-function M.format_selection()
-  return format(true)
+local __format
+local function format_selection()
+  return __format(true)
 end
-
-function M.format()
-  return format(false)
+local function format()
+  return __format(false)
 end
 
 M.keys = {
-  { "<leader>f", M.format, mode = "n" },
-  { "<leader>f", M.format_selection, mode = "v" },
+  { "<leader>f", format, mode = "n" },
+  { "<leader>f", format_selection, mode = "v" },
 }
 
 function M.config()
@@ -39,7 +38,7 @@ function M.config()
 end
 
 ---@param selection boolean: Format only current selection
-function format(selection)
+function __format(selection)
   local ok, e = pcall(function()
     local opts = {
       timeout_ms = 5000,
@@ -58,59 +57,47 @@ function format(selection)
   end
 end
 
----@param opts string|table
-function M.register_formatter(opts)
-  M.register_builtin_source("formatting", opts)
+local register_builtin_source
+
+---Override the default attach_formatter function.
+---@diagnostic disable-next-line: duplicate-set-field
+Util.misc().attach_formatter = function(source, opts, filetypes)
+  register_builtin_source("formatting", source, opts, filetypes)
 end
 
----@param opts string|table
-function M.register_linter(opts)
-  M.register_builtin_source("diagnostics", opts)
+---Override the default attach_linter function.
+---@diagnostic disable-next-line: duplicate-set-field
+Util.misc().attach_linter = function(source, opts, filetypes)
+  register_builtin_source("diagnostics", source, opts, filetypes)
 end
 
-local expand_opts
----@param type string
----@param opts string|table
-function M.register_builtin_source(type, opts)
+---@param t string
+---@param source string
+---@param opts table?
+---@param filetypes string|table?
+function register_builtin_source(t, source, opts, filetypes)
   Util.require("null-ls", function(null_ls)
-    opts = expand_opts(opts)
+    if type(opts) ~= "table" then
+      opts = {}
+    end
+    filetypes = filetypes or vim.bo.filetype
+    if type(filetypes) == "string" then
+      filetypes = { filetypes }
+    end
 
-    local s = null_ls.builtins[type][opts.source]
+    local s = null_ls.builtins[t][source]
     if not s then
-      Util.log():warn("No such builtin source:", opts.source)
+      Util.log():warn("No such builtin source:", source)
       return
     end
-    if opts.config and next(opts.config) then
-      s = s.with(opts.config)
+    if opts and next(opts) then
+      s = s.with(opts)
     end
-    null_ls.register {
-      filetypes = { opts.filetype },
+    null_ls.register({
+      filetypes = filetypes,
       sources = { s },
-    }
+    })
   end)
-end
-
-expand_opts = function(opts)
-  local o = {}
-  if type(opts) == "string" then
-    o.source = opts
-    o.filetype = vim.bo.filetype
-  else
-    opts = opts or {}
-
-    o.source = opts[1]
-    if type(o.source) ~= "string" then
-      o.source = opts.source
-    end
-
-    opts.source = nil
-    opts[1] = nil
-    opts.filetype = nil
-
-    o.filetype = opts.filetype or vim.bo.filetype
-    o.config = opts
-  end
-  return o
 end
 
 return M

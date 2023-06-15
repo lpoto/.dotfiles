@@ -4,15 +4,14 @@
 --[[===========================================================================
 Loaded when a php file is opened
 -----------------------------------------------------------------------------]]
-Util.ftplugin {
-  formatter = "phpcbf",
-  language_server = {
-    "phpactor",
-    root_dir = Util.root_fn {
+Util.ftplugin()
+  :new()
+  :attach_formatter("phpcbf")
+  :attach_language_server("phpactor", {
+    root_dir = Util.misc().root_fn({
       ".git",
       "composer.json",
       "composer.lock",
       "vendor",
-    },
-  },
-}
+    }),
+  })

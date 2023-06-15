@@ -7,12 +7,8 @@ Keey only a limited number of buffers loaded.
 -----------------------------------------------------------------------------]]
 local M = {
   dev = true,
-  dir = Util.path(
-    vim.fn.stdpath "config",
-    "lua",
-    "plugins",
-    "buffer_retirement"
-  ),
+  dir = Util.path()
+    :new(vim.fn.stdpath("config"), "lua", "plugins", "buffer_retirement"),
   event = { "BufRead", "BufNewFile" },
 }
 
@@ -60,7 +56,7 @@ function init_autocommands()
         Util.log():warn(err)
       end
       if err_count > 5 then
-        Util.log():error "Too many errors, disabling buffer retirement"
+        Util.log():error("Too many errors, disabling buffer retirement")
         pcall(vim.api.nvim_clear_autocmds, { group = augroup })
       end
     end,
@@ -116,9 +112,7 @@ function retire_buffers()
       if
         buf == cur_buf
         or vim.fn.bufwinid(buf) ~= -1
-        or Util.require("plugins.harpoon", function(harpoon)
-          return harpoon.is_marked(buf)
-        end)
+        or Util.misc().buffer_is_marked(buf)
       then
         m = m - 1
         return false

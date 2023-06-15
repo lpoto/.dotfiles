@@ -4,14 +4,13 @@
 --[[===========================================================================
 Loaded when a yaml file is opened
 -----------------------------------------------------------------------------]]
-Util.ftplugin {
-  formatter = "prettier",
-  language_server = {
-    "yamlls",
+Util.ftplugin()
+  :new()
+  :attach_formatter("prettier")
+  :attach_language_server("yamlls", {
     settings = {
       yaml = {
         keyOrdering = false,
       },
     },
-  },
-}
+  })

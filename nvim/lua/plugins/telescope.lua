@@ -34,49 +34,52 @@ local M = {
 
 local theme = "ivy"
 
-function M.builtin(name, opts)
+local function builtin(name, opts)
   return function()
-    Util.require("telescope.builtin", function(builtin)
-      builtin[name](opts)
+    Util.require("telescope.builtin", function(telescope_builtin)
+      telescope_builtin[name](opts)
     end)
   end
 end
 
 M.keys = {
-  { "<leader>n", M.builtin "find_files", mode = "n" },
-  { "<leader>b", M.builtin "buffers", mode = "n" },
+  { "<leader>n", builtin("find_files"), mode = "n" },
+  { "<leader>b", builtin("buffers"), mode = "n" },
   {
     "<leader>B",
-    M.builtin("buffers", { show_all_buffers = true }),
+    builtin("buffers", { show_all_buffers = true }),
     mode = "n",
   },
-  { "<leader>o", M.builtin "oldfiles", mode = "n" },
-  { "<leader>q", M.builtin "quickfix", mode = "n" },
-  { "<leader>d", M.builtin "diagnostics", mode = "n" },
-  { "<leader>l", M.builtin "live_grep", mode = "n" },
-  { "<leader>L", M.builtin "grep_string", mode = "n" },
-  { "<leader>gg", M.builtin "git_status", mode = "n" },
-  { "<leader>gl", M.builtin "git_commits", mode = "n" },
-  { "<leader>gS", M.builtin "git_stash", mode = "n" },
-  { "<leader>gb", M.builtin "git_branches", mode = "n" },
+  { "<leader>o", builtin("oldfiles"), mode = "n" },
+  { "<leader>q", builtin("quickfix"), mode = "n" },
+  { "<leader>d", builtin("diagnostics"), mode = "n" },
+  { "<leader>l", builtin("live_grep"), mode = "n" },
+  { "<leader>L", builtin("grep_string"), mode = "n" },
+  { "<leader>gg", builtin("git_status"), mode = "n" },
+  { "<leader>gl", builtin("git_commits"), mode = "n" },
+  { "<leader>gS", builtin("git_stash"), mode = "n" },
+  { "<leader>gb", builtin("git_branches"), mode = "n" },
 }
+
+local pickers
+local default_mappings
 
 function M.config()
   Util.require(
     { "telescope", "telescope.previewers" },
     function(telescope, previewers)
-      telescope.setup {
+      telescope.setup({
         defaults = {
           prompt_prefix = "?  ",
           color_devicons = false,
           file_previewer = previewers.vim_buffer_cat.new,
           grep_previewer = previewers.vim_buffer_vimgrep.new,
           qflist_previewer = previewers.vim_buffer_qflist.new,
-          mappings = M.default_mappings(),
+          mappings = default_mappings(),
         },
-        pickers = M.pickers(),
-      }
-      require("telescope").load_extension "fzf"
+        pickers = pickers(),
+      })
+      require("telescope").load_extension("fzf")
 
       vim.api.nvim_exec_autocmds("User", {
         pattern = "TelescopeLoaded",
@@ -85,10 +88,10 @@ function M.config()
   )
 end
 
-function M.default_mappings()
+function default_mappings()
   return Util.require(
     { "telescope.actions", "telescope.builtin" },
-    function(actions, builtin)
+    function(actions, telescope_builtin)
       return {
         i = {
           -- NOTE: when a telescope window is opened, use ctrl + q to
@@ -96,7 +99,7 @@ function M.default_mappings()
           -- open quickfix in a telescope window
           ["<C-q>"] = function()
             actions.send_to_qflist(vim.fn.bufnr())
-            builtin.quickfix()
+            telescope_builtin.quickfix()
           end,
           ["<Tab>"] = actions.move_selection_next,
           ["<S-Tab>"] = actions.move_selection_previous,
@@ -118,25 +121,27 @@ function M.default_mappings()
   )
 end
 
-function M.pickers()
+local attach_git_status_mappings
+
+function pickers()
   local file_ignore_patterns = {
-    Util.dir "plugged",
-    Util.dir "%.undo",
-    Util.dir "%.storage",
-    Util.dir "%.data",
-    Util.dir "%.local",
-    Util.dir "%.git",
-    Util.dir "node_modules",
-    Util.dir "target",
-    Util.dir "%.target",
-    Util.dir "%.settings",
-    Util.dir "%.build",
-    Util.dir "build",
-    Util.dir "dist",
-    Util.dir "%.dist",
-    Util.dir "%.angular",
-    Util.dir "__pycache__",
-    Util.dir "github.copilot",
+    Util.path():dir("plugged"),
+    Util.path():dir("%.undo"),
+    Util.path():dir("%.storage"),
+    Util.path():dir("%.data"),
+    Util.path():dir("%.local"),
+    Util.path():dir("%.git"),
+    Util.path():dir("node_modules"),
+    Util.path():dir("target"),
+    Util.path():dir("%.target"),
+    Util.path():dir("%.settings"),
+    Util.path():dir("%.build"),
+    Util.path():dir("build"),
+    Util.path():dir("dist"),
+    Util.path():dir("%.dist"),
+    Util.path():dir("%.angular"),
+    Util.path():dir("__pycache__"),
+    Util.path():dir("github.copilot"),
     "%.project$",
     "%.classpath$",
     "%.factorypath$",
@@ -196,7 +201,7 @@ function M.pickers()
     }
     o.git_status = {
       theme = theme,
-      attach_mappings = M.attach_git_status_mappings,
+      attach_mappings = attach_git_status_mappings,
       selection_strategy = "row",
       initial_mode = "normal",
     }
@@ -210,7 +215,7 @@ function M.pickers()
   end)
 end
 
-function M.attach_git_status_mappings(_, map)
+function attach_git_status_mappings(_, map)
   Util.require("telescope.actions", function(actions)
     actions.select_default:replace(actions.git_staging_toggle)
     map("n", "e", actions.file_edit)

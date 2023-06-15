@@ -14,7 +14,7 @@ local M = {
 
 function M.config()
   Util.require("nvim-treesitter.configs", function(treesitter)
-    treesitter.setup {
+    treesitter.setup({
       -- NOTE: the following parsers should always be installed
       -- when opening nvim for the first time.
       ensure_installed = {
@@ -47,7 +47,7 @@ function M.config()
           node_decremental = "<BS>",
         },
       },
-    }
+    })
   end)
 end
 

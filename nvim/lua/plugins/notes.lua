@@ -7,7 +7,7 @@ Simple notes sidebar
 -----------------------------------------------------------------------------]]
 local M = {
   dev = true,
-  dir = vim.fn.expand "<sfile>",
+  dir = vim.fn.expand("<sfile>"),
 }
 
 local __notes
@@ -20,7 +20,7 @@ M.keys = { { "<leader>t", toggle_notes, mode = "n" } }
 local opts = {
   min_width = math.min(40, math.floor(vim.o.columns / 2)),
   width = 0.225,
-  notes_file = Util.path(vim.fn.stdpath "data", "notes.md"),
+  notes_file = Util.path():new(vim.fn.stdpath("data"), "notes.md"),
 }
 
 local notes_window = nil
@@ -108,7 +108,7 @@ function __notes()
             end
             navigate_to_notes_file()
             create_buf_replaced_autocmd()
-            Util.log():warn "Cannot replace notes buffer"
+            Util.log():warn("Cannot replace notes buffer")
           end, 20)
         end,
       })

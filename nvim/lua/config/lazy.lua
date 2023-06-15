@@ -22,7 +22,7 @@ end
 
 function ensure_lazy(lazy_path)
   if not vim.uv.fs_stat(lazy_path) then
-    Util.log():print "Lazy.nvim not found, installing..."
+    Util.log():print("Lazy.nvim not found, installing...")
     ---@type table
     local cmd = {
       "git",
@@ -39,9 +39,9 @@ function ensure_lazy(lazy_path)
       return
     end
     if not vim.uv.fs_stat(lazy_path) then
-      Util.log():print "Failed installing Lazy.nvim!"
+      Util.log():print("Failed installing Lazy.nvim!")
     else
-      Util.log(100):info "Lazy.nvim installed, please restart nvim!"
+      Util.log(100):info("Lazy.nvim installed, please restart nvim!")
     end
   end
 end
@@ -51,13 +51,13 @@ function get_lazy_options()
     defaults = {
       lazy = true,
     },
-    lockfile = Util.path(
-      vim.fs.dirname(vim.fn.stdpath "config"),
+    lockfile = Util.path():new(
+      vim.fs.dirname(vim.fn.stdpath("config")),
       ".lazy.lock.json"
     ),
-    root = Util.path(vim.fn.stdpath "data", "lazy"),
+    root = Util.path():new(vim.fn.stdpath("data"), "lazy"),
     dev = {
-      dir = Util.path(vim.fn.stdpath "data", "lazy"),
+      dir = Util.path():new(vim.fn.stdpath("data"), "lazy"),
     },
     checker = {
       enabled = true,
@@ -90,4 +90,4 @@ function get_lazy_options()
   }
 end
 
-load_lazy(Util.path(vim.fn.stdpath "data", "lazy", "lazy.nvim"))
+load_lazy(Util.path():new(vim.fn.stdpath("data"), "lazy", "lazy.nvim"))

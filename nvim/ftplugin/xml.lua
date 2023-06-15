@@ -4,7 +4,7 @@
 --[[===========================================================================
 Loaded when a xml file is opened
 -----------------------------------------------------------------------------]]
-Util.ftplugin {
-  language_server = "lemminx",
-  formatter = "prettier",
-}
+Util.ftplugin()
+  :new()
+  :attach_language_server("lemminx")
+  :attach_formatter("prettier")

@@ -21,9 +21,9 @@ return {
   -- is added to the PATH environment variable on startup.
   config = function()
     Util.require("mason", function(mason)
-      mason.setup {
-        ui = { border = "rounded" }
-      }
+      mason.setup({
+        ui = { border = "rounded" },
+      })
     end)
   end,
 }

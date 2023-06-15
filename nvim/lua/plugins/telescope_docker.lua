@@ -15,29 +15,48 @@ local M = {
   cmd = "Docker",
 }
 
-function M.command()
+local command
+function M.config()
+  command()
+
+  Util.require("telescope", function(telescope)
+    telescope.setup({
+      extensions = {
+        docker = {
+          theme = "ivy",
+          log_level = vim.log.levels.INFO,
+          initial_mode = "normal",
+        },
+      },
+    })
+
+    telescope.load_extension("docker")
+  end)
+end
+
+function command()
   vim.api.nvim_create_user_command("Docker", function(opts)
     if type(opts.args) ~= "string" then
       return
     end
     local f = "docker"
-    if opts.args:match "^i" then
+    if opts.args:match("^i") then
       f = "images"
-    elseif opts.args:match "^f" then
+    elseif opts.args:match("^f") then
       f = "files"
-    elseif opts.args:match "^s" then
+    elseif opts.args:match("^s") then
       f = "swarm"
-    elseif opts.args:match "^v" then
+    elseif opts.args:match("^v") then
       f = "volumes"
-    elseif opts.args:match "^n" then
+    elseif opts.args:match("^n") then
       f = "networks"
-    elseif opts.args:match "^c.*m" then
+    elseif opts.args:match("^c.*m") then
       f = "compose"
-    elseif opts.args:match "^m" then
+    elseif opts.args:match("^m") then
       f = "machines"
-    elseif opts.args:match "^c.*e" or opts.args:match "^c.*x" then
+    elseif opts.args:match("^c.*e") or opts.args:match("^c.*x") then
       f = "contexts"
-    elseif opts.args:match "^c" then
+    elseif opts.args:match("^c") then
       f = "containers"
     end
     Util.require("telescope", function(telescope)
@@ -64,24 +83,6 @@ function M.command()
       return items
     end,
   })
-end
-
-function M.config()
-  M.command()
-
-  Util.require("telescope", function(telescope)
-    telescope.setup {
-      extensions = {
-        docker = {
-          theme = "ivy",
-          log_level = vim.log.levels.INFO,
-          initial_mode = "normal",
-        },
-      },
-    }
-
-    telescope.load_extension "docker"
-  end)
 end
 
 return M

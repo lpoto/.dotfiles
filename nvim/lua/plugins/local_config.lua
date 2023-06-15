@@ -9,11 +9,13 @@
 
 local M = {
   dev = true,
-  dir = Util.path(vim.fn.stdpath "config", "lua", "plugins", "local_config"),
+  dir = Util.path()
+    :new(vim.fn.stdpath("config"), "lua", "plugins", "local_config"),
   event = "VeryLazy",
 }
 
-local local_configs_path = Util.path(vim.fn.stdpath "data", "local_configs")
+local local_configs_path = Util.path()
+  :new(vim.fn.stdpath("data"), "local_configs")
 local find_local_config
 
 function M.config()
@@ -32,7 +34,8 @@ function find_local_config(source)
 
   while path:len() > 1 do
     local file = path .. ".lua"
-    local escaped = Util.path(local_configs_path, Util.escape_path(file))
+    local escaped = Util.path()
+      :new(local_configs_path, Util.path():escape(file))
 
     if vim.fn.filereadable(escaped) == 1 then
       found = true
@@ -60,14 +63,15 @@ function find_local_config(source)
     path = vim.fs.dirname(path)
   end
   if not found and not source then
-    Util.log():warn "No local config found!"
+    Util.log():warn("No local config found!")
   end
 end
 
 local function create_local_config()
   local path = vim.fn.getcwd()
   local file = path .. ".lua"
-  local escaped = Util.path(local_configs_path, Util.escape_path(file))
+  local escaped = Util.path()
+    :new(local_configs_path, Util.path():escape(file))
 
   if vim.fn.filereadable(escaped) == 1 then
     Util.log():warn("Config already exists for:", path)
@@ -85,7 +89,8 @@ local function remove_local_config()
 
   while path:len() > 1 do
     local file = path .. ".lua"
-    local escaped = Util.path(local_configs_path, Util.escape_path(file))
+    local escaped = Util.path()
+      :new(local_configs_path, Util.path():escape(file))
 
     if vim.fn.filereadable(escaped) == 1 then
       local choice = vim.fn.confirm(

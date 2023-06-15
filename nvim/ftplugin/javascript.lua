@@ -4,7 +4,7 @@
 --[[===========================================================================
 Loaded when a javascript file is opened
 -----------------------------------------------------------------------------]]
-Util.ftplugin {
-  language_server = "tsserver",
-  formatter = "prettier",
-}
+Util.ftplugin()
+  :new()
+  :attach_language_server("tsserver")
+  :attach_formatter("prettier")

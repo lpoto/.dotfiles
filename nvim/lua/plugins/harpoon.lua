@@ -33,22 +33,20 @@ end
 
 function M.config()
   Util.require("harpoon", function(harpoon)
-    harpoon.setup {
+    harpoon.setup({
       -- Separate marks based on git branch
       mark_branch = true,
       menu = {
         width = 120,
         height = 12,
       },
-    }
+    })
   end)
 end
 
----Check whether the file loaded in the buffer identified
----by the provided buffer number is marked with harpoon.
----@param bufnr number
----@return boolean
-function M.is_marked(bufnr)
+---Override the default buffer is marked function.
+---@diagnostic disable-next-line: duplicate-set-field
+Util.misc().buffer_is_marked = function(bufnr)
   if type(bufnr) ~= "number" or not vim.api.nvim_buf_is_valid(bufnr) then
     return false
   end
@@ -68,12 +66,12 @@ end
 
 function mark_file_with_harpoon()
   Util.require("harpoon.mark", function(harpoon)
-    if M.is_marked(vim.fn.bufnr()) then
-      Util.log():warn "File already marked with harpoon"
+    if Util.misc().buffer_is_marked(vim.fn.bufnr()) then
+      Util.log():warn("File already marked with harpoon")
       return
     end
     harpoon.add_file()
-    Util.log():info "Added file to harpoon"
+    Util.log():info("Added file to harpoon")
   end)
 end
 

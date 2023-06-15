@@ -4,7 +4,7 @@
 --[[===========================================================================
 Loaded when a ocaml file is opened
 -----------------------------------------------------------------------------]]
-Util.ftplugin {
-  language_server = "ocamllsp",
-  formatter = "ocamlformat",
-}
+Util.ftplugin()
+  :new()
+  :attach_language_server("ocamllsp")
+  :attach_formatter("ocamlformat")

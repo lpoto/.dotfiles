@@ -4,7 +4,7 @@
 --[[===========================================================================
 Loaded when a java file is opened
 -----------------------------------------------------------------------------]]
-local root_fn = Util.root_fn {
+local root_fn = Util.misc().root_fn({
   "build.xml",
   "pom.xml",
   "mvn",
@@ -14,15 +14,12 @@ local root_fn = Util.root_fn {
   "build.gradle",
   "build.gradle.kts",
   ".git",
-}
+})
 
-Util.ftplugin {
-  formatter = {
-    "google_java_format",
-    extra_args = { "--aosp" },
-  },
-  language_server = {
-    "jdtls",
+Util.ftplugin()
+  :new()
+  :attach_formatter("google_java_format", { extra_args = { "--aosp" } })
+  :attach_language_server("jdtls", {
     ---NOTE: Ensure you are using java 17 or above while using jdtls, as
     ---    it is not compatible with lower versions.
     ---
@@ -32,7 +29,8 @@ Util.ftplugin {
     cmd = {
       "jdtls",
       "-data",
-      Util.path(vim.fn.stdpath "cache", "jdtls", "workspace", root_fn()),
+      Util.path()
+        :new(vim.fn.stdpath("cache"), "jdtls", "workspace", root_fn()),
     },
     root_dir = root_fn,
     --[[
@@ -55,5 +53,4 @@ Util.ftplugin {
             }
           }
     --]]
-  },
-}
+  })

@@ -57,25 +57,25 @@ end
 
 function git_commands.default(suffix)
   suffix = suffix or ""
-  Util.fetch_git_data(function()
+  Util.shell():fetch_git_data(function()
     Util.require("plugins.unception", function(_)
-      Util.run_shell_command_in_tab_with_prompt("git ", suffix)
+      Util.shell():run_in_tab_with_prompt("git ", suffix)
     end)
   end)
 end
 
 function git_commands.commit()
-  git_commands.default "commit "
+  git_commands.default("commit ")
 end
 
 function git_commands.commit_amend()
-  git_commands.default "commit --amend "
+  git_commands.default("commit --amend ")
 end
 
 function git_commands.push()
-  Util.fetch_git_data(function(remote, branch)
+  Util.shell():fetch_git_data(function(remote, branch)
     Util.require("plugins.unception", function(_)
-      Util.run_shell_command_in_tab_with_prompt(
+      Util.shell():run_in_tab_with_prompt(
         "git ",
         "push " .. remote .. " " .. branch .. " "
       )
@@ -84,9 +84,9 @@ function git_commands.push()
 end
 
 function git_commands.push_force()
-  Util.fetch_git_data(function(remote, branch)
+  Util.shell():fetch_git_data(function(remote, branch)
     Util.require("plugins.unception", function(_)
-      Util.run_shell_command_in_tab_with_prompt(
+      Util.shell():run_in_tab_with_prompt(
         "git ",
         "push " .. remote .. " " .. branch .. " --force "
       )
@@ -95,21 +95,21 @@ function git_commands.push_force()
 end
 
 function git_commands.fetch()
-  git_commands.default "fetch "
+  git_commands.default("fetch ")
 end
 
 function git_commands.branch()
-  git_commands.default "branch "
+  git_commands.default("branch ")
 end
 
 function git_commands.tag()
-  git_commands.default "tag "
+  git_commands.default("tag ")
 end
 
 function git_commands.pull()
-  Util.fetch_git_data(function(remote, branch)
+  Util.shell():fetch_git_data(function(remote, branch)
     Util.require("plugins.unception", function(_)
-      Util.run_shell_command_in_tab_with_prompt(
+      Util.shell():run_in_tab_with_prompt(
         "git ",
         "pull " .. remote .. " " .. branch .. " "
       )

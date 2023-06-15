@@ -4,8 +4,7 @@
 --[[===========================================================================
 Loaded when a python file is opened
 -----------------------------------------------------------------------------]]
-Util.ftplugin {
-  language_server = "pylsp",
-  formatter = "autopep8",
-  --linter = "flake8",
-}
+Util.ftplugin()
+  :new()
+  :attach_formatter("autopep8")
+  :attach_language_server("pylsp")

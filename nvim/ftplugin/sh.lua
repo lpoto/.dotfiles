@@ -4,7 +4,7 @@
 --[[===========================================================================
 Loaded when a sh file is opened
 -----------------------------------------------------------------------------]]
-Util.ftplugin {
-  language_server = "bashls",
-  formatter = "shfmt",
-}
+Util.ftplugin()
+  :new()
+  :attach_language_server("bashls")
+  :attach_formatter("shfmt")

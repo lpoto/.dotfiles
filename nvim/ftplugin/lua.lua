@@ -4,17 +4,17 @@
 --[[===========================================================================
 Loaded when a lua file is opened
 -----------------------------------------------------------------------------]]
-Util.ftplugin {
-  formatter = "stylua",
-  language_server = {
-    "lua_ls",
+Util.ftplugin()
+  :new()
+  :attach_formatter("stylua")
+  :attach_language_server("lua_ls", {
     settings = {
       Lua = {
         runtime = {
           version = "LuaJIT",
           path = vim.tbl_extend("force", vim.split(package.path, ":"), {
-            Util.path("lua", "?.lua"),
-            Util.path("lua", "?", "init.lua"),
+            Util.path():new("lua", "?.lua"),
+            Util.path():new("lua", "?", "init.lua"),
           }),
         },
         diagnostics = {
@@ -22,10 +22,10 @@ Util.ftplugin {
         },
         workspace = {
           ignoreDir = {
-            Util.dir ".storage",
-            Util.dir ".git",
-            Util.dir ".build",
-            Util.dir "github-copilot",
+            Util.path():dir(".storage"),
+            Util.path():dir(".git"),
+            Util.path():dir(".build"),
+            Util.path():dir("github-copilot"),
           },
           library = vim.api.nvim_get_runtime_file("", true),
           checkThirdParty = false,
@@ -35,5 +35,4 @@ Util.ftplugin {
         },
       },
     },
-  },
-}
+  })

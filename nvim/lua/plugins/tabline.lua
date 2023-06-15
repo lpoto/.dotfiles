@@ -9,7 +9,8 @@ but global.
 -----------------------------------------------------------------------------]]
 local M = {
   dev = true,
-  dir = Util.path(vim.fn.stdpath "config", "lua", "plugins", "tabline"),
+  dir = Util.path()
+    :new(vim.fn.stdpath("config"), "lua", "plugins", "tabline"),
   lazy = false,
 }
 
@@ -76,7 +77,7 @@ function append_to_tabline(
   end
   vim.opt.tabline:append(
     "%"
-      .. "{%v:lua.require('plugins.tabline').tabline_sections.get('"
+      .. "{%v:lua.require('util').misc().tabline_sections.get('"
       .. section
       .. "', "
       .. (width or 0)
@@ -92,7 +93,7 @@ function append_to_tabline(
 end
 
 function append_tabline_section_separator()
-  vim.opt.tabline:append " %= "
+  vim.opt.tabline:append(" %= ")
   if empty_section then
     return
   end
@@ -106,12 +107,12 @@ local pad_left
 local pad_right
 local align_center
 
-M.tabline_sections = {}
+local tabline_sections = {}
 
-function M.tabline_sections.get(name, w, max_w, min_w, align)
+function tabline_sections.get(name, w, max_w, min_w, align)
   local max_width = math.max(min_w, get_width(max_w))
   local width = get_width(w)
-  local section = M.tabline_sections[name]
+  local section = tabline_sections[name]
   if not section then
     Util.log():error("Tabline section does not exist:", name)
     return align_center("", width)
@@ -140,7 +141,7 @@ function M.tabline_sections.get(name, w, max_w, min_w, align)
   end
 end
 
-function M.tabline_sections.spacer(width)
+function tabline_sections.spacer(width)
   if type(width) ~= "number" or width <= 0 then
     width = 1
   elseif width < 1 then
@@ -150,24 +151,24 @@ function M.tabline_sections.spacer(width)
   return align_center("", width)
 end
 
-function M.tabline_sections.mode(w)
+function tabline_sections.mode(w)
   local s = get_mode()
   return pad_left(pad_right(s, w - 2), w)
 end
 
 local diagnostic
-function M.tabline_sections.diagnostic_info(w)
+function tabline_sections.diagnostic_info(w)
   return diagnostic(w, "I", {
     vim.diagnostic.severity.INFO,
     vim.diagnostic.severity.HINT,
   }, pad_left)
 end
 
-function M.tabline_sections.diagnostic_warn(w)
+function tabline_sections.diagnostic_warn(w)
   return diagnostic(w, "W", { vim.diagnostic.severity.WARN }, align_center)
 end
 
-function M.tabline_sections.diagnostic_error(w)
+function tabline_sections.diagnostic_error(w)
   return diagnostic(w, "E", { vim.diagnostic.severity.ERROR }, pad_right)
 end
 
@@ -183,11 +184,11 @@ function diagnostic(w, sign, severity, pad)
   return pad(diag_string, w)
 end
 
-function M.tabline_sections.gitsigns_head()
+function tabline_sections.gitsigns_head()
   return vim.g.gitsigns_head or ""
 end
 
-function M.tabline_sections.gitsigns_status()
+function tabline_sections.gitsigns_status()
   local s = vim.b.gitsigns_status or ""
   if s:len() > 0 then
     s = "  " .. s
@@ -195,13 +196,13 @@ function M.tabline_sections.gitsigns_status()
   return s
 end
 
-function M.tabline_sections.cursor(w)
+function tabline_sections.cursor(w)
   local cursor = vim.api.nvim_win_get_cursor(0)
   local cursor_str = string.format("[%d,%d]", cursor[1], cursor[2] + 1)
   return pad_right(pad_left(cursor_str, w - 2), w)
 end
 
-function M.tabline_sections.filename(w)
+function tabline_sections.filename(w)
   local s = ""
   local bufnr = vim.api.nvim_get_current_buf()
   local buftype = vim.api.nvim_buf_get_option(bufnr, "buftype")
@@ -231,18 +232,18 @@ function M.tabline_sections.filename(w)
     while vim.fn.strchars(tail) < w do
       name = tail
       h = vim.fn.fnamemodify(h, ":h")
-      tail = Util.path(vim.fn.fnamemodify(h, ":t"), tail)
+      tail = Util.path():new(vim.fn.fnamemodify(h, ":t"), tail)
     end
   end
 
-  local m = M.tabline_sections.modified()
+  local m = tabline_sections.modified()
   if m:len() > 0 then
     name = string.format("%s %s", name, m)
   end
   return name
 end
 
-function M.tabline_sections.modified()
+function tabline_sections.modified()
   local modified = vim.api.nvim_buf_get_option(0, "modified") and "[+]" or ""
   if modified:len() > 0 then
     return modified
@@ -250,7 +251,7 @@ function M.tabline_sections.modified()
   return vim.api.nvim_buf_get_option(0, "readonly") and "[~]" or ""
 end
 
-function M.tabline_sections.tabcount()
+function tabline_sections.tabcount()
   local tabs = #vim.api.nvim_list_tabpages()
   if tabs > 1 then
     return "Tab ["
@@ -261,6 +262,8 @@ function M.tabline_sections.tabcount()
   end
   return ""
 end
+
+Util.misc().tabline_sections = tabline_sections
 
 function get_width(n)
   local w = vim.o.columns

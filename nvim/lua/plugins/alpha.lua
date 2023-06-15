@@ -17,7 +17,7 @@ local footer
 
 function header()
   local ascii_file =
-    Util.path(vim.fn.stdpath "config", ".storage", "ascii_art.txt")
+    Util.path():new(vim.fn.stdpath("config"), ".storage", "ascii_art.txt")
   local hdr = {}
   if vim.fn.filereadable(ascii_file) == 1 then
     local ok
@@ -122,7 +122,7 @@ end
 
 function M.config()
   Util.require("alpha", function(alpha)
-    alpha.setup {
+    alpha.setup({
       layout = {
         { type = "padding", val = 2 },
         header(),
@@ -130,7 +130,7 @@ function M.config()
         {
           type = "text",
           val = {
-            Util.nvim_version(),
+            Util.misc().nvim_version(),
           },
           opts = {
             position = "center",
@@ -142,7 +142,7 @@ function M.config()
         { type = "padding", val = 2 },
         footer(),
       },
-    }
+    })
     -- NOTE: need to manually call alpha, as
     -- it is loaded after the vim enter event
     -- (it is loaded later so the plugins info is available)
