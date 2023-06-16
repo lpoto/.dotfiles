@@ -55,6 +55,9 @@ function get_lazy_options()
       vim.fs.dirname(vim.fn.stdpath("config")),
       ".lazy.lock.json"
     ),
+    ui = {
+      border = "rounded",
+    },
     root = Util.path():new(vim.fn.stdpath("data"), "lazy"),
     dev = {
       dir = Util.path():new(vim.fn.stdpath("data"), "lazy"),
