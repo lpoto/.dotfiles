@@ -7,4 +7,4 @@ Loaded when a go file is opened
 Util.ftplugin()
   :new()
   :attach_language_server("gopls")
-  :attach_formatter("goimpots")
+  :attach_formatter("goimports")

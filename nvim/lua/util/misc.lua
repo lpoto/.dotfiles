@@ -39,6 +39,14 @@ function Misc.attach_linter(linter, opts, filetypes)
   util.log():warn("'attach_linter' was not overridden")
 end
 
+---Ensure the provided source is installed. This
+---should be overridden by plugins that provide
+---source installation controls.
+---@param source_type string
+---@param linter string
+---@diagnostic disable-next-line: unused-local
+function Misc.ensure_source_installed(source_type, linter) end
+
 ---Check whether the buffer is marked. This should be
 ---overridden by plugins that provide buffer marking.
 ---@param buffer number

@@ -65,4 +65,25 @@ function Path:dir(name)
   return s .. self.separator
 end
 
+local stdpath = vim.fn.stdpath
+---@param what string
+---@return string|table
+function Path.stdpath(what)
+  local app_name = os.getenv("NVIM_APPNAME")
+  local config = vim.fs.dirname(stdpath("config"))
+  local storage = Path:new(config, ".storage")
+
+  local n = {
+    config = Path:new(config, app_name),
+    cache = Path:new(storage, "cache", app_name),
+    data = Path:new(storage, "share", app_name),
+    log = Path:new(storage, "log", app_name),
+    run = Path:new(storage, "state", app_name),
+    state = Path:new(storage, "state", app_name),
+    config_dirs = {},
+    data_dirs = {},
+  }
+  return Path:new(n[what] or stdpath(what))
+end
+
 return Path

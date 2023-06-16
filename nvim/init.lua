@@ -5,6 +5,9 @@
 
 Util = require("util")
 
+-- NOTE: change the vim.fn.stdpath so that all data may be grouped in one place
+vim.fn.stdpath = Util.path().stdpath
+
 -- NOTE:  Safely require modiles with Util.require, so that they are loaded
 -- in order and even if one of them fails to load.
 

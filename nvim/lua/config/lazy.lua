@@ -41,7 +41,7 @@ function ensure_lazy(lazy_path)
     if not vim.uv.fs_stat(lazy_path) then
       Util.log():print("Failed installing Lazy.nvim!")
     else
-      Util.log(100):info("Lazy.nvim installed, please restart nvim!")
+      Util.log(100):info("Lazy.nvim installed!")
     end
   end
 end

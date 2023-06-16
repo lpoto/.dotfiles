@@ -90,13 +90,18 @@ function register_builtin_source(t, source, opts, filetypes)
       Util.log():warn("No such builtin source:", source)
       return
     end
-    if opts and next(opts) then
-      s = s.with(opts)
-    end
-    null_ls.register({
-      filetypes = filetypes,
-      sources = { s },
-    })
+
+    Util.misc().ensure_source_installed("null-ls-source", source)
+
+    vim.defer_fn(function()
+      if opts and next(opts) then
+        s = s.with(opts)
+      end
+      null_ls.register({
+        filetypes = filetypes,
+        sources = { s },
+      })
+    end, 100)
   end)
 end
 
