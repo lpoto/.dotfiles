@@ -4,13 +4,6 @@
 --[[===========================================================================
 https://github.com/neovim/nvim-lspconfig
 
-Configuration for the built-in LSP client.
-see github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
-for server configurations.
-Lsp is then enabled with ':LspStart' (this is usually done automatically for
-filetypes in ftplguin/)
-
-
 Keymaps:
   - "gd"    - jump to the definition of the symbol under cursor
   - "K" -  Show the definition of symbol under the cursor
@@ -24,13 +17,39 @@ local M = {
 
 local open_diagnostic_float
 local configure_vim_diagnostic
+local on_lsp_attach
 function M.init()
-  vim.keymap.set("n", "K", vim.lsp.buf.hover)
-  vim.keymap.set("n", "<leader>K", open_diagnostic_float)
-  vim.keymap.set("n", "gd", vim.lsp.buf.definition)
-  vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename)
+  vim.api.nvim_create_autocmd("LspAttach", {
+    callback = function(args)
+      vim.schedule(function()
+        on_lsp_attach(args)
+      end)
+    end,
+  })
 
   configure_vim_diagnostic()
+end
+
+local logged = {}
+function on_lsp_attach(args)
+  if type(args.data) == "table" and type(args.data.client_id) == "number" then
+    local client = vim.lsp.get_client_by_id(args.data.client_id)
+    local name = (client or {}).name
+    if
+      type(name) == "string"
+      and name:len() > 0
+      and name ~= "null-ls"
+      and not logged[name]
+    then
+      logged[name] = true
+      Util.log():debug("Attached to LSP server:", name)
+    end
+  end
+  local opts = { buffer = args.buf }
+  vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+  vim.keymap.set("n", "<leader>K", open_diagnostic_float, opts)
+  vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+  vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, opts)
 end
 
 function open_diagnostic_float()
@@ -89,13 +108,7 @@ Util.misc().attach_language_server = function(server, opts)
       opts.capabilities = opts.capabilities
         or Util.misc().get_autocompletion_capabilities()
       if opts.autostart == nil then
-        opts.autostart = true
-      end
-
-      if opts.on_attach == nil then
-        opts.on_attach = function(_)
-          Util.log():debug("Attached to language server:", server)
-        end
+        opts.autostart = false
       end
       --- NOTE: try to launch the server in a timer, in case it is not
       --- installed yet. And we wait for the mason to install it.
@@ -134,10 +147,9 @@ function launch_server(server, opts, lspconfig, configs)
   if e ~= 1 then
     return false
   end
-  local ok, err = pcall(cfg.launch)
-  if not ok then
-    Util.log():error("Error launching language server:", err)
-    return true
+  if not opts.autostart then
+    opts.autostart = true
+    pcall(lspconfig[server].setup, opts)
   end
   return true
 end

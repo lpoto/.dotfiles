@@ -15,6 +15,7 @@ local M = {
   dir = Util.path()
     :new(vim.fn.stdpath("config"), "lua", "plugins", "sessions"),
   event = "VeryLazy",
+  cmd = "Sessions",
 }
 
 local title = "Sessions"

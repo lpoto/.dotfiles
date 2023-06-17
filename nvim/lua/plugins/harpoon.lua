@@ -67,11 +67,11 @@ end
 function mark_file_with_harpoon()
   Util.require("harpoon.mark", function(harpoon)
     if Util.misc().buffer_is_marked(vim.fn.bufnr()) then
-      Util.log():warn("File already marked with harpoon")
+      Util.log():debug("File already marked with harpoon")
       return
     end
     harpoon.add_file()
-    Util.log():info("Added file to harpoon")
+    Util.log():debug("Added file to harpoon")
   end)
 end
 

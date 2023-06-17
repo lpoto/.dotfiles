@@ -51,6 +51,12 @@ function M.config()
     { "TelescopeBorder", { link = "WinSeparator" } },
     { "TelescopeTitle", { link = "TabLineSel" } },
   })
+  override({
+    { "NoiceFormatLevelDebug", { link = "NoiceFormatLevelInfo" } },
+    { "NoiceFormatLevelTrace", { link = "NoiceFormatLevelInfo" } },
+    { "NoiceFormatKind", { link = "Type" } },
+    { "NoiceFormatEvent", { link = "Type" } },
+  })
 end
 
 function override(o)

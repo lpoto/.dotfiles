@@ -101,6 +101,7 @@ function register_builtin_source(t, source, opts, filetypes)
         filetypes = filetypes,
         sources = { s },
       })
+      Util.log():debug("Registered source:", source, "(" .. t .. ")")
     end, 100)
   end)
 end

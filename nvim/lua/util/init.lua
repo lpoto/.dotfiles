@@ -6,6 +6,7 @@ Util functions
 -----------------------------------------------------------------------------]]
 ---@class Util
 local util = {}
+util.__index = util
 
 ---@return FtpluginUtil
 function util.ftplugin()
@@ -32,6 +33,15 @@ end
 ---@return MiscUtil
 function util.misc()
   return util.require("util.misc") --[[ @as MiscUtil ]]
+end
+
+---@param opts {log_level:LogLevelValue|'TRACE'|'DEBUG'|'INFO'|'WARN'|'ERROR'}
+---@return Util
+function util:init(opts)
+  opts = type(opts) == "table" and opts or {}
+  vim.fn.stdpath = util.path().stdpath
+  self.log():set_level(opts.log_level)
+  return self
 end
 
 --- catch errors from require and display them in a notification,

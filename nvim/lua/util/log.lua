@@ -1,8 +1,36 @@
 ---@class LogUtil
 ---@field title string?
 ---@field delay number?
+---@field level LogLevelValue?
 local Log = {}
 Log.__index = Log
+
+---@alias LogLevelValue number
+
+---@class LogLevel
+---@field DEBUG LogLevelValue
+---@field INFO LogLevelValue
+---@field WARN LogLevelValue
+---@field ERROR LogLevelValue
+Log.Level = {
+  TRACE = 0,
+  DEBUG = 1,
+  INFO = 2,
+  WARN = 3,
+  ERROR = 4,
+}
+
+---@param level LogLevelValue|'TRACE'|'DEBUG'|'INFO'|'WARN'|'ERROR'
+function Log:set_level(level)
+  if type(level) == "string" then
+    level = Log.Level[level:upper()] or Log.Level.INFO
+  end
+  Log.level = level
+end
+
+function Log:trace(...)
+  self:__notify("trace", self.title, self.delay, false, ...)
+end
 
 function Log:debug(...)
   self:__notify("debug", self.title, self.delay, false, ...)
@@ -21,7 +49,7 @@ function Log:error(...)
 end
 
 function Log:print(...)
-  self:__notify("error", self.title, self.delay, true, ...)
+  self:__notify("info", self.title, self.delay, true, ...)
 end
 
 ---@param delay number?: Delay in milliseconds, default: 0
@@ -55,6 +83,13 @@ end
 
 ---@private
 function Log:__notify(level, title, delay, use_print, ...)
+  local lvl = Log.Level[level:upper()]
+  local log_lvl = type(self.level) == "number" and self.level
+    or Log.Level.INFO
+  if lvl < log_lvl then
+    return
+  end
+
   local msg = concat(...)
   if use_print then
     return print(msg)
