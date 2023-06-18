@@ -32,6 +32,10 @@ function M.config()
           enabled = true,
           view = "mini",
         },
+        progress = {
+          enabled = true,
+          view = "mini",
+        },
       },
       presets = {
         bottom_search = true,
@@ -62,6 +66,12 @@ function M.config()
         view_history = "messages",
         view_search = "virtualtext",
       },
+      routes = {
+        {
+          view = "virtualtext",
+          filter = {event = "msg_showmode"},
+        }
+      }
     })
     vim.defer_fn(function()
       vim.keymap.set("n", "<leader>m", notification_history)
