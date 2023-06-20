@@ -64,11 +64,11 @@ function M.config()
         view_error = "mini",
         view_warn = "mini",
         view_history = "messages",
-        view_search = "virtualtext",
+        view_search = "cmdline",
       },
       routes = {
         {
-          view = "virtualtext",
+          view = "cmdline",
           filter = {event = "msg_showmode"},
         }
       }
