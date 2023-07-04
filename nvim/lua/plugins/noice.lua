@@ -69,9 +69,9 @@ function M.config()
       routes = {
         {
           view = "cmdline",
-          filter = {event = "msg_showmode"},
-        }
-      }
+          filter = { event = "msg_showmode" },
+        },
+      },
     })
     vim.defer_fn(function()
       vim.keymap.set("n", "<leader>m", notification_history)
