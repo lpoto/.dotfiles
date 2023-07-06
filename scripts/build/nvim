@@ -1,0 +1,140 @@
+#!/bin/sh
+#
+# This script will build neovim from source and install it to
+# ./.build/neovim.
+# This script may also be run to update and already built neovim
+# installation.
+
+set -e
+
+cur_pwd=${PWD}
+
+if [ "$USER" = "root" ]; then
+  echo "==> WARN: This should not be run as root."
+  exit 2
+fi
+
+build_type="NIGHTLY"
+branch="tags/nightly"
+origin="+refs/tags/nightly:refs/tags/nightly"
+tag=true
+
+while [ $# -ne 0 ]; do
+  arg="$1"
+  case "$arg" in
+  --latest)
+    build_type="LATEST"
+    branch="master"
+    origin="master"
+    tag=false
+    ;;
+  --master)
+    build_type="LATEST"
+    branch="master"
+    origin="master"
+    tag=false
+    ;;
+  --stable)
+    build_type="STABLE"
+    branch="tags/stable"
+    origin="+refs/tags/stable:refs/tags/stable"
+    ;;
+  --nightly) ;;
+  *)
+    echo "==> Invalid arguments, try '--latest', '--nightly' or '--stable'"
+    exit 1
+    ;;
+  esac
+  shift
+done
+
+echo "==> Checking prerequisites ..."
+echo
+do_exit=false
+for cmd in cmake make ninja git; do
+  if ! command -v $cmd >/dev/null 2>&1; then
+    echo "==> ERROR: '$cmd' is not installed."
+    do_exit=true
+  else
+    echo "==> '$cmd' is installed."
+  fi
+done
+if [ "$do_exit" = true ]; then
+  echo
+  echo "==> Please install the required executables and try again."
+  exit 1
+fi
+
+echo
+echo "==> Fetching neovim source ..."
+sleep 2
+echo
+
+# TODO: check if make, cmake, git and ninja are
+# installed
+
+# cd to the parent directory of this script
+cd "$(dirname "$0")"
+scripts=$PWD
+# cd to the root of the project
+cd ../../
+
+if [ ! -d "./.build/neovim" ]; then
+  echo "==> ./.build/neovim does not exist, cloning ..."
+  echo
+  sleep 1
+  git clone --depth 1 https://github.com/neovim/neovim ./.build/neovim
+fi
+cd ./.build/neovim
+
+echo
+echo "==> build type: ${build_type}"
+echo "==> fetching origin ${branch}"
+echo
+
+git fetch --depth=1 origin ${origin}
+git checkout ${branch}
+
+if [ "$tag" = false ]; then
+  echo "==> cleaning branch ${branch}"
+  echo
+  git clean -fd
+  git reset --hard origin/${branch}
+  echo
+  echo "==> pulling origin ${origin}"
+  echo
+  git pull origin ${origin} --ff-only
+fi
+echo
+sleep 2
+
+echo
+echo "==> Cleaning old build ..."
+sleep 2
+echo
+
+# If build and .deps directories exist, remove them
+# so the build is clean
+if [ -d "./build" ]; then
+  echo "==> Removing old build directory..."
+  rm -rf ./build
+fi
+if [ -d "./.deps" ]; then
+  echo "==> Removing old dependencies directory ..."
+  rm -rf ./.deps
+fi
+
+echo
+echo "==> Starting a new build ..."
+echo "==> build type: ${build_type}"
+echo
+sleep 2
+# Build neovim insto a custom directory
+# And ensure to build in release mode, so it is fast
+# and does not include debug logs
+make CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX=${PWD}/build" CMAKE_BUILD_TYPE=Release install
+
+echo
+echo "==> Build complete (${build_type}). (run '${scripts}/nvim [--stable, --latest]' to update neovim)"
+
+cd ${cur_pwd}

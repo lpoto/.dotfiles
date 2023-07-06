@@ -3,3 +3,4 @@
 libevent*
 tmp/
 github-copilot
+.luarc.json

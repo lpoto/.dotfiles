@@ -9,13 +9,10 @@
 # in the nvim config directory, instead of saving data all over the
 # machine.
 
-nvim_config_path=$(dirname $(dirname "$0"))
+nvim_config_path=$(dirname $(dirname $(realpath "$0")))
 nvim_bin_path=${nvim_config_path}/.build/neovim/build/bin/nvim
 
 if [ ! -f "${nvim_bin_path}" ]; then
-  # neovim installation not found, ask whether
-  # to build it from source, as the neovim config
-  # requires latest neovim version
   echo "Neovim not found at ${nvim_bin_path}"
   read -p "Build it from source? [Y/N] " REPLY
   echo
@@ -26,13 +23,13 @@ if [ ! -f "${nvim_bin_path}" ]; then
   fi
   echo "==> building neovim ..."
   echo
-  ${nvim_config_path}/scripts/build
+  ${nvim_config_path}/scripts/build/nvim
   echo
   echo "==> opening neovim ..."
   sleep 3
 fi
 
-NVIM_APPNAME="/" # this way neovim won't create additional nvim folders
+NVIM_APPNAME="nvim"
 NVIM_CONFIG_HOME=${nvim_config_path}
 # group all the neovim data in the same .storage folder
 NVIM_DATA_HOME=${nvim_config_path}/.storage/share
