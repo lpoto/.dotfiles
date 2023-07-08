@@ -9,6 +9,8 @@
 # in the nvim config directory, instead of saving data all over the
 # machine.
 
+set -e
+
 nvim_config_path=$(dirname $(dirname $(realpath "$0")))
 nvim_bin_path=${nvim_config_path}/.build/neovim/build/bin/nvim
 
