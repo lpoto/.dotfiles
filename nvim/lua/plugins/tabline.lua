@@ -41,7 +41,7 @@ function setup_statusline()
   -- even when laststatus=0, so we make it appear the same
   -- as the window separator.
   vim.opt.statusline =
-    "%-5{%v:lua.string.rep('_', v:lua.vim.fn.winwidth(0))%}"
+    "%-5{%v:lua.string.rep('—', v:lua.vim.fn.winwidth(0))%}"
 end
 
 local append_to_tabline
