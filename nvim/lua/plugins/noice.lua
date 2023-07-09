@@ -64,7 +64,7 @@ function M.config()
         view_error = "mini",
         view_warn = "mini",
         view_history = "messages",
-        view_search = "cmdline",
+        view_search = "mini",
       },
       routes = {
         {
