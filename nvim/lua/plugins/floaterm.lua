@@ -37,7 +37,7 @@ function M.init()
   vim.g.floaterm_autoclose = 1
   vim.g.floaterm_autohide = 2
 
-  vim.keymap.set("n", "<leader>g", git_commands.prompt)
+  vim.keymap.set("n", "<leader>g", git_commands.default)
   vim.keymap.set("n", "<leader>gc", git_commands.commit)
   vim.keymap.set("n", "<leader>ga", git_commands.commit_amend)
   vim.keymap.set("n", "<leader>gp", git_commands.pull)
@@ -52,11 +52,10 @@ function M.init()
   end)
 end
 
-function git_commands.prompt()
-  git_commands.default(nil, true)
-end
-
 function git_commands.default(suffix, ask_for_input)
+  if ask_for_input == nil then
+    ask_for_input = true
+  end
   suffix = suffix or ""
   Util.shell():fetch_git_data(function()
     if ask_for_input then
@@ -89,16 +88,13 @@ end
 
 function git_commands.push()
   Util.shell():fetch_git_data(function(remote, branch)
-    git_commands.default("push " .. remote .. " " .. branch .. " ", true)
+    git_commands.default("push " .. remote .. " " .. branch .. " ")
   end)
 end
 
 function git_commands.push_force()
   Util.shell():fetch_git_data(function(remote, branch)
-    git_commands.default(
-      "push " .. remote .. " " .. branch .. " --force ",
-      true
-    )
+    git_commands.default("push " .. remote .. " " .. branch .. " --force ")
   end)
 end
 
@@ -116,7 +112,7 @@ end
 
 function git_commands.pull()
   Util.shell():fetch_git_data(function(remote, branch)
-    git_commands.default("pull " .. remote .. " " .. branch .. " ", true)
+    git_commands.default("pull " .. remote .. " " .. branch .. " ")
   end)
 end
 
