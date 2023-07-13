@@ -23,8 +23,9 @@ end
 ---should be overridden by plugins that provide formatting.
 ---@param cfg string|function
 ---@param filetype string
+---@param additional_args table?
 ---@diagnostic disable-next-line: unused-local
-function Misc.attach_formatter(cfg, filetype)
+function Misc.attach_formatter(cfg, filetype, additional_args)
   util.log():warn("'attach_formatter' was not overridden")
 end
 

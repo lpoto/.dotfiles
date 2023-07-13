@@ -35,14 +35,15 @@ end
 ---attaching any formatters.
 ---
 ---@param formatter string|function
+---@param additional_args table?
 ---@return FtpluginUtil
-function Ftplugin:attach_formatter(formatter)
+function Ftplugin:attach_formatter(formatter, additional_args)
   self:__run(function()
     if self:__loaded({ self.filetype, "formatter" }) then
       return self
     end
     self:__load({ self.filetype, "formatter" })
-    util.misc().attach_formatter(formatter, self.filetype)
+    util.misc().attach_formatter(formatter, self.filetype, additional_args)
   end)
   return self
 end
