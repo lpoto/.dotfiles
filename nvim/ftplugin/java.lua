@@ -18,7 +18,7 @@ local root_fn = Util.misc().root_fn({
 
 Util.ftplugin()
   :new()
-  :attach_formatter("google_java_format", { extra_args = { "--aosp" } })
+  :attach_formatter("clangformat")
   :attach_language_server("jdtls", {
     ---NOTE: Ensure you are using java 17 or above while using jdtls, as
     ---    it is not compatible with lower versions.

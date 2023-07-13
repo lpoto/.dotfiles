@@ -7,4 +7,5 @@ Loaded when a python file is opened
 Util.ftplugin()
   :new()
   :attach_formatter("autopep8")
+  :attach_linter("flake8")
   :attach_language_server("pylsp")
