@@ -101,6 +101,11 @@ Util.misc().attach_language_server = function(server, opts)
     )
     opts.capabilities = opts.capabilities
       or Util.misc().get_autocompletion_capabilities()
+
+    if opts.root_dir == nil and type(opts.root_patterns) == "table" then
+      opts.root_dir = Util.misc().root_fn(opts.root_patterns)
+    end
+
     lsp.setup(opts)
     vim.api.nvim_exec("LspStart", false)
   end)

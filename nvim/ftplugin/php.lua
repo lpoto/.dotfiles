@@ -8,10 +8,10 @@ Util.ftplugin()
   :new()
   :attach_formatter("phpcbf")
   :attach_language_server("phpactor", {
-    root_dir = Util.misc().root_fn({
+    root_patterns = {
       ".git",
       "composer.json",
       "composer.lock",
       "vendor",
-    }),
+    },
   })
