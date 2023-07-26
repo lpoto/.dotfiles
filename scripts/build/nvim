@@ -79,13 +79,18 @@ scripts=$PWD
 # cd to the root of the project
 cd ../../
 
-if [ ! -d "./.build/neovim" ]; then
-  echo "==> ./.build/neovim does not exist, cloning ..."
+# check if NVIM_BUILD_DIR is set
+if [ -z "$NVIM_BUILD_DIR" ]; then
+  export NVIM_BUILD_DIR=${PWD}/.build
+fi
+
+if [ ! -d "$NVIM_BUILD_DIR/neovim" ]; then
+  echo "==> $NVIM_BUILD_DIR/neovim does not exist, cloning ..."
   echo
   sleep 1
-  git clone --depth 1 https://github.com/neovim/neovim ./.build/neovim
+  git clone --depth 1 https://github.com/neovim/neovim $NVIM_BUILD_DIR/neovim
 fi
-cd ./.build/neovim
+cd $NVIM_BUILD_DIR/neovim
 
 echo
 echo "==> build type: ${build_type}"
@@ -115,13 +120,9 @@ echo
 
 # If build and .deps directories exist, remove them
 # so the build is clean
-if [ -d "./build" ]; then
+if [ -d "$NVIM_BUILD_DIR/neovim/build" ]; then
   echo "==> Removing old build directory..."
-  rm -rf ./build
-fi
-if [ -d "./.deps" ]; then
-  echo "==> Removing old dependencies directory ..."
-  rm -rf ./.deps
+  rm -rf $NVIM_BUILD_DIR/neovim/build
 fi
 
 echo
@@ -132,7 +133,7 @@ sleep 2
 # Build neovim insto a custom directory
 # And ensure to build in release mode, so it is fast
 # and does not include debug logs
-make CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX=${PWD}/build" CMAKE_BUILD_TYPE=Release install
+make CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX=${NVIM_BUILD_DIR}/neovim/build" CMAKE_BUILD_TYPE=Release install
 
 echo
 echo "==> Build complete (${build_type}). (run '${scripts}/nvim [--stable, --latest]' to update neovim)"

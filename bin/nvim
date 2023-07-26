@@ -11,8 +11,16 @@
 
 set -e
 
+if [ -z "$NVIM_CONFIG_DIR" ]; then
+  NVIM_CONFIG_DIR=$(dirname $(dirname $(realpath "$0")))
+fi
+
 nvim_config_path=$(dirname $(dirname $(realpath "$0")))
-nvim_bin_path=${nvim_config_path}/.build/neovim/build/bin/nvim
+if [ -z "$NVIM_BUILD_DIR" ]; then
+  NVIM_BUILD_DIR=${nvim_config_path}/.build
+fi
+
+nvim_bin_path=${NVIM_BUILD_DIR}/neovim/build/bin/nvim
 
 if [ ! -f "${nvim_bin_path}" ]; then
   echo "Neovim not found at ${nvim_bin_path}"
@@ -32,13 +40,13 @@ if [ ! -f "${nvim_bin_path}" ]; then
 fi
 
 NVIM_APPNAME="nvim"
-NVIM_CONFIG_HOME=${nvim_config_path}
+NVIM_CONFIG_HOME=${NVIM_CONFIG_DIR}
 # group all the neovim data in the same .storage folder
-NVIM_DATA_HOME=${nvim_config_path}/.storage/share
-NVIM_RUNTIME_DIR=${nvim_config_path}/.storage/state
-NVIM_STATE_HOME=${nvim_config_path}/.storage/state
+NVIM_DATA_HOME=${NVIM_CONFIG_DIR}/.storage/share
+NVIM_RUNTIME_DIR=${NVIM_CONFIG_DIR}/.storage/state
+NVIM_STATE_HOME=${NVIM_CONFIG_DIR}/.storage/state
 
-nvim_config_path_bin="${nvim_config_path}/bin"
+nvim_config_path_bin="${NVIM_CONFIG_DIR}/bin"
 PATH="${nvim_config_path_bin}:${PATH}"
 
 XDG_CONFIG_HOME=${NVIM_CONFIG_HOME} \
