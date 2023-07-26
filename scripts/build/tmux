@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # This script will build tmux from source and install it to
-# ~/.build/tmux.
+# ./.build/tmux.
 # This script may also be run to update and already built tmux
 # installation.
 
@@ -58,7 +58,7 @@ echo "==> Starting build ..."
 echo
 sleep 2
 sh autogen.sh
-./configure --prefix=${PWD}/build  --enable-utf8proc
+./configure --prefix=${PWD}/build --enable-utf8proc
 make
 
 echo

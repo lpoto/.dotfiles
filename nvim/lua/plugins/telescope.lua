@@ -16,6 +16,8 @@ Keymaps:
  - "<leader>d"   - show diagnostics
  - "<leader>q"   - quickfix
 
+ - "<leader>m"   - marks
+
  - "<leader>gl"  - git commits
  - "<leader>gb"  - git branches
  - "<leader>gS"  - git stash
@@ -50,6 +52,7 @@ M.keys = {
     builtin("buffers", { show_all_buffers = true }),
     mode = "n",
   },
+  { "<leader>m", builtin("marks"), mode = "n" },
   { "<leader>o", builtin("oldfiles"), mode = "n" },
   { "<leader>q", builtin("quickfix"), mode = "n" },
   { "<leader>d", builtin("diagnostics"), mode = "n" },
@@ -181,6 +184,9 @@ function pickers()
       no_ignore = true,
     }
     o.diagnostics = {
+      theme = theme,
+    }
+    o.marks = {
       theme = theme,
     }
     o.live_grep = {

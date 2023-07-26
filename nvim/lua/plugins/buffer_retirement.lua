@@ -109,11 +109,7 @@ function retire_buffers()
       then
         return false
       end
-      if
-        buf == cur_buf
-        or vim.fn.bufwinid(buf) ~= -1
-        or Util.misc().buffer_is_marked(buf)
-      then
+      if buf == cur_buf or vim.fn.bufwinid(buf) ~= -1 then
         m = m - 1
         return false
       end

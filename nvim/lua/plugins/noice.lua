@@ -8,7 +8,7 @@ A plugin that completely replaces the UI for messages, cmdline and the
 popupmenu
 
 commands:
-  :Noice - Open the messages history or "<leader>m"
+  :Noice - Open the messages history or "<leader>M"
 -----------------------------------------------------------------------------]]
 local M = {
   "folke/noice.nvim",
@@ -64,7 +64,7 @@ function M.config()
         view_error = "mini",
         view_warn = "mini",
         view_history = "messages",
-        view_search = "cmdline",
+        view_search = "mini",
       },
       routes = {
         {
@@ -74,7 +74,7 @@ function M.config()
       },
     })
     vim.defer_fn(function()
-      vim.keymap.set("n", "<leader>m", notification_history)
+      vim.keymap.set("n", "<leader>M", notification_history)
     end, 100)
   end)
 end

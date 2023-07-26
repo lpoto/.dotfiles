@@ -34,18 +34,16 @@ end
 ---the formatter as loaded, without actually
 ---attaching any formatters.
 ---
----@param formatter string?
----@param opts table?
+---@param formatter string|function
+---@param additional_args table?
 ---@return FtpluginUtil
-function Ftplugin:attach_formatter(formatter, opts)
+function Ftplugin:attach_formatter(formatter, additional_args)
   self:__run(function()
     if self:__loaded({ self.filetype, "formatter" }) then
       return self
     end
     self:__load({ self.filetype, "formatter" })
-    if type(formatter) == "string" then
-      util.misc().attach_formatter(formatter, opts, self.filetype)
-    end
+    util.misc().attach_formatter(formatter, self.filetype, additional_args)
   end)
   return self
 end
@@ -81,16 +79,15 @@ end
 ---attaching any linter.
 ---
 ---@param linter string?
----@param opts table?
 ---@return FtpluginUtil
-function Ftplugin:attach_linter(linter, opts)
+function Ftplugin:attach_linter(linter)
   self:__run(function()
     if self:__loaded({ self.filetype, "linter" }) then
       return self
     end
     self:__load({ self.filetype, "linter" })
     if type(linter) == "string" then
-      util.misc().attach_linter(linter, opts, self.filetype)
+      util.misc().attach_linter(linter, self.filetype)
     end
   end)
   return self
@@ -100,9 +97,8 @@ end
 ---of whether or not a linter has already been attached to it.
 ---(Except if the same linter has already been attached to it.)
 ---@param linter string
----@param opts table?
 ---@return FtpluginUtil
-function Ftplugin:attach_additional_linter(linter, opts)
+function Ftplugin:attach_additional_linter(linter)
   self:__run(function()
     if
       type(linter) ~= "string"
@@ -112,7 +108,7 @@ function Ftplugin:attach_additional_linter(linter, opts)
     end
     self:__load({ self.filetype, "linter", linter })
     util.require("plugins.null-ls", function(null_ls)
-      null_ls.register_linter(linter, opts, self.filetype)
+      null_ls.register_linter(linter, self.filetype)
     end)
   end)
   return self

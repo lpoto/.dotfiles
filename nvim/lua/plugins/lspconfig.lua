@@ -78,8 +78,6 @@ function configure_vim_diagnostic()
   })
 end
 
-local launch_server_timer
-
 ---Override the default attach_language_server function.
 ---@param server string
 ---@param opts table?: Optional server configuration
@@ -89,69 +87,28 @@ Util.misc().attach_language_server = function(server, opts)
     Util.log():warn("No server provided")
     return
   end
-  Util.require(
-    { "lspconfig", "lspconfig.configs" },
-    function(lspconfig, configs)
-      local lsp = lspconfig[server]
-      if lsp == nil then
-        Util.log():warn("Language server not found:", server)
-        return
-      end
-
-      Util.misc().ensure_source_installed("lspconfig-source", server)
-
-      opts = vim.tbl_deep_extend(
-        "force",
-        opts or {},
-        vim.g[server .. "_config"] or {}
-      )
-      opts.capabilities = opts.capabilities
-        or Util.misc().get_autocompletion_capabilities()
-      if opts.autostart == nil then
-        opts.autostart = false
-      end
-      --- NOTE: try to launch the server in a timer, in case it is not
-      --- installed yet. And we wait for the mason to install it.
-      launch_server_timer(server, opts, lspconfig, configs)
-    end
-  )
-end
-
-local launch_server
-function launch_server_timer(server, opts, lspconfig, configs, repeat_count)
-  repeat_count = repeat_count or 0
-  vim.defer_fn(function()
-    if launch_server(server, opts, lspconfig, configs) then
+  Util.require("lspconfig", function(lspconfig)
+    local lsp = lspconfig[server]
+    if lsp == nil then
+      Util.log():warn("Language server not found:", server)
       return
     end
-    if (repeat_count + 2) % 5 == 0 then
-      Util.log():debug("Waiting to start language server:", server, "...")
-    end
-    return launch_server_timer(
-      server,
-      opts,
-      lspconfig,
-      configs,
-      repeat_count + 1
-    )
-  end, repeat_count == 0 and 100 or 2000)
-end
 
-function launch_server(server, opts, lspconfig, configs)
-  pcall(lspconfig[server].setup, opts)
-  local cfg = configs[server]
-  if type(cfg) ~= "table" or not next(cfg.cmd or {}) then
-    return true
-  end
-  local _, e = pcall(vim.fn.executable, cfg.cmd[1])
-  if e ~= 1 then
-    return false
-  end
-  if not opts.autostart then
-    opts.autostart = true
-    pcall(lspconfig[server].setup, opts)
-  end
-  return true
+    opts = vim.tbl_deep_extend(
+      "force",
+      opts or {},
+      vim.g[server .. "_config"] or {}
+    )
+    opts.capabilities = opts.capabilities
+      or Util.misc().get_autocompletion_capabilities()
+
+    if opts.root_dir == nil and type(opts.root_patterns) == "table" then
+      opts.root_dir = Util.misc().root_fn(opts.root_patterns)
+    end
+
+    lsp.setup(opts)
+    vim.api.nvim_exec("LspStart", false)
+  end)
 end
 
 return M
