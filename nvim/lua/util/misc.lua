@@ -38,14 +38,6 @@ function Misc.attach_linter(linter, filetype)
   util.log():warn("'attach_linter' was not overridden")
 end
 
----Check whether the buffer is marked. This should be
----overridden by plugins that provide buffer marking.
----@param buffer number
----@diagnostic disable-next-line: unused-local
-function Misc.buffer_is_marked(buffer)
-  return false
-end
-
 --- Return a function that tries to search upward
 --- for the provided patterns and returns the first
 --- matching directory containing that pattern.
