@@ -16,7 +16,7 @@ Keymaps:
  - "<leader>d"   - show diagnostics
  - "<leader>q"   - quickfix
 
- - "<leader>m"   - marks
+ - "<leader>M"   - marks
 
  - "<leader>gl"  - git commits
  - "<leader>gb"  - git branches
@@ -52,7 +52,7 @@ M.keys = {
     builtin("buffers", { show_all_buffers = true }),
     mode = "n",
   },
-  { "<leader>m", builtin("marks"), mode = "n" },
+  { "<leader>M", builtin("marks"), mode = "n" },
   { "<leader>o", builtin("oldfiles"), mode = "n" },
   { "<leader>q", builtin("quickfix"), mode = "n" },
   { "<leader>d", builtin("diagnostics"), mode = "n" },
@@ -125,6 +125,7 @@ function default_mappings()
 end
 
 local attach_git_status_mappings
+local attach_marks_mappings
 
 function pickers()
   local file_ignore_patterns = {
@@ -188,6 +189,8 @@ function pickers()
     }
     o.marks = {
       theme = theme,
+      attach_mappings = attach_marks_mappings,
+      selection_strategy = "row",
     }
     o.live_grep = {
       hidden = true,
@@ -234,6 +237,35 @@ function attach_git_status_mappings(_, map)
     map("n", "s", actions.git_staging_toggle)
     map("i", "<C-s>", actions.git_staging_toggle)
     map("n", "<C-s>", actions.git_staging_toggle)
+  end)
+  return true
+end
+
+function attach_marks_mappings(_, map)
+  Util.require("telescope.actions.state", function(state)
+    map({ "n", "i" }, "<C-r>", function()
+      local entry = state.get_selected_entry()
+      local display = vim.split(entry.display, " ")
+      local mark = display[1]
+      local ok, _ = pcall(vim.api.nvim_del_mark, mark)
+      if not ok then
+        local err
+        ok, err = pcall(vim.api.nvim_buf_del_mark, 0, mark)
+        if not ok then
+          Util.log():warn(err)
+          return
+        end
+      end
+      local picker = state.get_current_picker(vim.api.nvim_get_current_buf())
+      if type(picker) == "table" then
+        picker:close_existing_pickers()
+      end
+      vim.schedule(function()
+        Util.require("telescope.builtin", function(telescope_builtin)
+          telescope_builtin.marks()
+        end)
+      end)
+    end)
   end)
   return true
 end
