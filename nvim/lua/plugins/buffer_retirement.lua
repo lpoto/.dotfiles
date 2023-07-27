@@ -16,7 +16,7 @@ local wipe_buffers_patterns = {
   "%.git",
 }
 -- Max number of buffers to keep loaded,
--- harpoon marks and current buffers will not be unloaded.
+-- buffers in opened windows will not be unloaded.
 local max_buf_count = 5
 
 local init_autocommands
@@ -116,7 +116,7 @@ function retire_buffers()
       return true
     end, buffers)
 
-    m = math.max(m, 1)
+    m = math.max(m, 2)
     if #buffers < m then
       return
     end

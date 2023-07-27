@@ -8,6 +8,7 @@ Util.ftplugin()
   :new()
   :attach_formatter("stylua")
   :attach_language_server("lua_ls", {
+    root_dir = Util.misc().root_fn({ ".git" }),
     settings = {
       Lua = {
         runtime = {
