@@ -44,11 +44,6 @@ function M.config()
     { "FloatermBorder", { link = "WinSeparator" } },
   })
   override({
-    { "GitSignsAdd", { fg = "#569166" } },
-    { "GitSignsChange", { fg = "#658AbA" } },
-    { "GitSignsDelete", { fg = "#A15C62" } },
-  })
-  override({
     { "TelescopeBorder", { link = "WinSeparator" } },
     { "TelescopeTitle", { link = "TabLineSel" } },
   })

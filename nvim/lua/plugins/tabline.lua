@@ -52,16 +52,14 @@ local empty_section = false
 function setup_tabline()
   vim.o.showtabline = 2
 
-  append_to_tabline("mode", "TabLine", 0.07, 0.07, nil, "left")
+  append_to_tabline("mode", "TabLine", 0.10, 0.10, nil, "left")
   append_to_tabline("diagnostic_info", "DiagnosticInfo", 5, 0.05)
   append_to_tabline("diagnostic_warn", "DiagnosticWarn", 5, 0.05)
   append_to_tabline("diagnostic_error", "DiagnosticError", 5, 0.05)
   append_tabline_section_separator()
-  append_to_tabline("filename", "TabLineSel", 0.30, 0.30, 100, "right")
-  append_to_tabline("tabcount", "TabLineFill", 0.15, 0.15, 15)
-  append_to_tabline("gitsigns_head", "TabLine", 0.18, 0.17, 50, "right")
-  append_to_tabline("gitsigns_status", "TabLineFill", 0.10, 0.10, nil, "left")
-  append_to_tabline("cursor", "TabLine", 0.06, 0.06, nil, "right")
+  append_to_tabline("filename", "TabLineSel", 0.45, 0.45, 50, "center")
+  append_to_tabline("tabcount", "TabLineFill", 0.20, 0.20, 20)
+  append_to_tabline("cursor", "TabLine", 0.10, 0.10, nil, "right")
 end
 
 function append_to_tabline(
@@ -182,18 +180,6 @@ function diagnostic(w, sign, severity, pad)
     diag_string = string.format("%s%d", sign, diagnostics)
   end
   return pad(diag_string, w)
-end
-
-function tabline_sections.gitsigns_head()
-  return vim.g.gitsigns_head or ""
-end
-
-function tabline_sections.gitsigns_status()
-  local s = vim.b.gitsigns_status or ""
-  if s:len() > 0 then
-    s = "  " .. s
-  end
-  return s
 end
 
 function tabline_sections.cursor(w)
