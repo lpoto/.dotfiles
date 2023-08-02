@@ -17,6 +17,7 @@ same sessino through floaterm.
   - <leader>gp - git pull
   - <leader>gf - git fetch
   - <leader>gB - git branch
+  - <leader>gr - git reset current file
 ------------------------------------------------------------------------------]]
 local M = {
   "voldikss/vim-floaterm",
@@ -46,6 +47,7 @@ function M.init()
   vim.keymap.set("n", "<leader>gf", git_commands.fetch)
   vim.keymap.set("n", "<leader>gt", git_commands.tag)
   vim.keymap.set("n", "<leader>gB", git_commands.branch)
+  vim.keymap.set("n", "<leader>gr", git_commands.restore)
 
   vim.keymap.set("n", "<leader>t", function()
     vim.api.nvim_exec("FloatermToggle", false)
@@ -68,8 +70,8 @@ function git_commands.default(suffix, ask_for_input)
         return
       end
     end
-    vim.api.nvim_exec("FloatermKill --name=Git", true)
     local cmd = "git " .. suffix
+    vim.api.nvim_exec("FloatermKill --name=Git", true)
     local title = (" " .. cmd .. " "):gsub("%s+", "\\ ")
     vim.api.nvim_exec(
       "FloatermNew --name=Git --autoclose=0 --title=" .. title .. " " .. cmd,
@@ -108,6 +110,10 @@ end
 
 function git_commands.tag()
   git_commands.default("tag ")
+end
+
+function git_commands.restore()
+  git_commands.default("restore " .. vim.fn.expand("%:p") .. " ")
 end
 
 function git_commands.pull()
