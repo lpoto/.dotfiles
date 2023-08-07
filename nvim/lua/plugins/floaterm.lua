@@ -32,7 +32,7 @@ function M.init()
   vim.g.floaterm_giteditor = true
   vim.g.floaterm_position = "center"
   vim.g.floaterm_height = 0.95
-  vim.g.floaterm_width = 0.8
+  vim.g.floaterm_width = 170
   vim.g.floaterm_wintype = "float"
   vim.g.floaterm_opener = "tabedit"
   vim.g.floaterm_autoclose = 1
