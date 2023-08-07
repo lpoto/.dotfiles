@@ -181,7 +181,9 @@ function list_sessions(opts)
     "telescope.pickers.entry_display",
     "telescope.builtin",
   }, function(actions, action_state, entry_display, builtin)
-    opts = opts or require("telescope.themes").get_ivy()
+    opts = opts or require("telescope.themes").get_dropdown()
+    opts.layout_config = opts.layout_config or {}
+    opts.layout_config.width = 130
     opts = vim.tbl_extend("force", {
       prompt_title = title,
       selection_strategy = "row",

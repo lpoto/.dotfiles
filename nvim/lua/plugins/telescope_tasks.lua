@@ -40,7 +40,7 @@ function M.config()
     telescope.setup({
       extensions = {
         tasks = {
-          theme = "ivy",
+          --theme = "ivy",
           output = {
             style = "float",
             layout = "center",

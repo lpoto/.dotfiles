@@ -34,8 +34,6 @@ local M = {
   },
 }
 
-local theme = "ivy"
-
 local function builtin(name, opts)
   return function()
     Util.require("telescope.builtin", function(telescope_builtin)
@@ -65,23 +63,115 @@ M.keys = {
   { "<leader>gb", builtin("git_branches"), mode = "n" },
 }
 
-local pickers
 local default_mappings
+local attach_git_status_mappings
+local attach_marks_mappings
 
 function M.config()
   Util.require(
-    { "telescope", "telescope.previewers" },
-    function(telescope, previewers)
+    { "telescope", "telescope.actions" },
+    function(telescope, actions)
       telescope.setup({
         defaults = {
           prompt_prefix = "?  ",
           color_devicons = false,
-          file_previewer = previewers.vim_buffer_cat.new,
-          grep_previewer = previewers.vim_buffer_vimgrep.new,
-          qflist_previewer = previewers.vim_buffer_qflist.new,
           mappings = default_mappings(),
+          sorting_strategy = "ascending",
+          layout_strategy = "horizontal",
+          selection_strategy = "row",
+          layout_config = {
+            horizontal = {
+              prompt_position = "top",
+              preview_width = 0.55,
+              results_width = 0.8,
+            },
+            vertical = {
+              mirror = false,
+            },
+            width = 200,
+            height = 0.70,
+            preview_cutoff = 120,
+          },
+          file_ignore_patterns = {
+            Util.path():dir("plugged"),
+            Util.path():dir("%.undo"),
+            Util.path():dir("%.storage"),
+            Util.path():dir("%.data"),
+            Util.path():dir("%.local"),
+            Util.path():dir("%.git"),
+            Util.path():dir("node_modules"),
+            Util.path():dir("target"),
+            Util.path():dir("%.target"),
+            Util.path():dir("%.settings"),
+            Util.path():dir("%.build"),
+            Util.path():dir("build"),
+            Util.path():dir("dist"),
+            Util.path():dir("%.dist"),
+            Util.path():dir("%.angular"),
+            Util.path():dir("__pycache__"),
+            Util.path():dir("github.copilot"),
+            "%.project$",
+            "%.classpath$",
+            "%.factorypath$",
+            "%.jar$",
+            "%.class$",
+            "%.dll$",
+            "%.jnilib$",
+          },
         },
-        pickers = pickers(),
+        pickers = {
+          find_files = {
+            hidden = true,
+            no_ignore = true,
+          },
+          buffers = {
+            sort_mru = true,
+            ignore_current_buffer = false,
+            show_all_buffers = false,
+            sort_lastused = true,
+            mappings = {
+              i = {
+                ["<c-d>"] = actions.delete_buffer,
+              },
+              n = {
+                ["<c-d>"] = actions.delete_buffer,
+                ["d"] = actions.delete_buffer,
+              },
+            },
+          },
+          oldfiles = {
+            hidden = true,
+            no_ignore = true,
+          },
+          live_grep = {
+            hidden = true,
+            no_ignore = true,
+            additional_args = function()
+              return { "--hidden", "-u" }
+            end,
+          },
+          grep_string = {
+            hidden = true,
+            no_ignore = true,
+            additional_args = function()
+              return { "--hidden", "-u" }
+            end,
+          },
+          quickfix = {
+            hidden = true,
+            no_ignore = true,
+            initial_mode = "normal",
+          },
+          marks = {
+            attach_mappings = attach_marks_mappings,
+            selection_strategy = "row",
+          },
+          git_status = {
+            attach_mappings = attach_git_status_mappings,
+            selection_strategy = "row",
+            initial_mode = "normal",
+          },
+        },
       })
       require("telescope").load_extension("fzf")
 
@@ -123,106 +213,6 @@ function default_mappings()
       }
     end
   )
-end
-
-local attach_git_status_mappings
-local attach_marks_mappings
-
-function pickers()
-  local file_ignore_patterns = {
-    Util.path():dir("plugged"),
-    Util.path():dir("%.undo"),
-    Util.path():dir("%.storage"),
-    Util.path():dir("%.data"),
-    Util.path():dir("%.local"),
-    Util.path():dir("%.git"),
-    Util.path():dir("node_modules"),
-    Util.path():dir("target"),
-    Util.path():dir("%.target"),
-    Util.path():dir("%.settings"),
-    Util.path():dir("%.build"),
-    Util.path():dir("build"),
-    Util.path():dir("dist"),
-    Util.path():dir("%.dist"),
-    Util.path():dir("%.angular"),
-    Util.path():dir("__pycache__"),
-    Util.path():dir("github.copilot"),
-    "%.project$",
-    "%.classpath$",
-    "%.factorypath$",
-    "%.jar$",
-    "%.class$",
-    "%.dll$",
-    "%.jnilib$",
-  }
-  return Util.require("telescope.actions", function(actions)
-    local o = {}
-    o.find_files = {
-      theme = theme,
-      hidden = true,
-      no_ignore = true,
-      --previewer = true,
-      file_ignore_patterns = file_ignore_patterns,
-    }
-    o.buffers = {
-      theme = theme,
-      sort_mru = true,
-      ignore_current_buffer = false,
-      show_all_buffers = false,
-      sort_lastused = true,
-      mappings = {
-        i = {
-          ["<c-d>"] = actions.delete_buffer,
-        },
-        n = {
-          ["<c-d>"] = actions.delete_buffer,
-          ["d"] = actions.delete_buffer,
-        },
-      },
-    }
-    o.oldfiles = {
-      hidden = true,
-      theme = theme,
-      no_ignore = true,
-    }
-    o.diagnostics = {
-      theme = theme,
-    }
-    o.marks = {
-      theme = theme,
-      attach_mappings = attach_marks_mappings,
-      selection_strategy = "row",
-    }
-    o.live_grep = {
-      hidden = true,
-      no_ignore = true,
-      theme = theme,
-      file_ignore_patterns = file_ignore_patterns,
-      additional_args = function()
-        return { "--hidden", "-u" }
-      end,
-    }
-    o.grep_string = o.live_grep
-    o.quickfix = {
-      hidden = true,
-      theme = theme,
-      no_ignore = true,
-      initial_mode = "normal",
-    }
-    o.git_status = {
-      theme = theme,
-      attach_mappings = attach_git_status_mappings,
-      selection_strategy = "row",
-      initial_mode = "normal",
-    }
-    o.git_branches = {
-      theme = theme,
-      selection_strategy = "row",
-    }
-    o.git_commits = o.git_branches
-    o.git_stash = o.git_branches
-    return o
-  end)
 end
 
 function attach_git_status_mappings(_, map)

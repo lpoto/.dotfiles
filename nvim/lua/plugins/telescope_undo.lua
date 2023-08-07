@@ -23,18 +23,9 @@ function M.init()
 end
 
 function M.config()
-  Util.require(
-    { "telescope", "telescope.themes" },
-    function(telescope, themes)
-      telescope.setup({
-        extensions = {
-          undo = themes.get_ivy(),
-        },
-      })
-
-      telescope.load_extension("undo")
-    end
-  )
+  Util.require("telescope", function(telescope)
+    telescope.load_extension("undo")
+  end)
 end
 
 return M

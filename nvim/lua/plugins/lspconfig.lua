@@ -32,7 +32,11 @@ end
 
 local logged = {}
 function on_lsp_attach(args)
-  if type(args.data) == "table" and type(args.data.client_id) == "number" then
+  if
+    type(args) == "table"
+    and type(args.data) == "table"
+    and type(args.data.client_id) == "number"
+  then
     local client = vim.lsp.get_client_by_id(args.data.client_id)
     local name = (client or {}).name
     if
@@ -44,6 +48,11 @@ function on_lsp_attach(args)
       logged[name] = true
       Util.log():debug("Attached to LSP server:", name)
     end
+  end
+  if
+    not type(args.buf) == "number" or not vim.api.nvim_buf_is_valid(args.buf)
+  then
+    return
   end
   local opts = { buffer = args.buf }
   vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)

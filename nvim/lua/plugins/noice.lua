@@ -93,7 +93,7 @@ end
 ---Display notify history in a telescope prompt
 function notification_history()
   telescope_config()
-  vim.api.nvim_exec("Telescope noice theme=ivy", false)
+  vim.api.nvim_exec("Telescope noice", false)
 end
 
 return M
