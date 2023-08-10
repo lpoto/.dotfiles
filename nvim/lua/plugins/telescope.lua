@@ -17,7 +17,7 @@ Keymaps:
  - "<leader>M"   - marks
  - "<leader>h"   - Search help tags
 
- - "ge"          - show diagnostics
+ - "<leader>d"   - show diagnostics
  - "gd"          - LSP definitions
  - "gr"          - LSP references
 
@@ -60,7 +60,7 @@ M.keys = {
   { "<leader>M", builtin("marks"), mode = "n" },
   { "<leader>h", builtin("help_tags"), mode = "n" },
 
-  { "ge", builtin("diagnostics"), mode = "n" },
+  { "<leader>d", builtin("diagnostics"), mode = "n" },
   { "gd", builtin("lsp_definitions"), mode = "n" },
   { "gr", builtin("lsp_references"), mode = "n" },
 
