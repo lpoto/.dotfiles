@@ -58,8 +58,9 @@ function on_lsp_attach(args)
   local opts = { buffer = args.buf }
   vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
   vim.keymap.set("n", "<leader>K", open_diagnostic_float, opts)
-  vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
-  vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
+  -- NOTE: the lsp definitions and references are used with telescope.nvim
+  -- vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+  -- vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
   vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, opts)
 end
 

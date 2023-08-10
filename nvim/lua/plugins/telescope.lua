@@ -13,11 +13,13 @@ Keymaps:
  - "<leader>o"   - old files
  - "<leader>l"   - live grep
  - "<leader>L"   - live grep for word under cursor
- - "<leader>d"   - show diagnostics
 
  - "<leader>M"   - marks
-
  - "<leader>h"   - Search help tags
+
+ - "ge"          - show diagnostics
+ - "gd"          - LSP definitions
+ - "gr"          - LSP references
 
  - "<leader>gl"  - git commits
  - "<leader>gb"  - git branches
@@ -52,12 +54,15 @@ M.keys = {
     mode = "n",
   },
   { "<leader>o", builtin("oldfiles"), mode = "n" },
-  { "<leader>d", builtin("diagnostics"), mode = "n" },
   { "<leader>l", builtin("live_grep"), mode = "n" },
   { "<leader>L", builtin("grep_string"), mode = "n" },
 
   { "<leader>M", builtin("marks"), mode = "n" },
   { "<leader>h", builtin("help_tags"), mode = "n" },
+
+  { "ge", builtin("diagnostics"), mode = "n" },
+  { "gd", builtin("lsp_definitions"), mode = "n" },
+  { "gr", builtin("lsp_references"), mode = "n" },
 
   { "<leader>gg", builtin("git_status"), mode = "n" },
   { "<leader>gs", builtin("git_status"), mode = "n" },
