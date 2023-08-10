@@ -14,7 +14,6 @@ Keymaps:
  - "<leader>l"   - live grep
  - "<leader>L"   - live grep for word under cursor
  - "<leader>d"   - show diagnostics
- - "<leader>q"   - quickfix
 
  - "<leader>M"   - marks
 
@@ -52,7 +51,6 @@ M.keys = {
   },
   { "<leader>M", builtin("marks"), mode = "n" },
   { "<leader>o", builtin("oldfiles"), mode = "n" },
-  { "<leader>q", builtin("quickfix"), mode = "n" },
   { "<leader>d", builtin("diagnostics"), mode = "n" },
   { "<leader>l", builtin("live_grep"), mode = "n" },
   { "<leader>L", builtin("grep_string"), mode = "n" },
@@ -157,11 +155,6 @@ function M.config()
               return { "--hidden", "-u" }
             end,
           },
-          quickfix = {
-            hidden = true,
-            no_ignore = true,
-            initial_mode = "normal",
-          },
           marks = {
             attach_mappings = attach_marks_mappings,
             selection_strategy = "row",
@@ -183,36 +176,33 @@ function M.config()
 end
 
 function default_mappings()
-  return Util.require(
-    { "telescope.actions", "telescope.builtin" },
-    function(actions, telescope_builtin)
-      return {
-        i = {
-          -- NOTE: when a telescope window is opened, use ctrl + q to
-          -- send the current results to a quickfix window, then immediately
-          -- open quickfix in a telescope window
-          ["<C-q>"] = function()
-            actions.send_to_qflist(vim.fn.bufnr())
-            telescope_builtin.quickfix()
-          end,
-          ["<Tab>"] = actions.move_selection_next,
-          ["<S-Tab>"] = actions.move_selection_previous,
-        },
-        n = {
-          ["<Tab>"] = actions.move_selection_next,
-          ["<S-Tab>"] = actions.move_selection_previous,
-          ["<leader>j"] = function(bufnr)
-            actions.move_selection_next(bufnr)
-            actions.toggle_selection(bufnr)
-          end,
-          ["<leader>k"] = function(bufnr)
-            actions.toggle_selection(bufnr)
-            actions.move_selection_previous(bufnr)
-          end,
-        },
-      }
-    end
-  )
+  return Util.require("telescope.actions", function(actions)
+    return {
+      i = {
+        -- NOTE: when a telescope window is opened, use ctrl + q to
+        -- send the current results to a quickfix window, then immediately
+        -- open quickfix in a telescope window
+        ["<C-q>"] = function()
+          actions.send_to_qflist(vim.fn.bufnr())
+          Util.misc().toggle_quickfix(nil, true)
+        end,
+        ["<Tab>"] = actions.move_selection_next,
+        ["<S-Tab>"] = actions.move_selection_previous,
+      },
+      n = {
+        ["<Tab>"] = actions.move_selection_next,
+        ["<S-Tab>"] = actions.move_selection_previous,
+        ["<leader>j"] = function(bufnr)
+          actions.move_selection_next(bufnr)
+          actions.toggle_selection(bufnr)
+        end,
+        ["<leader>k"] = function(bufnr)
+          actions.toggle_selection(bufnr)
+          actions.move_selection_previous(bufnr)
+        end,
+      },
+    }
+  end)
 end
 
 function attach_git_status_mappings(_, map)
