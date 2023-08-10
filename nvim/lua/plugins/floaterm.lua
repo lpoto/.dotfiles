@@ -113,6 +113,10 @@ function git_commands.tag()
 end
 
 function git_commands.restore()
+  if vim.bo.modified then
+    Util.log():warn("File is modified, please save it first before restoring")
+    return
+  end
   git_commands.default("restore " .. vim.fn.expand("%:p") .. " ")
 end
 
