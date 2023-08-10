@@ -32,6 +32,23 @@ M.keys = {
   { "<C-n>", file_browser, mode = "n" },
 }
 
+function M.init()
+  local id
+  id = vim.api.nvim_create_autocmd("BufEnter", {
+    callback = function(_)
+      if
+        vim.bo.filetype ~= ""
+        or vim.bo.buftype ~= "" and vim.bo.buftype ~= "nofile"
+        or vim.fn.isdirectory(vim.fn.expand("%:p")) ~= 1
+      then
+        return
+      end
+      pcall(vim.api.nvim_del_autocmd, id)
+      relative_file_browser()
+    end,
+  })
+end
+
 function M.config()
   Util.require("telescope", function(telescope)
     telescope.setup({
