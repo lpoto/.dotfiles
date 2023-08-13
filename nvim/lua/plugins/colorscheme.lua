@@ -41,7 +41,6 @@ function M.config()
     { "Folded", { bg = "NONE", fg = "#658ABA" } },
     { "NormalFloat", { bg = "NONE" } },
     { "FloatBorder", { link = "WinSeparator" } },
-    { "FloatermBorder", { link = "WinSeparator" } },
   })
   override({
     { "TelescopeBorder", { link = "WinSeparator" } },

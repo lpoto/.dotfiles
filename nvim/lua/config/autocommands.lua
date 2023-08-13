@@ -9,15 +9,25 @@
 local relativenumber_augroup =
   vim.api.nvim_create_augroup("RelativeNumberAugroup", { clear = true })
 
-vim.api.nvim_create_autocmd({ "VimEnter", "WinEnter", "BufWinEnter" }, {
-  group = relativenumber_augroup,
-  callback = function()
-    if vim.wo.number then
-      vim.wo.relativenumber = true
-      vim.wo.cursorline = true
-    end
-  end,
-})
+vim.api.nvim_create_autocmd(
+  { "VimEnter", "WinEnter", "BufWinEnter", "TermOpen" },
+  {
+    group = relativenumber_augroup,
+    callback = function()
+      if vim.wo.number then
+        if vim.bo.buftype ~= "" then
+          vim.wo.number = false
+          vim.wo.relativenumber = false
+          vim.wo.cursorline = false
+          return
+        end
+        vim.wo.number = true
+        vim.wo.relativenumber = true
+        vim.wo.cursorline = true
+      end
+    end,
+  }
+)
 vim.api.nvim_create_autocmd({ "WinLeave" }, {
   group = relativenumber_augroup,
   callback = function()
