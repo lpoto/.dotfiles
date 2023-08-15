@@ -84,6 +84,9 @@ function retire_buffers()
     buffer_timestamps[cur_buf] = vim.uv.now()
 
     local buffers = vim.api.nvim_list_bufs()
+    if #buffers < m then
+      return
+    end
     buffers = vim.tbl_filter(function(buf)
       if not buf or not vim.api.nvim_buf_is_valid(buf) then
         return false
