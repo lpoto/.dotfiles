@@ -192,9 +192,9 @@ function git_commands.default(
           local log = function(...)
             local log_name = "Git"
             if code == 0 then
-              Util.log(nil, log_name):info(...)
+              Util.log(log_name):info(...)
             else
-              Util.log(nil, log_name):warn(...)
+              Util.log(log_name):warn(...)
             end
           end
           if code == 0 and type(custom_success_message) == "string" then

@@ -52,18 +52,17 @@ function Log:print(...)
   self:__notify("info", self.title, self.delay, true, ...)
 end
 
----@param delay number?: Delay in milliseconds, default: 0
----@param title string?: Title of the notification
+---@param opts table|number|string|nil
 ---@return LogUtil
-function Log:new(delay, title)
-  local o = {}
-  if type(title) == "string" then
-    o.title = title
+function Log:new(opts)
+  if type(opts) == "number" then
+    opts = { level = opts }
+  elseif type(opts) == "string" then
+    opts = { title = opts }
+  elseif type(opts) ~= "table" then
+    opts = {}
   end
-  if type(delay) == "number" then
-    o.delay = delay
-  end
-  return setmetatable(o, Log)
+  return setmetatable(opts, Log)
 end
 
 local function concat(...)

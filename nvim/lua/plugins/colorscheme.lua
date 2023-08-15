@@ -63,7 +63,7 @@ function override(o)
     end
   end
   if #errs > 0 then
-    Util.log(200):warn(table.concat(errs, "\n"))
+    Util.log({ delay = 200 }):warn(table.concat(errs, "\n"))
   end
 end
 

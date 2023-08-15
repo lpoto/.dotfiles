@@ -19,9 +19,9 @@ function M.config()
           return
         end
         if #linters == 1 then
-          Util.log():debug("Linting with:", linters[1])
+          Util.log("Lint"):debug("Linting with:", linters[1])
         else
-          Util.log():debug("Linting with:", linters)
+          Util.log("Lint"):debug("Linting with:", linters)
         end
 
         lint.try_lint()

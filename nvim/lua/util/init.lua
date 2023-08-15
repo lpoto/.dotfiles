@@ -23,11 +23,10 @@ function util.shell()
   return util.require("util.shell") --[[ @as ShellUtil ]]
 end
 
----@param delay number?
----@param title string?
+---@param opts table|string|number|nil
 ---@return LogUtil
-function util.log(delay, title)
-  return util.require("util.log"):new(delay, title) --[[ @as LogUtil ]]
+function util.log(opts)
+  return util.require("util.log"):new(opts) --[[ @as LogUtil ]]
 end
 
 ---@return MiscUtil
@@ -65,7 +64,7 @@ function util.require(module, callback, silent)
     local ok, v = pcall(require, m)
     if not ok then
       if not silent then
-        util.log(250):warn("Error loading", m, "-", v)
+        util.log({ delay = 250 }):warn("Error loading", m, "-", v)
       end
       return
     end
@@ -75,7 +74,7 @@ function util.require(module, callback, silent)
     local ok, v = pcall(callback, unpack(res))
     if not ok then
       if not silent then
-        util.log(250):error(v)
+        util.log({ delay = 250 }):error(v)
       end
       return
     end

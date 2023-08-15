@@ -109,7 +109,8 @@ function Misc.toggle_quickfix(navigate_to_quickfix, open_only)
     then
       vim.api.nvim_exec("cclose", false)
       navigate_to_quickfix = true
-      Util.log():warn("There is nothing to display in the quickfix window")
+      Util.log("Quickfix")
+        :warn("There is nothing to display in the quickfix window")
     end
     if navigate_to_quickfix ~= true then
       vim.fn.win_gotoid(winid)

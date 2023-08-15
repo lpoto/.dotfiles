@@ -92,7 +92,8 @@ Util.misc().attach_formatter = function(cfg, filetype, additional_args)
         if type(cfg) ~= "string" then
           cfg = "<custom>"
         end
-        Util.log():info("Attached formatter for " .. filetype .. ":", cfg)
+        Util.log("Formatter")
+          :info("Attached formatter for " .. filetype .. ":", cfg)
       end
     )
   end

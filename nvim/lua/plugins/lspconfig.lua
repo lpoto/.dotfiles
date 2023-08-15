@@ -47,7 +47,7 @@ function on_lsp_attach(args)
       and not logged[name]
     then
       logged[name] = true
-      Util.log():debug("Attached to LSP server:", name)
+      Util.log("LSP"):debug("Attached to LSP server:", name)
     end
   end
   if
@@ -67,7 +67,7 @@ end
 function open_diagnostic_float()
   local n, _ = vim.diagnostic.open_float()
   if not n then
-    Util.log():warn("No diagnostics found")
+    Util.log("LSP"):warn("No diagnostics found")
   end
 end
 
