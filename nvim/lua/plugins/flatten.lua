@@ -94,18 +94,38 @@ end
 
 function git_commands.restore()
   if vim.bo.modified then
-    Util.log():warn("File is modified, please save it first before restoring")
-    return
+    local ok, _ = pcall(vim.api.nvim_exec, "earlier 1f", false)
+    if not ok then
+      Util.log()
+        :warn("File is modified, please save it first before restoring")
+      return
+    end
   end
-  git_commands.default("restore " .. vim.fn.expand("%:p") .. " ", false)
+  local custom_success_message = "Successfully restored current file"
+  git_commands.default(
+    "restore " .. vim.fn.expand("%:p") .. " ",
+    false,
+    custom_success_message,
+    true
+  )
 end
 
 function git_commands.stage()
-  git_commands.default("stage " .. vim.fn.expand("%:p") .. " ", false)
+  local custom_success_message = "Successfully staged current file"
+  git_commands.default(
+    "stage " .. vim.fn.expand("%:p") .. " ",
+    false,
+    custom_success_message
+  )
 end
 
 function git_commands.unstage()
-  git_commands.default("reset " .. vim.fn.expand("%:p") .. " ", false)
+  local custom_success_message = "Successfully unstaged current file"
+  git_commands.default(
+    "reset " .. vim.fn.expand("%:p") .. " ",
+    false,
+    custom_success_message
+  )
 end
 
 function git_commands.pull()
@@ -114,7 +134,14 @@ function git_commands.pull()
   end)
 end
 
-function git_commands.default(suffix, ask_for_input)
+function git_commands.default(
+  suffix,
+  ask_for_input,
+  custom_success_message,
+  edit_after_end
+)
+  local cur_buf = vim.api.nvim_get_current_buf()
+
   local cur_term_win = nil
   local bufs = vim.api.nvim_list_bufs()
 
@@ -163,11 +190,18 @@ function git_commands.default(suffix, ask_for_input)
           end, vim.api.nvim_buf_get_lines(cur_term, 0, -1, false))
           vim.api.nvim_buf_delete(cur_term, { force = true })
           local log = function(...)
+            local log_name = "Git"
             if code == 0 then
-              Util.log():info(...)
+              Util.log(nil, log_name):info(...)
             else
-              Util.log():warn(...)
+              Util.log(nil, log_name):warn(...)
             end
+          end
+          if code == 0 and type(custom_success_message) == "string" then
+            if #custom_success_message > 0 then
+              log(custom_success_message)
+            end
+            return
           end
           if #lines == 0 then
             if code == 0 then
@@ -180,6 +214,9 @@ function git_commands.default(suffix, ask_for_input)
           end
         end
         cur_term_win = nil
+        if vim.api.nvim_get_current_buf() == cur_buf and edit_after_end then
+          vim.api.nvim_exec("e", true)
+        end
       end,
     })
   end)
