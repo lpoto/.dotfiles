@@ -37,20 +37,31 @@ local M = {
   },
 }
 
-local function builtin(name, opts)
+local function builtin(name, opts, log_if_no_results)
   return function()
     Util.require("telescope.builtin", function(telescope_builtin)
       telescope_builtin[name](opts)
+      if
+        log_if_no_results == true
+        and vim.api.nvim_buf_get_option(
+            vim.api.nvim_get_current_buf(),
+            "filetype"
+          )
+          ~= "TelescopePrompt"
+      then
+        Util.log("Telescope")
+          :warn("[telescope.builtin." .. name .. "] Not results found ")
+      end
     end)
   end
 end
 
 M.keys = {
   { "<leader>n", builtin("find_files"), mode = "n" },
-  { "<leader>b", builtin("buffers"), mode = "n" },
+  { "<leader>b", builtin("buffers", nil, true), mode = "n" },
   {
     "<leader>B",
-    builtin("buffers", { show_all_buffers = true }),
+    builtin("buffers", { show_all_buffers = true }, true),
     mode = "n",
   },
   { "<leader>o", builtin("oldfiles"), mode = "n" },
