@@ -102,6 +102,15 @@ function Misc.toggle_quickfix(navigate_to_quickfix, open_only)
   else
     local winid = vim.api.nvim_get_current_win()
     vim.api.nvim_exec("noautocmd keepjumps copen", false)
+    if
+      #vim.tbl_filter(function(l)
+        return #l > 0
+      end, vim.api.nvim_buf_get_lines(0, 0, -1, false)) == 0
+    then
+      vim.api.nvim_exec("cclose", false)
+      navigate_to_quickfix = true
+      Util.log():warn("There are no errors to display in the quickfix window")
+    end
     if navigate_to_quickfix ~= true then
       vim.fn.win_gotoid(winid)
     end
