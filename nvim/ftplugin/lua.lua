@@ -15,8 +15,8 @@ vim.b.language_server = {
       runtime = {
         version = "LuaJIT",
         path = vim.tbl_extend("force", vim.split(package.path, ":"), {
-          Util.path():new("lua", "?.lua"),
-          Util.path():new("lua", "?", "init.lua"),
+          "lua/?.lua",
+          "lua/?/init.lua",
         }),
       },
       diagnostics = {
@@ -24,10 +24,10 @@ vim.b.language_server = {
       },
       workspace = {
         ignoreDir = {
-          Util.path():dir(".storage"),
-          Util.path():dir(".git"),
-          Util.path():dir(".build"),
-          Util.path():dir("github-copilot"),
+          ".storage/",
+          ".git/",
+          ".build/",
+          "github-copilot/",
         },
         library = vim.api.nvim_get_runtime_file("", true),
         checkThirdParty = false,

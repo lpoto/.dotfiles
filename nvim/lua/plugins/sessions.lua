@@ -12,14 +12,13 @@ NOTE: session is saved automatically when yout quit neovim.
 -----------------------------------------------------------------------------]]
 local M = {
   dev = true,
-  dir = Util.path()
-    :new(vim.fn.stdpath("config"), "lua", "plugins", "sessions"),
+  dir = vim.fn.stdpath("config") .. "/lua/plugins/sessions",
   event = "VeryLazy",
   cmd = "Sessions",
 }
 
 local title = "Sessions"
-local session_dir = Util.path():new(vim.fn.stdpath("data"), "sessions")
+local session_dir = vim.fn.stdpath("data") .. "/sessions"
 local ignore_filetype_patterns = {
   "git.*",
   "qf",
@@ -33,6 +32,8 @@ local ignore_filetype_patterns = {
   "Diffview.*",
 }
 local list_sessions
+local escape_path
+local unescape_path
 
 function M.config()
   vim.opt.sessionoptions =
@@ -106,8 +107,8 @@ function M.config()
         return
       end
 
-      local name = Util.path():escape(vim.fn.getcwd())
-      local file = Util.path():new(session_dir, name .. ".vim")
+      local name = escape_path(vim.fn.getcwd())
+      local file = session_dir .. "/" .. name .. ".vim"
       pcall(
         vim.api.nvim_exec,
         "mksession! " .. vim.fn.fnameescape(file),
@@ -129,7 +130,7 @@ local function select_session(prompt_bufnr)
 
       -- Close the prompt when selecting a session
       actions.close(prompt_bufnr)
-      local session_file = Util.path():new(session_dir, selection.value)
+      local session_file = session_dir .. "/" .. selection.value
       -- NOTE: ensure the session file exists
       if vim.fn.filereadable(session_file) == 1 then
         -- if the session file exists, load it
@@ -157,7 +158,7 @@ local function delete_selected_session(prompt_bufnr)
       return
     end
 
-    local session_file = Util.path():new(session_dir, selection.value)
+    local session_file = session_dir .. "/" .. selection.value
 
     if vim.fn.delete(session_file) ~= 0 then
       Util.log():warn("Failed to delete session")
@@ -190,10 +191,8 @@ function list_sessions(opts)
       cwd = session_dir,
       previewer = false,
       entry_maker = function(line)
-        local time = vim.fn.strftime(
-          "%c",
-          vim.fn.getftime(Util.path():new(session_dir, line))
-        )
+        local time =
+          vim.fn.strftime("%c", vim.fn.getftime(session_dir .. "/" .. line))
         return {
           value = line,
           ordinal = time .. " " .. line,
@@ -208,8 +207,7 @@ function list_sessions(opts)
             -- NOTE: replate % signs with / in the displayed
             -- session name, so it better represents the session's
             -- working directory.
-            local value = Util.path()
-              :unescape(vim.fn.fnamemodify(e.value, ":r"))
+            local value = unescape_path(vim.fn.fnamemodify(e.value, ":r"))
             return displayer({
               { time, "Comment" },
               value,
@@ -255,7 +253,7 @@ function list_sessions(opts)
         end
         for k, v in pairs(picker.finder.results) do
           if
-            Util.path():unescape(vim.fn.fnamemodify(v.value, ":r"))
+            unescape_path(vim.fn.fnamemodify(v.value, ":r"))
             == vim.fn.getcwd()
           then
             picker:set_selection(k - 1)
@@ -268,6 +266,21 @@ function list_sessions(opts)
     end
     f(0)
   end)
+end
+
+---Escape the path separator in a path with the provided replacement,
+---or "_" if no replacement is provided.
+---@param s string The path to escape.
+function escape_path(s)
+  s = s:gsub("^" .. os.getenv("HOME"), "HOME")
+  return s:gsub("/", "_")
+end
+
+---Unescape the path separator in a path with the provided replacement,
+---or "_" if no replacement is provided.
+function unescape_path(s)
+  s = s:gsub("^HOME", os.getenv("HOME"))
+  return s:gsub("_", "/")
 end
 
 return M

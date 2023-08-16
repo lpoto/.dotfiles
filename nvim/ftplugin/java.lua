@@ -24,8 +24,8 @@ vim.b.language_server = {
   cmd = {
     "jdtls",
     "-data",
-    Util.path()
-      :new(vim.fn.stdpath("cache"), "jdtls", "workspace", vim.fn.getcwd()),
+
+    vim.fn.stdpath("cache") .. "/jdtls/workspace/" .. vim.fn.getcwd(),
   },
   root_patterns = {
     "build.xml",

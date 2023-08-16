@@ -9,8 +9,7 @@ but global.
 -----------------------------------------------------------------------------]]
 local M = {
   dev = true,
-  dir = Util.path()
-    :new(vim.fn.stdpath("config"), "lua", "plugins", "tabline"),
+  dir = vim.fn.stdpath("config") .. "/lua/plugins/tabline",
   lazy = false,
 }
 
@@ -224,7 +223,7 @@ function tabline_sections.filename(w)
     while vim.fn.strchars(tail) < w do
       name = tail
       h = vim.fn.fnamemodify(h, ":h")
-      tail = Util.path():new(vim.fn.fnamemodify(h, ":t"), tail)
+      tail = vim.fn.fnamemodify(h, ":t") .. "/" .. tail
     end
   end
 

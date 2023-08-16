@@ -20,7 +20,7 @@ vim.opt.splitright = true --open new window on the right in vertical split
 vim.opt.swapfile = false -- load buffers without creating swap files
 vim.opt.backup = false -- do not automatically save
 vim.opt.undofile = true -- allow undo after reoppening the file
-vim.opt.undodir = Util.path():new(vim.fn.stdpath("data"), "undo")
+vim.opt.undodir = vim.fn.stdpath("data") .. "/undo"
 
 --------------------------------------------------------------------- INDENTING
 

@@ -8,11 +8,6 @@ Util functions
 local util = {}
 util.__index = util
 
----@return PathUtil
-function util.path()
-  return util.require("util.path") --[[ @as PathUtil ]]
-end
-
 ---@param opts table|string|number|nil
 ---@return LogUtil
 function util.log(opts)
@@ -28,8 +23,8 @@ end
 ---@return Util
 function util:init(opts)
   opts = type(opts) == "table" and opts or {}
-  vim.fn.stdpath = util.path().stdpath
   self.log():set_level(opts.log_level)
+  vim.fn.stdpath = self.stdpath
   self.__init_ftplugin()
   return self
 end
@@ -134,6 +129,28 @@ function util.__init_ftplugin()
       end
     end,
   })
+end
+
+local stdpath = vim.fn.stdpath
+---@param what string
+---@return string|table
+function util.stdpath(what)
+  local app_name = os.getenv("NVIM_APPNAME")
+  local config = vim.fs.dirname(stdpath("config"))
+  local storage = config .. "/.storage"
+
+  local n = {
+    config = config,
+    app_name,
+    cache = storage .. "/cache/" .. app_name,
+    data = storage .. "/share/" .. app_name,
+    log = storage .. "/log/" .. app_name,
+    run = storage .. "/state/" .. app_name,
+    state = storage .. "/state/" .. app_name,
+    config_dirs = {},
+    data_dirs = {},
+  }
+  return n[what] or stdpath(what)
 end
 
 return util

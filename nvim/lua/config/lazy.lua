@@ -51,16 +51,13 @@ function get_lazy_options()
     defaults = {
       lazy = true,
     },
-    lockfile = Util.path():new(
-      vim.fs.dirname(vim.fn.stdpath("config")),
-      ".lazy.lock.json"
-    ),
+    lockfile = vim.fs.dirname(vim.fn.stdpath("config")) .. "/.lazy.lock.json",
     ui = {
       border = "rounded",
     },
-    root = Util.path():new(vim.fn.stdpath("data"), "lazy"),
+    root = vim.fn.stdpath("data") .. "/lazy",
     dev = {
-      dir = Util.path():new(vim.fn.stdpath("data"), "lazy"),
+      dir = vim.fn.stdpath("data") .. "/lazy",
     },
     checker = {
       enabled = true,
@@ -93,4 +90,4 @@ function get_lazy_options()
   }
 end
 
-load_lazy(Util.path():new(vim.fn.stdpath("data"), "lazy", "lazy.nvim"))
+load_lazy(vim.fn.stdpath("data") .. "/lazy/lazy.nvim")

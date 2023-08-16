@@ -16,8 +16,7 @@ local buttons
 local footer
 
 function header()
-  local ascii_file =
-    Util.path():new(vim.fn.stdpath("config"), ".storage", "ascii_art.txt")
+  local ascii_file = vim.fn.stdpath("config") .. "/.storage/ascii_art.txt"
   local hdr = {}
   if vim.fn.filereadable(ascii_file) == 1 then
     local ok

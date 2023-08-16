@@ -7,8 +7,7 @@ Keey only a limited number of buffers loaded.
 -----------------------------------------------------------------------------]]
 local M = {
   dev = true,
-  dir = Util.path()
-    :new(vim.fn.stdpath("config"), "lua", "plugins", "buffer_retirement"),
+  dir = vim.fn.stdpath("config") .. "lua/plugins/buffer_retirement",
   event = { "BufRead", "BufNewFile" },
 }
 
