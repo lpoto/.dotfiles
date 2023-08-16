@@ -13,11 +13,6 @@ function util.path()
   return util.require("util.path") --[[ @as PathUtil ]]
 end
 
----@return ShellUtil
-function util.shell()
-  return util.require("util.shell") --[[ @as ShellUtil ]]
-end
-
 ---@param opts table|string|number|nil
 ---@return LogUtil
 function util.log(opts)

@@ -60,6 +60,9 @@ function M.config()
   end)
 end
 
+---@class ShellUtil
+local Shell = {}
+
 function git_commands.commit()
   git_commands.default("commit ")
 end
@@ -69,13 +72,13 @@ function git_commands.commit_amend()
 end
 
 function git_commands.push()
-  Util.shell():fetch_git_data(function(remote, branch)
+  Shell:fetch_git_data(function(remote, branch)
     git_commands.default("push " .. remote .. " " .. branch .. " ")
   end)
 end
 
 function git_commands.push_force()
-  Util.shell():fetch_git_data(function(remote, branch)
+  Shell:fetch_git_data(function(remote, branch)
     git_commands.default("push " .. remote .. " " .. branch .. " --force ")
   end)
 end
@@ -129,7 +132,7 @@ function git_commands.unstage()
 end
 
 function git_commands.pull()
-  Util.shell():fetch_git_data(function(remote, branch)
+  Shell:fetch_git_data(function(remote, branch)
     git_commands.default("pull " .. remote .. " " .. branch .. " ")
   end)
 end
@@ -149,7 +152,7 @@ function git_commands.default(
     ask_for_input = true
   end
   suffix = suffix or ""
-  Util.shell():fetch_git_data(function()
+  Shell:fetch_git_data(function()
     if ask_for_input then
       suffix = vim.fn.input({
         prompt = "git ",
@@ -184,25 +187,24 @@ function git_commands.default(
           cur_term_win ~= nil and vim.api.nvim_win_is_valid(cur_term_win)
         then
           local cur_term = vim.api.nvim_win_get_buf(cur_term_win)
-          vim.api.nvim_win_close(cur_term_win, true)
           local lines = vim.tbl_filter(function(el)
             return #el > 0
           end, vim.api.nvim_buf_get_lines(cur_term, 0, -1, false))
           local log = function(...)
             local log_name = "Git"
             if code == 0 then
-              Util.log(log_name):info(...)
+              Util.log({ delay = 50, title = log_name }):info(...)
             else
-              Util.log(log_name):warn(...)
+              Util.log({ delay = 50, title = log_name }):warn(...)
             end
           end
-          if code == 0 and type(custom_success_message) == "string" then
-            if #custom_success_message > 0 then
-              log(custom_success_message)
-            end
-            return
-          end
-          if #lines == 0 then
+          if
+            code == 0
+            and type(custom_success_message) == "string"
+            and custom_success_message:len() > 0
+          then
+            log(custom_success_message)
+          elseif #lines == 0 then
             if code == 0 then
               log(cmd, "SUCCESS")
             else
@@ -210,8 +212,9 @@ function git_commands.default(
             end
           elseif #lines < 10 and #vim.api.nvim_list_tabpages() > 1 then
             log(table.concat(lines, "\n"))
-            vim.api.nvim_buf_delete(cur_term, { force = true })
           end
+          vim.api.nvim_win_close(cur_term_win, true)
+          vim.api.nvim_buf_delete(cur_term, { force = true })
         end
         cur_term_win = nil
         if vim.api.nvim_get_current_buf() == cur_buf and edit_after_end then
@@ -220,6 +223,101 @@ function git_commands.default(
       end,
     })
   end)
+end
+
+---@param cmd string|table
+function Shell:run_in_tab(cmd)
+  local new_tab = true
+  if vim.b.terminal_job_id then
+    local r = vim.fn.jobwait({ vim.b.terminal_job_id }, 0)
+    local _, n = next(r)
+    if n == -3 then
+      new_tab = false
+    end
+  end
+  vim.schedule(function()
+    local ok, e = pcall(function()
+      if new_tab then
+        vim.api.nvim_exec("keepjumps tabnew", false)
+      else
+        vim.api.nvim_buf_set_option(0, "modified", false)
+      end
+      vim.bo.bufhidden = "wipe"
+      vim.bo.buflisted = false
+      vim.fn.termopen(cmd, {
+        detach = true,
+        env = {
+          VISUAL = "nvim",
+          EDITOR = "nvim",
+        },
+      })
+    end)
+    if not ok and type(e) == "string" then
+      Util.log():warn(e)
+    end
+  end)
+end
+
+---@param cmd string|table
+---@param suffix string
+function Shell:run_in_tab_with_prompt(cmd, suffix)
+  suffix = vim.fn.input({
+    prompt = "$ " .. (cmd or ""),
+    default = suffix,
+    cancelreturn = false,
+  })
+  if type(suffix) ~= "string" then
+    return
+  end
+  self:run_in_tab(cmd .. " " .. suffix)
+end
+
+---@param callback function(remote: string, branch: string)
+---@param on_error nil|function(exit_code: number)
+function Shell:fetch_git_data(callback, on_error)
+  on_error = on_error
+    or function(_)
+      Util.log():warn("Could not fetch git data")
+    end
+  local remote = ""
+  vim.fn.jobstart("git remote show", {
+    detach = false,
+    on_stdout = function(_, data)
+      for _, d in ipairs(data) do
+        if d:len() > 0 then
+          remote = d
+        end
+      end
+    end,
+    on_exit = function(_, remote_exit_code)
+      if remote_exit_code ~= 0 then
+        if type(on_error) == "function" then
+          return on_error()
+        end
+        return
+      end
+      local branch = ""
+      vim.fn.jobstart("git branch --show-current", {
+        detach = false,
+        on_stdout = function(_, data)
+          for _, d in ipairs(data) do
+            if d:len() > 0 then
+              branch = d
+            end
+          end
+        end,
+        on_exit = function(_, code)
+          if code ~= 0 then
+            if type(on_error) == "function" then
+              return on_error()
+            end
+            return
+          end
+          return callback(remote, branch)
+        end,
+      })
+    end,
+  })
 end
 
 return M
