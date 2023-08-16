@@ -1,16 +1,17 @@
 --=============================================================================
 -------------------------------------------------------------------------------
 --                                                                         YAML
---[[===========================================================================
-Loaded when a yaml file is opened
------------------------------------------------------------------------------]]
-Util.ftplugin()
-  :new()
-  :attach_formatter("prettier")
-  :attach_language_server("yamlls", {
-    settings = {
-      yaml = {
-        keyOrdering = false,
-      },
+--=============================================================================
+if vim.g[vim.bo.filetype] or vim.api.nvim_set_var(vim.bo.filetype, true) then
+  return
+end
+
+vim.b.formatter = "prettier"
+vim.b.language_server = {
+  name = "yamlls",
+  settings = {
+    yaml = {
+      keyOrdering = false,
     },
-  })
+  },
+}

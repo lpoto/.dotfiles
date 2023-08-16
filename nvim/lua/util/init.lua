@@ -8,11 +8,6 @@ Util functions
 local util = {}
 util.__index = util
 
----@return FtpluginUtil
-function util.ftplugin()
-  return util.require("util.ftplugin") --[[ @as FtpluginUtil ]]
-end
-
 ---@return PathUtil
 function util.path()
   return util.require("util.path") --[[ @as PathUtil ]]
@@ -40,6 +35,7 @@ function util:init(opts)
   opts = type(opts) == "table" and opts or {}
   vim.fn.stdpath = util.path().stdpath
   self.log():set_level(opts.log_level)
+  self.__init_ftplugin()
   return self
 end
 
@@ -102,6 +98,47 @@ function util.string_matching_score(s1, s2)
     end
   end
   return score
+end
+
+local ftplugins_loaded = {}
+---@private
+function util.__init_ftplugin()
+  vim.api.nvim_create_autocmd("Filetype", {
+    callback = function(opts)
+      if
+        vim.bo.buftype ~= ""
+        or type(opts) ~= "table"
+        or type(opts.match) ~= "string"
+      then
+        return
+      end
+      local filetype = opts.match
+      if ftplugins_loaded[filetype] then
+        return
+      end
+      ftplugins_loaded[filetype] = true
+
+      local formatter = vim.g[filetype .. "_formatter"] or vim.b.formatter
+      local linter = vim.g[filetype .. "_linter"] or vim.b.linter
+      local language_server = vim.g[filetype .. "_language_server"]
+        or vim.b.language_server
+      if formatter ~= nil then
+        util.misc().attach_formatter(formatter, filetype)
+        vim.g[filetype .. "_formatter"] = nil
+        vim.b.formatter = nil
+      end
+      if linter ~= nil then
+        util.misc().attach_linter(linter, filetype)
+        vim.g[filetype .. "_linter"] = nil
+        vim.b.linter = nil
+      end
+      if language_server ~= nil then
+        util.misc().attach_language_server(language_server)
+        vim.g[filetype .. "_language_server"] = nil
+        vim.b.language_server = nil
+      end
+    end,
+  })
 end
 
 return util

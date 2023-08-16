@@ -91,34 +91,45 @@ function configure_vim_diagnostic()
 end
 
 ---Override the default attach_language_server function.
----@param server string
----@param opts table?: Optional server configuration
+---@param server string|table
 ---@diagnostic disable-next-line: duplicate-set-field
-Util.misc().attach_language_server = function(server, opts)
-  if type(server) ~= "string" or server:len() == 0 then
+Util.misc().attach_language_server = function(server)
+  if type(server) == "string" then
+    server = {
+      name = server,
+    }
+  end
+  if type(server) ~= "table" then
     Util.log():warn("No server provided")
     return
   end
+  if type(server.name) ~= "string" and type(server[1]) == "string" then
+    server.name = server[1]
+  end
+  if type(server.name) ~= "string" then
+    Util.log():warn("No language server name provided")
+    return
+  end
   Util.require("lspconfig", function(lspconfig)
-    local lsp = lspconfig[server]
+    local lsp = lspconfig[server.name]
     if lsp == nil then
       Util.log():warn("Language server not found:", server)
       return
     end
 
-    opts = vim.tbl_deep_extend(
+    server = vim.tbl_deep_extend(
       "force",
-      opts or {},
-      vim.g[server .. "_config"] or {}
+      server or {},
+      vim.g[server.name .. "_config"] or {}
     )
-    opts.capabilities = opts.capabilities
+    server.capabilities = server.capabilities
       or Util.misc().get_autocompletion_capabilities()
 
-    if opts.root_dir == nil and type(opts.root_patterns) == "table" then
-      opts.root_dir = Util.misc().root_fn(opts.root_patterns)
+    if server.root_dir == nil and type(server.root_patterns) == "table" then
+      server.root_dir = Util.misc().root_fn(server.root_patterns)
     end
 
-    lsp.setup(opts)
+    lsp.setup(server)
     vim.api.nvim_exec("LspStart", false)
   end)
 end

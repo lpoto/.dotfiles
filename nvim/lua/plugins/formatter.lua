@@ -53,9 +53,8 @@ local formatters_to_add = {}
 ---
 ---@param cfg string|function
 ---@param filetype string
----@param additional_args table?
 ---@diagnostic disable-next-line: duplicate-set-field
-Util.misc().attach_formatter = function(cfg, filetype, additional_args)
+Util.misc().attach_formatter = function(cfg, filetype)
   if type(filetype) ~= "string" then
     Util.log():warn("Invalid filetype for formatter:", filetype)
     return
@@ -75,16 +74,6 @@ Util.misc().attach_formatter = function(cfg, filetype, additional_args)
         end
         if type(opts.filetype[filetype]) ~= "table" then
           opts.filetype[filetype] = {}
-        end
-        if additional_args ~= nil then
-          local old_f = f
-          f = function(...)
-            local o = old_f(...)
-            if type(o) == "table" then
-              o.args = vim.tbl_extend("force", o.args or {}, additional_args)
-            end
-            return o
-          end
         end
 
         table.insert(opts.filetype[filetype], f)

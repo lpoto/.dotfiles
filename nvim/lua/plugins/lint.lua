@@ -32,7 +32,7 @@ end
 
 ---Override the util's default attach linter function.
 ---
----@param linter string
+---@param linter string|table
 ---@param filetype string
 ---@diagnostic disable-next-line: duplicate-set-field
 Util.misc().attach_linter = function(linter, filetype)
@@ -40,9 +40,18 @@ Util.misc().attach_linter = function(linter, filetype)
     Util.log():warn("Invalid filetype for linter:", filetype)
     return
   end
-  if type(linter) ~= "string" then
+  if type(linter) == "string" then
+    linter = { linter }
+  end
+  if type(linter) ~= "table" then
     Util.log():warn("Invalid linter:", linter)
     return
+  end
+  for _, v in pairs(linter) do
+    if type(v) ~= "string" then
+      Util.log():warn("Invalid linter:", linter)
+      return
+    end
   end
   Util.require("lint", function(lint)
     if type(lint.linters_by_ft) ~= "table" then
@@ -51,8 +60,11 @@ Util.misc().attach_linter = function(linter, filetype)
     if type(lint.linters_by_ft[filetype]) ~= "table" then
       lint.linters_by_ft[filetype] = {}
     end
-    table.insert(lint.linters_by_ft[filetype], linter)
-    Util.log():debug("Attached linter for " .. filetype .. ":", linter)
+    for _, v in pairs(linter) do
+      table.insert(lint.linters_by_ft[filetype], v)
+    end
+    Util.log()
+      :debug("Attached linters for " .. filetype .. ":", unpack(linter))
   end)
 end
 

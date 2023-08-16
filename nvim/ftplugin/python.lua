@@ -1,11 +1,11 @@
 --=============================================================================
 -------------------------------------------------------------------------------
 --                                                                       PYTHON
---[[===========================================================================
-Loaded when a python file is opened
------------------------------------------------------------------------------]]
-Util.ftplugin()
-  :new()
-  :attach_formatter("black")
-  :attach_linter("flake8")
-  :attach_language_server("pylsp")
+--=============================================================================
+if vim.g[vim.bo.filetype] or vim.api.nvim_set_var(vim.bo.filetype, true) then
+  return
+end
+
+vim.b.formatter = "black"
+vim.b.linter = "flake8"
+vim.b.language_server = "pylsp"

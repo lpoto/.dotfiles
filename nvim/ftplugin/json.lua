@@ -1,10 +1,10 @@
 --=============================================================================
 -------------------------------------------------------------------------------
 --                                                                         JSON
---[[===========================================================================
-Loaded when a json file is opened
------------------------------------------------------------------------------]]
-Util.ftplugin()
-  :new()
-  :attach_formatter("prettier")
-  :attach_language_server("jsonls")
+--=============================================================================
+if vim.g[vim.bo.filetype] or vim.api.nvim_set_var(vim.bo.filetype, true) then
+  return
+end
+
+vim.b.formatter = "prettier"
+vim.b.language_server = "jsonls"

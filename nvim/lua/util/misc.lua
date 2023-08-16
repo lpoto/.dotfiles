@@ -12,10 +12,9 @@ end
 
 ---Attach the provided language server. This
 ---should be overridden by plugins that provide lsp configurations.
----@param server string
----@param opts table?
+---@param server string|table
 ---@diagnostic disable-next-line: unused-local
-function Misc.attach_language_server(server, opts)
+function Misc.attach_language_server(server)
   util.log():warn("'attach_language_server' was not overridden")
 end
 
@@ -23,15 +22,14 @@ end
 ---should be overridden by plugins that provide formatting.
 ---@param cfg string|function
 ---@param filetype string
----@param additional_args table?
 ---@diagnostic disable-next-line: unused-local
-function Misc.attach_formatter(cfg, filetype, additional_args)
+function Misc.attach_formatter(cfg, filetype)
   util.log():warn("'attach_formatter' was not overridden")
 end
 
 ---Attach the provided linter. This
 ---should be overridden by plugins that provide linting.
----@param linter string
+---@param linter string|table
 ---@param filetype string
 ---@diagnostic disable-next-line: unused-local
 function Misc.attach_linter(linter, filetype)
