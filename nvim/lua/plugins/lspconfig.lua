@@ -47,7 +47,7 @@ function on_lsp_attach(args)
       and not logged[name]
     then
       logged[name] = true
-      Util.log("LSP"):debug("Attached to LSP server:", name)
+      Util.log("LSP"):debug("Attached to server:", name)
     end
   end
   if

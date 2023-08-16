@@ -136,11 +136,14 @@ local stdpath = vim.fn.stdpath
 ---@return string|table
 function util.stdpath(what)
   local app_name = os.getenv("NVIM_APPNAME")
-  local config = vim.fs.dirname(stdpath("config"))
-  local storage = config .. "/.storage"
+  if type(app_name) ~= "string" or app_name:len() == 0 then
+    app_name = "nvim"
+  end
+  local base = vim.fs.dirname(stdpath("config"))
+  local storage = base .. "/.storage"
 
   local n = {
-    config = config,
+    config = base .. "/" .. app_name,
     app_name,
     cache = storage .. "/cache/" .. app_name,
     data = storage .. "/share/" .. app_name,
