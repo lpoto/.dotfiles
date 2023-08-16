@@ -188,7 +188,6 @@ function git_commands.default(
           local lines = vim.tbl_filter(function(el)
             return #el > 0
           end, vim.api.nvim_buf_get_lines(cur_term, 0, -1, false))
-          vim.api.nvim_buf_delete(cur_term, { force = true })
           local log = function(...)
             local log_name = "Git"
             if code == 0 then
@@ -209,8 +208,9 @@ function git_commands.default(
             else
               log(cmd, "exited with code", code)
             end
-          elseif #lines < 10 then
+          elseif #lines < 10 and #vim.api.nvim_list_tabpages() > 1 then
             log(table.concat(lines, "\n"))
+            vim.api.nvim_buf_delete(cur_term, { force = true })
           end
         end
         cur_term_win = nil
