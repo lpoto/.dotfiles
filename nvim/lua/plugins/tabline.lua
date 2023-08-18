@@ -21,17 +21,25 @@ function M.config()
   setup_statusline()
   setup_tabline()
 
-  group_id = vim.api.nvim_create_augroup("RedrawTabline", { clear = true })
-  vim.api.nvim_create_autocmd({ "CursorMoved", "ModeChanged" }, {
-    group = group_id,
-    callback = function()
-      -- NOTE: sometimes the tabline is not redrawn when we want it to be
-      -- so we force it to redraw here.
-      vim.schedule(function()
-        vim.api.nvim_exec("redrawtabline", false)
-      end)
-    end,
-  })
+  vim.schedule(function()
+    group_id = vim.api.nvim_create_augroup("TabLine", { clear = true })
+    for _, v in ipairs({
+      { events = { "CursorMoved", "ModeChanged" } },
+      { events = "User", pattern = "GitDataChanged" },
+    }) do
+      vim.api.nvim_create_autocmd(v.events, {
+        pattern = v.pattern,
+        group = group_id,
+        callback = function()
+          -- NOTE: sometimes the tabline is not redrawn when we want it to be
+          -- so we force it to redraw here.
+          vim.schedule(function()
+            vim.api.nvim_exec("redrawtabline", false)
+          end)
+        end,
+      })
+    end
+  end)
 end
 
 function setup_statusline()
@@ -56,9 +64,10 @@ function setup_tabline()
   append_to_tabline("diagnostic_warn", "DiagnosticWarn", 5, 0.05)
   append_to_tabline("diagnostic_error", "DiagnosticError", 5, 0.05)
   append_tabline_section_separator()
-  append_to_tabline("filename", "TabLineSel", 0.45, 0.45, 50, "center")
-  append_to_tabline("tabcount", "TabLineFill", 0.20, 0.20, 20)
-  append_to_tabline("cursor", "TabLine", 0.10, 0.10, nil, "right")
+  append_to_tabline("filename", "TabLineSel", 0.48, 0.48, 100, "center")
+  append_to_tabline("git_branch", "TabLine", 0.15, 0.15, 100, "center")
+  append_to_tabline("tabcount", "TabLineFill", 0.07, 0.07, 20)
+  append_to_tabline("cursor", "TabLine", 0.05, 0.05, nil, "right")
 end
 
 function append_to_tabline(
@@ -232,6 +241,23 @@ function tabline_sections.filename(w)
     name = string.format("%s %s", name, m)
   end
   return name
+end
+
+function tabline_sections.git_branch(w)
+  local branch = type(vim.g.gitsigns_head) == "string" and vim.g.gitsigns_head
+    or ""
+  if branch == "" then
+    return ""
+  end
+  local n = vim.fn.strchars(branch)
+  if
+    type(vim.b.gitsigns_status) == "string"
+    and vim.b.gitsigns_status:len() > 0
+    and n + 3 + vim.b.gitsigns_status:len() <= w
+  then
+    branch = string.format("%s [%s]", branch, vim.b.gitsigns_status)
+  end
+  return branch
 end
 
 function tabline_sections.modified()

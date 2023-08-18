@@ -1,36 +1,74 @@
 --=============================================================================
 -------------------------------------------------------------------------------
---                                                                 FLATTEN.NVIM
---[[___________________________________________________________________________
+--                                                                     GITSIGNS
+--[[===========================================================================
+https://github.com/lewis6991/gitsigns.nvim
 https://github.com/willothy/flatten.nvim
 
-Allow opening files from terminal in the same nvim session.
+Show git blames of current line, allow staging hunks and buffers...
+Use flatten to open git commit files etc. in the same neovim session
 
-Add some convenient git commands, as now commit files may be opened in the
-same session now.
+keymaps:
+    - <leader>gd - Git diff
+    - <leader>gs - Git stage buffer
+    - <leader>gh - Git stage hunk
+    - <leader>gu - Git unstage hunk
+    - <leader>gr - Git reset buffer
+    - <leader>gc - Git commit
+    - <leader>ga - Git commit amend
+    - <leader>gp - Git pull
+    - <leader>gP - Git push
+    - <leader>gF - Git push force
+    - <leader>gt - Git tag
+    - <leader>gB - Git branch
 
-  - <leader>gc - git commit
-  - <leader>ga - git commit --amend
-  - <leader>gP - git push
-  - <leader>gF - git push --force
-  - <leader>gp - git pull
-  - <leader>gf - git fetch
-  - <leader>gB - git branch
-  - <leader>gr - git reset current file
-  - <leader>gs - git stage current file
-  - <leader>gu - git unstage current file
-------------------------------------------------------------------------------]]
+-----------------------------------------------------------------------------]]
 local M = {
-  "willothy/flatten.nvim",
-  lazy = false,
+  "lewis6991/gitsigns.nvim",
+  event = { "BufRead", "BufNewFile" },
+  dependencies = {
+    {
+      "willothy/flatten.nvim",
+      event = "VeryLazy",
+    },
+  },
+  cond = function()
+    return vim.fn.executable("git")
+  end,
 }
 
----@class Git
-local Git = {}
+function M.config()
+  Util.require("gitsigns", function(gitsigns)
+    gitsigns.setup({
+      signcolumn = false,
+      numhl = true,
+      current_line_blame = true,
+      current_line_blame_opts = {
+        virt_text = true,
+        virt_text_pos = "eol",
+        delay = 700,
+      },
+      on_attach = function(bufnr)
+        local opts = { buffer = bufnr }
+
+        vim.keymap.set("n", "<leader>gd", gitsigns.diffthis, opts)
+        vim.keymap.set("n", "<leader>gs", gitsigns.stage_buffer, opts)
+        vim.keymap.set("n", "<leader>gh", gitsigns.stage_hunk, opts)
+        vim.keymap.set("n", "<leader>gu", gitsigns.undo_stage_hunk, opts)
+        vim.keymap.set("n", "<leader>gr", gitsigns.reset_buffer, opts)
+      end,
+    })
+  end)
+end
+
 ---@class Shell
 local Shell = {}
 
-function M.config()
+---@class Git
+local Git = {}
+
+M.dependencies[1].cond = M.cond
+M.dependencies[1].config = function()
   vim.keymap.set("n", "<leader>gc", Git.commit)
   vim.keymap.set("n", "<leader>ga", Git.commit_amend)
   vim.keymap.set("n", "<leader>gp", Git.pull)
@@ -39,9 +77,6 @@ function M.config()
   vim.keymap.set("n", "<leader>gf", Git.fetch)
   vim.keymap.set("n", "<leader>gt", Git.tag)
   vim.keymap.set("n", "<leader>gB", Git.branch)
-  vim.keymap.set("n", "<leader>gr", Git.restore)
-  vim.keymap.set("n", "<leader>gs", Git.stage)
-  vim.keymap.set("n", "<leader>gu", Git.unstage)
 
   vim.api.nvim_create_user_command("Git", function(opts)
     Git:default({
@@ -110,42 +145,6 @@ end
 
 function Git:tag()
   Git:default("tag ")
-end
-
-function Git:restore()
-  if vim.bo.modified then
-    local ok, _ = pcall(vim.api.nvim_exec, "earlier 1f", false)
-    if not ok then
-      Util.log()
-        :warn("File is modified, please save it first before restoring")
-      return
-    end
-  end
-  local custom_success_message = "Successfully restored current file"
-  Git:default({
-    suffix = "restore " .. vim.fn.expand("%:p") .. " ",
-    ask_for_input = false,
-    custom_success_message = custom_success_message,
-    edit_after_end = true,
-  })
-end
-
-function Git:stage()
-  local custom_success_message = "Successfully staged current file"
-  Git:default({
-    suffix = "stage " .. vim.fn.expand("%:p") .. " ",
-    ask_for_input = false,
-    custom_success_message = custom_success_message,
-  })
-end
-
-function Git:unstage()
-  local custom_success_message = "Successfully unstaged current file"
-  Git:default({
-    suffix = "reset " .. vim.fn.expand("%:p") .. " ",
-    ask_for_input = false,
-    custom_success_message = custom_success_message,
-  })
 end
 
 function Git:pull()
