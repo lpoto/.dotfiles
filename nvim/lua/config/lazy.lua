@@ -15,9 +15,10 @@ local ensure_lazy, get_lazy_options
 local function load_lazy(lazy_path)
   ensure_lazy(lazy_path)
   vim.opt.runtimepath:prepend(lazy_path)
-  Util.require("lazy", function(lazy)
-    lazy.setup("plugins", get_lazy_options())
-  end)
+  Util.require(
+    "lazy",
+    function(lazy) lazy.setup("plugins", get_lazy_options()) end
+  )
 end
 
 function ensure_lazy(lazy_path)

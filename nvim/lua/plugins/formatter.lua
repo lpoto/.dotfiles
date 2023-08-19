@@ -16,16 +16,12 @@ local format
 M.keys = {
   {
     "<leader>f",
-    function()
-      format()
-    end,
+    function() format() end,
     mode = "n",
   },
   {
     "<leader>f",
-    function()
-      format(true)
-    end,
+    function() format(true) end,
     mode = "v",
   },
 }
@@ -69,18 +65,14 @@ Util.misc().attach_formatter = function(cfg, filetype)
           return
         end
         local opts = config.values or {}
-        if type(opts.filetype) ~= "table" then
-          opts.filetype = {}
-        end
+        if type(opts.filetype) ~= "table" then opts.filetype = {} end
         if type(opts.filetype[filetype]) ~= "table" then
           opts.filetype[filetype] = {}
         end
 
         table.insert(opts.filetype[filetype], f)
         formatter.setup(opts)
-        if type(cfg) ~= "string" then
-          cfg = "<custom>"
-        end
+        if type(cfg) ~= "string" then cfg = "<custom>" end
         Util.log("Formatter")
           :info("Attached formatter for " .. filetype .. ":", cfg)
       end
@@ -94,9 +86,7 @@ end
 
 local function attach_formatters()
   local filetype = vim.api.nvim_buf_get_option(0, "filetype")
-  if type(formatters_to_add[filetype]) ~= "table" then
-    return
-  end
+  if type(formatters_to_add[filetype]) ~= "table" then return end
   local to_add = formatters_to_add[filetype]
   formatters_to_add[filetype] = nil
   for _, f in ipairs(to_add) do

@@ -24,8 +24,6 @@ return {
   event = "ModeChanged *:[vV\x16]*",
   keys = "gc",
   config = function()
-    Util.require("Comment", function(comment)
-      comment.setup()
-    end)
+    Util.require("Comment", function(comment) comment.setup() end)
   end,
 }

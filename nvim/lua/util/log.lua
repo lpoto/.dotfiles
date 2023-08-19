@@ -68,9 +68,7 @@ end
 local function concat(...)
   local s = ""
   for _, v in ipairs({ select(1, ...) }) do
-    if type(v) ~= "string" then
-      v = vim.inspect(v)
-    end
+    if type(v) ~= "string" then v = vim.inspect(v) end
     if s:len() > 0 then
       s = s .. " " .. v
     else
@@ -85,14 +83,10 @@ function Log:__notify(level, title, delay, use_print, ...)
   local lvl = Log.Level[level:upper()]
   local log_lvl = type(self.level) == "number" and self.level
     or Log.Level.INFO
-  if lvl < log_lvl then
-    return
-  end
+  if lvl < log_lvl then return end
 
   local msg = concat(...)
-  if use_print then
-    return print(msg)
-  end
+  if use_print then return print(msg) end
   delay = delay or 0
   local n = debug.getinfo(3)
 
@@ -101,12 +95,8 @@ function Log:__notify(level, title, delay, use_print, ...)
       title = vim.fn.fnamemodify(n.short_src, ":t")
     end
     local s = ""
-    if type(n.name) == "string" then
-      s = n.name
-    end
-    if type(n.currentline) == "number" then
-      s = s .. ":" .. n.currentline
-    end
+    if type(n.name) == "string" then s = n.name end
+    if type(n.currentline) == "number" then s = s .. ":" .. n.currentline end
     if s:len() > 0 then
       if type(title) ~= "string" or title:len() == 0 then
         title = s

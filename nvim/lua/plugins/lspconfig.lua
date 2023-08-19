@@ -22,9 +22,7 @@ local on_lsp_attach
 function M.init()
   vim.api.nvim_create_autocmd("LspAttach", {
     callback = function(args)
-      vim.schedule(function()
-        on_lsp_attach(args)
-      end)
+      vim.schedule(function() on_lsp_attach(args) end)
     end,
   })
 
@@ -66,9 +64,7 @@ end
 
 function open_diagnostic_float()
   local n, _ = vim.diagnostic.open_float()
-  if not n then
-    Util.log("LSP"):warn("No diagnostics found")
-  end
+  if not n then Util.log("LSP"):warn("No diagnostics found") end
 end
 
 function configure_vim_diagnostic()
@@ -94,11 +90,9 @@ end
 ---@param server string|table
 ---@diagnostic disable-next-line: duplicate-set-field
 Util.misc().attach_language_server = function(server)
-  if type(server) == "string" then
-    server = {
-      name = server,
-    }
-  end
+  if type(server) == "string" then server = {
+    name = server,
+  } end
   if type(server) ~= "table" then
     Util.log():warn("No server provided")
     return

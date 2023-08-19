@@ -73,21 +73,21 @@ function M.config()
         },
       },
     })
-    vim.defer_fn(function()
-      vim.keymap.set("n", "<leader>m", notification_history)
-    end, 100)
+    vim.defer_fn(
+      function() vim.keymap.set("n", "<leader>m", notification_history) end,
+      100
+    )
   end)
 end
 
 local telescope_config_loaded = false
 local function telescope_config()
-  if telescope_config_loaded then
-    return
-  end
+  if telescope_config_loaded then return end
   telescope_config_loaded = true
-  Util.require("telescope", function(telescope)
-    telescope.load_extension("noice")
-  end)
+  Util.require(
+    "telescope",
+    function(telescope) telescope.load_extension("noice") end
+  )
 end
 
 ---Display notify history in a telescope prompt

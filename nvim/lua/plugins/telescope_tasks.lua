@@ -18,18 +18,22 @@ M.keys = {
   {
     "<leader>a",
     function()
-      Util.require("telescope", function(telescope)
-        telescope.extensions.tasks.tasks()
-      end)
+      Util.require(
+        "telescope",
+        function(telescope) telescope.extensions.tasks.tasks() end
+      )
     end,
     mode = "n",
   },
   {
     "<leader>e",
     function()
-      Util.require("telescope", function(telescope)
-        telescope.extensions.tasks.actions.toggle_last_output()
-      end)
+      Util.require(
+        "telescope",
+        function(telescope)
+          telescope.extensions.tasks.actions.toggle_last_output()
+        end
+      )
     end,
     mode = "n",
   },

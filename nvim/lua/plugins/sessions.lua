@@ -39,9 +39,11 @@ function M.config()
   vim.opt.sessionoptions =
     "buffers,curdir,folds,help,tabpages,winsize,terminal"
 
-  vim.api.nvim_create_user_command("Sessions", function()
-    list_sessions()
-  end, {})
+  vim.api.nvim_create_user_command(
+    "Sessions",
+    function() list_sessions() end,
+    {}
+  )
 
   vim.keymap.set("n", "<leader>s", "<cmd>Sessions<CR>")
   --- Create an autocomand that saves the session when you quit neovim.
@@ -58,9 +60,7 @@ function M.config()
       if vim.fn.isdirectory(session_dir) == 0 then
         -- NOTE: ensure that the sessions directory exists
         local ok, _ = pcall(vim.fn.mkdir, session_dir, "p")
-        if not ok then
-          return
-        end
+        if not ok then return end
       end
 
       -- NOTE: delete all arguments from the argument list
@@ -77,18 +77,12 @@ function M.config()
       local removed = 0
 
       local check_buffer = function(buf)
-        if not vim.api.nvim_buf_is_valid(buf) then
-          return false
-        end
+        if not vim.api.nvim_buf_is_valid(buf) then return false end
         local filetype = vim.api.nvim_buf_get_option(buf, "filetype") or ""
         local buftype = vim.api.nvim_buf_get_option(buf, "buftype") or ""
-        if buftype:len() > 0 or filetype:len() == 0 then
-          return false
-        end
+        if buftype:len() > 0 or filetype:len() == 0 then return false end
         for _, pattern in ipairs(ignore_filetype_patterns) do
-          if filetype:match(pattern) then
-            return false
-          end
+          if filetype:match(pattern) then return false end
         end
         return true
       end
@@ -103,9 +97,7 @@ function M.config()
       -- NOTE: if after removing the buffers above, there are no
       -- buffers left, then do not save the session.
       -- This is to avoid saving empty sessions.
-      if #buffers - removed <= 0 then
-        return
-      end
+      if #buffers - removed <= 0 then return end
 
       local name = escape_path(vim.fn.getcwd())
       local file = session_dir .. "/" .. name .. ".vim"
@@ -124,9 +116,7 @@ local function select_session(prompt_bufnr)
     { "telescope.actions", "telescope.actions.state" },
     function(actions, action_state)
       local selection = action_state.get_selected_entry()
-      if selection == nil then
-        return
-      end
+      if selection == nil then return end
 
       -- Close the prompt when selecting a session
       actions.close(prompt_bufnr)
@@ -134,12 +124,15 @@ local function select_session(prompt_bufnr)
       -- NOTE: ensure the session file exists
       if vim.fn.filereadable(session_file) == 1 then
         -- if the session file exists, load it
-        vim.defer_fn(function()
-          vim.api.nvim_exec(
-            "source " .. vim.fn.fnameescape(session_file),
-            true
-          )
-        end, 10)
+        vim.defer_fn(
+          function()
+            vim.api.nvim_exec(
+              "source " .. vim.fn.fnameescape(session_file),
+              true
+            )
+          end,
+          10
+        )
       else
         -- Notify that the selected session is no longer available
         Util.log():warn("Session no longer available")
@@ -154,9 +147,7 @@ local function delete_selected_session(prompt_bufnr)
     local picker = action_state.get_current_picker(prompt_bufnr)
     local selection = action_state.get_selected_entry()
 
-    if selection == nil then
-      return
-    end
+    if selection == nil then return end
 
     local session_file = session_dir .. "/" .. selection.value
 
@@ -165,9 +156,7 @@ local function delete_selected_session(prompt_bufnr)
     else
       Util.log():info("Session deleted")
       -- Filter out the deleted session from the picker
-      picker:delete_selection(function(item)
-        return selection == item
-      end)
+      picker:delete_selection(function(item) return selection == item end)
     end
   end)
 end
@@ -218,20 +207,22 @@ function list_sessions(opts)
       attach_mappings = function(prompt_bufnr, map)
         -- NOTE: load the session under the cursor
         -- when pressing <CR>
-        actions.select_default:replace(function()
-          select_session(prompt_bufnr)
-        end)
+        actions.select_default:replace(
+          function() select_session(prompt_bufnr) end
+        )
         -- NOTE: delete the session under
         -- the cursor when <Ctrl-d> is pressed
-        map("n", "<C-d>", function()
-          delete_selected_session(prompt_bufnr)
-        end)
-        map("n", "d", function()
-          delete_selected_session(prompt_bufnr)
-        end)
-        map("i", "<C-d>", function()
-          delete_selected_session(prompt_bufnr)
-        end)
+        map(
+          "n",
+          "<C-d>",
+          function() delete_selected_session(prompt_bufnr) end
+        )
+        map("n", "d", function() delete_selected_session(prompt_bufnr) end)
+        map(
+          "i",
+          "<C-d>",
+          function() delete_selected_session(prompt_bufnr) end
+        )
         return true
       end,
     }, opts)
@@ -243,14 +234,10 @@ function list_sessions(opts)
       -- under the current working directory is selected
       -- when opening the session list.
       -- If it exists...
-      if rep >= max_reps then
-        return
-      end
+      if rep >= max_reps then return end
       vim.defer_fn(function()
         local picker = action_state.get_current_picker(vim.fn.bufnr())
-        if picker == nil then
-          return
-        end
+        if picker == nil then return end
         for k, v in pairs(picker.finder.results) do
           if
             unescape_path(vim.fn.fnamemodify(v.value, ":r"))

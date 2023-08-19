@@ -15,9 +15,7 @@ function M.config()
     callback = function()
       Util.require({ "lint" }, function(lint)
         local linters = (lint.linters_by_ft or {})[vim.bo.filetype] or {}
-        if #linters == 0 then
-          return
-        end
+        if #linters == 0 then return end
         if #linters == 1 then
           Util.log("Lint"):debug("Linting with:", linters[1])
         else
@@ -40,9 +38,7 @@ Util.misc().attach_linter = function(linter, filetype)
     Util.log():warn("Invalid filetype for linter:", filetype)
     return
   end
-  if type(linter) == "string" then
-    linter = { linter }
-  end
+  if type(linter) == "string" then linter = { linter } end
   if type(linter) ~= "table" then
     Util.log():warn("Invalid linter:", linter)
     return
@@ -54,9 +50,7 @@ Util.misc().attach_linter = function(linter, filetype)
     end
   end
   Util.require("lint", function(lint)
-    if type(lint.linters_by_ft) ~= "table" then
-      lint.linters_by_ft = {}
-    end
+    if type(lint.linters_by_ft) ~= "table" then lint.linters_by_ft = {} end
     if type(lint.linters_by_ft[filetype]) ~= "table" then
       lint.linters_by_ft[filetype] = {}
     end

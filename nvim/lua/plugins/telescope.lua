@@ -165,16 +165,12 @@ function M.config()
           live_grep = {
             hidden = true,
             no_ignore = true,
-            additional_args = function()
-              return { "--hidden", "-u" }
-            end,
+            additional_args = function() return { "--hidden", "-u" } end,
           },
           grep_string = {
             hidden = true,
             no_ignore = true,
-            additional_args = function()
-              return { "--hidden", "-u" }
-            end,
+            additional_args = function() return { "--hidden", "-u" } end,
           },
           marks = {
             attach_mappings = attach_marks_mappings,
@@ -259,13 +255,12 @@ function attach_marks_mappings(_, map)
         end
       end
       local picker = state.get_current_picker(vim.api.nvim_get_current_buf())
-      if type(picker) == "table" then
-        picker:close_existing_pickers()
-      end
+      if type(picker) == "table" then picker:close_existing_pickers() end
       vim.schedule(function()
-        Util.require("telescope.builtin", function(telescope_builtin)
-          telescope_builtin.marks()
-        end)
+        Util.require(
+          "telescope.builtin",
+          function(telescope_builtin) telescope_builtin.marks() end
+        )
       end)
     end)
   end)

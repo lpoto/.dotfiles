@@ -22,9 +22,7 @@ end
 
 local override
 function M.config()
-  if not scheme_config() then
-    return
-  end
+  if not scheme_config() then return end
   override({
     { "Identifier", { link = "Normal" } },
     { "LineNr", { link = "WinSeparator" } },
@@ -63,9 +61,7 @@ function override(o)
   local errs = {}
   for _, ov in ipairs(o) do
     local ok, err = pcall(vim.api.nvim_set_hl, 0, unpack(ov))
-    if not ok then
-      table.insert(errs, err)
-    end
+    if not ok then table.insert(errs, err) end
   end
   if #errs > 0 then
     Util.log({ delay = 200 }):warn(table.concat(errs, "\n"))

@@ -41,9 +41,7 @@ function util.require(module, callback, silent)
   if type(module) == "string" then
     module = { module }
   elseif type(module) ~= "table" then
-    if not silent then
-      util.log():warn("module must be a string or table")
-    end
+    if not silent then util.log():warn("module must be a string or table") end
   end
   local res = {}
   for _, m in ipairs(module) do
@@ -59,9 +57,7 @@ function util.require(module, callback, silent)
   if type(callback) == "function" then
     local ok, v = pcall(callback, unpack(res))
     if not ok then
-      if not silent then
-        util.log({ delay = 250 }):error(v)
-      end
+      if not silent then util.log({ delay = 250 }):error(v) end
       return
     end
     return v
@@ -72,9 +68,7 @@ end
 ---@param s1 string
 ---@param s2 string
 function util.string_matching_score(s1, s2)
-  if type(s1) ~= "string" or type(s2) ~= "string" then
-    return 0
-  end
+  if type(s1) ~= "string" or type(s2) ~= "string" then return 0 end
   local score = 0
   for i = 1, s2:len() do
     local c1 = s2:sub(i, i)
@@ -103,9 +97,7 @@ function util.__init_ftplugin()
         return
       end
       local filetype = opts.match
-      if ftplugins_loaded[filetype] then
-        return
-      end
+      if ftplugins_loaded[filetype] then return end
       ftplugins_loaded[filetype] = true
 
       local formatter = vim.g[filetype .. "_formatter"] or vim.b.formatter

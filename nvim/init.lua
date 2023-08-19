@@ -2,7 +2,7 @@
 -------------------------------------------------------------------------------
 --                                                                         INIT
 --=============================================================================
-if vim.loop.os_uname().sysname == "Windows" then
+if vim.uv.os_uname().sysname == "Windows" then
   print("This configuration does not support Windows.")
   return
 end

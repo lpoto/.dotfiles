@@ -9,11 +9,13 @@ Show git blames of current line, allow staging hunks and buffers...
 Use flatten to open git commit files etc. in the same neovim session
 
 keymaps:
+# gitsigns
     - <leader>gd - Git diff
     - <leader>gs - Git stage buffer
     - <leader>gh - Git stage hunk
     - <leader>gu - Git unstage hunk
     - <leader>gr - Git reset buffer
+# flatten
     - <leader>gc - Git commit
     - <leader>ga - Git commit amend
     - <leader>gp - Git pull
@@ -32,12 +34,10 @@ local M = {
       event = "VeryLazy",
     },
   },
-  cond = function()
-    return vim.fn.executable("git")
-  end,
 }
 
 function M.config()
+  local logged = false
   Util.require("gitsigns", function(gitsigns)
     gitsigns.setup({
       signcolumn = false,
@@ -46,9 +46,14 @@ function M.config()
       current_line_blame_opts = {
         virt_text = true,
         virt_text_pos = "eol",
-        delay = 700,
+        delay = 1000,
       },
+      update_debounce = 250,
       on_attach = function(bufnr)
+        if not logged then
+          Util.log("Git"):debug("Attached gistigns")
+          logged = true
+        end
         local opts = { buffer = bufnr }
 
         vim.keymap.set("n", "<leader>gd", gitsigns.diffthis, opts)
@@ -67,7 +72,6 @@ local Shell = {}
 ---@class Git
 local Git = {}
 
-M.dependencies[1].cond = M.cond
 M.dependencies[1].config = function()
   vim.keymap.set("n", "<leader>gc", Git.commit)
   vim.keymap.set("n", "<leader>ga", Git.commit_amend)
@@ -78,33 +82,31 @@ M.dependencies[1].config = function()
   vim.keymap.set("n", "<leader>gt", Git.tag)
   vim.keymap.set("n", "<leader>gB", Git.branch)
 
-  vim.api.nvim_create_user_command("Git", function(opts)
-    Git:default({
-      suffix = opts.args,
-      ask_for_input = opts.args:len() == 0,
-    })
-  end, {
-    nargs = "*",
-  })
+  vim.api.nvim_create_user_command(
+    "Git",
+    function(opts)
+      Git:default({
+        suffix = opts.args,
+        ask_for_input = opts.args:len() == 0,
+      })
+    end,
+    {
+      nargs = "*",
+    }
+  )
 
   Util.require("flatten", function(flatten)
     flatten.setup({
       callbacks = {
-        should_block = function()
-          return true
-        end,
-        should_nest = function()
-          return false
-        end,
+        should_block = function() return true end,
+        should_nest = function() return false end,
       },
       block_for = {},
       window = {
         diff = "tab_vsplit",
         open = function(files, _, stdin_buf)
           local focus = files[1] or files[#files]
-          if stdin_buf then
-            focus = stdin_buf
-          end
+          if stdin_buf then focus = stdin_buf end
           local buf, win = Shell:open_float(" " .. (focus.fname or "") .. " ")
           vim.api.nvim_set_current_buf(focus.bufnr)
           buf = focus.bufnr
@@ -115,61 +117,49 @@ M.dependencies[1].config = function()
   end)
 end
 
-function Git:commit()
-  Git:default("commit ")
-end
+function Git:commit() Git:default("commit ") end
 
-function Git:commit_amend()
-  Git:default("commit --amend ")
-end
+function Git:commit_amend() Git:default("commit --amend ") end
 
 function Git:push()
-  Shell:fetch_git_data(function(remote, branch)
-    Git:default("push " .. remote .. " " .. branch .. " ")
-  end)
+  Shell:fetch_git_data(
+    function(remote, branch)
+      Git:default("push " .. remote .. " " .. branch .. " ")
+    end
+  )
 end
 
 function Git:push_force()
-  Shell:fetch_git_data(function(remote, branch)
-    Git:default("push " .. remote .. " " .. branch .. " --force ")
-  end)
+  Shell:fetch_git_data(
+    function(remote, branch)
+      Git:default("push " .. remote .. " " .. branch .. " --force ")
+    end
+  )
 end
 
-function Git:fetch()
-  Git:default("fetch ")
-end
+function Git:fetch() Git:default("fetch ") end
 
-function Git:branch()
-  Git:default("branch ")
-end
+function Git:branch() Git:default("branch ") end
 
-function Git:tag()
-  Git:default("tag ")
-end
+function Git:tag() Git:default("tag ") end
 
 function Git:pull()
-  Shell:fetch_git_data(function(remote, branch)
-    Git:default({ suffix = "pull " .. remote .. " " .. branch .. " " })
-  end)
+  Shell:fetch_git_data(
+    function(remote, branch)
+      Git:default({ suffix = "pull " .. remote .. " " .. branch .. " " })
+    end
+  )
 end
 
 function Git:default(opts)
-  if type(opts) == "string" then
-    opts = { suffix = opts }
-  end
-  if type(opts) ~= "table" then
-    opts = {}
-  end
+  if type(opts) == "string" then opts = { suffix = opts } end
+  if type(opts) ~= "table" then opts = {} end
   local cur_buf = vim.api.nvim_get_current_buf()
 
   local bufs = vim.api.nvim_list_bufs()
 
-  if opts.ask_for_input == nil then
-    opts.ask_for_input = true
-  end
-  if type(opts.suffix) ~= "string" then
-    opts.suffix = ""
-  end
+  if opts.ask_for_input == nil then opts.ask_for_input = true end
+  if type(opts.suffix) ~= "string" then opts.suffix = "" end
   Shell:fetch_git_data(function()
     local o = {
       cmd = "git ",
@@ -193,9 +183,10 @@ function Git:default(opts)
       end)
       if o.win ~= nil and vim.api.nvim_win_is_valid(o.win) then
         local cur_term = vim.api.nvim_win_get_buf(o.win)
-        local lines = vim.tbl_filter(function(el)
-          return #el > 0
-        end, vim.api.nvim_buf_get_lines(cur_term, 0, -1, false))
+        local lines = vim.tbl_filter(
+          function(el) return #el > 0 end,
+          vim.api.nvim_buf_get_lines(cur_term, 0, -1, false)
+        )
         local log = function(...)
           local log_name = "Git"
           if code == 0 then
@@ -246,24 +237,18 @@ local shell_augroup = "ShellAugroup"
 ---@param on_error nil|function(exit_code: number)
 function Shell:fetch_git_data(callback, on_error)
   on_error = on_error
-    or function(_)
-      Util.log():warn("Could not fetch git data")
-    end
+    or function(_) Util.log("Shell"):warn("Could not fetch git data") end
   local remote = ""
   vim.fn.jobstart("git remote show", {
     detach = false,
     on_stdout = function(_, data)
       for _, d in ipairs(data) do
-        if d:len() > 0 then
-          remote = d
-        end
+        if d:len() > 0 then remote = d end
       end
     end,
     on_exit = function(_, remote_exit_code)
       if remote_exit_code ~= 0 then
-        if type(on_error) == "function" then
-          return on_error()
-        end
+        if type(on_error) == "function" then return on_error() end
         return
       end
       local branch = ""
@@ -271,16 +256,12 @@ function Shell:fetch_git_data(callback, on_error)
         detach = false,
         on_stdout = function(_, data)
           for _, d in ipairs(data) do
-            if d:len() > 0 then
-              branch = d
-            end
+            if d:len() > 0 then branch = d end
           end
         end,
         on_exit = function(_, code)
           if code ~= 0 then
-            if type(on_error) == "function" then
-              return on_error()
-            end
+            if type(on_error) == "function" then return on_error() end
             return
           end
           return callback(remote, branch)
@@ -292,9 +273,7 @@ end
 
 local term_winid = nil
 function Shell:run_in_float(opts)
-  if type(opts) ~= "table" then
-    opts = {}
-  end
+  if type(opts) ~= "table" then opts = {} end
   if type(opts.cmd) ~= "string" then
     Util.log("Shell"):warn("The command should be a string")
     return
@@ -306,9 +285,7 @@ function Shell:run_in_float(opts)
       cancelreturn = false,
       completion = "file",
     })
-    if type(opts.suffix) ~= "string" then
-      return
-    end
+    if type(opts.suffix) ~= "string" then return end
   end
   if type(opts.suffix) == "string" then
     opts.cmd = opts.cmd:gsub("%s+$", "") .. " " .. opts.suffix
@@ -339,9 +316,7 @@ function Shell:run_in_float(opts)
       EDITOR = "nvim",
     },
     on_exit = function(...)
-      if type(opts.on_exit) == "function" then
-        opts.on_exit(...)
-      end
+      if type(opts.on_exit) == "function" then opts.on_exit(...) end
       if
         vim.api.nvim_get_current_win() == opts.win
         and vim.bo.buftype == "terminal"
@@ -411,15 +386,9 @@ function Shell:get_centered_float_opts(lines, columns, scale)
 
   local row = 1
   local col = (columns - w) / 2
-  if columns % 2 ~= 0 then
-    col = col - 1
-  end
-  if w == columns then
-    col = 0
-  end
-  if h == lines then
-    row = 0
-  end
+  if columns % 2 ~= 0 then col = col - 1 end
+  if w == columns then col = 0 end
+  if h == lines then row = 0 end
 
   return {
     width = w,

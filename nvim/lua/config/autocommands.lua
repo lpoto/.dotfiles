@@ -41,12 +41,15 @@ vim.api.nvim_create_autocmd({ "WinLeave" }, {
 vim.api.nvim_create_autocmd("TextYankPost", {
   group = vim.api.nvim_create_augroup("HighlightYank", { clear = true }),
   callback = function()
-    Util.require("vim.highlight", function(hl)
-      hl.on_yank({
-        higroup = "IncSearch",
-        timeout = 35,
-      })
-    end)
+    Util.require(
+      "vim.highlight",
+      function(hl)
+        hl.on_yank({
+          higroup = "IncSearch",
+          timeout = 35,
+        })
+      end
+    )
   end,
 })
 
@@ -57,11 +60,7 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 vim.api.nvim_create_autocmd("BufEnter", {
   group = vim.api.nvim_create_augroup("StopAutoInsert", { clear = true }),
   callback = function()
-    if vim.bo.buftype ~= "" then
-      return
-    end
-    vim.defer_fn(function()
-      vim.api.nvim_exec("stopinsert", false)
-    end, 20)
+    if vim.bo.buftype ~= "" then return end
+    vim.defer_fn(function() vim.api.nvim_exec("stopinsert", false) end, 20)
   end,
 })

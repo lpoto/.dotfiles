@@ -22,11 +22,14 @@ local M = {
 }
 
 function M.config()
-  Util.require("mason", function(mason)
-    mason.setup({
-      ui = { border = "rounded" },
-    })
-  end)
+  Util.require(
+    "mason",
+    function(mason)
+      mason.setup({
+        ui = { border = "rounded" },
+      })
+    end
+  )
 end
 
 return M

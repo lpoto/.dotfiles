@@ -14,17 +14,21 @@ local M = {
 }
 
 local function file_browser()
-  Util.require("telescope", function(telescope)
-    telescope.extensions.file_browser.file_browser()
-  end)
+  Util.require(
+    "telescope",
+    function(telescope) telescope.extensions.file_browser.file_browser() end
+  )
 end
 
 local function relative_file_browser()
-  Util.require("telescope", function(telescope)
-    telescope.extensions.file_browser.file_browser({
-      path = "%:p:h",
-    })
-  end)
+  Util.require(
+    "telescope",
+    function(telescope)
+      telescope.extensions.file_browser.file_browser({
+        path = "%:p:h",
+      })
+    end
+  )
 end
 
 M.keys = {

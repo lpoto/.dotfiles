@@ -33,9 +33,9 @@ function M.config()
         callback = function()
           -- NOTE: sometimes the tabline is not redrawn when we want it to be
           -- so we force it to redraw here.
-          vim.schedule(function()
-            vim.api.nvim_exec("redrawtabline", false)
-          end)
+          vim.schedule(
+            function() vim.api.nvim_exec("redrawtabline", false) end
+          )
         end,
       })
     end
@@ -100,9 +100,7 @@ end
 
 function append_tabline_section_separator()
   vim.opt.tabline:append(" %= ")
-  if empty_section then
-    return
-  end
+  if empty_section then return end
   section_count = section_count + 1
   empty_section = true
 end
@@ -133,18 +131,10 @@ function tabline_sections.get(name, w, max_w, min_w, align)
     return align_center("", width)
   end
   local n = vim.fn.strchars(result)
-  if n > max_width then
-    return align_center("", width)
-  end
-  if align == "center" then
-    return align_center(result, width)
-  end
-  if align == "left" then
-    return pad_right(result, width)
-  end
-  if align == "right" then
-    return pad_left(result, width)
-  end
+  if n > max_width then return align_center("", width) end
+  if align == "center" then return align_center(result, width) end
+  if align == "left" then return pad_right(result, width) end
+  if align == "right" then return pad_left(result, width) end
 end
 
 function tabline_sections.spacer(width)
@@ -200,12 +190,8 @@ function tabline_sections.filename(w)
   local s = ""
   local bufnr = vim.api.nvim_get_current_buf()
   local buftype = vim.api.nvim_buf_get_option(bufnr, "buftype")
-  if buftype == "quickfix" then
-    return "Quickfix"
-  end
-  if buftype == "help" then
-    return "Help"
-  end
+  if buftype == "quickfix" then return "Quickfix" end
+  if buftype == "help" then return "Help" end
   local wintype = vim.fn.win_gettype()
   if wintype ~= "" or buftype ~= "" and buftype ~= "terminal" then
     return s
@@ -237,18 +223,14 @@ function tabline_sections.filename(w)
   end
 
   local m = tabline_sections.modified()
-  if m:len() > 0 then
-    name = string.format("%s %s", name, m)
-  end
+  if m:len() > 0 then name = string.format("%s %s", name, m) end
   return name
 end
 
 function tabline_sections.git_branch(w)
   local branch = type(vim.g.gitsigns_head) == "string" and vim.g.gitsigns_head
     or ""
-  if branch == "" then
-    return ""
-  end
+  if branch == "" then return "" end
   local n = vim.fn.strchars(branch)
   if
     type(vim.b.gitsigns_status) == "string"
@@ -262,9 +244,7 @@ end
 
 function tabline_sections.modified()
   local modified = vim.api.nvim_buf_get_option(0, "modified") and "[+]" or ""
-  if modified:len() > 0 then
-    return modified
-  end
+  if modified:len() > 0 then return modified end
   return vim.api.nvim_buf_get_option(0, "readonly") and "[~]" or ""
 end
 
@@ -294,17 +274,13 @@ end
 
 function pad_left(s, w)
   local n = vim.fn.strchars(s)
-  if n < w then
-    return string.rep(" ", w - n) .. s
-  end
+  if n < w then return string.rep(" ", w - n) .. s end
   return s
 end
 
 function pad_right(s, w)
   local n = vim.fn.strchars(s)
-  if n < w then
-    return s .. string.rep(" ", w - n)
-  end
+  if n < w then return s .. string.rep(" ", w - n) end
   return s
 end
 
@@ -312,13 +288,9 @@ function align_center(s, w)
   local n = vim.fn.strchars(s)
   if n < w then
     local l = math.ceil((w - n) / 2)
-    if l > 0 then
-      s = string.rep(" ", l) .. s
-    end
+    if l > 0 then s = string.rep(" ", l) .. s end
     local r = w - n - l
-    if r > 0 then
-      s = s .. string.rep(" ", r)
-    end
+    if r > 0 then s = s .. string.rep(" ", r) end
   end
   return s
 end

@@ -20,9 +20,7 @@ local max_buf_count = 5
 
 local init_autocommands
 
-function M.config()
-  init_autocommands()
-end
+function M.config() init_autocommands() end
 
 local buffer_timestamps = {}
 local last_buf = nil
@@ -65,13 +63,9 @@ end
 local included_in_wipe_buffers_patterns
 
 function retire_buffers()
-  if vim.bo.buftype ~= "" then
-    return
-  end
+  if vim.bo.buftype ~= "" then return end
   local cur_buf = vim.api.nvim_get_current_buf()
-  if last_buf == cur_buf then
-    return
-  end
+  if last_buf == cur_buf then return end
   last_buf = cur_buf
 
   vim.schedule(function()
@@ -83,16 +77,10 @@ function retire_buffers()
     buffer_timestamps[cur_buf] = vim.uv.now()
 
     local buffers = vim.api.nvim_list_bufs()
-    if #buffers < m then
-      return
-    end
+    if #buffers < m then return end
     buffers = vim.tbl_filter(function(buf)
-      if not buf or not vim.api.nvim_buf_is_valid(buf) then
-        return false
-      end
-      if vim.fn.bufwinid(buf) ~= -1 then
-        return true
-      end
+      if not buf or not vim.api.nvim_buf_is_valid(buf) then return false end
+      if vim.fn.bufwinid(buf) ~= -1 then return true end
       local n = vim.api.nvim_buf_get_name(buf)
       for _, pattern in ipairs(wipe_buffers_patterns) do
         if type(n) == "string" and n:len() > 0 and n:match(pattern) then
@@ -119,28 +107,18 @@ function retire_buffers()
     end, buffers)
 
     m = math.max(m, 2)
-    if #buffers < m then
-      return
-    end
+    if #buffers < m then return end
     --- Sort buffers by the number of times they have been entered,
     --- and then by the last time they were entered.
     local sort_fn = function(a, b)
       local a_valid = vim.api.nvim_buf_is_valid(a)
       local b_valid = vim.api.nvim_buf_is_valid(b)
-      if a_valid and not b_valid then
-        return true
-      end
-      if not a_valid and b_valid then
-        return false
-      end
+      if a_valid and not b_valid then return true end
+      if not a_valid and b_valid then return false end
       local a_included = included_in_wipe_buffers_patterns(a)
       local b_included = included_in_wipe_buffers_patterns(b)
-      if a_included and not b_included then
-        return true
-      end
-      if not a_included and b_included then
-        return false
-      end
+      if a_included and not b_included then return true end
+      if not a_included and b_included then return false end
       local a_timestamp = buffer_timestamps[a] or 0
       local b_timestamp = buffer_timestamps[b] or 0
       return a_timestamp < b_timestamp

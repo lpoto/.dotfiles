@@ -21,9 +21,7 @@ function header()
   if vim.fn.filereadable(ascii_file) == 1 then
     local ok
     ok, hdr = pcall(vim.fn.readfile, ascii_file)
-    if not ok then
-      hdr = {}
-    end
+    if not ok then hdr = {} end
   else
     hdr = {
       [[ ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿]],
@@ -67,29 +65,34 @@ function buttons()
     val = {
       button(":Sessions", "Sessions", "Sessions"),
       button("<leader>to", "Old Files", function()
-        Util.require("telescope.builtin", function(builtin)
-          builtin.oldfiles()
-        end)
+        Util.require(
+          "telescope.builtin",
+          function(builtin) builtin.oldfiles() end
+        )
       end),
       button("<leader>tf", "Find Files", function()
-        Util.require("telescope.builtin", function(builtin)
-          builtin.find_files()
-        end)
+        Util.require(
+          "telescope.builtin",
+          function(builtin) builtin.find_files() end
+        )
       end),
       button("<leader>tb", "File Browser", function()
-        Util.require("telescope", function(telescope)
-          telescope.extensions.file_browser.file_browser()
-        end)
+        Util.require(
+          "telescope",
+          function(telescope) telescope.extensions.file_browser.file_browser() end
+        )
       end),
       button("<leader>tg", "Live Grep", function()
-        Util.require("telescope.builtin", function(builtin)
-          builtin.live_grep()
-        end)
+        Util.require(
+          "telescope.builtin",
+          function(builtin) builtin.live_grep() end
+        )
       end),
       button("<leader>gg", "Git status", function()
-        Util.require("telescope.builtin", function(builtin)
-          builtin.git_status()
-        end)
+        Util.require(
+          "telescope.builtin",
+          function(builtin) builtin.git_status() end
+        )
       end),
       button(":Lazy", "Plugins", "Lazy"),
       button(":Mason", "Package Manager", "Mason"),
