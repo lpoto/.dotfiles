@@ -73,6 +73,7 @@ local Shell = {}
 local Git = {}
 
 M.dependencies[1].config = function()
+  vim.keymap.set("n", "<leader>g", Git.default)
   vim.keymap.set("n", "<leader>gc", Git.commit)
   vim.keymap.set("n", "<leader>ga", Git.commit_amend)
   vim.keymap.set("n", "<leader>gp", Git.pull)
@@ -81,19 +82,6 @@ M.dependencies[1].config = function()
   vim.keymap.set("n", "<leader>gf", Git.fetch)
   vim.keymap.set("n", "<leader>gt", Git.tag)
   vim.keymap.set("n", "<leader>gB", Git.branch)
-
-  vim.api.nvim_create_user_command(
-    "Git",
-    function(opts)
-      Git:default({
-        suffix = opts.args,
-        ask_for_input = opts.args:len() == 0,
-      })
-    end,
-    {
-      nargs = "*",
-    }
-  )
 
   Util.require("flatten", function(flatten)
     flatten.setup({

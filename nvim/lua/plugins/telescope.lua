@@ -24,7 +24,7 @@ Keymaps:
  - "<leader>gl"  - git commits
  - "<leader>gb"  - git branches
  - "<leader>gS"  - git stash
- - "<leader>gg" or "<leader>g"  - git status
+ - "<leader>gg"  - git status
 
  Use <C-q> in a telescope prompt to send the results to quickfix.
 -----------------------------------------------------------------------------]]
@@ -75,7 +75,6 @@ M.keys = {
   { "gd", builtin("lsp_definitions"), mode = "n" },
   { "gr", builtin("lsp_references"), mode = "n" },
 
-  { "<leader>g", builtin("git_status"), mode = "n" },
   { "<leader>gg", builtin("git_status"), mode = "n" },
   { "<leader>gl", builtin("git_commits"), mode = "n" },
   { "<leader>gS", builtin("git_stash"), mode = "n" },

@@ -37,6 +37,14 @@ function M.config()
           view = "mini",
         },
       },
+      views = {
+        cmdline_popup = {
+          position = {
+            row = "25%",
+            col = "50%",
+          },
+        },
+      },
       presets = {
         bottom_search = true,
         command_palette = true,
@@ -93,7 +101,7 @@ end
 ---Display notify history in a telescope prompt
 function notification_history()
   telescope_config()
-  vim.api.nvim_exec("Telescope noice", false)
+  Util.require("noice", function(noice) noice.cmd("telescope") end)
 end
 
 return M
