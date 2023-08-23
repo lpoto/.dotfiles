@@ -61,7 +61,7 @@ Util.misc().attach_formatter = function(cfg, filetype)
       function(formatter, ft, config)
         local f = type(cfg) == "string" and ft[cfg] or cfg
         if type(f) ~= "function" then
-          Util.log():warn("Invalid formatter for", filetype)
+          Util.log("Formatter"):warn("Invalid formatter for", filetype)
           return
         end
         local opts = config.values or {}

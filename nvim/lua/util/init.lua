@@ -98,16 +98,6 @@ function util.__init_ftplugin()
         vim.g[filetype .. "_formatter"] = nil
         vim.api.nvim_buf_del_var(opts.buf, "formatter")
       end
-      local linter
-      ok, linter = true, vim.g[filetype .. "_linter"]
-      if linter == nil then
-        ok, linter = pcall(vim.api.nvim_buf_get_var, opts.buf, "linter")
-      end
-      if ok and linter ~= nil then
-        util.misc().attach_linter(linter, filetype)
-        vim.g[filetype .. "_linter"] = nil
-        vim.api.nvim_buf_del_var(opts.buf, "linter")
-      end
       local language_server
       ok, language_server = true, vim.g[filetype .. "_language_server"]
       if language_server == nil then
