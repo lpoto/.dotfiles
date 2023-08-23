@@ -41,14 +41,18 @@ function util.require(module, callback, silent)
   if type(module) == "string" then
     module = { module }
   elseif type(module) ~= "table" then
-    if not silent then util.log():warn("module must be a string or table") end
+    if not silent then
+      util.log("Util"):warn("[require] module must be a string or table")
+    end
   end
   local res = {}
   for _, m in ipairs(module) do
     local ok, v = pcall(require, m)
     if not ok then
       if not silent then
-        util.log({ delay = 250 }):warn("Error loading", m, "-", v)
+        util
+          .log({ delay = 250, title = "Util" })
+          :warn("[require] Error loading", m, "-", v)
       end
       return
     end
@@ -57,31 +61,14 @@ function util.require(module, callback, silent)
   if type(callback) == "function" then
     local ok, v = pcall(callback, unpack(res))
     if not ok then
-      if not silent then util.log({ delay = 250 }):error(v) end
+      if not silent then
+        util.log({ delay = 250, title = "Util" }):error("[require]", v)
+      end
       return
     end
     return v
   end
   return unpack(res)
-end
-
----@param s1 string
----@param s2 string
-function util.string_matching_score(s1, s2)
-  if type(s1) ~= "string" or type(s2) ~= "string" then return 0 end
-  local score = 0
-  for i = 1, s2:len() do
-    local c1 = s2:sub(i, i)
-    for j = 1, s1:len() do
-      local c2 = s1:sub(j, j)
-      if c1 == c2 then
-        local add = math.max(1, 5 - i)
-        score = score + add
-        break
-      end
-    end
-  end
-  return score
 end
 
 local ftplugins_loaded = {}
@@ -93,6 +80,8 @@ function util.__init_ftplugin()
         vim.bo.buftype ~= ""
         or type(opts) ~= "table"
         or type(opts.match) ~= "string"
+        or type(opts.buf) ~= "number"
+        or not vim.api.nvim_buf_is_valid(opts.buf)
       then
         return
       end
@@ -100,24 +89,35 @@ function util.__init_ftplugin()
       if ftplugins_loaded[filetype] then return end
       ftplugins_loaded[filetype] = true
 
-      local formatter = vim.g[filetype .. "_formatter"] or vim.b.formatter
-      local linter = vim.g[filetype .. "_linter"] or vim.b.linter
-      local language_server = vim.g[filetype .. "_language_server"]
-        or vim.b.language_server
-      if formatter ~= nil then
+      local ok, formatter = true, vim.g[filetype .. "_formatter"]
+      if formatter == nil then
+        ok, formatter = pcall(vim.api.nvim_buf_get_var, opts.buf, "formatter")
+      end
+      if ok and formatter ~= nil then
         util.misc().attach_formatter(formatter, filetype)
         vim.g[filetype .. "_formatter"] = nil
-        vim.b.formatter = nil
+        vim.api.nvim_buf_del_var(opts.buf, "formatter")
       end
-      if linter ~= nil then
+      local linter
+      ok, linter = true, vim.g[filetype .. "_linter"]
+      if linter == nil then
+        ok, linter = pcall(vim.api.nvim_buf_get_var, opts.buf, "linter")
+      end
+      if ok and linter ~= nil then
         util.misc().attach_linter(linter, filetype)
         vim.g[filetype .. "_linter"] = nil
-        vim.b.linter = nil
+        vim.api.nvim_buf_del_var(opts.buf, "linter")
       end
-      if language_server ~= nil then
+      local language_server
+      ok, language_server = true, vim.g[filetype .. "_language_server"]
+      if language_server == nil then
+        ok, language_server =
+          pcall(vim.api.nvim_buf_get_var, opts.buf, "language_server")
+      end
+      if ok and language_server ~= nil then
         util.misc().attach_language_server(language_server)
         vim.g[filetype .. "_language_server"] = nil
-        vim.b.language_server = nil
+        vim.api.nvim_buf_del_var(opts.buf, "language_server")
       end
     end,
   })

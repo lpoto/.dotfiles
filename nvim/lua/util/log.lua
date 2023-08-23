@@ -62,6 +62,9 @@ function Log:new(opts)
   elseif type(opts) ~= "table" then
     opts = {}
   end
+  if type(opts.title) ~= "string" and type(opts.name) == "string" then
+    opts.title = opts.name
+  end
   return setmetatable(opts, Log)
 end
 
