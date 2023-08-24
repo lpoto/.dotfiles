@@ -63,7 +63,7 @@ function buttons()
   return {
     type = "group",
     val = {
-      button(":Sessions", "Sessions", "Sessions"),
+      button("<leader>s", "Sessions", "Sessions"),
       button("<leader>to", "Old Files", function()
         Util.require(
           "telescope.builtin",

@@ -5,10 +5,8 @@
 https://github.com/neovim/nvim-lspconfig
 
 Keymaps:
-  - "gd"    - jump to the definition of the symbol under cursor
-  - "gr"    - lists all references of the symbol under cursor in quickfix
-  - "K" -  Show the definition of symbol under the cursor
-  - "<C-d>" -  Show the diagnostics of the line under the cursor
+  - "<leader>i" -  Show the definition of symbol under the cursor
+  - "<leader>d" -  Show the diagnostics of the line under the cursor
   - "<leader>r" -  Rename symbol under cursor
 -----------------------------------------------------------------------------]]
 local M = {
@@ -54,8 +52,8 @@ function on_lsp_attach(args)
     return
   end
   local opts = { buffer = args.buf }
-  vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
-  vim.keymap.set("n", "<leader>K", open_diagnostic_float, opts)
+  vim.keymap.set("n", "<leader>i", vim.lsp.buf.hover, opts)
+  vim.keymap.set("n", "<leader>d", open_diagnostic_float, opts)
   -- NOTE: the lsp definitions and references are used with telescope.nvim
   -- vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
   -- vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)

@@ -5,8 +5,8 @@
 https://github.com/nvim-telescope/telescope-file-browser.nvim
 
 Keymaps:
- - "<leader>N"   - file browser relative to current file
- - "<C-n>"       - file browser relative to current directory
+ - "<leader>tb"   - file browser relative to current file
+ - "<leader>tB"   - file browser relative to current directory
 
 -----------------------------------------------------------------------------]]
 local M = {
@@ -32,8 +32,8 @@ local function relative_file_browser()
 end
 
 M.keys = {
-  { "<leader>N", relative_file_browser, mode = "n" },
-  { "<C-n>", file_browser, mode = "n" },
+  { "<leader>tb", relative_file_browser, mode = "n" },
+  { "<leader>tB", file_browser, mode = "n" },
 }
 
 function M.init()
