@@ -78,6 +78,10 @@ Util.misc().attach_formatter = function(cfg, filetype)
       end
     )
   end
+  if package.loaded["formatter"] then
+    attach()
+    return
+  end
   if type(formatters_to_add[filetype]) ~= "table" then
     formatters_to_add[filetype] = {}
   end
@@ -88,7 +92,7 @@ local function attach_formatters()
   local filetype = vim.api.nvim_buf_get_option(0, "filetype")
   if type(formatters_to_add[filetype]) ~= "table" then return end
   local to_add = formatters_to_add[filetype]
-  formatters_to_add[filetype] = nil
+  formatters_to_add[filetype] = false
   for _, f in ipairs(to_add) do
     f()
   end
@@ -97,6 +101,19 @@ end
 function format(visual)
   attach_formatters()
 
+  local filetype = vim.bo.filetype
+  if formatters_to_add[filetype] ~= false then
+    Util.log("Formatter"):debug("Formatting with LSP")
+    vim.lsp.buf.format({
+      bufnr = 0,
+      async = false,
+      range = visual and {
+        vim.api.nvim_buf_get_mark(0, "<")[1],
+        vim.api.nvim_buf_get_mark(0, ">")[1],
+      } or nil,
+    })
+    return
+  end
   Util.require("formatter.format", function(fmt)
     local s = 1
     local e = vim.api.nvim_buf_line_count(0)

@@ -102,6 +102,7 @@ Util.misc().attach_language_server = function(server)
     Util.log():warn("No language server name provided")
     return
   end
+  server[1] = nil
   Util.require("lspconfig", function(lspconfig)
     local lsp = lspconfig[server.name]
     if lsp == nil then
