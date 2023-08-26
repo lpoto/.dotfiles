@@ -8,7 +8,10 @@ A plugin that completely replaces the UI for messages, cmdline and the
 popupmenu
 
 commands:
-  :Noice - Open the messages history or "<leader>tn" to open with telescope
+  :Noice - Open the messages history
+
+keymaps:
+  "<leader>m" - Open the messages history with telescope
 -----------------------------------------------------------------------------]]
 local M = {
   "folke/noice.nvim",
@@ -81,10 +84,7 @@ function M.config()
         },
       },
     })
-    vim.defer_fn(
-      function() vim.keymap.set("n", "<leader>tn", notification_history) end,
-      100
-    )
+    vim.keymap.set("n", "<leader>m", notification_history)
   end)
 end
 

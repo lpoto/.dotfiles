@@ -212,7 +212,7 @@ function Git:default(opts)
       if
         vim.api.nvim_get_current_buf() == cur_buf and opts.edit_after_end
       then
-        vim.api.nvim_exec("e", true)
+        vim.api.nvim_exec2("e", {})
       end
     end
     Shell:run_in_float(o)

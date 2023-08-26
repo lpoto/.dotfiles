@@ -82,17 +82,17 @@ function Misc.toggle_quickfix(navigate_to_quickfix, open_only)
       vim.api.nvim_list_wins()
     ) > 0
   then
-    if open_only ~= true then vim.api.nvim_exec("cclose", false) end
+    if open_only ~= true then vim.api.nvim_exec2("cclose", {}) end
   else
     local winid = vim.api.nvim_get_current_win()
-    vim.api.nvim_exec("noautocmd keepjumps copen", false)
+    vim.api.nvim_exec2("noautocmd keepjumps copen", {})
     if
       #vim.tbl_filter(
         function(l) return #l > 0 end,
         vim.api.nvim_buf_get_lines(0, 0, -1, false)
       ) == 0
     then
-      vim.api.nvim_exec("cclose", false)
+      vim.api.nvim_exec2("cclose", {})
       navigate_to_quickfix = true
       Util.log("Quickfix")
         :warn("There is nothing to display in the quickfix window")

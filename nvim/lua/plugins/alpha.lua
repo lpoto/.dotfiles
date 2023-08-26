@@ -64,25 +64,25 @@ function buttons()
     type = "group",
     val = {
       button("<leader>s", "Sessions", "Sessions"),
-      button("<leader>to", "Old Files", function()
+      button("<leader>o", "Old Files", function()
         Util.require(
           "telescope.builtin",
           function(builtin) builtin.oldfiles() end
         )
       end),
-      button("<leader>tf", "Find Files", function()
+      button("<leader>n", "Find Files", function()
         Util.require(
           "telescope.builtin",
           function(builtin) builtin.find_files() end
         )
       end),
-      button("<leader>tb", "File Browser", function()
+      button("<leader>b", "File Browser", function()
         Util.require(
           "telescope",
           function(telescope) telescope.extensions.file_browser.file_browser() end
         )
       end),
-      button("<leader>tg", "Live Grep", function()
+      button("<leader>l", "Live Grep", function()
         Util.require(
           "telescope.builtin",
           function(builtin) builtin.live_grep() end

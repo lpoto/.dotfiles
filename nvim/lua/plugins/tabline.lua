@@ -33,9 +33,7 @@ function M.config()
         callback = function()
           -- NOTE: sometimes the tabline is not redrawn when we want it to be
           -- so we force it to redraw here.
-          vim.schedule(
-            function() vim.api.nvim_exec("redrawtabline", false) end
-          )
+          vim.schedule(function() vim.api.nvim_exec2("redrawtabline", {}) end)
         end,
       })
     end

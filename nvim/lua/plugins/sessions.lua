@@ -68,7 +68,7 @@ function M.config()
       -- This is necessary, as files opened with unception
       -- are added to the argument list, and we do not want
       -- to save them.
-      vim.api.nvim_exec("%argdelete", true)
+      vim.api.nvim_exec2("%argdelete", {})
 
       -- NOTE: iterate open buffers and delete those that
       -- are not valid, or are not files, or are files
@@ -101,11 +101,7 @@ function M.config()
 
       local name = escape_path(vim.fn.getcwd())
       local file = session_dir .. "/" .. name .. ".vim"
-      pcall(
-        vim.api.nvim_exec,
-        "mksession! " .. vim.fn.fnameescape(file),
-        true
-      )
+      pcall(vim.api.nvim_exec2, "mksession! " .. vim.fn.fnameescape(file), {})
     end,
   })
 end
@@ -126,9 +122,9 @@ local function select_session(prompt_bufnr)
         -- if the session file exists, load it
         vim.defer_fn(
           function()
-            vim.api.nvim_exec(
+            vim.api.nvim_exec2(
               "source " .. vim.fn.fnameescape(session_file),
-              true
+              {}
             )
           end,
           10

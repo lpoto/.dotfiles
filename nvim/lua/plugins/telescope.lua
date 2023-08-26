@@ -8,15 +8,15 @@ Telescope is a highly extendable fuzzy finder over lists.
 Items are shown in a popup with a prompt to search over.
 
 Keymaps:
- - "<leader>t"    - find files
- - "<leader>to"   - old files
- - "<leader>tg"   or "<leader>tl"                 - live grep
- - "<leader>tG" or "<leader>tL" or "<leader>tw"   - live grep word under cursor
+ - "<leader>n"   - find files
+ - "<leader>o"   - old files
+ - "<leader>l"   - live grep
+ - "<leader>L"   - live grep word under cursor
 
- - "<leader>tm"   - marks
- - "<leader>th"   - Search help tags
+ - "<leader>M"   - marks
+ - "<leader>h"   - Search help tags
 
- - "ge"          - show diagnostics
+ - "<leader>d"   - show diagnostics
  - "gd"          - LSP definitions
  - "gr"          - LSP references
 
@@ -56,19 +56,15 @@ local function builtin(name, opts, log_if_no_results)
 end
 
 M.keys = {
-  { "<leader>t", builtin("find_files"), mode = "n" },
-  { "<leader>tf", builtin("find_files"), mode = "n" },
-  { "<leader>to", builtin("oldfiles"), mode = "n" },
-  { "<leader>tg", builtin("live_grep"), mode = "n" },
-  { "<leader>tl", builtin("live_grep"), mode = "n" },
-  { "<leader>tG", builtin("grep_string"), mode = "n" },
-  { "<leader>tL", builtin("grep_string"), mode = "n" },
-  { "<leader>tw", builtin("grep_string"), mode = "n" },
+  { "<leader>n", builtin("find_files"), mode = "n" },
+  { "<leader>o", builtin("oldfiles"), mode = "n" },
+  { "<leader>l", builtin("live_grep"), mode = "n" },
+  { "<leader>L", builtin("grep_string"), mode = "n" },
 
-  { "<leader>tm", builtin("marks"), mode = "n" },
-  { "<leader>th", builtin("help_tags"), mode = "n" },
+  { "<leader>M", builtin("marks"), mode = "n" },
+  { "<leader>h", builtin("help_tags"), mode = "n" },
 
-  { "ge", builtin("diagnostics"), mode = "n" },
+  { "<leader>d", builtin("diagnostics"), mode = "n" },
   { "gd", builtin("lsp_definitions"), mode = "n" },
   { "gr", builtin("lsp_references"), mode = "n" },
 

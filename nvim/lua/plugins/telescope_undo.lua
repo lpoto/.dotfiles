@@ -10,7 +10,7 @@ commands:
   - :Undo - show undo tree
 
 keymaps:
-  - "<leader>tu" - show undo tree
+  - "<leader>u" - show undo tree
 -----------------------------------------------------------------------------]]
 local M = {
   "debugloop/telescope-undo.nvim",
@@ -25,7 +25,7 @@ local function open_undo_picker()
 end
 
 M.keys = {
-  { "<leader>tu", open_undo_picker, mode = "n" },
+  { "<leader>u", open_undo_picker, mode = "n" },
 }
 
 function M.init()

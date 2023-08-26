@@ -15,7 +15,7 @@ local M = {
   keys = {
     {
       "<leader>z",
-      function() vim.api.nvim_exec("ZenMode", false) end,
+      function() vim.api.nvim_exec2("ZenMode", {}) end,
       mode = "n",
     },
   },

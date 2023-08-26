@@ -141,6 +141,6 @@ vim.api.nvim_create_autocmd("BufEnter", {
   group = vim.api.nvim_create_augroup("StopAutoInsert", { clear = true }),
   callback = function()
     if vim.bo.buftype ~= "" then return end
-    vim.defer_fn(function() vim.api.nvim_exec("stopinsert", false) end, 20)
+    vim.defer_fn(function() vim.api.nvim_exec2("stopinsert", {}) end, 20)
   end,
 })

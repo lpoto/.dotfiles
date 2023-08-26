@@ -7,7 +7,7 @@ https://github.com/lpoto/telescope-tasks.nvim
 Synchronous tasks from a telescope prompt.
 
 Keymaps:
-  - "<leader>tt" - Open the tasks prompt
+  - "<leader>t" - Open the tasks prompt
   - "<leader>e" - Toggle latest output
 -----------------------------------------------------------------------------]]
 local M = {
@@ -16,7 +16,7 @@ local M = {
 
 M.keys = {
   {
-    "<leader>tt",
+    "<leader>t",
     function()
       Util.require(
         "telescope",
