@@ -9,30 +9,16 @@ but global.
 -----------------------------------------------------------------------------]]
 local M = {
   dev = true,
-  dir = Util.path()
-    :new(vim.fn.stdpath("config"), "lua", "plugins", "tabline"),
+  dir = vim.fn.stdpath("config") .. "/lua/plugins/tabline",
   lazy = false,
 }
 
 local setup_statusline
 local setup_tabline
-local group_id = nil
 
 function M.config()
   setup_statusline()
   setup_tabline()
-
-  group_id = vim.api.nvim_create_augroup("RedrawTabline", { clear = true })
-  vim.api.nvim_create_autocmd({ "CursorMoved", "ModeChanged" }, {
-    group = group_id,
-    callback = function()
-      -- NOTE: sometimes the tabline is not redrawn when we want it to be
-      -- so we force it to redraw here.
-      vim.schedule(function()
-        vim.api.nvim_exec("redrawtabline", false)
-      end)
-    end,
-  })
 end
 
 function setup_statusline()
@@ -46,22 +32,19 @@ end
 
 local append_to_tabline
 local append_tabline_section_separator
-local section_count = 1
 local empty_section = false
 
 function setup_tabline()
   vim.o.showtabline = 2
 
-  append_to_tabline("mode", "TabLine", 0.07, 0.07, nil, "left")
+  append_to_tabline("tabcount", "TabLine", 0.10, 0.10, 50, "left")
   append_to_tabline("diagnostic_info", "DiagnosticInfo", 5, 0.05)
   append_to_tabline("diagnostic_warn", "DiagnosticWarn", 5, 0.05)
   append_to_tabline("diagnostic_error", "DiagnosticError", 5, 0.05)
   append_tabline_section_separator()
-  append_to_tabline("filename", "TabLineSel", 0.30, 0.30, 100, "right")
-  append_to_tabline("tabcount", "TabLineFill", 0.15, 0.15, 15)
-  append_to_tabline("gitsigns_head", "TabLine", 0.18, 0.17, 50, "right")
-  append_to_tabline("gitsigns_status", "TabLineFill", 0.10, 0.10, nil, "left")
-  append_to_tabline("cursor", "TabLine", 0.06, 0.06, nil, "right")
+  append_to_tabline("filename", "TabLineSel", 0.48, 0.48, 100, "center")
+  append_to_tabline("git_branch", "TabLine", 0.20, 0.20, 100, "right")
+  append_to_tabline("git_status", "TabLineFill", 0.07, 0.07, 30, "center")
 end
 
 function append_to_tabline(
@@ -94,15 +77,11 @@ end
 
 function append_tabline_section_separator()
   vim.opt.tabline:append(" %= ")
-  if empty_section then
-    return
-  end
-  section_count = section_count + 1
+  if empty_section then return end
   empty_section = true
 end
 
 local get_width
-local get_mode
 local pad_left
 local pad_right
 local align_center
@@ -127,18 +106,10 @@ function tabline_sections.get(name, w, max_w, min_w, align)
     return align_center("", width)
   end
   local n = vim.fn.strchars(result)
-  if n > max_width then
-    return align_center("", width)
-  end
-  if align == "center" then
-    return align_center(result, width)
-  end
-  if align == "left" then
-    return pad_right(result, width)
-  end
-  if align == "right" then
-    return pad_left(result, width)
-  end
+  if n > max_width then return align_center("", width) end
+  if align == "center" then return align_center(result, width) end
+  if align == "left" then return pad_right(result, width) end
+  if align == "right" then return pad_left(result, width) end
 end
 
 function tabline_sections.spacer(width)
@@ -149,11 +120,6 @@ function tabline_sections.spacer(width)
     width = math.floor(columns * width)
   end
   return align_center("", width)
-end
-
-function tabline_sections.mode(w)
-  local s = get_mode()
-  return pad_left(pad_right(s, w - 2), w)
 end
 
 local diagnostic
@@ -184,28 +150,12 @@ function diagnostic(w, sign, severity, pad)
   return pad(diag_string, w)
 end
 
-function tabline_sections.gitsigns_head()
-  return vim.g.gitsigns_head or ""
-end
-
-function tabline_sections.gitsigns_status()
-  local s = vim.b.gitsigns_status or ""
-  if s:len() > 0 then
-    s = "  " .. s
-  end
-  return s
-end
-
-function tabline_sections.cursor(w)
-  local cursor = vim.api.nvim_win_get_cursor(0)
-  local cursor_str = string.format("[%d,%d]", cursor[1], cursor[2] + 1)
-  return pad_right(pad_left(cursor_str, w - 2), w)
-end
-
 function tabline_sections.filename(w)
   local s = ""
   local bufnr = vim.api.nvim_get_current_buf()
   local buftype = vim.api.nvim_buf_get_option(bufnr, "buftype")
+  if buftype == "quickfix" then return "Quickfix" end
+  if buftype == "help" then return "Help" end
   local wintype = vim.fn.win_gettype()
   if wintype ~= "" or buftype ~= "" and buftype ~= "terminal" then
     return s
@@ -232,29 +182,42 @@ function tabline_sections.filename(w)
     while vim.fn.strchars(tail) < w do
       name = tail
       h = vim.fn.fnamemodify(h, ":h")
-      tail = Util.path():new(vim.fn.fnamemodify(h, ":t"), tail)
+      tail = vim.fn.fnamemodify(h, ":t") .. "/" .. tail
     end
   end
 
   local m = tabline_sections.modified()
-  if m:len() > 0 then
-    name = string.format("%s %s", name, m)
-  end
+  if m:len() > 0 then name = string.format("%s %s", name, m) end
   return name
+end
+
+function tabline_sections.git_status()
+  if
+    type(vim.b.gitsigns_status) == "string"
+    and vim.b.gitsigns_status:len() > 0
+  then
+    return vim.b.gitsigns_status
+  end
+  return ""
+end
+
+function tabline_sections.git_branch()
+  local branch = type(vim.g.gitsigns_head) == "string" and vim.g.gitsigns_head
+    or ""
+  if branch == "" then return "" end
+  return branch
 end
 
 function tabline_sections.modified()
   local modified = vim.api.nvim_buf_get_option(0, "modified") and "[+]" or ""
-  if modified:len() > 0 then
-    return modified
-  end
+  if modified:len() > 0 then return modified end
   return vim.api.nvim_buf_get_option(0, "readonly") and "[~]" or ""
 end
 
 function tabline_sections.tabcount()
   local tabs = #vim.api.nvim_list_tabpages()
   if tabs > 1 then
-    return "Tab ["
+    return "  Tab ["
       .. vim.api.nvim_tabpage_get_number(0)
       .. "/"
       .. tabs
@@ -277,17 +240,13 @@ end
 
 function pad_left(s, w)
   local n = vim.fn.strchars(s)
-  if n < w then
-    return string.rep(" ", w - n) .. s
-  end
+  if n < w then return string.rep(" ", w - n) .. s end
   return s
 end
 
 function pad_right(s, w)
   local n = vim.fn.strchars(s)
-  if n < w then
-    return s .. string.rep(" ", w - n)
-  end
+  if n < w then return s .. string.rep(" ", w - n) end
   return s
 end
 
@@ -295,55 +254,11 @@ function align_center(s, w)
   local n = vim.fn.strchars(s)
   if n < w then
     local l = math.ceil((w - n) / 2)
-    if l > 0 then
-      s = string.rep(" ", l) .. s
-    end
+    if l > 0 then s = string.rep(" ", l) .. s end
     local r = w - n - l
-    if r > 0 then
-      s = s .. string.rep(" ", r)
-    end
+    if r > 0 then s = s .. string.rep(" ", r) end
   end
   return s
-end
-
-function get_mode()
-  local m = vim.api.nvim_get_mode().mode
-  local mapping = {
-    n = "NORMAL",
-    no = "NORMAL",
-    nov = "NORMAL",
-    noV = "NORMAL",
-    niI = "NORMAL",
-    niR = "NORMAL",
-    niV = "NORMAL",
-    nt = "NORMAL",
-    ntT = "NORMAL",
-    v = "VISUAL",
-    V = "VLINE",
-    Vs = "VLINE",
-    [""] = "VBLOCK",
-    ["s"] = "VBLOCK",
-    S = "SLINE",
-    s = "SELECT",
-    [""] = "SBLOCK",
-    i = "INSERT",
-    ic = "INSERT",
-    ix = "INSERT",
-    R = "REPLACE",
-    Rc = "REPLACE",
-    Rx = "REPLACE",
-    Rv = "REPLACE",
-    Rvx = "REPLACE",
-    Rvc = "REPLACE",
-    c = "COMMAND",
-    cv = "EX",
-    r = "PROMPT",
-    rm = "PROMPT",
-    ["r?"] = "CONFIRM",
-    ["!"] = "SHELL",
-    t = "TERMINAL",
-  }
-  return mapping[m] or m
 end
 
 return M

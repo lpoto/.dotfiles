@@ -8,26 +8,10 @@ Util functions
 local util = {}
 util.__index = util
 
----@return FtpluginUtil
-function util.ftplugin()
-  return util.require("util.ftplugin") --[[ @as FtpluginUtil ]]
-end
-
----@return PathUtil
-function util.path()
-  return util.require("util.path") --[[ @as PathUtil ]]
-end
-
----@return ShellUtil
-function util.shell()
-  return util.require("util.shell") --[[ @as ShellUtil ]]
-end
-
----@param delay number?
----@param title string?
+---@param opts table|string|number|nil
 ---@return LogUtil
-function util.log(delay, title)
-  return util.require("util.log"):new(delay, title) --[[ @as LogUtil ]]
+function util.log(opts)
+  return util.require("util.log"):new(opts) --[[ @as LogUtil ]]
 end
 
 ---@return MiscUtil
@@ -39,8 +23,9 @@ end
 ---@return Util
 function util:init(opts)
   opts = type(opts) == "table" and opts or {}
-  vim.fn.stdpath = util.path().stdpath
   self.log():set_level(opts.log_level)
+  vim.fn.stdpath = self.stdpath
+  self.__init_ftplugin()
   return self
 end
 
@@ -57,7 +42,7 @@ function util.require(module, callback, silent)
     module = { module }
   elseif type(module) ~= "table" then
     if not silent then
-      util.log():warn("module must be a string or table")
+      util.log("Util"):warn("[require] module must be a string or table")
     end
   end
   local res = {}
@@ -65,7 +50,9 @@ function util.require(module, callback, silent)
     local ok, v = pcall(require, m)
     if not ok then
       if not silent then
-        util.log(250):warn("Error loading", m, "-", v)
+        util
+          .log({ delay = 250, title = "Util" })
+          :warn("[require] Error loading", m, "-", v)
       end
       return
     end
@@ -75,7 +62,7 @@ function util.require(module, callback, silent)
     local ok, v = pcall(callback, unpack(res))
     if not ok then
       if not silent then
-        util.log(250):error(v)
+        util.log({ delay = 250, title = "Util" }):error("[require]", v)
       end
       return
     end
@@ -84,25 +71,71 @@ function util.require(module, callback, silent)
   return unpack(res)
 end
 
----@param s1 string
----@param s2 string
-function util.string_matching_score(s1, s2)
-  if type(s1) ~= "string" or type(s2) ~= "string" then
-    return 0
-  end
-  local score = 0
-  for i = 1, s2:len() do
-    local c1 = s2:sub(i, i)
-    for j = 1, s1:len() do
-      local c2 = s1:sub(j, j)
-      if c1 == c2 then
-        local add = math.max(1, 5 - i)
-        score = score + add
-        break
+local ftplugins_loaded = {}
+---@private
+function util.__init_ftplugin()
+  vim.api.nvim_create_autocmd("Filetype", {
+    callback = function(opts)
+      if
+        vim.bo.buftype ~= ""
+        or type(opts) ~= "table"
+        or type(opts.match) ~= "string"
+        or type(opts.buf) ~= "number"
+        or not vim.api.nvim_buf_is_valid(opts.buf)
+      then
+        return
       end
-    end
+      local filetype = opts.match
+      if ftplugins_loaded[filetype] then return end
+      ftplugins_loaded[filetype] = true
+
+      local ok, formatter = true, vim.g[filetype .. "_formatter"]
+      if formatter == nil then
+        ok, formatter = pcall(vim.api.nvim_buf_get_var, opts.buf, "formatter")
+      end
+      if ok and formatter ~= nil then
+        util.misc().attach_formatter(formatter, filetype)
+        vim.g[filetype .. "_formatter"] = nil
+        vim.api.nvim_buf_del_var(opts.buf, "formatter")
+      end
+      local language_server
+      ok, language_server = true, vim.g[filetype .. "_language_server"]
+      if language_server == nil then
+        ok, language_server =
+          pcall(vim.api.nvim_buf_get_var, opts.buf, "language_server")
+      end
+      if ok and language_server ~= nil then
+        util.misc().attach_language_server(language_server)
+        vim.g[filetype .. "_language_server"] = nil
+        vim.api.nvim_buf_del_var(opts.buf, "language_server")
+      end
+    end,
+  })
+end
+
+local stdpath = vim.fn.stdpath
+---@param what string
+---@return string|table
+function util.stdpath(what)
+  local app_name = os.getenv("NVIM_APPNAME")
+  if type(app_name) ~= "string" or app_name:len() == 0 then
+    app_name = "nvim"
   end
-  return score
+  local base = vim.fs.dirname(stdpath("config"))
+  local storage = base .. "/.storage"
+
+  local n = {
+    config = base .. "/" .. app_name,
+    app_name,
+    cache = storage .. "/cache/" .. app_name,
+    data = storage .. "/share/" .. app_name,
+    log = storage .. "/log/" .. app_name,
+    run = storage .. "/state/" .. app_name,
+    state = storage .. "/state/" .. app_name,
+    config_dirs = {},
+    data_dirs = {},
+  }
+  return n[what] or stdpath(what)
 end
 
 return util

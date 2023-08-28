@@ -1,10 +1,10 @@
 --=============================================================================
 -------------------------------------------------------------------------------
 --                                                                          XML
---[[===========================================================================
-Loaded when a xml file is opened
------------------------------------------------------------------------------]]
-Util.ftplugin()
-  :new()
-  :attach_language_server("lemminx")
-  :attach_formatter("prettier")
+--=============================================================================
+if vim.g[vim.bo.filetype] or vim.api.nvim_set_var(vim.bo.filetype, true) then
+  return
+end
+
+vim.b.language_server = "lemminx"
+vim.b.formatter = "prettier"

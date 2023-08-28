@@ -15,13 +15,14 @@ local ensure_lazy, get_lazy_options
 local function load_lazy(lazy_path)
   ensure_lazy(lazy_path)
   vim.opt.runtimepath:prepend(lazy_path)
-  Util.require("lazy", function(lazy)
-    lazy.setup("plugins", get_lazy_options())
-  end)
+  Util.require(
+    "lazy",
+    function(lazy) lazy.setup("plugins", get_lazy_options()) end
+  )
 end
 
 function ensure_lazy(lazy_path)
-  if not vim.uv.fs_stat(lazy_path) then
+  if not vim.loop.fs_stat(lazy_path) then
     Util.log():print("Lazy.nvim not found, installing...")
     ---@type table
     local cmd = {
@@ -38,10 +39,10 @@ function ensure_lazy(lazy_path)
       Util.log():print("Error installing Lazy.nvim:", err)
       return
     end
-    if not vim.uv.fs_stat(lazy_path) then
+    if not vim.loop.fs_stat(lazy_path) then
       Util.log():print("Failed installing Lazy.nvim!")
     else
-      Util.log(100):info("Lazy.nvim installed!")
+      Util.log({ delay = 100 }):info("Lazy.nvim installed!")
     end
   end
 end
@@ -51,16 +52,13 @@ function get_lazy_options()
     defaults = {
       lazy = true,
     },
-    lockfile = Util.path():new(
-      vim.fs.dirname(vim.fn.stdpath("config")),
-      ".lazy.lock.json"
-    ),
+    lockfile = vim.fs.dirname(vim.fn.stdpath("config")) .. "/.lazy.lock.json",
     ui = {
       border = "rounded",
     },
-    root = Util.path():new(vim.fn.stdpath("data"), "lazy"),
+    root = vim.fn.stdpath("data") .. "/lazy",
     dev = {
-      dir = Util.path():new(vim.fn.stdpath("data"), "lazy"),
+      dir = vim.fn.stdpath("data") .. "/lazy",
     },
     checker = {
       enabled = true,
@@ -93,4 +91,4 @@ function get_lazy_options()
   }
 end
 
-load_lazy(Util.path():new(vim.fn.stdpath("data"), "lazy", "lazy.nvim"))
+load_lazy(vim.fn.stdpath("data") .. "/lazy/lazy.nvim")

@@ -4,6 +4,8 @@
 # ./.build/neovim.
 # This script may also be run to update and already built neovim
 # installation.
+# By default, a stable version will be installed.
+# Change this by adding --nightly or --latest to the command.
 
 set -e
 
@@ -14,10 +16,10 @@ if [ "$USER" = "root" ]; then
   exit 2
 fi
 
-build_type="NIGHTLY"
-branch="tags/nightly"
-origin="+refs/tags/nightly:refs/tags/nightly"
 tag=true
+build_type="STABLE"
+branch="tags/stable"
+origin="+refs/tags/stable:refs/tags/stable"
 
 while [ $# -ne 0 ]; do
   arg="$1"
@@ -39,7 +41,12 @@ while [ $# -ne 0 ]; do
     branch="tags/stable"
     origin="+refs/tags/stable:refs/tags/stable"
     ;;
-  --nightly) ;;
+  --nightly)
+    build_type="STABLE"
+    branch="tags/nightly"
+    origin="+refs/tags/nightly:refs/tags/nightly"
+    tag=true
+    ;;
   *)
     echo "==> Invalid arguments, try '--latest', '--nightly' or '--stable'"
     exit 1

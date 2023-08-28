@@ -6,7 +6,7 @@
 ----------------------------------Set the default global options for the editor
 
 vim.g.mapleader = " " --------------------------------  map <leader> to <Space>
-vim.g.maplocalleader = ";" ----------------------  map <localleader> to <Space>
+vim.g.maplocalleader = ";" ----------------------  map <localleader> to     ";"
 
 vim.opt.errorbells = false -- disable error sounds
 vim.opt.updatetime = 50 -- shorten updatetime from 4s to 50ms
@@ -20,7 +20,7 @@ vim.opt.splitright = true --open new window on the right in vertical split
 vim.opt.swapfile = false -- load buffers without creating swap files
 vim.opt.backup = false -- do not automatically save
 vim.opt.undofile = true -- allow undo after reoppening the file
-vim.opt.undodir = Util.path():new(vim.fn.stdpath("data"), "undo")
+vim.opt.undodir = vim.fn.stdpath("data") .. "/undo"
 
 --------------------------------------------------------------------- INDENTING
 
@@ -61,7 +61,8 @@ vim.opt.scrolloff = 8
 vim.opt.incsearch = true
 vim.opt.title = false
 vim.opt.signcolumn = "number"
-vim.opt.showmode = false
+vim.opt.showmode = true
+vim.opt.cmdheight = 1
 vim.opt.guicursor = "a:blinkon0"
 vim.opt.cursorline = true
 vim.opt.cursorcolumn = false
@@ -77,3 +78,58 @@ vim.opt.listchars:append({
   leadmultispace = "│ ",
 })
 vim.opt.list = true
+
+--=============================================================================
+-------------------------------------------------------------------------------
+--                                                                 AUTOCOMMANDS
+--[[===========================================================================
+
+-----------------------------------------------------------------------------]]
+---------------- Set relative number and cursorline only for the active window,
+------------------------------------- and disable them when leaving the window.
+local relativenumber_augroup =
+  vim.api.nvim_create_augroup("RelativeNumberAugroup", { clear = true })
+
+vim.api.nvim_create_autocmd(
+  { "VimEnter", "WinEnter", "BufWinEnter", "TermOpen" },
+  {
+    group = relativenumber_augroup,
+    callback = function()
+      if vim.wo.number then
+        if vim.bo.buftype ~= "" then
+          vim.wo.number = false
+          vim.wo.relativenumber = false
+          vim.wo.cursorline = false
+          return
+        end
+        vim.wo.number = true
+        vim.wo.relativenumber = true
+        vim.wo.cursorline = true
+      end
+    end,
+  }
+)
+vim.api.nvim_create_autocmd({ "WinLeave" }, {
+  group = relativenumber_augroup,
+  callback = function()
+    if vim.wo.number then
+      vim.wo.relativenumber = false
+      vim.wo.cursorline = false
+    end
+  end,
+})
+--------------------------------------------------------- Highlight yanked text
+vim.api.nvim_create_autocmd("TextYankPost", {
+  group = vim.api.nvim_create_augroup("HighlightYank", { clear = true }),
+  callback = function()
+    Util.require(
+      "vim.highlight",
+      function(hl)
+        hl.on_yank({
+          higroup = "IncSearch",
+          timeout = 35,
+        })
+      end
+    )
+  end,
+})

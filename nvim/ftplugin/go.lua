@@ -1,11 +1,10 @@
 --=============================================================================
 -------------------------------------------------------------------------------
 --                                                                           GO
---[[===========================================================================
-Loaded when a go file is opened
------------------------------------------------------------------------------]]
-Util.ftplugin()
-  :new()
-  :attach_language_server("gopls")
-  :attach_formatter("goimports")
-  :attach_linter("golangcilint")
+--=============================================================================
+if vim.g[vim.bo.filetype] or vim.api.nvim_set_var(vim.bo.filetype, true) then
+  return
+end
+
+vim.b.language_server = "gopls"
+vim.b.formatter = "goimports"

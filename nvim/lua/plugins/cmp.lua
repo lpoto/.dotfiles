@@ -32,9 +32,10 @@ function M.config()
       },
       snippet = {
         expand = function(args)
-          Util.require("luasnip", function(luasnip)
-            luasnip.lsp_expand(args.body)
-          end)
+          Util.require(
+            "luasnip",
+            function(luasnip) luasnip.lsp_expand(args.body) end
+          )
         end,
       },
       sources = {
@@ -68,9 +69,10 @@ end
 ---
 ---@diagnostic disable-next-line: duplicate-set-field
 Util.misc().get_autocompletion_capabilities = function()
-  return Util.require("cmp_nvim_lsp", function(cmp_nvim_lsp)
-    return cmp_nvim_lsp.default_capabilities()
-  end)
+  return Util.require(
+    "cmp_nvim_lsp",
+    function(cmp_nvim_lsp) return cmp_nvim_lsp.default_capabilities() end
+  )
 end
 
 --- If copilot suggestion is visible and cmp has no selected entry,
@@ -89,15 +91,11 @@ function set_confirm_keymap()
         or cmp.visible() and (not suggestion or not suggestion.is_visible())
       )
     then
-      vim.defer_fn(function()
-        cmp.confirm({ select = true })
-      end, 5)
+      vim.defer_fn(function() cmp.confirm({ select = true }) end, 5)
       return true
     end
     if suggestion and suggestion.is_visible() then
-      vim.defer_fn(function()
-        suggestion.accept()
-      end, 5)
+      vim.defer_fn(function() suggestion.accept() end, 5)
       return true
     end
     return "<CR>"

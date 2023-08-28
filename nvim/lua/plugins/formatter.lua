@@ -16,16 +16,12 @@ local format
 M.keys = {
   {
     "<leader>f",
-    function()
-      format()
-    end,
+    function() format() end,
     mode = "n",
   },
   {
     "<leader>f",
-    function()
-      format(true)
-    end,
+    function() format(true) end,
     mode = "v",
   },
 }
@@ -53,9 +49,8 @@ local formatters_to_add = {}
 ---
 ---@param cfg string|function
 ---@param filetype string
----@param additional_args table?
 ---@diagnostic disable-next-line: duplicate-set-field
-Util.misc().attach_formatter = function(cfg, filetype, additional_args)
+Util.misc().attach_formatter = function(cfg, filetype)
   if type(filetype) ~= "string" then
     Util.log():warn("Invalid filetype for formatter:", filetype)
     return
@@ -66,35 +61,26 @@ Util.misc().attach_formatter = function(cfg, filetype, additional_args)
       function(formatter, ft, config)
         local f = type(cfg) == "string" and ft[cfg] or cfg
         if type(f) ~= "function" then
-          Util.log():warn("Invalid formatter for", filetype)
+          Util.log("Formatter"):warn("Invalid formatter for", filetype)
           return
         end
         local opts = config.values or {}
-        if type(opts.filetype) ~= "table" then
-          opts.filetype = {}
-        end
+        if type(opts.filetype) ~= "table" then opts.filetype = {} end
         if type(opts.filetype[filetype]) ~= "table" then
           opts.filetype[filetype] = {}
-        end
-        if additional_args ~= nil then
-          local old_f = f
-          f = function(...)
-            local o = old_f(...)
-            if type(o) == "table" then
-              o.args = vim.tbl_extend("force", o.args or {}, additional_args)
-            end
-            return o
-          end
         end
 
         table.insert(opts.filetype[filetype], f)
         formatter.setup(opts)
-        if type(cfg) ~= "string" then
-          cfg = "<custom>"
-        end
-        Util.log():info("Attached formatter for " .. filetype .. ":", cfg)
+        if type(cfg) ~= "string" then cfg = "<custom>" end
+        Util.log("Formatter")
+          :info("Attached formatter for " .. filetype .. ":", cfg)
       end
     )
+  end
+  if package.loaded["formatter"] then
+    attach()
+    return
   end
   if type(formatters_to_add[filetype]) ~= "table" then
     formatters_to_add[filetype] = {}
@@ -104,11 +90,9 @@ end
 
 local function attach_formatters()
   local filetype = vim.api.nvim_buf_get_option(0, "filetype")
-  if type(formatters_to_add[filetype]) ~= "table" then
-    return
-  end
+  if type(formatters_to_add[filetype]) ~= "table" then return end
   local to_add = formatters_to_add[filetype]
-  formatters_to_add[filetype] = nil
+  formatters_to_add[filetype] = false
   for _, f in ipairs(to_add) do
     f()
   end
@@ -117,6 +101,19 @@ end
 function format(visual)
   attach_formatters()
 
+  local filetype = vim.bo.filetype
+  if formatters_to_add[filetype] ~= false then
+    Util.log("Formatter"):debug("Formatting with LSP")
+    vim.lsp.buf.format({
+      bufnr = 0,
+      async = false,
+      range = visual and {
+        vim.api.nvim_buf_get_mark(0, "<")[1],
+        vim.api.nvim_buf_get_mark(0, ">")[1],
+      } or nil,
+    })
+    return
+  end
   Util.require("formatter.format", function(fmt)
     local s = 1
     local e = vim.api.nvim_buf_line_count(0)

@@ -22,9 +22,7 @@ end
 
 local override
 function M.config()
-  if not scheme_config() then
-    return
-  end
+  if not scheme_config() then return end
   override({
     { "Identifier", { link = "Normal" } },
     { "LineNr", { link = "WinSeparator" } },
@@ -41,7 +39,6 @@ function M.config()
     { "Folded", { bg = "NONE", fg = "#658ABA" } },
     { "NormalFloat", { bg = "NONE" } },
     { "FloatBorder", { link = "WinSeparator" } },
-    { "FloatermBorder", { link = "WinSeparator" } },
   })
   override({
     { "GitSignsAdd", { fg = "#569166" } },
@@ -52,24 +49,16 @@ function M.config()
     { "TelescopeBorder", { link = "WinSeparator" } },
     { "TelescopeTitle", { link = "TabLineSel" } },
   })
-  override({
-    { "NoiceFormatLevelDebug", { link = "NoiceFormatLevelInfo" } },
-    { "NoiceFormatLevelTrace", { link = "NoiceFormatLevelInfo" } },
-    { "NoiceFormatKind", { link = "Type" } },
-    { "NoiceFormatEvent", { link = "Type" } },
-  })
 end
 
 function override(o)
   local errs = {}
   for _, ov in ipairs(o) do
     local ok, err = pcall(vim.api.nvim_set_hl, 0, unpack(ov))
-    if not ok then
-      table.insert(errs, err)
-    end
+    if not ok then table.insert(errs, err) end
   end
   if #errs > 0 then
-    Util.log(200):warn(table.concat(errs, "\n"))
+    Util.log({ delay = 200 }):warn(table.concat(errs, "\n"))
   end
 end
 

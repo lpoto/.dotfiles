@@ -1,10 +1,10 @@
 --=============================================================================
 -------------------------------------------------------------------------------
 --                                                                        OCAML
---[[===========================================================================
-Loaded when a ocaml file is opened
------------------------------------------------------------------------------]]
-Util.ftplugin()
-  :new()
-  :attach_language_server("ocamllsp")
-  :attach_formatter("ocamlformat")
+--=============================================================================
+if vim.g[vim.bo.filetype] or vim.api.nvim_set_var(vim.bo.filetype, true) then
+  return
+end
+
+vim.b.formatter = "ocamlformat"
+vim.b.language_server = "ocamllsp"

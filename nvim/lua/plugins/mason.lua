@@ -5,7 +5,7 @@
 https://github.com/williamboman/mason.nvim
 
 Package manager for neovim.
-Easily install and manage lsp servers, linters and formatters.
+Easily install and manage lsp servers and formatters.
 
 Commands:
   - :Mason                    - Open a graphical status window
@@ -22,11 +22,14 @@ local M = {
 }
 
 function M.config()
-  Util.require("mason", function(mason)
-    mason.setup({
-      ui = { border = "rounded" },
-    })
-  end)
+  Util.require(
+    "mason",
+    function(mason)
+      mason.setup({
+        ui = { border = "rounded" },
+      })
+    end
+  )
 end
 
 return M

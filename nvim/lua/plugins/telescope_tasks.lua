@@ -7,7 +7,7 @@ https://github.com/lpoto/telescope-tasks.nvim
 Synchronous tasks from a telescope prompt.
 
 Keymaps:
-  - "<leader>a" - Open the tasks prompt
+  - "<leader>t" - Open the tasks prompt
   - "<leader>e" - Toggle latest output
 -----------------------------------------------------------------------------]]
 local M = {
@@ -16,20 +16,24 @@ local M = {
 
 M.keys = {
   {
-    "<leader>a",
+    "<leader>t",
     function()
-      Util.require("telescope", function(telescope)
-        telescope.extensions.tasks.tasks()
-      end)
+      Util.require(
+        "telescope",
+        function(telescope) telescope.extensions.tasks.tasks() end
+      )
     end,
     mode = "n",
   },
   {
     "<leader>e",
     function()
-      Util.require("telescope", function(telescope)
-        telescope.extensions.tasks.actions.toggle_last_output()
-      end)
+      Util.require(
+        "telescope",
+        function(telescope)
+          telescope.extensions.tasks.actions.toggle_last_output()
+        end
+      )
     end,
     mode = "n",
   },
@@ -40,11 +44,10 @@ function M.config()
     telescope.setup({
       extensions = {
         tasks = {
-          theme = "ivy",
           output = {
             style = "float",
             layout = "center",
-            scale = 0.7,
+            scale = 0.6,
           },
           initial_mode = "normal",
         },
