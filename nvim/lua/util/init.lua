@@ -25,7 +25,6 @@ function util:init(opts)
   opts = type(opts) == "table" and opts or {}
   self.log():set_level(opts.log_level)
   vim.fn.stdpath = self.stdpath
-  self.__init_ftplugin()
   return self
 end
 
@@ -69,48 +68,6 @@ function util.require(module, callback, silent)
     return v
   end
   return unpack(res)
-end
-
-local ftplugins_loaded = {}
----@private
-function util.__init_ftplugin()
-  vim.api.nvim_create_autocmd("Filetype", {
-    callback = function(opts)
-      if
-        vim.bo.buftype ~= ""
-        or type(opts) ~= "table"
-        or type(opts.match) ~= "string"
-        or type(opts.buf) ~= "number"
-        or not vim.api.nvim_buf_is_valid(opts.buf)
-      then
-        return
-      end
-      local filetype = opts.match
-      if ftplugins_loaded[filetype] then return end
-      ftplugins_loaded[filetype] = true
-
-      local ok, formatter = true, vim.g[filetype .. "_formatter"]
-      if formatter == nil then
-        ok, formatter = pcall(vim.api.nvim_buf_get_var, opts.buf, "formatter")
-      end
-      if ok and formatter ~= nil then
-        util.misc().attach_formatter(formatter, filetype)
-        vim.g[filetype .. "_formatter"] = nil
-        vim.api.nvim_buf_del_var(opts.buf, "formatter")
-      end
-      local language_server
-      ok, language_server = true, vim.g[filetype .. "_language_server"]
-      if language_server == nil then
-        ok, language_server =
-          pcall(vim.api.nvim_buf_get_var, opts.buf, "language_server")
-      end
-      if ok and language_server ~= nil then
-        util.misc().attach_language_server(language_server)
-        vim.g[filetype .. "_language_server"] = nil
-        vim.api.nvim_buf_del_var(opts.buf, "language_server")
-      end
-    end,
-  })
 end
 
 local stdpath = vim.fn.stdpath

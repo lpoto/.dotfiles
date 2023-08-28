@@ -14,17 +14,8 @@ end
 ---should be overridden by plugins that provide lsp configurations.
 ---@param server string|table
 ---@diagnostic disable-next-line: unused-local
-function Misc.attach_language_server(server)
-  util.log():warn("'attach_language_server' was not overridden")
-end
-
----Attach the provided formatter. This
----should be overridden by plugins that provide formatting.
----@param cfg string|function
----@param filetype string
----@diagnostic disable-next-line: unused-local
-function Misc.attach_formatter(cfg, filetype)
-  util.log():warn("'attach_formatter' was not overridden")
+function Misc.lsp_attach(server)
+  util.log():warn("'lsp_attach' was not overridden")
 end
 
 --- Return a function that tries to search upward

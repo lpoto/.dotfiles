@@ -6,8 +6,8 @@ if vim.g[vim.bo.filetype] or vim.api.nvim_set_var(vim.bo.filetype, true) then
   return
 end
 
-vim.b.formatter = "stylua"
-vim.b.language_server = {
+Util.misc().lsp_attach("stylua")
+Util.misc().lsp_attach({
   name = "lua_ls",
   root_patterns = { ".git" },
   settings = {
@@ -37,4 +37,4 @@ vim.b.language_server = {
       },
     },
   },
-}
+})
