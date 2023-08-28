@@ -29,27 +29,27 @@ function Log:set_level(level)
 end
 
 function Log:trace(...)
-  self:__notify("trace", self.title, self.delay, false, ...)
+  self:__notify(Log.Level.TRACE, self.title, self.delay, false, ...)
 end
 
 function Log:debug(...)
-  self:__notify("debug", self.title, self.delay, false, ...)
+  self:__notify(Log.Level.DEBUG, self.title, self.delay, false, ...)
 end
 
 function Log:info(...)
-  self:__notify("info", self.title, self.delay, false, ...)
+  self:__notify(Log.Level.INFO, self.title, self.delay, false, ...)
 end
 
 function Log:warn(...)
-  self:__notify("warn", self.title, self.delay, false, ...)
+  self:__notify(Log.Level.WARN, self.title, self.delay, false, ...)
 end
 
 function Log:error(...)
-  self:__notify("error", self.title, self.delay, false, ...)
+  self:__notify(Log.Level.ERROR, self.title, self.delay, false, ...)
 end
 
 function Log:print(...)
-  self:__notify("info", self.title, self.delay, true, ...)
+  self:__notify(Log.Level.INFO, self.title, self.delay, true, ...)
 end
 
 ---@param opts table|number|string|nil
@@ -83,10 +83,10 @@ end
 
 ---@private
 function Log:__notify(level, title, delay, use_print, ...)
-  local lvl = Log.Level[level:upper()]
   local log_lvl = type(self.level) == "number" and self.level
     or Log.Level.INFO
-  if lvl < log_lvl then return end
+  if type(level) ~= "number" then level = Log.Level.INFO end
+  if level < log_lvl then return end
 
   local msg = concat(...)
   if use_print then return print(msg) end

@@ -15,29 +15,10 @@ local M = {
 
 local setup_statusline
 local setup_tabline
-local group_id = nil
 
 function M.config()
   setup_statusline()
   setup_tabline()
-
-  vim.schedule(function()
-    group_id = vim.api.nvim_create_augroup("TabLine", { clear = true })
-    for _, v in ipairs({
-      { events = { "CursorMoved", "ModeChanged" } },
-      { events = "User", pattern = "GitDataChanged" },
-    }) do
-      vim.api.nvim_create_autocmd(v.events, {
-        pattern = v.pattern,
-        group = group_id,
-        callback = function()
-          -- NOTE: sometimes the tabline is not redrawn when we want it to be
-          -- so we force it to redraw here.
-          vim.schedule(function() vim.api.nvim_exec2("redrawtabline", {}) end)
-        end,
-      })
-    end
-  end)
 end
 
 function setup_statusline()
@@ -51,21 +32,19 @@ end
 
 local append_to_tabline
 local append_tabline_section_separator
-local section_count = 1
 local empty_section = false
 
 function setup_tabline()
   vim.o.showtabline = 2
 
-  append_to_tabline("mode", "TabLine", 0.10, 0.10, nil, "left")
+  append_to_tabline("tabcount", "TabLine", 0.10, 0.10, 50, "left")
   append_to_tabline("diagnostic_info", "DiagnosticInfo", 5, 0.05)
   append_to_tabline("diagnostic_warn", "DiagnosticWarn", 5, 0.05)
   append_to_tabline("diagnostic_error", "DiagnosticError", 5, 0.05)
   append_tabline_section_separator()
   append_to_tabline("filename", "TabLineSel", 0.48, 0.48, 100, "center")
-  append_to_tabline("git_branch", "TabLine", 0.15, 0.15, 100, "center")
-  append_to_tabline("tabcount", "TabLineFill", 0.07, 0.07, 20)
-  append_to_tabline("cursor", "TabLine", 0.05, 0.05, nil, "right")
+  append_to_tabline("git_branch", "TabLine", 0.20, 0.20, 100, "right")
+  append_to_tabline("git_status", "TabLineFill", 0.07, 0.07, 30, "center")
 end
 
 function append_to_tabline(
@@ -99,12 +78,10 @@ end
 function append_tabline_section_separator()
   vim.opt.tabline:append(" %= ")
   if empty_section then return end
-  section_count = section_count + 1
   empty_section = true
 end
 
 local get_width
-local get_mode
 local pad_left
 local pad_right
 local align_center
@@ -145,11 +122,6 @@ function tabline_sections.spacer(width)
   return align_center("", width)
 end
 
-function tabline_sections.mode(w)
-  local s = get_mode()
-  return pad_left(pad_right(s, w - 2), w)
-end
-
 local diagnostic
 function tabline_sections.diagnostic_info(w)
   return diagnostic(w, "I", {
@@ -176,12 +148,6 @@ function diagnostic(w, sign, severity, pad)
     diag_string = string.format("%s%d", sign, diagnostics)
   end
   return pad(diag_string, w)
-end
-
-function tabline_sections.cursor(w)
-  local cursor = vim.api.nvim_win_get_cursor(0)
-  local cursor_str = string.format("[%d,%d]", cursor[1], cursor[2] + 1)
-  return pad_right(pad_left(cursor_str, w - 2), w)
 end
 
 function tabline_sections.filename(w)
@@ -225,18 +191,20 @@ function tabline_sections.filename(w)
   return name
 end
 
-function tabline_sections.git_branch(w)
-  local branch = type(vim.g.gitsigns_head) == "string" and vim.g.gitsigns_head
-    or ""
-  if branch == "" then return "" end
-  local n = vim.fn.strchars(branch)
+function tabline_sections.git_status()
   if
     type(vim.b.gitsigns_status) == "string"
     and vim.b.gitsigns_status:len() > 0
-    and n + 3 + vim.b.gitsigns_status:len() <= w
   then
-    branch = string.format("%s [%s]", branch, vim.b.gitsigns_status)
+    return vim.b.gitsigns_status
   end
+  return ""
+end
+
+function tabline_sections.git_branch()
+  local branch = type(vim.g.gitsigns_head) == "string" and vim.g.gitsigns_head
+    or ""
+  if branch == "" then return "" end
   return branch
 end
 
@@ -249,7 +217,7 @@ end
 function tabline_sections.tabcount()
   local tabs = #vim.api.nvim_list_tabpages()
   if tabs > 1 then
-    return "Tab ["
+    return "  Tab ["
       .. vim.api.nvim_tabpage_get_number(0)
       .. "/"
       .. tabs
@@ -291,46 +259,6 @@ function align_center(s, w)
     if r > 0 then s = s .. string.rep(" ", r) end
   end
   return s
-end
-
-function get_mode()
-  local m = vim.api.nvim_get_mode().mode
-  local mapping = {
-    n = "NORMAL",
-    no = "NORMAL",
-    nov = "NORMAL",
-    noV = "NORMAL",
-    niI = "NORMAL",
-    niR = "NORMAL",
-    niV = "NORMAL",
-    nt = "NORMAL",
-    ntT = "NORMAL",
-    v = "VISUAL",
-    V = "VLINE",
-    Vs = "VLINE",
-    [""] = "VBLOCK",
-    ["s"] = "VBLOCK",
-    S = "SLINE",
-    s = "SELECT",
-    [""] = "SBLOCK",
-    i = "INSERT",
-    ic = "INSERT",
-    ix = "INSERT",
-    R = "REPLACE",
-    Rc = "REPLACE",
-    Rx = "REPLACE",
-    Rv = "REPLACE",
-    Rvx = "REPLACE",
-    Rvc = "REPLACE",
-    c = "COMMAND",
-    cv = "EX",
-    r = "PROMPT",
-    rm = "PROMPT",
-    ["r?"] = "CONFIRM",
-    ["!"] = "SHELL",
-    t = "TERMINAL",
-  }
-  return mapping[m] or m
 end
 
 return M

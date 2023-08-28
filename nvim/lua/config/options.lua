@@ -6,7 +6,7 @@
 ----------------------------------Set the default global options for the editor
 
 vim.g.mapleader = " " --------------------------------  map <leader> to <Space>
-vim.g.maplocalleader = ";" ----------------------  map <localleader> to <Space>
+vim.g.maplocalleader = ";" ----------------------  map <localleader> to     ";"
 
 vim.opt.errorbells = false -- disable error sounds
 vim.opt.updatetime = 50 -- shorten updatetime from 4s to 50ms
@@ -61,7 +61,8 @@ vim.opt.scrolloff = 8
 vim.opt.incsearch = true
 vim.opt.title = false
 vim.opt.signcolumn = "number"
-vim.opt.showmode = false
+vim.opt.showmode = true
+vim.opt.cmdheight = 1
 vim.opt.guicursor = "a:blinkon0"
 vim.opt.cursorline = true
 vim.opt.cursorcolumn = false
@@ -130,17 +131,5 @@ vim.api.nvim_create_autocmd("TextYankPost", {
         })
       end
     )
-  end,
-})
-
--------------------------------------------------------------------------------
---- This is a temporary hack to fix the issue with auto entering
---- insert mode
-
-vim.api.nvim_create_autocmd("BufEnter", {
-  group = vim.api.nvim_create_augroup("StopAutoInsert", { clear = true }),
-  callback = function()
-    if vim.bo.buftype ~= "" then return end
-    vim.defer_fn(function() vim.api.nvim_exec2("stopinsert", {}) end, 20)
   end,
 })

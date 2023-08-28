@@ -6,7 +6,7 @@ https://github.com/neovim/nvim-lspconfig
 
 Keymaps:
   - "K"         -  Show the definition of symbol under the cursor
-  - "<C-d>"     -  Show the diagnostics of the line under the cursor
+  - "<C-k>"     -  Show the diagnostics of the line under the cursor
   - "<leader>r" -  Rename symbol under cursor
 -----------------------------------------------------------------------------]]
 local M = {
@@ -53,7 +53,7 @@ function on_lsp_attach(args)
   end
   local opts = { buffer = args.buf }
   vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
-  vim.keymap.set("n", "<C-d>", open_diagnostic_float, opts)
+  vim.keymap.set("n", "<C-k>", open_diagnostic_float, opts)
   -- NOTE: the lsp definitions and references are used with telescope.nvim
   -- vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
   -- vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
@@ -123,7 +123,7 @@ Util.misc().attach_language_server = function(server)
     end
 
     lsp.setup(server)
-    vim.api.nvim_exec("LspStart", false)
+    vim.api.nvim_exec2("LspStart", {})
   end)
 end
 
