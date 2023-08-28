@@ -55,18 +55,6 @@ function Misc.root_fn(patterns, default, opts)
   end
 end
 
----Return the current neovim version as a string.
----@return string
-function Misc.nvim_version()
-  local version = vim.version()
-
-  local s = version.major
-  s = s .. "." .. version.minor
-  s = s .. "." .. version.patch
-  if version.prerelease then s = s .. " (prerelease)" end
-  return s
-end
-
 ---Toggle quickfix window
 ---@param navigate_to_quickfix boolean?: Navigate to quickfix window after opening it
 ---@param open_only boolean?: Do not close quickfix if already open
