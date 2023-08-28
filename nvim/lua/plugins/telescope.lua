@@ -113,7 +113,7 @@ function M.config()
           "%.target/",
           "%.settings/",
           "%.build/",
-          "build/",
+          "^build/",
           "dist/",
           "%.dist/",
           "%.angular/",
@@ -153,6 +153,7 @@ function M.config()
         },
         git_status = {
           attach_mappings = attach_git_status_mappings,
+          file_ignore_patterns = {},
           selection_strategy = "row",
           initial_mode = "normal",
         },
