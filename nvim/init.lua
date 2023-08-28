@@ -9,8 +9,8 @@ local _, version = pcall((vim or {}).version)
 if
   type(version) ~= "table"
   or type(version.major) ~= "number"
-  or version.major < 0
-    and (type(version.minor) ~= "number" or version.minor < 5)
+  or version.major < 1
+    and (type(version.minor) ~= "number" or version.minor < 9)
 then
   print("This configuration requires Neovim 0.9.0 or greater.")
   return
