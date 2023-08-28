@@ -9,6 +9,8 @@ Keymaps:
   - "K"         -  Show the definition of symbol under the cursor
   - "<C-k>"     -  Show the diagnostics of the line under the cursor
   - "<leader>r" -  Rename symbol under cursor
+
+  - "<leader>f" - format the current buffer
 -----------------------------------------------------------------------------]]
 local M = {
   "neovim/nvim-lspconfig",
@@ -223,34 +225,41 @@ function update_efm_server(lspconfig, opts)
 end
 
 function format(visual)
-  vim.lsp.buf.format({
-    bufnr = 0,
-    async = false,
-    range = visual and {
-      vim.api.nvim_buf_get_mark(0, "<")[1],
-      vim.api.nvim_buf_get_mark(0, ">")[1],
-    } or nil,
-    filter = function(client)
-      if client.name ~= "efm" then
-        return false or type(client.config) ~= "table"
-      end
-      local c = client.config
-      if
-        type(c.languages) ~= "table"
-        or type(c.languages[vim.bo.filetype]) ~= "table"
-      then
-        return false
-      end
-      local available = formatters[vim.bo.filetype]
-      if type(available) ~= "string" then return end
-      for _, v in pairs(c.languages[vim.bo.filetype]) do
-        if v.name == available then
-          Util.log("LSP"):info("Formatting with:", available)
-          return true
-        end
-      end
+  local filter = function(client)
+    if client.name ~= "efm" then
+      return false or type(client.config) ~= "table"
+    end
+    local c = client.config
+    if
+      type(c.languages) ~= "table"
+      or type(c.languages[vim.bo.filetype]) ~= "table"
+    then
       return false
-    end,
+    end
+    local available = formatters[vim.bo.filetype]
+    if type(available) ~= "string" then return end
+    for _, v in pairs(c.languages[vim.bo.filetype]) do
+      if v.name == available then
+        Util.log("LSP"):info("Formatting with:", available)
+        return true
+      end
+    end
+    return false
+  end
+
+  local range = nil
+  if visual then
+    local start_row, _ = unpack(vim.api.nvim_buf_get_mark(0, "<"))
+    local end_row, _ = unpack(vim.api.nvim_buf_get_mark(0, ">"))
+    range = {
+      ["start"] = { start_row, 0 },
+      ["end"] = { end_row, 0 },
+    }
+  end
+  vim.lsp.buf.format({
+    async = true,
+    range = range,
+    filter = filter,
   })
 end
 
