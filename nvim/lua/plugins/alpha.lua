@@ -96,7 +96,6 @@ function buttons()
       end),
       button(":Lazy", "Plugins", "Lazy"),
       button(":Mason", "Package Manager", "Mason"),
-      button(":Noice", "Notifications", "Noice"),
     },
     opts = {
       spacing = 0,
