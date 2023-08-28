@@ -121,6 +121,7 @@ function footer()
   end) or {}
 end
 
+local nvim_version
 function M.config()
   Util.require("alpha", function(alpha)
     alpha.setup({
@@ -131,7 +132,7 @@ function M.config()
         {
           type = "text",
           val = {
-            Util.misc().nvim_version(),
+            nvim_version(),
           },
           opts = {
             position = "center",
@@ -175,6 +176,16 @@ function button(sc, txt, on_press)
     end,
     opts = opts,
   }
+end
+
+function nvim_version()
+  local version = vim.version()
+
+  local s = version.major
+  s = s .. "." .. version.minor
+  s = s .. "." .. version.patch
+  if version.prerelease then s = s .. " (prerelease)" end
+  return s
 end
 
 return M
