@@ -74,7 +74,7 @@ function retire_buffers()
     --- Count the times the buffer has been entered recently,
     --- and the last time it was entered, so that we can
     --- unload the least used buffers.
-    buffer_timestamps[cur_buf] = vim.uv.now()
+    buffer_timestamps[cur_buf] = vim.loop.now()
 
     local buffers = vim.api.nvim_list_bufs()
     if #buffers < m then return end
