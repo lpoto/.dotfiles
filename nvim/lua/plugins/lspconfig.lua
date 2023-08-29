@@ -80,48 +80,21 @@ end
 local attach_language_server
 local update_efm_server
 
----Override the default attach_language_server function.
----@param server string|table
 ---@diagnostic disable-next-line: duplicate-set-field
-Util.misc().lsp_attach = function(server, filetype)
-  local str = type(server) == "string"
-  if type(filetype) ~= "string" then filetype = vim.bo.filetype end
-
-  if type(server) == "string" then server = {
-    name = server,
-  } end
-  if type(server) ~= "table" then
-    Util.log():warn("No server provided")
-    return
+Util.__lsp().__attach = function(opts, filetype)
+  local lspconfig = Util.require("lspconfig")
+  if not lspconfig then return end
+  local c =
+    Util.require("lspconfig.server_configurations." .. opts.name, nil, true)
+  local name = opts.name
+  if c == nil then
+    opts.name = "efm"
+    opts.languages = {
+      [filetype] = { name },
+    }
+    return update_efm_server(lspconfig, opts)
   end
-  if type(server.name) ~= "string" and type(server[1]) == "string" then
-    server.name = server[1]
-  end
-  if type(server.name) ~= "string" then
-    Util.log():warn("No language server name provided")
-    return
-  end
-
-  server[1] = nil
-  Util.require("lspconfig", function(lspconfig)
-    local c = Util.require(
-      "lspconfig.server_configurations." .. server.name,
-      nil,
-      true
-    )
-    local result = false
-    local name = server.name
-    if c == nil and str then
-      server.name = "efm"
-      server.languages = {
-        [filetype] = { name },
-      }
-      result = update_efm_server(lspconfig, server)
-    else
-      result = attach_language_server(lspconfig, server)
-    end
-    if result == true then Util.log("LSP"):info("Attached:", name) end
-  end)
+  return attach_language_server(lspconfig, opts)
 end
 
 function attach_language_server(lspconfig, server)
@@ -136,13 +109,6 @@ function attach_language_server(lspconfig, server)
     server or {},
     vim.g[server.name .. "_config"] or {}
   )
-  server.capabilities = server.capabilities
-    or Util.misc().get_autocompletion_capabilities()
-
-  if server.root_dir == nil and type(server.root_patterns) == "table" then
-    server.root_dir = Util.misc().root_fn(server.root_patterns)
-  end
-
   lsp.setup(server)
   vim.api.nvim_exec2("LspStart", {})
   return true
@@ -195,6 +161,7 @@ function update_efm_server(lspconfig, opts)
   if type(opts.init_options) ~= "table" then opts.init_options = {} end
   opts.init_options.documentFormatting = true
   opts.init_options.documentRangeFormatting = true
+  opts.capabilities = nil
 
   for k, l in pairs(languages) do
     for _, v in pairs(l) do
@@ -240,7 +207,7 @@ function format(visual)
     if type(available) ~= "string" then return end
     for _, v in pairs(c.languages[vim.bo.filetype]) do
       if v.name == available then
-        Util.log("LSP"):info("Formatting with:", available)
+        Util.log("LSP"):debug("Formatting with:", available)
         return true
       end
     end
@@ -257,7 +224,7 @@ function format(visual)
     }
   end
   vim.lsp.buf.format({
-    async = true,
+    async = false,
     range = range,
     filter = filter,
   })
