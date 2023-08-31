@@ -32,4 +32,9 @@ function M.config()
   )
 end
 
+Util.setup["mason"] = function()
+  vim.api.nvim_exec2("MasonUpdate", {})
+  vim.api.nvim_exec2("MasonInstall efm", {})
+end
+
 return M

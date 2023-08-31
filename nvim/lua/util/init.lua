@@ -32,6 +32,12 @@ function util:init(opts)
   opts = type(opts) == "table" and opts or {}
   self.log():set_level(opts.log_level)
   vim.fn.stdpath = self.stdpath
+  vim.api.nvim_create_user_command("NvimSetup", function()
+    for _, setup in pairs(self.setup or {}) do
+      local ok, e = pcall(setup)
+      if not ok then self.log():error("Error in setup:", e) end
+    end
+  end, {})
   return self
 end
 
@@ -135,5 +141,11 @@ function util.toggle_quickfix(navigate_to_quickfix, open_only)
     if navigate_to_quickfix ~= true then vim.fn.win_gotoid(winid) end
   end
 end
+
+---A table of function called when NvimSetup is executed.
+---This is usually called when building neovim, and the
+---neovim may be set up with `nvim --headles +NvimSetup +qall`
+---@type function[]
+util.setup = {}
 
 return util
