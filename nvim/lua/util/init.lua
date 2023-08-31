@@ -83,25 +83,6 @@ function util.require(module, callback, silent)
   return unpack(res)
 end
 
----@param what string
----@return string|table
-function util.stdpath(what)
-  local stdpath_base = vim.fs.dirname(vim.fn.old_stdpath("config"))
-  local storage = stdpath_base .. "/.storage"
-
-  local n = {
-    config = stdpath_base,
-    cache = storage .. "/cache",
-    data = storage .. "/data",
-    log = storage .. "/log",
-    run = storage .. "/state",
-    state = storage .. "/state",
-    config_dirs = {},
-    data_dirs = {},
-  }
-  return n[what] or stdpath(what)
-end
-
 local stdpath = vim.fn.stdpath
 ---@param what string
 ---@return string|table
