@@ -8,7 +8,7 @@ A plugin that overrides vim.notify and lsp progress bars
 -----------------------------------------------------------------------------]]
 local M = {
   "vigoux/notifier.nvim",
-  event = "BufEnter",
+  event = { "BufRead", "BufNewFile" },
   opts = {
     notify = {
       min_level = Util.log().level,
