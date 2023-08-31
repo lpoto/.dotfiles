@@ -42,7 +42,6 @@ function Lsp:attach(...)
     if server.root_dir == nil and type(server.root_patterns) == "table" then
       server.root_dir = self.root_fn(server.root_patterns)
     end
-    server.root_patterns = nil
     local name = server.name
 
     vim.defer_fn(function()
