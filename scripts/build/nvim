@@ -143,6 +143,15 @@ sleep 2
 make CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX=${NVIM_BUILD_DIR}/neovim/build" CMAKE_BUILD_TYPE=Release install
 
 echo
-echo "==> Build complete (${build_type}). (run '${scripts}/nvim [--stable, --latest]' to update neovim)"
+echo "==> Build complete (${build_type}). (run '${scripts}/nvim [--stable, --nightly, --latest]' to update neovim)"
+
+echo
+echo "==> Setting up neovim ..."
+$(dirname $(dirname ${scripts}))/bin/nvim --headless +NvimSetup +qa
+
+echo
+echo
+echo "==> Setup complete."
+echo
 
 cd ${cur_pwd}

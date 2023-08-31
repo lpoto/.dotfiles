@@ -10,24 +10,12 @@ highlights, ...
 local M = {
   "nvim-treesitter/nvim-treesitter",
   event = { "BufRead", "BufNewFile" },
+  cmd = { "TSUpdate", "TSInstall", "TSUpdateSync", "TSInstallSync" },
 }
 
 function M.config()
   Util.require("nvim-treesitter.configs", function(treesitter)
     treesitter.setup({
-      -- NOTE: the following parsers should always be installed
-      -- when opening nvim for the first time.
-      ensure_installed = {
-        "c",
-        "lua",
-        "vim",
-        "vimdoc",
-        "query",
-        "regex",
-        "bash",
-        "markdown",
-        "markdown_inline",
-      },
       -- Parsers will be installed when entering the matching filetype.
       auto_install = true,
       sync_install = false,
@@ -49,6 +37,26 @@ function M.config()
       },
     })
   end)
+end
+
+Util.setup["treesitter"] = function()
+  local ensure_installed = {
+    "c",
+    "lua",
+    "vim",
+    "vimdoc",
+    "markdown",
+    "markdown_inline",
+    "bash",
+    "gitcommit",
+    "git_config",
+    "git_rebase",
+    "gitattributes",
+  }
+  vim.api.nvim_exec2(
+    "TSUpdateSync " .. table.concat(ensure_installed, " "),
+    {}
+  )
 end
 
 return M

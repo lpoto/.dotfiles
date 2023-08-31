@@ -14,18 +14,30 @@ function util.log(opts)
   return util.require("util.log"):new(opts) --[[ @as LogUtil ]]
 end
 
----@return MiscUtil
-function util.misc()
-  return util.require("util.misc") --[[ @as MiscUtil ]]
+---@param filetype string?
+---@param delay number?
+---@return LspUtil
+function util.lsp(filetype, delay)
+  return util.require("util.lsp"):new(filetype, delay) --[[ @as LspUtil ]]
 end
 
----@param opts {log_level:LogLevelValue|'TRACE'|'DEBUG'|'INFO'|'WARN'|'ERROR'}
+---@return LspUtil
+function util.__lsp()
+  return util.require("util.lsp") --[[ @as LspUtil ]]
+end
+
+---@param opts {log_level:0|1|2|3|4}
 ---@return Util
 function util:init(opts)
   opts = type(opts) == "table" and opts or {}
   self.log():set_level(opts.log_level)
   vim.fn.stdpath = self.stdpath
-  self.__init_ftplugin()
+  vim.api.nvim_create_user_command("NvimSetup", function()
+    for _, setup in pairs(self.setup or {}) do
+      local ok, e = pcall(setup)
+      if not ok then self.log():error("Error in setup:", e) end
+    end
+  end, {})
   return self
 end
 
@@ -71,48 +83,6 @@ function util.require(module, callback, silent)
   return unpack(res)
 end
 
-local ftplugins_loaded = {}
----@private
-function util.__init_ftplugin()
-  vim.api.nvim_create_autocmd("Filetype", {
-    callback = function(opts)
-      if
-        vim.bo.buftype ~= ""
-        or type(opts) ~= "table"
-        or type(opts.match) ~= "string"
-        or type(opts.buf) ~= "number"
-        or not vim.api.nvim_buf_is_valid(opts.buf)
-      then
-        return
-      end
-      local filetype = opts.match
-      if ftplugins_loaded[filetype] then return end
-      ftplugins_loaded[filetype] = true
-
-      local ok, formatter = true, vim.g[filetype .. "_formatter"]
-      if formatter == nil then
-        ok, formatter = pcall(vim.api.nvim_buf_get_var, opts.buf, "formatter")
-      end
-      if ok and formatter ~= nil then
-        util.misc().attach_formatter(formatter, filetype)
-        vim.g[filetype .. "_formatter"] = nil
-        vim.api.nvim_buf_del_var(opts.buf, "formatter")
-      end
-      local language_server
-      ok, language_server = true, vim.g[filetype .. "_language_server"]
-      if language_server == nil then
-        ok, language_server =
-          pcall(vim.api.nvim_buf_get_var, opts.buf, "language_server")
-      end
-      if ok and language_server ~= nil then
-        util.misc().attach_language_server(language_server)
-        vim.g[filetype .. "_language_server"] = nil
-        vim.api.nvim_buf_del_var(opts.buf, "language_server")
-      end
-    end,
-  })
-end
-
 local stdpath = vim.fn.stdpath
 ---@param what string
 ---@return string|table
@@ -137,5 +107,45 @@ function util.stdpath(what)
   }
   return n[what] or stdpath(what)
 end
+
+---Toggle quickfix window
+---@param navigate_to_quickfix boolean?: Navigate to quickfix window after opening it
+---@param open_only boolean?: Do not close quickfix if already open
+function util.toggle_quickfix(navigate_to_quickfix, open_only)
+  if
+    #vim.tbl_filter(
+      function(winid)
+        return vim.api.nvim_buf_get_option(
+          vim.api.nvim_win_get_buf(winid),
+          "buftype"
+        ) == "quickfix"
+      end,
+      vim.api.nvim_list_wins()
+    ) > 0
+  then
+    if open_only ~= true then vim.api.nvim_exec2("cclose", {}) end
+  else
+    local winid = vim.api.nvim_get_current_win()
+    vim.api.nvim_exec2("noautocmd keepjumps copen", {})
+    if
+      #vim.tbl_filter(
+        function(l) return #l > 0 end,
+        vim.api.nvim_buf_get_lines(0, 0, -1, false)
+      ) == 0
+    then
+      vim.api.nvim_exec2("cclose", {})
+      navigate_to_quickfix = true
+      Util.log("Quickfix")
+        :warn("There is nothing to display in the quickfix window")
+    end
+    if navigate_to_quickfix ~= true then vim.fn.win_gotoid(winid) end
+  end
+end
+
+---A table of function called when NvimSetup is executed.
+---This is usually called when building neovim, and the
+---neovim may be set up with `nvim --headles +NvimSetup +qall`
+---@type function[]
+util.setup = {}
 
 return util

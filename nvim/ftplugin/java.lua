@@ -6,14 +6,8 @@ if vim.g[vim.bo.filetype] or vim.api.nvim_set_var(vim.bo.filetype, true) then
   return
 end
 
-vim.b.formatter = function()
-  return {
-    exe = "google-java-format",
-    args = { "--aosp", vim.api.nvim_buf_get_name(0), "--replace" },
-    stdin = true,
-  }
-end
-vim.b.language_server = {
+Util.lsp():attach("astyle")
+Util.lsp():attach({
   name = "jdtls",
   ---NOTE: Ensure you are using java 17 or above while using jdtls, as
   ---    it is not compatible with lower versions.
@@ -58,4 +52,4 @@ vim.b.language_server = {
             }
           }
     --]]
-}
+})

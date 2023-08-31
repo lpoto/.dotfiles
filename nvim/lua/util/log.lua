@@ -1,55 +1,38 @@
 ---@class LogUtil
 ---@field title string?
 ---@field delay number?
----@field level LogLevelValue?
+---@field level 0|1|2|3|4
 local Log = {}
 Log.__index = Log
 
----@alias LogLevelValue number
-
----@class LogLevel
----@field DEBUG LogLevelValue
----@field INFO LogLevelValue
----@field WARN LogLevelValue
----@field ERROR LogLevelValue
-Log.Level = {
-  TRACE = 0,
-  DEBUG = 1,
-  INFO = 2,
-  WARN = 3,
-  ERROR = 4,
-}
-
----@param level LogLevelValue|'TRACE'|'DEBUG'|'INFO'|'WARN'|'ERROR'
+---@param level 0|1|2|3|4
 function Log:set_level(level)
-  if type(level) == "string" then
-    level = Log.Level[level:upper()] or Log.Level.INFO
-  end
+  if type(level) ~= "number" then level = vim.log.levels.DEBUG end
   Log.level = level
 end
 
 function Log:trace(...)
-  self:__notify(Log.Level.TRACE, self.title, self.delay, false, ...)
+  self:__notify(vim.log.levels.TRACE, self.title, self.delay, false, ...)
 end
 
 function Log:debug(...)
-  self:__notify(Log.Level.DEBUG, self.title, self.delay, false, ...)
+  self:__notify(vim.log.levels.DEBUG, self.title, self.delay, false, ...)
 end
 
 function Log:info(...)
-  self:__notify(Log.Level.INFO, self.title, self.delay, false, ...)
+  self:__notify(vim.log.levels.INFO, self.title, self.delay, false, ...)
 end
 
 function Log:warn(...)
-  self:__notify(Log.Level.WARN, self.title, self.delay, false, ...)
+  self:__notify(vim.log.levels.WARN, self.title, self.delay, false, ...)
 end
 
 function Log:error(...)
-  self:__notify(Log.Level.ERROR, self.title, self.delay, false, ...)
+  self:__notify(vim.log.levels.ERROR, self.title, self.delay, false, ...)
 end
 
 function Log:print(...)
-  self:__notify(Log.Level.INFO, self.title, self.delay, true, ...)
+  self:__notify(vim.log.levels.INFO, self.title, self.delay, true, ...)
 end
 
 ---@param opts table|number|string|nil
@@ -84,8 +67,8 @@ end
 ---@private
 function Log:__notify(level, title, delay, use_print, ...)
   local log_lvl = type(self.level) == "number" and self.level
-    or Log.Level.INFO
-  if type(level) ~= "number" then level = Log.Level.INFO end
+    or vim.log.levels.DEBUG
+  if type(level) ~= "number" then level = vim.log.levels.INFO end
   if level < log_lvl then return end
 
   local msg = concat(...)

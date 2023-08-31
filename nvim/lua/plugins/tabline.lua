@@ -60,7 +60,7 @@ function append_to_tabline(
   end
   vim.opt.tabline:append(
     "%"
-      .. "{%v:lua.require('util').misc().tabline_sections.get('"
+      .. "{%v:lua.require('util').tabline_sections.get('"
       .. section
       .. "', "
       .. (width or 0)
@@ -226,7 +226,7 @@ function tabline_sections.tabcount()
   return ""
 end
 
-Util.misc().tabline_sections = tabline_sections
+Util.tabline_sections = tabline_sections
 
 function get_width(n)
   local w = vim.o.columns

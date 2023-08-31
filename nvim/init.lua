@@ -23,7 +23,7 @@ if vim.loop.os_uname().sysname == "Windows" then
   return
 end
 
-Util = require("util"):init({ log_level = "DEBUG" })
+Util = require("util"):init({ log_level = vim.log.levels.DEBUG })
 
 ---- NOTE: Safely require modules with Util.require, so that they are loaded in
 ------------------------------------- order, even if one of them fails to load.

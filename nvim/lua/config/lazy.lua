@@ -92,3 +92,5 @@ function get_lazy_options()
 end
 
 load_lazy(vim.fn.stdpath("data") .. "/lazy/lazy.nvim")
+
+Util.setup["lazy"] = function() vim.api.nvim_exec2("Lazy restore", {}) end

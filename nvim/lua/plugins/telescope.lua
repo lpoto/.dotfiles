@@ -176,7 +176,7 @@ function default_mappings()
         -- open quickfix in a telescope window
         ["<C-q>"] = function()
           actions.send_to_qflist(vim.fn.bufnr())
-          Util.misc().toggle_quickfix(nil, true)
+          Util.toggle_quickfix(nil, true)
         end,
         ["<Tab>"] = actions.move_selection_next,
         ["<S-Tab>"] = actions.move_selection_previous,
