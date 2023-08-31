@@ -9,6 +9,7 @@ highlights, ...
 -----------------------------------------------------------------------------]]
 local M = {
   "nvim-treesitter/nvim-treesitter",
+  cmd = { "TSUpdate", "TSInstall" },
   event = { "BufRead", "BufNewFile" },
 }
 
@@ -22,11 +23,6 @@ function M.config()
         "lua",
         "vim",
         "vimdoc",
-        "query",
-        "regex",
-        "bash",
-        "markdown",
-        "markdown_inline",
       },
       -- Parsers will be installed when entering the matching filetype.
       auto_install = true,

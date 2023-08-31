@@ -145,4 +145,7 @@ make CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX=${NVIM_BUILD_DIR}/neovim/build" C
 echo
 echo "==> Build complete (${build_type}). (run '${scripts}/nvim [--stable, --latest]' to update neovim)"
 
+echo "==> Setting up neovim ..."
+$(dirname $(dirname ${scripts}))/bin/nvim --headless "+Lazy! restore" '+MasonUpdate' '+TSUpdate' +qa
+
 cd ${cur_pwd}
