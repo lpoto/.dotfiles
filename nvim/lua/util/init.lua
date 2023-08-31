@@ -31,7 +31,7 @@ end
 function util:init(opts)
   opts = type(opts) == "table" and opts or {}
   self.log():set_level(opts.log_level)
-  vim.fn.stdpath = self.stdpath
+  vim.fn.stdpath = util.stdpath
   vim.api.nvim_create_user_command("NvimSetup", function()
     for _, setup in pairs(self.setup or {}) do
       local ok, e = pcall(setup)
@@ -83,6 +83,25 @@ function util.require(module, callback, silent)
   return unpack(res)
 end
 
+---@param what string
+---@return string|table
+function util.stdpath(what)
+  local stdpath_base = vim.fs.dirname(vim.fn.old_stdpath("config"))
+  local storage = stdpath_base .. "/.storage"
+
+  local n = {
+    config = stdpath_base,
+    cache = storage .. "/cache",
+    data = storage .. "/data",
+    log = storage .. "/log",
+    run = storage .. "/state",
+    state = storage .. "/state",
+    config_dirs = {},
+    data_dirs = {},
+  }
+  return n[what] or stdpath(what)
+end
+
 local stdpath = vim.fn.stdpath
 ---@param what string
 ---@return string|table
@@ -96,7 +115,6 @@ function util.stdpath(what)
 
   local n = {
     config = base .. "/" .. app_name,
-    app_name,
     cache = storage .. "/cache/" .. app_name,
     data = storage .. "/share/" .. app_name,
     log = storage .. "/log/" .. app_name,
