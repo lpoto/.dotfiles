@@ -38,10 +38,18 @@ function M.config()
       function(telescope) telescope.extensions.sessions.sessions() end
     )
   end, {})
-  Util.require(
-    "telescope",
-    function(telescope) telescope.load_extension("sessions") end
-  )
+  Util.require("telescope", function(telescope)
+    telescope.setup({
+      extensions = {
+        sessions = {
+          layout_config = {
+            width = 130,
+          },
+        },
+      },
+    })
+    telescope.load_extension("sessions")
+  end)
 end
 
 return M
