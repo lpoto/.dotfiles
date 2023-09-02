@@ -15,6 +15,8 @@ function Lsp:new(filetype, delay)
   }, self)
 end
 
+local log_attached = {}
+
 ---Attach the provided lsp server.
 ---@param ... string|table
 function Lsp:attach(...)
@@ -46,7 +48,18 @@ function Lsp:attach(...)
 
     vim.defer_fn(function()
       if self.__attach(server, filetype) == true then
-        util.log("Lsp"):debug("Attached:", name, "for", filetype)
+        if log_attached[filetype] == nil then log_attached[filetype] = {} end
+        table.insert(log_attached[filetype], name)
+        vim.defer_fn(function()
+          if not next(log_attached) then return end
+          local s = ""
+          for k, v in pairs(log_attached) do
+            if s:len() > 0 then s = s .. ", " end
+            s = s .. k .. ": [" .. table.concat(v, ", ") .. "]"
+          end
+          log_attached = {}
+          util.log("Lsp"):debug("Attached:", s)
+        end, 200)
       end
     end, self.delay or 50)
   end
@@ -96,6 +109,24 @@ function Lsp.root_fn(patterns, default, opts)
     end
     return vim.fs.dirname(f[1])
   end
+end
+
+local severity = {
+  "error",
+  "warn",
+  "info",
+  "info",
+}
+vim.lsp.handlers["window/showMessage"] = function(
+  _,
+  method,
+  params,
+  client_id
+)
+  local client = vim.lsp.get_client_by_id(client_id)
+  vim.notify(method.message, severity[params.type], {
+    title = (client or {}).name,
+  })
 end
 
 return Lsp

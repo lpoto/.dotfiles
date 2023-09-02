@@ -101,4 +101,19 @@ function Log:__notify(level, title, delay, use_print, ...)
   end, delay)
 end
 
+local notify = vim.notify
+---@diagnostic disable-next-line: duplicate-set-field
+vim.notify = function(msg, level, opts)
+  if type(opts) == "string" then
+    opts = { title = opts }
+  elseif type(opts) ~= "table" then
+    opts = {}
+  end
+  if type(msg) ~= "string" then msg = vim.inspect(msg) end
+  if type(opts.title) == "string" then
+    msg = "[" .. opts.title .. "] " .. msg
+  end
+  notify(msg, level, opts)
+end
+
 return Log

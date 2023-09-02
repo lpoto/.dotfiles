@@ -207,9 +207,15 @@ function update_efm_server(lspconfig, opts)
     if type(opts.settings.rootMarkers) ~= "table" then
       opts.settings.rootMarkers = opts.root_patterns
     end
-  elseif type(opts.settings.rootMarkers) ~= "table" then
-    opts.settings.rootMarkers = { ".git/" }
   end
+  if type(opts.settings.rootMarkers) ~= "table" then
+    opts.settings.rootMarkers = {}
+  end
+
+  for _, v in ipairs({ ".git/", ".editorconfig", "LICENSE" }) do
+    table.insert(opts.settings.rootMarkers, v)
+  end
+
   opts.filetypes = vim.tbl_keys(opts.settings.languages)
   opts.init_options = {
     documentFormatting = true,
