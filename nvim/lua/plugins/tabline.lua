@@ -226,6 +226,7 @@ function tabline_sections.tabcount()
   return ""
 end
 
+---@diagnostic disable-next-line: inject-field
 Util.tabline_sections = tabline_sections
 
 function get_width(n)
