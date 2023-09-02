@@ -50,17 +50,16 @@ function M.config()
       },
       update_debounce = 250,
       on_attach = function(bufnr)
-        if not logged then
-          Util.log("Git"):debug("Attached gistigns")
-          logged = true
-        end
         local opts = { buffer = bufnr }
-
         vim.keymap.set("n", "<leader>gd", gitsigns.diffthis, opts)
         vim.keymap.set("n", "<leader>gs", gitsigns.stage_buffer, opts)
         vim.keymap.set("n", "<leader>gh", gitsigns.stage_hunk, opts)
         vim.keymap.set("n", "<leader>gu", gitsigns.undo_stage_hunk, opts)
         vim.keymap.set("n", "<leader>gr", gitsigns.reset_buffer, opts)
+        if not logged then
+          Util.log("Git"):debug("Attached gistigns")
+          logged = true
+        end
       end,
     })
   end)

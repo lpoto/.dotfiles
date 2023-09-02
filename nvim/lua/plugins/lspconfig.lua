@@ -120,7 +120,7 @@ function attach_language_server(lspconfig, server)
   )
   server.autostart = true
   lsp.setup(server)
-  vim.api.nvim_exec2("LspStart", {})
+  vim.api.nvim_exec2("LspStart " .. server.name, {})
   return true
 end
 
