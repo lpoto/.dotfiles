@@ -110,4 +110,22 @@ function Lsp.root_fn(patterns, default, opts)
   end
 end
 
+local severity = {
+  "error",
+  "warn",
+  "info",
+  "info",
+}
+vim.lsp.handlers["window/showMessage"] = function(
+  _,
+  method,
+  params,
+  client_id
+)
+  local client = vim.lsp.get_client_by_id(client_id)
+  vim.notify(method.message, severity[params.type], {
+    title = (client or {}).name,
+  })
+end
+
 return Lsp
