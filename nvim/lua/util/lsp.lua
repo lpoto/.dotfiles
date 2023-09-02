@@ -48,13 +48,14 @@ function Lsp:attach(...)
 
     vim.defer_fn(function()
       if self.__attach(server, filetype) == true then
-        table.insert(log_attached, { name = name, filetype = filetype })
+        if log_attached[filetype] == nil then log_attached[filetype] = {} end
+        table.insert(log_attached[filetype], name)
         vim.defer_fn(function()
-          if #log_attached == 0 then return end
+          if not next(log_attached) then return end
           local s = ""
-          for i, v in ipairs(log_attached) do
-            if i > 1 then s = s .. ", " end
-            s = s .. v.name .. " (" .. v.filetype .. ")"
+          for k, v in pairs(log_attached) do
+            if s:len() > 0 then s = s .. ", " end
+            s = s .. k .. ": [" .. table.concat(v, ", ") .. "]"
           end
           log_attached = {}
           util.log("Lsp"):debug("Attached:", s)
