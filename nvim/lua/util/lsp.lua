@@ -15,6 +15,8 @@ function Lsp:new(filetype, delay)
   }, self)
 end
 
+local log_attached = {}
+
 ---Attach the provided lsp server.
 ---@param ... string|table
 function Lsp:attach(...)
@@ -46,7 +48,17 @@ function Lsp:attach(...)
 
     vim.defer_fn(function()
       if self.__attach(server, filetype) == true then
-        util.log("Lsp"):debug("Attached:", name, "for", filetype)
+        table.insert(log_attached, { name = name, filetype = filetype })
+        vim.defer_fn(function()
+          if #log_attached == 0 then return end
+          local s = ""
+          for i, v in ipairs(log_attached) do
+            if i > 1 then s = s .. ", " end
+            s = s .. v.name .. " (" .. v.filetype .. ")"
+          end
+          log_attached = {}
+          util.log("Lsp"):debug("Attached:", s)
+        end, 200)
       end
     end, self.delay or 50)
   end
