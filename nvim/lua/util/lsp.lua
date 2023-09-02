@@ -15,7 +15,7 @@ function Lsp:new(filetype, delay)
   }, self)
 end
 
-local log_attached = {}
+local logs = {}
 
 ---Attach the provided lsp server.
 ---@param ... string|table
@@ -44,22 +44,64 @@ function Lsp:attach(...)
     if server.root_dir == nil and type(server.root_patterns) == "table" then
       server.root_dir = self.root_fn(server.root_patterns)
     end
-    local name = server.name
-
     vim.defer_fn(function()
-      if self.__attach(server, filetype) == true then
-        if log_attached[filetype] == nil then log_attached[filetype] = {} end
-        table.insert(log_attached[filetype], name)
-        vim.defer_fn(function()
-          if not next(log_attached) then return end
-          local s = ""
-          for k, v in pairs(log_attached) do
-            if s:len() > 0 then s = s .. ", " end
-            s = s .. k .. ": [" .. table.concat(v, ", ") .. "]"
+      local t = self.__attach(server, filetype)
+      if type(t) == "table" and next(t) then
+        local attached = t.attached
+        if type(attached) == "string" then attached = { attached } end
+        if type(attached) == "table" and next(attached) then
+          if logs.attached == nil then logs.attached = {} end
+          for _, v in ipairs(attached) do
+            table.insert(logs.attached, v)
           end
-          log_attached = {}
-          util.log("Lsp"):debug("Attached:", s)
-        end, 200)
+        end
+        local missing = t.missing
+        if type(missing) == "string" then missing = { missing } end
+        if type(missing) == "table" and next(missing) then
+          if logs.missing == nil then logs.missing = {} end
+          for _, v in ipairs(missing) do
+            table.insert(logs.missing, v)
+          end
+        end
+        local non_executable = t.non_executable
+        if type(non_executable) == "string" then
+          non_executable = { non_executable }
+        end
+        if type(non_executable) == "table" and next(non_executable) then
+          if logs.non_executable == nil then logs.non_executable = {} end
+          for _, v in ipairs(non_executable) do
+            table.insert(logs.non_executable, v)
+          end
+        end
+        vim.defer_fn(function()
+          if not next(logs) then return end
+          local l = "info"
+          local s = ""
+          if next(logs.attached or {}) then
+            s = "Attached: [" .. table.concat(logs.attached, ", ") .. "]"
+          end
+          if next(logs.non_executable or {}) then
+            if s:len() > 0 then s = s .. ", " end
+            s = s
+              .. "No executables found for: ["
+              .. table.concat(logs.non_executable, ", ")
+              .. "]"
+            l = "warn"
+          end
+          if next(logs.missing or {}) then
+            if s:len() > 0 then s = s .. ", " end
+            s = s
+              .. "No server/linter/formatter found for: ["
+              .. table.concat(logs.missing, ", ")
+              .. "]"
+            l = "warn"
+          end
+          if s:len() > 0 then
+            local lg = Util.log("LSP")
+            lg[l](lg, s)
+          end
+          logs = {}
+        end, 300)
       end
     end, self.delay or 50)
   end

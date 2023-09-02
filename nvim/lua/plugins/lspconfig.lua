@@ -84,7 +84,7 @@ local update_efm_server
 ---
 ---@param filetype string The filetype to attach the language server to
 ---@param opts table The options to attach the language server with
----@return boolean? _ Whether the server was attached or not
+---@return table? _ Info about the attached servers
 ---@diagnostic disable-next-line: duplicate-set-field
 Util.__lsp().__attach = function(opts, filetype)
   local lspconfig = Util.require("lspconfig")
@@ -105,13 +105,10 @@ end
 ---Attach the language server from the lspconfig repo.
 ---@param lspconfig table The lspconfig plugin module
 ---@param server table The server to attach
----@return boolean? _ Whether the server was attached or not
+---@return table? _ Info about the attached servers
 function attach_language_server(lspconfig, server)
   local lsp = lspconfig[server.name]
-  if lsp == nil then
-    Util.log("LSP"):warn("Language server not found:", server.name)
-    return false
-  end
+  if lsp == nil then return { missing = { server.name } } end
 
   server = vim.tbl_deep_extend(
     "force",
@@ -120,8 +117,21 @@ function attach_language_server(lspconfig, server)
   )
   server.autostart = true
   lsp.setup(server)
-  vim.api.nvim_exec2("LspStart " .. server.name, {})
-  return true
+  local config = Util.require("lspconfig.configs")[server.name]
+  if type(config) ~= "table" then return { missing = { server.name } } end
+  local cmd = config.cmd
+  local executable = nil
+  if type(cmd) == "table" and #cmd > 0 then
+    executable = cmd[1]
+  elseif type(cmd) == "string" and cmd:len() > 0 then
+    executable = cmd:gsub("^%s*(.-)%s*$", "%1")
+    executable = vim.fn.split(executable)[1]
+  end
+  if executable ~= nil and vim.fn.executable(executable) ~= 1 then
+    return { non_executable = { server.name } }
+  end
+  config.launch()
+  return { attached = { server.name } }
 end
 
 local efm_languages = {}
@@ -136,7 +146,7 @@ local formatters = {}
 ---These names should have existing configs in the efmls-configs-nvim repo.
 ---@param lspconfig table The lspconfig plugin module
 ---@param opts table The options to start/update the efm language server with
----@return boolean? _ Whether the server was attached/updated or not
+---@return table? _ Info about attached formatters and linters
 function update_efm_server(lspconfig, opts)
   if not lspconfig then return end
 
@@ -149,93 +159,130 @@ function update_efm_server(lspconfig, opts)
     languages = opts.languages
     if type(languages) ~= "table" then
       Util.log("LSP"):warn("Invalid config for efm:", opts)
-      return false
+      return
     end
   end
+  local attached = {}
+  local non_executable = {}
+  local missing = {}
 
   --NOTE: Expand the formatters and linters' names from
   --the configs in the efmls-configs-nvim repo.
   for k, v in pairs(languages) do
     if type(v) ~= "table" then
       Util.log("LSP"):warn("Invalid config for efm:", opts)
-      return false
+      return
     end
     for k2, v2 in pairs(v) do
       if type(v2) ~= "string" then
         Util.log("LSP"):warn("Invalid config for efm:", opts)
-        return false
+        return
       end
       local m = Util.require("efmls-configs.formatters." .. v2, nil, true)
       if not m then
         m = Util.require("efmls-configs.linters." .. v2, nil, true)
-      else
-        if formatters[k] ~= nil then
-          Util.log("LSP"):warn("Formatter already exists for", k)
-          return
+        if type(m) == "table" and m.lintCommand ~= nil then
+          local executable = nil
+          if type(m.lintCommand) == "table" and #m.lintCommand > 0 then
+            executable = m.lintCommand[1]
+          elseif
+            type(m.lintCommand) == "string" and m.lintCommand:len() > 0
+          then
+            executable = m.lintCommand:gsub("^%s*(.-)%s*$", "%1")
+            executable = vim.fn.split(executable)[1]
+          end
+          if executable ~= nil and vim.fn.executable(executable) ~= 1 then
+            table.insert(non_executable, v2)
+            v[k2] = nil
+          end
         end
+      else
         formatters[k] = v2
+        if type(m) == "table" and m.formatCommand ~= nil then
+          local executable = nil
+          if type(m.formatCommand) == "table" and #m.formatCommand > 0 then
+            executable = m.formatCommand[1]
+          elseif
+            type(m.formatCommand) == "string"
+            and m.formatCommand:len() > 0
+          then
+            executable = m.formatCommand:gsub("^%s*(.-)%s*$", "%1")
+            executable = vim.fn.split(executable)[1]
+          end
+          if executable ~= nil and vim.fn.executable(executable) ~= 1 then
+            table.insert(non_executable, v2)
+            v[k2] = nil
+          end
+        end
       end
-      if not m then
-        Util.log("LSP")
-          :warn("No matching formatters and linters found for:", v2)
-        return false
+      if type(m) ~= "table" then
+        v[k2] = nil
+        table.insert(missing, v2)
+      elseif v[k2] ~= nil then
+        m.name = v2
+        v[k2] = m
+        table.insert(attached, v2)
       end
-      m.name = v2
-      v[k2] = m
     end
   end
 
-  --NOTE: store the configs, so they can be reused when updating the server.
-  for k, l in pairs(languages) do
-    for _, v in pairs(l) do
-      efm_languages[k] = efm_languages[k] or {}
-      table.insert(efm_languages[k], v)
+  if next(languages) then
+    --NOTE: store the configs, so they can be reused when updating the server.
+    for k, l in pairs(languages) do
+      for _, v in pairs(l) do
+        efm_languages[k] = efm_languages[k] or {}
+        table.insert(efm_languages[k], v)
+      end
     end
-  end
 
-  opts.settings.languages = languages
-  for k, v in pairs(efm_languages) do
-    if opts.settings.languages[k] == nil then
-      opts.settings.languages[k] = {}
+    opts.settings.languages = languages
+    for k, v in pairs(efm_languages) do
+      if opts.settings.languages[k] == nil then
+        opts.settings.languages[k] = {}
+      end
+      for _, v2 in pairs(v) do
+        table.insert(opts.settings.languages[k], v2)
+      end
     end
-    for _, v2 in pairs(v) do
-      table.insert(opts.settings.languages[k], v2)
-    end
-  end
 
-  if type(opts.root_patterns) == "table" then
+    if type(opts.root_patterns) == "table" then
+      if type(opts.settings.rootMarkers) ~= "table" then
+        opts.settings.rootMarkers = opts.root_patterns
+      end
+    end
     if type(opts.settings.rootMarkers) ~= "table" then
-      opts.settings.rootMarkers = opts.root_patterns
+      opts.settings.rootMarkers = {}
     end
-  end
-  if type(opts.settings.rootMarkers) ~= "table" then
-    opts.settings.rootMarkers = {}
-  end
 
-  for _, v in ipairs({ ".git/", ".editorconfig", "LICENSE" }) do
-    table.insert(opts.settings.rootMarkers, v)
-  end
+    for _, v in ipairs({ ".git/", ".editorconfig", "LICENSE" }) do
+      table.insert(opts.settings.rootMarkers, v)
+    end
 
-  opts.filetypes = vim.tbl_keys(opts.settings.languages)
-  opts.init_options = {
-    documentFormatting = true,
-    documentRangeFormatting = true,
-    documentSymbol = true,
-    codeAction = true,
-    hover = true,
-    completion = true,
+    opts.filetypes = vim.tbl_keys(opts.settings.languages)
+    opts.init_options = {
+      documentFormatting = true,
+      documentRangeFormatting = true,
+      documentSymbol = true,
+      codeAction = true,
+      hover = true,
+      completion = true,
+    }
+    opts.capabilities = nil
+    opts.autostart = false
+    opts.single_file_support = true
+    opts.name = "efm"
+    opts.autostart = false
+    opts.root_patterns = nil
+    opts.root_dir = nil
+
+    lspconfig.efm.setup(opts)
+    vim.api.nvim_exec2("LspStart efm", {})
+  end
+  return {
+    attached = attached,
+    non_executable = non_executable,
+    missing = missing,
   }
-  opts.capabilities = nil
-  opts.autostart = true
-  opts.single_file_support = true
-  opts.name = "efm"
-  opts.autostart = true
-  opts.root_patterns = nil
-  opts.root_dir = nil
-
-  lspconfig.efm.setup(opts)
-  vim.api.nvim_exec2("LspStart efm", {})
-  return true
 end
 
 ---Format the current buffer. If visual is true, then
@@ -257,7 +304,7 @@ function format(visual)
     if type(available) ~= "string" then return end
     for _, v in pairs(c.languages[vim.bo.filetype]) do
       if v.name == available then
-        Util.log("LSP"):debug("Formatting with:", available)
+        Util.log("LSP"):info("Formatting with:", available)
         return true
       end
     end
