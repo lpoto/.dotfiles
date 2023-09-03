@@ -51,8 +51,11 @@ local function builtin(name, opts, log_if_no_results)
           )
           ~= "TelescopePrompt"
       then
-        Util.log("Telescope")
-          :warn("[telescope.builtin." .. name .. "] Not results found ")
+        vim.notify(
+          "[telescope.builtin." .. name .. "] Not results found ",
+          "warn",
+          "Telescope"
+        )
       end
     end)
   end
@@ -230,7 +233,7 @@ function attach_marks_mappings(_, map)
         local err
         ok, err = pcall(vim.api.nvim_buf_del_mark, 0, mark)
         if not ok then
-          Util.log():warn(err)
+          vim.notify(err, "warn")
           return
         end
       end

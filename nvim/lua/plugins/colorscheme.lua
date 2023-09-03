@@ -60,7 +60,7 @@ function override(o)
     if not ok then table.insert(errs, err) end
   end
   if #errs > 0 then
-    Util.log({ delay = 200 }):warn(table.concat(errs, "\n"))
+    vim.notify(table.concat(errs, "\n"), "warn", { delay = 200 })
   end
 end
 

@@ -4,42 +4,10 @@
 --[[===========================================================================
 Util functions
 -----------------------------------------------------------------------------]]
+
 ---@class Util
 local util = {}
 util.__index = util
-
----@param opts table|string|number|nil
----@return LogUtil
-function util.log(opts)
-  return util.require("util.log"):new(opts) --[[ @as LogUtil ]]
-end
-
----@param filetype string?
----@param delay number?
----@return LspUtil
-function util.lsp(filetype, delay)
-  return util.require("util.lsp"):new(filetype, delay) --[[ @as LspUtil ]]
-end
-
----@return LspUtil
-function util.__lsp()
-  return util.require("util.lsp") --[[ @as LspUtil ]]
-end
-
----@param opts {log_level:0|1|2|3|4}
----@return Util
-function util:init(opts)
-  opts = type(opts) == "table" and opts or {}
-  self.log():set_level(opts.log_level)
-  vim.fn.stdpath = util.stdpath
-  vim.api.nvim_create_user_command("NvimSetup", function()
-    for _, setup in pairs(self.setup or {}) do
-      local ok, e = pcall(setup)
-      if not ok then self.log():error("Error in setup:", e) end
-    end
-  end, {})
-  return self
-end
 
 --- catch errors from require and display them in a notification,
 --- so multiple modules may be loaded even if one fails
@@ -54,7 +22,11 @@ function util.require(module, callback, silent)
     module = { module }
   elseif type(module) ~= "table" then
     if not silent then
-      util.log("Util"):warn("[require] module must be a string or table")
+      vim.notify(
+        "[require] module must be a string or table",
+        vim.log.levels.WARN,
+        { title = "Util" }
+      )
     end
   end
   local res = {}
@@ -62,9 +34,11 @@ function util.require(module, callback, silent)
     local ok, v = pcall(require, m)
     if not ok then
       if not silent then
-        util
-          .log({ delay = 250, title = "Util" })
-          :warn("[require] Error loading", m, "-", v)
+        vim.notify(
+          "[require] Error loading " .. m .. " - " .. v,
+          vim.log.levels.WARN,
+          { title = "Util", delay = 250 }
+        )
       end
       return
     end
@@ -74,7 +48,7 @@ function util.require(module, callback, silent)
     local ok, v = pcall(callback, unpack(res))
     if not ok then
       if not silent then
-        util.log({ delay = 250, title = "Util" }):error("[require]", v)
+        vim.notify("[require] " .. v, "warn", { title = "Util", delay = 250 })
       end
       return
     end
@@ -134,8 +108,11 @@ function util.toggle_quickfix(navigate_to_quickfix, open_only)
     then
       vim.api.nvim_exec2("cclose", {})
       navigate_to_quickfix = true
-      Util.log("Quickfix")
-        :warn("There is nothing to display in the quickfix window")
+      vim.notify(
+        "There is nothing to display in the quickfix window",
+        vim.log.levels.WARN,
+        { title = "Quickfix" }
+      )
     end
     if navigate_to_quickfix ~= true then vim.fn.win_gotoid(winid) end
   end
@@ -146,5 +123,15 @@ end
 ---neovim may be set up with `nvim --headles +NvimSetup +qall`
 ---@type function[]
 util.setup = {}
+
+vim.fn.stdpath = util.stdpath
+vim.api.nvim_create_user_command("NvimSetup", function()
+  for _, setup in pairs(util.setup or {}) do
+    local ok, e = pcall(setup)
+    if not ok then
+      vim.notify("Error in setup: " .. e, vim.log.levels.ERROR)
+    end
+  end
+end, {})
 
 return util

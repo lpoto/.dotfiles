@@ -67,14 +67,14 @@ end
 
 function open_diagnostic_float()
   local n, _ = vim.diagnostic.open_float()
-  if not n then Util.log("LSP"):warn("No diagnostics found") end
+  if not n then vim.notify("No diagnostics found", "warn", "LSP") end
 end
 
 local attach_language_server
 local update_efm_server
 
----This overrides the Util.__lsp().__attach function,
----that is internally used in the Util.lsp().attach function.
+---This overrides the Lsp.__attach function,
+---that is internally used in the Lsp.attach function.
 ---
 ---It determined whether the provided language server is
 ---a native language server or a linger/formatter supported
@@ -86,7 +86,7 @@ local update_efm_server
 ---@param opts table The options to attach the language server with
 ---@return table? _ Info about the attached servers
 ---@diagnostic disable-next-line: duplicate-set-field
-Util.__lsp().__attach = function(opts, filetype)
+Lsp.__attach = function(opts, filetype)
   local lspconfig = Util.require("lspconfig")
   if not lspconfig then return end
   local c =
@@ -158,7 +158,7 @@ function update_efm_server(lspconfig, opts)
   if type(languages) ~= "table" then
     languages = opts.languages
     if type(languages) ~= "table" then
-      Util.log("LSP"):warn("Invalid config for efm:", opts)
+      vim.notify({ "Invalid config for efm:", opts }, "warn", "LSP")
       return
     end
   end
@@ -170,12 +170,12 @@ function update_efm_server(lspconfig, opts)
   --the configs in the efmls-configs-nvim repo.
   for k, v in pairs(languages) do
     if type(v) ~= "table" then
-      Util.log("LSP"):warn("Invalid config for efm:", opts)
+      vim.notify({ "Invalid config for efm:", opts }, "warn", "LSP")
       return
     end
     for k2, v2 in pairs(v) do
       if type(v2) ~= "string" then
-        Util.log("LSP"):warn("Invalid config for efm:", opts)
+        vim.notify({ "Invalid config for efm:", opts }, "warn", "LSP")
         return
       end
       local m = Util.require("efmls-configs.formatters." .. v2, nil, true)
@@ -304,7 +304,7 @@ function format(visual)
     if type(available) ~= "string" then return end
     for _, v in pairs(c.languages[vim.bo.filetype]) do
       if v.name == available then
-        Util.log("LSP"):info("Formatting with:", available)
+        vim.notify({ "Formatting with:", available }, "info", "LSP")
         return true
       end
     end

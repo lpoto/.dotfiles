@@ -6,8 +6,8 @@ if vim.g[vim.bo.filetype] or vim.api.nvim_set_var(vim.bo.filetype, true) then
   return
 end
 
-Util.lsp():attach("astyle")
-Util.lsp():attach({
+Lsp:attach("astyle")
+Lsp:attach({
   name = "jdtls",
   ---NOTE: Ensure you are using java 17 or above while using jdtls, as
   ---    it is not compatible with lower versions.

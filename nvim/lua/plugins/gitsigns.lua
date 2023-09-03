@@ -57,7 +57,7 @@ function M.config()
         vim.keymap.set("n", "<leader>gu", gitsigns.undo_stage_hunk, opts)
         vim.keymap.set("n", "<leader>gr", gitsigns.reset_buffer, opts)
         if not logged then
-          Util.log("Git"):debug("Attached gistigns")
+          vim.notify("Attached gistigns", "info", "Git")
           logged = true
         end
       end,
@@ -177,9 +177,17 @@ function Git:default(opts)
         local log = function(...)
           local log_name = "Git"
           if code == 0 then
-            Util.log({ delay = 50, title = log_name }):info(...)
+            vim.notify(
+              { select(1, ...) },
+              "info",
+              { title = log_name, delay = 50 }
+            )
           else
-            Util.log({ delay = 50, title = log_name }):warn(...)
+            vim.notify(
+              { select(1, ...) },
+              "warn",
+              { title = log_name, delay = 50 }
+            )
           end
         end
         local do_delete = false
@@ -224,7 +232,7 @@ local shell_augroup = "ShellAugroup"
 ---@param on_error nil|function(exit_code: number)
 function Shell:fetch_git_data(callback, on_error)
   on_error = on_error
-    or function(_) Util.log("Shell"):warn("Could not fetch git data") end
+    or function(_) vim.notify("Could not fetch git data", "warn", "Shell") end
   local remote = ""
   vim.fn.jobstart("git remote show", {
     detach = false,
@@ -262,7 +270,7 @@ local term_winid = nil
 function Shell:run_in_float(opts)
   if type(opts) ~= "table" then opts = {} end
   if type(opts.cmd) ~= "string" then
-    Util.log("Shell"):warn("The command should be a string")
+    vim.notify("The command should be a string", "warn", "Shell")
     return
   end
   if opts.prompt then

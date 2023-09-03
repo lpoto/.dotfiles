@@ -6,8 +6,8 @@ if vim.g[vim.bo.filetype] or vim.api.nvim_set_var(vim.bo.filetype, true) then
   return
 end
 
-Util.lsp():attach("stylua")
-Util.lsp():attach({
+Lsp:attach("stylua")
+Lsp:attach({
   name = "lua_ls",
   root_patterns = { ".git" },
   settings = {
