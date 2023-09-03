@@ -13,6 +13,8 @@ Keymaps:
  - "<leader>l"   - live grep
  - "<leader>L"   - live grep word under cursor
 
+ - "<leader>c"   - continue previous picker
+
  - "<leader>M"   - marks
  - "<leader>h"   - Search help tags
 
@@ -29,6 +31,7 @@ Keymaps:
 -----------------------------------------------------------------------------]]
 local M = {
   "nvim-telescope/telescope.nvim",
+  tag = "0.1.2",
   cmd = "Telescope",
   dependencies = {
     "nvim-lua/plenary.nvim",
@@ -60,6 +63,8 @@ M.keys = {
   { "<leader>o", builtin("oldfiles"), mode = "n" },
   { "<leader>l", builtin("live_grep"), mode = "n" },
   { "<leader>L", builtin("grep_string"), mode = "n" },
+
+  { "<leader>c", builtin("resume"), mode = "n" },
 
   { "<leader>M", builtin("marks"), mode = "n" },
   { "<leader>h", builtin("help_tags"), mode = "n" },

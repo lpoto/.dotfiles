@@ -12,6 +12,7 @@ and autopairs, that autocompletes the matching braces, quotes, etc.
 -----------------------------------------------------------------------------]]
 local M = {
   "hrsh7th/nvim-cmp",
+  tag = "v0.0.1",
   event = { "BufRead", "BufNewFile" },
   dependencies = {
     "hrsh7th/cmp-nvim-lsp",
