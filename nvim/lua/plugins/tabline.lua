@@ -10,7 +10,7 @@ but global.
 -----------------------------------------------------------------------------]]
 local M = {
   "lpoto/tabline.nvim",
-  event = "VeryLazy",
+  event = "User LazyVimStarted",
   opts = {
     hide_statusline = true,
   },

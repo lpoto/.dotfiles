@@ -25,53 +25,67 @@ keymaps:
     - <leader>gB - Git branch
 
 -----------------------------------------------------------------------------]]
+---@class Shell
+local Shell = {}
+
 local M = {
   "lewis6991/gitsigns.nvim",
   event = { "BufRead", "BufNewFile" },
+  opts = {
+    signcolumn = false,
+    numhl = true,
+    current_line_blame = true,
+    current_line_blame_opts = {
+      virt_text = true,
+      virt_text_pos = "eol",
+      delay = 1000,
+    },
+    update_debounce = 250,
+    on_attach = function(buf)
+      local gitsigns = package.loaded.gitsigns
+      local map = function(m, k, f) vim.keymap.set(m, k, f, { buffer = buf }) end
+      map("n", "<leader>gd", gitsigns.diffthis)
+      map("n", "<leader>gs", gitsigns.stage_buffer)
+      map("n", "<leader>gh", gitsigns.stage_hunk)
+      map("n", "<leader>gu", gitsigns.undo_stage_hunk)
+      map("n", "<leader>gr", gitsigns.reset_buffer)
+      if not vim.g.gitsigns_logged then
+        vim.notify("Attached gitsigns", "info", "Git")
+        vim.g.gitsigns_logged = true
+      end
+    end,
+  },
   dependencies = {
     {
       "willothy/flatten.nvim",
       event = "VeryLazy",
+      opts = {
+        callbacks = {
+          should_block = function() return true end,
+          should_nest = function() return false end,
+        },
+        block_for = {},
+        window = {
+          diff = "tab_vsplit",
+          open = function(files, _, stdin_buf)
+            local focus = files[1] or files[#files]
+            if stdin_buf then focus = stdin_buf end
+            local buf, win =
+              Shell:open_float(" " .. (focus.fname or "") .. " ")
+            vim.api.nvim_set_current_buf(focus.bufnr)
+            buf = focus.bufnr
+            return buf, win
+          end,
+        },
+      },
     },
   },
 }
 
-function M.config()
-  local logged = false
-  Util.require("gitsigns", function(gitsigns)
-    gitsigns.setup({
-      signcolumn = false,
-      numhl = true,
-      current_line_blame = true,
-      current_line_blame_opts = {
-        virt_text = true,
-        virt_text_pos = "eol",
-        delay = 1000,
-      },
-      update_debounce = 250,
-      on_attach = function(bufnr)
-        local opts = { buffer = bufnr }
-        vim.keymap.set("n", "<leader>gd", gitsigns.diffthis, opts)
-        vim.keymap.set("n", "<leader>gs", gitsigns.stage_buffer, opts)
-        vim.keymap.set("n", "<leader>gh", gitsigns.stage_hunk, opts)
-        vim.keymap.set("n", "<leader>gu", gitsigns.undo_stage_hunk, opts)
-        vim.keymap.set("n", "<leader>gr", gitsigns.reset_buffer, opts)
-        if not logged then
-          vim.notify("Attached gistigns", "info", "Git")
-          logged = true
-        end
-      end,
-    })
-  end)
-end
-
----@class Shell
-local Shell = {}
-
 ---@class Git
 local Git = {}
 
-M.dependencies[1].config = function()
+function M.init()
   vim.keymap.set("n", "<leader>g", Git.default)
   vim.keymap.set("n", "<leader>gc", Git.commit)
   vim.keymap.set("n", "<leader>ga", Git.commit_amend)
@@ -81,27 +95,6 @@ M.dependencies[1].config = function()
   vim.keymap.set("n", "<leader>gf", Git.fetch)
   vim.keymap.set("n", "<leader>gt", Git.tag)
   vim.keymap.set("n", "<leader>gB", Git.branch)
-
-  Util.require("flatten", function(flatten)
-    flatten.setup({
-      callbacks = {
-        should_block = function() return true end,
-        should_nest = function() return false end,
-      },
-      block_for = {},
-      window = {
-        diff = "tab_vsplit",
-        open = function(files, _, stdin_buf)
-          local focus = files[1] or files[#files]
-          if stdin_buf then focus = stdin_buf end
-          local buf, win = Shell:open_float(" " .. (focus.fname or "") .. " ")
-          vim.api.nvim_set_current_buf(focus.bufnr)
-          buf = focus.bufnr
-          return buf, win
-        end,
-      },
-    })
-  end)
 end
 
 function Git:commit() Git:default("commit ") end

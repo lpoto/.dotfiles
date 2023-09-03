@@ -14,22 +14,14 @@ local M = {
 }
 
 local function file_browser()
-  Util.require(
-    "telescope",
-    function(telescope) telescope.extensions.file_browser.file_browser() end
-  )
+  require("telescope").extensions.file_browser.file_browser()
 end
 
 local function relative_file_browser()
-  Util.require(
-    "telescope",
-    function(telescope)
-      telescope.extensions.file_browser.file_browser({
-        path = "%:p:h",
-        prompt_title = "File Browser (Relative)",
-      })
-    end
-  )
+  require("telescope").extensions.file_browser.file_browser({
+    path = "%:p:h",
+    prompt_title = "File Browser (Relative)",
+  })
 end
 
 M.keys = {
@@ -55,25 +47,25 @@ function M.init()
 end
 
 function M.config()
-  Util.require("telescope", function(telescope)
-    telescope.setup({
-      extensions = {
-        file_browser = {
-          --theme = "ivy",
-          hidden = true,
-          initial_mode = "normal",
-          hijack_netrw = true,
-          no_ignore = true,
-          grouped = true,
-          file_ignore_patterns = {},
-          dir_icon = "",
-          respect_gitignore = false,
-        },
+  local ok, telescope = pcall(require, "telescope")
+  if not ok then return end
+  telescope.setup({
+    extensions = {
+      file_browser = {
+        --theme = "ivy",
+        hidden = true,
+        initial_mode = "normal",
+        hijack_netrw = true,
+        no_ignore = true,
+        grouped = true,
+        file_ignore_patterns = {},
+        dir_icon = "",
+        respect_gitignore = false,
       },
-    })
+    },
+  })
 
-    telescope.load_extension("file_browser")
-  end)
+  telescope.load_extension("file_browser")
 end
 
 return M

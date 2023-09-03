@@ -147,7 +147,7 @@ echo "==> Build complete (${build_type}). (run '${scripts}/nvim [--stable, --nig
 
 echo
 echo "==> Setting up neovim ..."
-$(dirname $(dirname ${scripts}))/bin/nvim --headless +NvimSetup +qa
+$(dirname $(dirname ${scripts}))/bin/nvim --headless +Lazy +qa
 
 echo
 echo
