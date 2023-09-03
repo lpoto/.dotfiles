@@ -64,36 +64,31 @@ function buttons()
     type = "group",
     val = {
       button("<leader>s", "Sessions", "Sessions"),
-      button("<leader>o", "Old Files", function()
-        Util.require(
-          "telescope.builtin",
-          function(builtin) builtin.oldfiles() end
-        )
-      end),
-      button("<leader>n", "Find Files", function()
-        Util.require(
-          "telescope.builtin",
-          function(builtin) builtin.find_files() end
-        )
-      end),
-      button("<leader>b", "File Browser", function()
-        Util.require(
-          "telescope",
-          function(telescope) telescope.extensions.file_browser.file_browser() end
-        )
-      end),
-      button("<leader>l", "Live Grep", function()
-        Util.require(
-          "telescope.builtin",
-          function(builtin) builtin.live_grep() end
-        )
-      end),
-      button("<leader>gg", "Git status", function()
-        Util.require(
-          "telescope.builtin",
-          function(builtin) builtin.git_status() end
-        )
-      end),
+      button(
+        "<leader>o",
+        "Old Files",
+        function() require("telescope.builtin").oldfiles() end
+      ),
+      button(
+        "<leader>n",
+        "Find Files",
+        function() require("telescope.builtin").find_files() end
+      ),
+      button(
+        "<leader>b",
+        "File Browser",
+        function() require("telescope").extensions.file_browser.file_browser() end
+      ),
+      button(
+        "<leader>l",
+        "Live Grep",
+        function() require("telescope.builtin").live_grep() end
+      ),
+      button(
+        "<leader>gg",
+        "Git status",
+        function() require("telescope.builtin").git_status() end
+      ),
       button(":Lazy", "Plugins", "Lazy"),
       button(":Mason", "Package Manager", "Mason"),
     },
@@ -104,52 +99,52 @@ function buttons()
 end
 
 function footer()
-  return Util.require("lazy", function(lazy)
-    local stats = lazy.stats()
-    return {
-      type = "text",
-      val = {
-        "Loaded " .. stats.count .. " plugins in " .. (math.floor(
-          stats.startuptime * 100 + 0.5
-        ) / 100) .. "ms",
-      },
-      opts = {
-        position = "center",
-        hl = "Comment",
-      },
-    }
-  end) or {}
+  local ok, lazy = pcall(require, "lazy")
+  if not ok then return {} end
+  local stats = lazy.stats()
+  return {
+    type = "text",
+    val = {
+      "Loaded " .. stats.count .. " plugins in " .. (math.floor(
+        stats.startuptime * 100 + 0.5
+      ) / 100) .. "ms",
+    },
+    opts = {
+      position = "center",
+      hl = "Comment",
+    },
+  }
 end
 
 local nvim_version
 function M.config()
-  Util.require("alpha", function(alpha)
-    alpha.setup({
-      layout = {
-        { type = "padding", val = 2 },
-        header(),
-        { type = "padding", val = 1 },
-        {
-          type = "text",
-          val = {
-            nvim_version(),
-          },
-          opts = {
-            position = "center",
-            hl = "Number",
-          },
+  local ok, alpha = pcall(require, "alpha")
+  if not ok then return end
+  alpha.setup({
+    layout = {
+      { type = "padding", val = 2 },
+      header(),
+      { type = "padding", val = 1 },
+      {
+        type = "text",
+        val = {
+          nvim_version(),
         },
-        { type = "padding", val = 1 },
-        buttons(),
-        { type = "padding", val = 2 },
-        footer(),
+        opts = {
+          position = "center",
+          hl = "Number",
+        },
       },
-    })
-    -- NOTE: need to manually call alpha, as
-    -- it is loaded after the vim enter event
-    -- (it is loaded later so the plugins info is available)
-    alpha.start(true, alpha.default_config)
-  end)
+      { type = "padding", val = 1 },
+      buttons(),
+      { type = "padding", val = 2 },
+      footer(),
+    },
+  })
+  -- NOTE: need to manually call alpha, as
+  -- it is loaded after the vim enter event
+  -- (it is loaded later so the plugins info is available)
+  alpha.start(true, alpha.default_config)
 end
 
 function button(sc, txt, on_press)

@@ -12,23 +12,16 @@ if
   or version.major < 1
     and (type(version.minor) ~= "number" or version.minor < 9)
 then
-  print("This configuration requires Neovim 0.9.0 or greater.")
-  return
+  return print("This configuration requires Neovim 0.9.0 or greater.")
 end
 
 -- NOTE: This configuration cannot run on Windows, since it uses Unix-specific
 ------------------------------------------------- features and configurations.
 if vim.loop.os_uname().sysname == "Windows" then
-  print("This configuration does not support Windows.")
-  return
+  return print("This configuration does not support Windows.")
 end
----- NOTE: Safely require modules with Util.require, so that they are loaded in
-------------------------------------- order, even if one of them fails to load.
 
-Util = require("util")
-Lsp = require("lsp")
-
-Util.require("config.log") ------------------------------ Set up custom logging
-Util.require("config.options") -------------------- Load default editor options
-Util.require("config.keymaps") ---- Load custom keymaps (not including plugins)
-Util.require("config.lazy") ----------------------- Load plugins with lazy.nvim
+-- Require all the default config files, including lazy.nvim that loads plugins
+for _, k in ipairs({ "log", "options", "keymaps", "user_commands", "lazy" }) do
+  require("config." .. k)
+end

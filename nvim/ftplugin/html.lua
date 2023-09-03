@@ -6,4 +6,4 @@ if vim.g[vim.bo.filetype] or vim.api.nvim_set_var(vim.bo.filetype, true) then
   return
 end
 
-Lsp:attach("html", "prettier")
+require("lsp"):attach("html", "prettier")

@@ -19,22 +19,14 @@ local M = {
   -- NOTE: Don't set it as optional so the path to installed binaries
   -- is added to the PATH environment variable on startup.
   lazy = false,
+  opts = {
+    ui = { border = "rounded" },
+  },
 }
 
-function M.config()
-  Util.require(
-    "mason",
-    function(mason)
-      mason.setup({
-        ui = { border = "rounded" },
-      })
-    end
-  )
-end
-
-Util.setup["mason"] = function()
-  vim.api.nvim_exec2("MasonUpdate", {})
-  vim.api.nvim_exec2("MasonInstall efm", {})
+function M.build()
+  vim.cmd("MasonUpdate")
+  vim.cmd("MasonInstall efm")
 end
 
 return M

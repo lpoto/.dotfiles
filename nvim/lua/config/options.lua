@@ -2,7 +2,6 @@
 -------------------------------------------------------------------------------
 --                                                                      OPTIONS
 --=============================================================================
-
 ----------------------------------Set the default global options for the editor
 
 vim.g.mapleader = " " --------------------------------  map <leader> to <Space>
@@ -122,14 +121,12 @@ vim.api.nvim_create_autocmd({ "WinLeave" }, {
 vim.api.nvim_create_autocmd("TextYankPost", {
   group = vim.api.nvim_create_augroup("HighlightYank", { clear = true }),
   callback = function()
-    Util.require(
-      "vim.highlight",
-      function(hl)
-        hl.on_yank({
-          higroup = "IncSearch",
-          timeout = 35,
-        })
-      end
-    )
+    local ok, hl = pcall(require, "vim.highlight")
+    if ok then
+      hl.on_yank({
+        higroup = "IncSearch",
+        timeout = 35,
+      })
+    end
   end,
 })

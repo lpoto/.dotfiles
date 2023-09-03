@@ -7,6 +7,9 @@ Ensure that Lazy.nvim (https://github.com/folke/lazy.nvim) is installed, then
 set it up and load the plugins.
 
 -----------------------------------------------------------------------------]]
+--if vim.g.lazy_loaded or vim.api.nvim_set_var("lazy_loaded", true) then
+--  return
+--end
 local ensure_lazy, get_lazy_options
 
 ---Ensure the lazy.nvim plugin manager is installed. If not,
@@ -15,10 +18,8 @@ local ensure_lazy, get_lazy_options
 local function load_lazy(lazy_path)
   ensure_lazy(lazy_path)
   vim.opt.runtimepath:prepend(lazy_path)
-  Util.require(
-    "lazy",
-    function(lazy) lazy.setup("plugins", get_lazy_options()) end
-  )
+  local ok, lazy = pcall(require, "lazy")
+  if ok then lazy.setup("plugins", get_lazy_options()) end
 end
 
 function ensure_lazy(lazy_path)
@@ -81,8 +82,8 @@ function get_lazy_options()
       rtp = {
         disabled_plugins = {
           --"gzip",
-          "matchit",
-          "matchparen",
+          --"matchit",
+          --"matchparen",
           "netrwPlugin",
           "tarPlugin",
           "tohtml",
@@ -96,5 +97,3 @@ function get_lazy_options()
 end
 
 load_lazy(vim.fn.stdpath("data") .. "/lazy/lazy.nvim")
-
-Util.setup["lazy"] = function() vim.api.nvim_exec2("Lazy restore", {}) end

@@ -13,29 +13,29 @@ local M = {
 
 function M.config()
   vim.defer_fn(function()
-    Util.require("copilot", function(copilot)
-      copilot.setup({
-        panel = {
-          enabled = false,
+    local ok, copilot = pcall(require, "copilot")
+    if not ok then return end
+    copilot.setup({
+      panel = {
+        enabled = false,
+      },
+      suggestion = {
+        enabled = true,
+        auto_trigger = true,
+        debounce = 75,
+        keymap = {
+          -- NOTE: accept is mapped to <CR> in
+          -- the cmp.lua plugin config.
+          accept = false,
+          dismiss = "<C-x>",
+          next = "<C-k>",
+          prev = "<C-j>",
         },
-        suggestion = {
-          enabled = true,
-          auto_trigger = true,
-          debounce = 75,
-          keymap = {
-            -- NOTE: accept is mapped to <CR> in
-            -- the cmp.lua plugin config.
-            accept = false,
-            dismiss = "<C-x>",
-            next = "<C-k>",
-            prev = "<C-j>",
-          },
-        },
-        filetypes = {
-          ["*"] = true,
-        },
-      })
-    end)
+      },
+      filetypes = {
+        ["*"] = true,
+      },
+    })
   end, 250)
 end
 

@@ -17,49 +17,39 @@ local M = {
 M.keys = {
   {
     "<leader>a",
-    function()
-      Util.require(
-        "telescope",
-        function(telescope) telescope.extensions.tasks.tasks() end
-      )
-    end,
+    function() require("telescope").extensions.tasks.tasks() end,
     mode = "n",
   },
   {
     "<leader>e",
     function()
-      Util.require(
-        "telescope",
-        function(telescope)
-          telescope.extensions.tasks.actions.toggle_last_output()
-        end
-      )
+      require("telescope").extensions.tasks.actions.toggle_last_output()
     end,
     mode = "n",
   },
 }
 
 function M.config()
-  Util.require("telescope", function(telescope)
-    telescope.setup({
-      extensions = {
-        tasks = {
-          output = {
-            style = "float",
-            layout = "center",
-            scale = 0.6,
-          },
-          initial_mode = "normal",
-          env = (vim.g.telescope_tasks or {}).env,
-          binary = (vim.g.telescope_tasks or {}).binary,
+  local ok, telescope = pcall(require, "telescope")
+  if not ok then return end
+  telescope.setup({
+    extensions = {
+      tasks = {
+        output = {
+          style = "float",
+          layout = "center",
+          scale = 0.6,
         },
+        initial_mode = "normal",
+        env = (vim.g.telescope_tasks or {}).env,
+        binary = (vim.g.telescope_tasks or {}).binary,
       },
-    })
+    },
+  })
 
-    telescope.load_extension("tasks")
+  telescope.load_extension("tasks")
 
-    telescope.extensions.tasks.generators.default.all()
-  end)
+  telescope.extensions.tasks.generators.default.all()
 end
 
 return M
