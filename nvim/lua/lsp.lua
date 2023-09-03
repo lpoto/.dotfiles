@@ -1,4 +1,9 @@
-local util = require("util")
+--=============================================================================
+-------------------------------------------------------------------------------
+--                                                                          LSP
+--[[===========================================================================
+Lsp utility functions
+-----------------------------------------------------------------------------]]
 
 ---@class LspUtil
 ---@field filetype string?
@@ -6,14 +11,17 @@ local util = require("util")
 local Lsp = {}
 Lsp.__index = Lsp
 
-function Lsp:new(filetype, delay)
+local _m = {}
+function _m:__call(filetype, delay)
   if type(filetype) ~= "string" then filetype = vim.bo.filetype end
   if type(delay) ~= "number" then delay = 50 end
   return setmetatable({
     filetype = filetype,
     delay = delay,
-  }, self)
+  }, Lsp)
 end
+
+setmetatable(Lsp, _m)
 
 local logs = {}
 
@@ -27,14 +35,14 @@ function Lsp:attach(...)
       name = server,
     } end
     if type(server) ~= "table" then
-      Util.log():warn("No server provided")
+      vim.notify("No server provided", "warn", "LSP")
       return
     end
     if type(server.name) ~= "string" and type(server[1]) == "string" then
       server.name = server[1]
     end
     if type(server.name) ~= "string" then
-      Util.log():warn("No language server name provided")
+      vim.notify("No language server name provided", "warn", "LSP")
       return
     end
     server[1] = nil
@@ -96,10 +104,7 @@ function Lsp:attach(...)
               .. "]"
             l = "warn"
           end
-          if s:len() > 0 then
-            local lg = Util.log("LSP")
-            lg[l](lg, s)
-          end
+          if s:len() > 0 then vim.notify(s, l, "LSP") end
           logs = {}
         end, 300)
       end
@@ -114,7 +119,7 @@ end
 ---@return boolean
 ---@diagnostic disable-next-line: unused-local
 function Lsp.__attach(opts, filetype)
-  util.log():warn("'lsp.attach' was not overridden")
+  vim.notify("'lsp.attach' was not overridden", "warn")
   return false
 end
 
@@ -151,24 +156,6 @@ function Lsp.root_fn(patterns, default, opts)
     end
     return vim.fs.dirname(f[1])
   end
-end
-
-local severity = {
-  "error",
-  "warn",
-  "info",
-  "info",
-}
-vim.lsp.handlers["window/showMessage"] = function(
-  _,
-  method,
-  params,
-  client_id
-)
-  local client = vim.lsp.get_client_by_id(client_id)
-  vim.notify(method.message, severity[params.type], {
-    title = (client or {}).name,
-  })
 end
 
 return Lsp

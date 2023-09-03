@@ -69,7 +69,7 @@ end
 ---Override the default autocompletion capabilities.
 ---
 ---@diagnostic disable-next-line: duplicate-set-field
-Util.__lsp().autocompletion_capabilities = function()
+Lsp.autocompletion_capabilities = function()
   return Util.require(
     "cmp_nvim_lsp",
     function(cmp_nvim_lsp) return cmp_nvim_lsp.default_capabilities() end
