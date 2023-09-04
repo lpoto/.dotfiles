@@ -31,7 +31,7 @@ function M.config()
         ["@type"] = { link = "Type" },
         StatusLine = { link = "WinSeparator" },
         StatusLineNC = { link = "StatusLine" },
-        TabLine = { fg = "#9F9F9F", bg = "NONE" },
+        TabLine = { fg = "#7f98a3", bg = "NONE", style = "italic" },
         TabLineSel = { link = "Special" },
         TabLineFill = { link = "WinSeparator" },
         Whitespace = { fg = "#292929", bg = "NONE" },
