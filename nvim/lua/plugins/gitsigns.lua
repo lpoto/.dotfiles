@@ -171,20 +171,16 @@ function Git:default(opts)
           function(el) return #el > 0 end,
           vim.api.nvim_buf_get_lines(cur_term, 0, -1, false)
         )
-        local log = function(...)
+        local log = function(msg)
           local log_name = "Git"
           if code == 0 then
             vim.notify(
-              { select(1, ...) },
+              msg,
               vim.log.levels.INFO,
               { title = log_name, delay = 50 }
             )
           else
-            vim.notify(
-              { select(1, ...) },
-              "warn",
-              { title = log_name, delay = 50 }
-            )
+            vim.notify(msg, "warn", { title = log_name, delay = 50 })
           end
         end
         local do_delete = false
@@ -196,11 +192,7 @@ function Git:default(opts)
           do_delete = true
           log(opts.custom_success_message)
         elseif #lines == 0 then
-          if code == 0 then
-            log(o.cmd, "SUCCESS")
-          else
-            log(o.cmd, "exited with code", code)
-          end
+          log(vim.inspect(o.cmd) .. " exited with code " .. code)
           do_delete = true
         elseif opts.log_short_messages and #lines < 10 then
           log(table.concat(lines, "\n"))
@@ -364,7 +356,7 @@ function Shell:open_float(title)
         style = "minimal",
         border = "rounded",
         title = title,
-        title_pos = "center",
+        title_pos = "right",
       }
     )
   )
