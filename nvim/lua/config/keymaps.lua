@@ -9,8 +9,6 @@
 vim.keymap.set("n", "+", "<cmd>vertical resize +5<CR>")
 vim.keymap.set("n", "-", "<cmd>vertical resize -5<CR>")
 
-vim.keymap.set("n", "<C-w>", "<C-w>=")
-
 -- Switch window with <leader>w
 vim.keymap.set("n", "<leader>w", "<cmd>wincmd w<cr>")
 
