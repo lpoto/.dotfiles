@@ -23,23 +23,36 @@ function M.config()
     overrides = function()
       return {
         Identifier = { link = "Normal" },
-        LineNr = { link = "WinSeparator" },
-        ["@method"] = { link = "@function" },
-        ["@function.builtin"] = { link = "@function" },
-        ["@constructor"] = { link = "@function" },
         Type = { fg = "#E6BE8A" },
+
+        ["@method"] = { link = "Function" },
+        ["@function.builtin"] = { link = "Function" },
+        ["@constructor"] = { link = "Function" },
+
+        ["@function.macro"] = { link = "Function" },
+
         ["@type"] = { link = "Type" },
+        ["@label.json"] = { link = "@field.yaml" },
+
+        Folded = { bg = "NONE", fg = "#658ABA" },
+
+        NormalFloat = { bg = "NONE" },
+        FloatBorder = { link = "WinSeparator" },
+
+        CursorLine = { bg = "#1b1e24" },
         StatusLine = { link = "WinSeparator" },
         StatusLineNC = { link = "StatusLine" },
+
+        VertSplit = { fg = "#444c56", bg = "NONE" },
+        WinSeparator = { link = "VertSplit" },
+        LineNr = { link = "WinSeparator" },
+
+        Whitespace = { fg = "#1f2124", bg = "NONE" },
+        NonText = { link = "Whitespace" },
+
         TabLine = { fg = "#7f98a3", bg = "NONE", style = "italic" },
         TabLineSel = { link = "Special" },
         TabLineFill = { link = "WinSeparator" },
-        Whitespace = { fg = "#292929", bg = "NONE" },
-        NonText = { link = "Whitespace" },
-        Folded = { bg = "NONE", fg = "#658ABA" },
-        NormalFloat = { bg = "NONE" },
-        FloatBorder = { link = "WinSeparator" },
-        ["@label.json"] = { link = "@field.yaml" },
 
         TelescopeBorder = { link = "WinSeparator" },
         TelescopeTitle = { link = "TabLineSel" },
