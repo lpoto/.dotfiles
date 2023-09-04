@@ -91,7 +91,7 @@ function M.config()
   if not ok then return end
   telescope.setup({
     defaults = {
-      prompt_prefix = "?  ",
+      prompt_prefix = " ",
       color_devicons = false,
       mappings = default_mappings(),
       sorting_strategy = "ascending",
@@ -145,16 +145,6 @@ function M.config()
       oldfiles = {
         hidden = true,
         no_ignore = true,
-      },
-      live_grep = {
-        hidden = true,
-        no_ignore = true,
-        additional_args = function() return { "--hidden", "-u" } end,
-      },
-      grep_string = {
-        hidden = true,
-        no_ignore = true,
-        additional_args = function() return { "--hidden", "-u" } end,
       },
       marks = {
         attach_mappings = attach_marks_mappings,
