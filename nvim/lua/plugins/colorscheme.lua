@@ -24,7 +24,9 @@ function M.config()
       return {
         Identifier = { link = "Normal" },
         LineNr = { link = "WinSeparator" },
-        ["@fieldeld"] = { link = "Special" },
+        ["@method"] = { link = "@function" },
+        ["@function.builtin"] = { link = "@function" },
+        ["@constructor"] = { link = "@function" },
         Type = { fg = "#E6BE8A" },
         ["@type"] = { link = "Type" },
         StatusLine = { link = "WinSeparator" },
@@ -37,6 +39,7 @@ function M.config()
         Folded = { bg = "NONE", fg = "#658ABA" },
         NormalFloat = { bg = "NONE" },
         FloatBorder = { link = "WinSeparator" },
+        ["@label.json"] = { link = "@field.yaml" },
 
         TelescopeBorder = { link = "WinSeparator" },
         TelescopeTitle = { link = "TabLineSel" },
@@ -47,6 +50,11 @@ function M.config()
       }
     end,
   })
+  vim.api.nvim_set_hl(
+    0,
+    "@function.builtin",
+    { fg = "#a398f5", italic = true }
+  )
 end
 
 return M
