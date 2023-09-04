@@ -54,8 +54,8 @@ local function builtin(name, opts, log_if_no_results)
     then
       vim.notify(
         "[telescope.builtin." .. name .. "] Not results found ",
-        "warn",
-        "Telescope"
+        vim.log.levels.WARN,
+        { title = "Telescope" }
       )
     end
   end
@@ -220,7 +220,7 @@ function attach_marks_mappings(_, map)
       local err
       ok, err = pcall(vim.api.nvim_buf_del_mark, 0, mark)
       if not ok then
-        vim.notify(err, "warn")
+        vim.notify(err, vim.log.levels.WARN)
         return
       end
     end

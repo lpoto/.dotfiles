@@ -50,7 +50,11 @@ local M = {
       map("n", "<leader>gu", gitsigns.undo_stage_hunk)
       map("n", "<leader>gr", gitsigns.reset_buffer)
       if not vim.g.gitsigns_logged then
-        vim.notify("Attached gitsigns", "info", "Git")
+        vim.notify(
+          "Attached gitsigns",
+          vim.log.levels.INFO,
+          { title = "Git" }
+        )
         vim.g.gitsigns_logged = true
       end
     end,
@@ -172,7 +176,7 @@ function Git:default(opts)
           if code == 0 then
             vim.notify(
               { select(1, ...) },
-              "info",
+              vim.log.levels.INFO,
               { title = log_name, delay = 50 }
             )
           else

@@ -56,7 +56,6 @@ function M.init()
     vim.lsp.with(vim.lsp.handlers.hover, {
       border = border,
     })
-
   vim.lsp.handlers["textDocument/signatureHelp"] =
     vim.lsp.with(vim.lsp.handlers.signature_help, {
       border = border,
@@ -84,7 +83,9 @@ end
 
 function open_diagnostic_float()
   local n, _ = vim.diagnostic.open_float()
-  if not n then vim.notify("No diagnostics found", "warn", "LSP") end
+  if not n then
+    vim.notify("No diagnostics found", vim.log.levels.WARN, { title = "LSP" })
+  end
 end
 
 return M
