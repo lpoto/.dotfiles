@@ -15,13 +15,13 @@ then
   return print("This configuration requires Neovim 0.9.0 or greater.")
 end
 
--- NOTE: This configuration cannot run on Windows, since it uses Unix-specific
-------------------------------------------------- features and configurations.
+--- NOTE: This configuration cannot run on Windows, since it uses Unix-specific
+-------------------------------------------------- features and configurations.
 if vim.loop.os_uname().sysname == "Windows" then
   return print("This configuration does not support Windows.")
 end
 
 -- Require all the default config files, including lazy.nvim that loads plugins
-for _, k in ipairs({ "log", "options", "keymaps", "user_commands", "lazy" }) do
+for _, k in ipairs({ "notify", "options", "keymaps", "commands", "lazy" }) do
   require("config." .. k)
 end

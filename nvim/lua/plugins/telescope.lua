@@ -15,7 +15,7 @@ Keymaps:
 
  - "<leader>c"   - continue previous picker
 
- - "<leader>M"   - marks
+ - "<leader>m"   - marks
  - "<leader>h"   - Search help tags
 
  - "<leader>d"   - show diagnostics
@@ -54,8 +54,8 @@ local function builtin(name, opts, log_if_no_results)
     then
       vim.notify(
         "[telescope.builtin." .. name .. "] Not results found ",
-        "warn",
-        "Telescope"
+        vim.log.levels.WARN,
+        { title = "Telescope" }
       )
     end
   end
@@ -69,7 +69,7 @@ M.keys = {
 
   { "<leader>c", builtin("resume"), mode = "n" },
 
-  { "<leader>M", builtin("marks"), mode = "n" },
+  { "<leader>m", builtin("marks"), mode = "n" },
   { "<leader>h", builtin("help_tags"), mode = "n" },
 
   { "<leader>d", builtin("diagnostics"), mode = "n" },
@@ -91,7 +91,7 @@ function M.config()
   if not ok then return end
   telescope.setup({
     defaults = {
-      prompt_prefix = "?  ",
+      prompt_prefix = " ",
       color_devicons = false,
       mappings = default_mappings(),
       sorting_strategy = "ascending",
@@ -145,16 +145,6 @@ function M.config()
       oldfiles = {
         hidden = true,
         no_ignore = true,
-      },
-      live_grep = {
-        hidden = true,
-        no_ignore = true,
-        additional_args = function() return { "--hidden", "-u" } end,
-      },
-      grep_string = {
-        hidden = true,
-        no_ignore = true,
-        additional_args = function() return { "--hidden", "-u" } end,
       },
       marks = {
         attach_mappings = attach_marks_mappings,
@@ -210,7 +200,6 @@ function attach_git_status_mappings(_, map)
   map("n", "e", actions.file_edit)
   map("i", "<C-e>", actions.file_edit)
   map("i", "<Tab>", actions.move_selection_next)
-  map("i", "<Tab>", actions.move_selection_next)
   map("n", "<Tab>", actions.move_selection_next)
   map("i", "<S-Tab>", actions.move_selection_previous)
   map("n", "<S-Tab>", actions.move_selection_previous)
@@ -231,7 +220,7 @@ function attach_marks_mappings(_, map)
       local err
       ok, err = pcall(vim.api.nvim_buf_del_mark, 0, mark)
       if not ok then
-        vim.notify(err, "warn")
+        vim.notify(err, vim.log.levels.WARN)
         return
       end
     end

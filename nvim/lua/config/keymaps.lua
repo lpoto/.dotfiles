@@ -45,7 +45,7 @@ vim.keymap.set("i", ".", ".<c-g>u")
 vim.keymap.set("i", "!", "!<c-g>u")
 vim.keymap.set("i", "?", "?<c-g>u")
 
---------------------------------------------------------------------- TERMINAL
+---------------------------------------------------------------------- TERMINAL
 -- return to normal mode with <Esc>
 -- Toggle terminal in a new tab with <C-t>
 
