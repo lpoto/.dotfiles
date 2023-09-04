@@ -15,7 +15,7 @@ Keymaps:
 
  - "<leader>c"   - continue previous picker
 
- - "<leader>M"   - marks
+ - "<leader>m"   - marks
  - "<leader>h"   - Search help tags
 
  - "<leader>d"   - show diagnostics
@@ -69,7 +69,7 @@ M.keys = {
 
   { "<leader>c", builtin("resume"), mode = "n" },
 
-  { "<leader>M", builtin("marks"), mode = "n" },
+  { "<leader>m", builtin("marks"), mode = "n" },
   { "<leader>h", builtin("help_tags"), mode = "n" },
 
   { "<leader>d", builtin("diagnostics"), mode = "n" },
@@ -199,7 +199,6 @@ function attach_git_status_mappings(_, map)
   actions.select_default:replace(actions.git_staging_toggle)
   map("n", "e", actions.file_edit)
   map("i", "<C-e>", actions.file_edit)
-  map("i", "<Tab>", actions.move_selection_next)
   map("i", "<Tab>", actions.move_selection_next)
   map("n", "<Tab>", actions.move_selection_next)
   map("i", "<S-Tab>", actions.move_selection_previous)
