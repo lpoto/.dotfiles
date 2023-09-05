@@ -24,9 +24,6 @@ local M = {
   },
 }
 
-function M.build()
-  vim.cmd("MasonUpdate")
-  vim.cmd("MasonInstall efm")
-end
+function M.build() vim.cmd("MasonUpdate") end
 
 return M

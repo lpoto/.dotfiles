@@ -3,8 +3,6 @@
 --                                                                     LSP.NVIM
 --[[===========================================================================
 https://github.com/lpoto/lsp.nvim
-https://github.com/neovim/nvim-lspconfig
-https://github.com/creativenull/efmls-configs-nvim
 
 A high-level interface for attaching servers, formatters
 and linters to neovim's LSP.
@@ -21,11 +19,13 @@ local M = {
   cmd = { "LspStart", "LspInfo", "LspLog" },
   dependencies = {
     "neovim/nvim-lspconfig",
-    "creativenull/efmls-configs-nvim",
+    "mhartington/formatter.nvim",
+    "mfussenegger/nvim-lint",
   },
   opts = {
     extensions = {
-      efm = true,
+      formatter = true,
+      lint = true,
       cmp = true,
     },
   },
