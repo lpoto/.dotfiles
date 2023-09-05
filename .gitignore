@@ -6,4 +6,3 @@ nvim/plugin/
 nvim/after/
 github-copilot
 .luarc.json
-efm-langserver
