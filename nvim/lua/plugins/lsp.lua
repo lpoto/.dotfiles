@@ -66,19 +66,6 @@ function M.init()
     underline = { severity = "Error" },
     severity_sort = true,
   })
-
-  ---@diagnostic disable-next-line: duplicate-set-field
-  vim.lsp.handlers["window/showMessage"] = function(
-    _,
-    method,
-    params,
-    client_id
-  )
-    local client = vim.lsp.get_client_by_id(client_id)
-    vim.notify(method.message, 5 - params.type, {
-      title = (client or {}).name,
-    })
-  end
 end
 
 function open_diagnostic_float()
