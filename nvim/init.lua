@@ -22,6 +22,16 @@ if vim.loop.os_uname().sysname == "Windows" then
 end
 
 -- Require all the default config files, including lazy.nvim that loads plugins
-for _, k in ipairs({ "notify", "options", "keymaps", "commands", "lazy" }) do
-  require("config." .. k)
+for _, k in ipairs({
+  "options",
+  "notify",
+  "highlights",
+  "keymaps",
+  "commands",
+  "lazy",
+}) do
+  local ok, e = pcall(require, "config." .. k)
+  if not ok then
+    vim.notify("Error loading " .. k .. ": " .. e, vim.log.levels.ERROR)
+  end
 end

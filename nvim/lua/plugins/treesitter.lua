@@ -20,7 +20,7 @@ function M.config()
   treesitter.setup({
     -- Parsers will be installed when entering the matching filetype.
     auto_install = true,
-    sync_install = false,
+    sync_install = true,
     ignore_install = {},
     ensure_installed = { "c", "lua", "vim", "vimdoc" },
     modules = {},
