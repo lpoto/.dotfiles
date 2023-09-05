@@ -4,6 +4,7 @@
 Set up custom highlights, as a custom colorscheme.
 -----------------------------------------------------------------------------]]
 local hl = {}
+
 local colors = {
   normal = "#c9d1d9",
   title = "#79b8ff",
@@ -20,11 +21,11 @@ local colors = {
   special = "#79b8ff",
   constant = "#79b8ff",
   string = "#9ecbff",
-  symbol = "#f2ac80",
+  symbol = "#eba071",
   func = "#b392f0",
   func_param = "#e1e4e8",
   reference = "#265459",
-  tag = "#85e89d",
+  tag = "#55c2b7",
   operator = "#94a3b3",
   error = "#f97583",
   warning = "#cca700",
@@ -81,7 +82,9 @@ hl.base = {
   NormalFloat = { link = "Normal" },
   FloatBorder = { link = "WinSeparator" },
 
-  Type = { fg = colors.type },
+  Type = { fg = colors.type, italic = true },
+
+  Tag = { fg = colors.tag },
 
   Keyword = { fg = colors.keyword },
   Statement = { link = "Keyword" },
@@ -121,7 +124,7 @@ hl.base = {
   Todo = { fg = colors.hint, italic = true, bold = true },
 
   Pmenu = { link = "Normal" },
-  PmenuSel = { link = "Normal" },
+  PmenuSel = { link = "Visual" },
   PmenuSbar = { bg = "NONE" },
   PmenuThumb = { bg = colors.whitespace },
 }
@@ -215,14 +218,14 @@ hl.treesitter = {
   ["@type"] = { link = "Type" },
   ["@variable"] = { link = "Variable" },
   ["@variable.builtin"] = { link = "Variable" },
-  ["@tag"] = { fg = colors.tag },
+  ["@tag"] = { link = "Tag" },
   ["@tag.delimiter"] = { link = "Identifier" },
   ["@text"] = { link = "Normal" },
   ["@text.reference"] = { link = "Keyword" },
 
-  ["@constant.html"] = { fg = colors.tag },
-  ["@field.yaml"] = { link = "@constant.html" },
-  ["@field.json"] = { link = "@field.yaml" },
+  ["@constant.html"] = { link = "Tag" },
+  ["@field.yaml"] = { link = "Tag" },
+  ["@field.json"] = { link = "Tag" },
 
   ["@variable.go"] = { link = "Identifier" },
 }
