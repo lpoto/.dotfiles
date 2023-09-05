@@ -71,7 +71,7 @@ hl.base = {
   TabLineFill = { link = "WinSeparator" },
 
   CursorLine = { bg = colors.cursorline },
-  CursorLineNr = { bold = true, italic = true, fg = colors.normal },
+  CursorLineNr = { italic = true, fg = colors.normal },
   CursorLineSign = { link = "CursorLineNr" },
   Folded = { bg = "NONE", fg = colors.blue },
   FoldColumn = { link = "Folded" },
