@@ -350,7 +350,7 @@ function Shell:open_float(title)
     true,
     vim.tbl_extend(
       "force",
-      Shell:get_centered_float_opts(vim.o.lines, vim.o.columns, 0.6),
+      Shell:get_centered_float_opts(vim.o.lines, vim.o.columns, 0.4),
       {
         relative = "editor",
         style = "minimal",
@@ -368,7 +368,7 @@ function Shell:get_centered_float_opts(lines, columns, scale)
   local w = math.max(math.min(pref_w, columns), 100)
   local h = math.max(lines - 5, 12)
 
-  local row = 1
+  local row = math.floor((lines - h) / 2)
   local col = (columns - w) / 2
   if columns % 2 ~= 0 then col = col - 1 end
   if w == columns then col = 0 end
