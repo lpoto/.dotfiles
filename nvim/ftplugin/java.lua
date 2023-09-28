@@ -7,7 +7,6 @@ if vim.g[vim.bo.filetype] or vim.api.nvim_set_var(vim.bo.filetype, true) then
 end
 local cache = vim.fn.stdpath("cache") .. "/jdtls/workspace" .. vim.fn.getcwd()
 
-require("lsp"):attach("clangformat")
 require("lsp"):attach({
   ---NOTE: Ensure you are using java 17 or above while using jdtls
   --NOTE: Clean up the cache directory from time to time
