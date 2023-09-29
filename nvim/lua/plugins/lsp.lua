@@ -21,12 +21,15 @@ local M = {
     "neovim/nvim-lspconfig",
     "mhartington/formatter.nvim",
     "mfussenegger/nvim-lint",
+    "mfussenegger/nvim-jdtls",
   },
   opts = {
     extensions = {
+      lspconfig = true,
       formatter = true,
       lint = true,
       cmp = true,
+      jdtls = true,
     },
   },
 }
