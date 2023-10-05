@@ -6,8 +6,8 @@ if vim.g[vim.bo.filetype] or vim.api.nvim_set_var(vim.bo.filetype, true) then
   return
 end
 
-require("lsp"):attach("stylua")
-require("lsp"):attach({
+require("abstract.lsp"):attach("stylua")
+require("abstract.lsp"):attach({
   name = "lua_ls",
   root_patterns = { ".git" },
   settings = {

@@ -2,28 +2,33 @@
 -------------------------------------------------------------------------------
 --                                                                     LSP.NVIM
 --[[===========================================================================
-https://github.com/lpoto/lsp.nvim
-
-A high-level interface for attaching servers, formatters
-and linters to neovim's LSP.
+https://github.com/lpoto/abstract.nvim
 
 Keymaps:
+
+  LSP:
   - "K"         -  Show the definition of symbol under the cursor
   - "<C-k>"     -  Show the diagnostics of the line under the cursor
+  - "gd"        -  Go to the definition of symbol under cursor
+  - "gr"        -  Show references to the symbol under the cursor
   - "<leader>r" -  Rename symbol under cursor
 
   - "<leader>f" - format the current buffer or visual selection
 -----------------------------------------------------------------------------]]
 local M = {
-  "lpoto/lsp.nvim",
-  cmd = { "LspStart", "LspInfo", "LspLog" },
-  dependencies = {
-    "neovim/nvim-lspconfig",
-    "mhartington/formatter.nvim",
-    "mfussenegger/nvim-lint",
-    "mfussenegger/nvim-jdtls",
+  {
+    "lpoto/abstract.nvim",
+    event = "User LazyVimStarted",
   },
-  opts = {
+  "neovim/nvim-lspconfig",
+  "mhartington/formatter.nvim",
+  "mfussenegger/nvim-lint",
+  "mfussenegger/nvim-jdtls",
+}
+
+local lsp_config
+M[1].config = function()
+  require("abstract").setup({
     extensions = {
       lspconfig = true,
       formatter = true,
@@ -31,26 +36,22 @@ local M = {
       cmp = true,
       jdtls = true,
     },
-  },
-}
+  })
+  require("abstract.tabline").init()
+  lsp_config()
+end
 
 local open_diagnostic_float
+function lsp_config()
+  vim.keymap.set("n", "K", vim.lsp.buf.hover, {})
+  vim.keymap.set("n", "<C-k>", open_diagnostic_float, {})
+  vim.keymap.set("n", "gd", vim.lsp.buf.definition, {})
+  vim.keymap.set("n", "gr", vim.lsp.buf.references, {})
+  vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, {})
 
-function M.init()
-  vim.api.nvim_create_autocmd("LspAttach", {
-    callback = function(args)
-      vim.schedule(function()
-        local opts = { buffer = args.buf }
-        vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
-        vim.keymap.set("n", "<C-k>", open_diagnostic_float, opts)
-        -- NOTE: the lsp definitions and references are used with telescope.nvim
-        -- vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
-        -- vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
-        vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, opts)
-      end)
-    end,
-  })
-  local format = function(visual) return require("lsp.core").format(visual) end
+  local format = function(visual)
+    return require("abstract.lsp").format(visual)
+  end
   vim.keymap.set("n", "<leader>f", format)
   vim.keymap.set("v", "<leader>f", function() format(true) end)
 
