@@ -2,7 +2,7 @@
 -------------------------------------------------------------------------------
 --                                                                     LSP.NVIM
 --[[===========================================================================
-https://github.com/lpoto/abstract.nvim
+https://github.com/lpoto/lsp.nvim
 
 Keymaps:
 
@@ -17,9 +17,9 @@ Keymaps:
 -----------------------------------------------------------------------------]]
 local M = {
   {
-    "lpoto/abstract.nvim",
+    "lpoto/lsp.nvim",
   },
-  -- abstract.nvim extensions
+  -- lsp.nvim extensions
   "neovim/nvim-lspconfig",
   "mhartington/formatter.nvim",
   "mfussenegger/nvim-lint",
@@ -28,7 +28,7 @@ local M = {
 
 local lsp_config
 M[1].config = function()
-  require("abstract").setup({
+  require("lsp").setup({
     extensions = {
       lspconfig = true,
       formatter = true,
@@ -48,9 +48,7 @@ function lsp_config()
   vim.keymap.set("n", "gr", vim.lsp.buf.references, {})
   vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, {})
 
-  local format = function(visual)
-    return require("abstract.lsp").format(visual)
-  end
+  local format = function(visual) return require("lsp").format(visual) end
   vim.keymap.set("n", "<leader>f", format)
   vim.keymap.set("v", "<leader>f", function() format(true) end)
 
