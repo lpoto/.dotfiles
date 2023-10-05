@@ -20,6 +20,7 @@ local M = {
     "lpoto/abstract.nvim",
     event = "User LazyVimStarted",
   },
+  -- abstract.nvim extensions
   "neovim/nvim-lspconfig",
   "mhartington/formatter.nvim",
   "mfussenegger/nvim-lint",
