@@ -17,15 +17,13 @@ local M = {
   cmd = "Undo",
 }
 
-local function open_undo_picker() require("telescope").extensions.undo.undo() end
+local function open_undo() require("telescope").extensions.undo.undo() end
 
 M.keys = {
-  { "<leader>u", open_undo_picker, mode = "n" },
+  { "<leader>u", open_undo, mode = "n" },
 }
 
-function M.init()
-  vim.api.nvim_create_user_command("Undo", open_undo_picker, {})
-end
+function M.init() vim.api.nvim_create_user_command("Undo", open_undo, {}) end
 
 function M.config() require("telescope").load_extension("undo") end
 
