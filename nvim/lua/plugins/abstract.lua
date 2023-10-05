@@ -18,7 +18,6 @@ Keymaps:
 local M = {
   {
     "lpoto/abstract.nvim",
-    event = "User LazyVimStarted",
   },
   -- abstract.nvim extensions
   "neovim/nvim-lspconfig",
@@ -38,7 +37,6 @@ M[1].config = function()
       jdtls = true,
     },
   })
-  require("abstract.tabline").init()
   lsp_config()
 end
 
