@@ -22,7 +22,8 @@ end
 
 ------------------------------------------------ Toggle quickfix with :Quickfix
 vim.api.nvim_create_user_command("Quickfix", function(opts)
-  local open_only = vim.tbl_contains(opts.nargs or {}, "open")
+  local enter = vim.tbl_contains(opts.fargs or {}, "enter")
+  local open_only = vim.tbl_contains(opts.fargs or {}, "owpen")
   if
     #vim.tbl_filter(
       function(winid)
@@ -51,7 +52,7 @@ vim.api.nvim_create_user_command("Quickfix", function(opts)
         { title = "Quickfix" }
       )
     end
-    vim.fn.win_gotoid(winid)
+    if enter ~= true then vim.fn.win_gotoid(winid) end
   end
 end, {
   nargs = "*",

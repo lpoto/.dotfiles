@@ -71,4 +71,4 @@ end
 
 ---------------------------------------------------------------------- QUICKFIX
 -- Toggle quickfix with <leader>q
-vim.keymap.set("n", "<leader>q", function() vim.cmd("Quickfix") end)
+vim.keymap.set("n", "<leader>q", function() vim.cmd("Quickfix enter") end)
