@@ -233,14 +233,14 @@ vim.lsp.buf.format = function(opts)
             if type(vim.g.display_message) == "function" then
               vim.g.display_message({
                 message = "formatted with: " .. client.name,
-                title = "lsp",
+                title = "LSP",
               })
             else
               vim.notify(
                 "formatted with: " .. client.name,
                 vim.log.levels.DEBUG,
                 {
-                  title = "lsp",
+                  title = "LSP",
                 }
               )
             end
