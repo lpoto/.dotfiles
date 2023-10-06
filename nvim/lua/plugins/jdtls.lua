@@ -22,15 +22,10 @@ vim.lsp.add_attach_condition({
       if not exe or exe:len() == 0 then
         return { non_executable = { "jdtls" } }
       end
-      local separator = vim.loop.os_uname().version:match("Windows") and "\\"
-        or "/"
       opts.cmd = {
         exe,
         "-data",
-        table.concat(
-          { vim.fn.stdpath("cache"), "jdtls", "workspace", opts.root_dir },
-          separator
-        ),
+        vim.fn.stdpath("cache") .. "/jdtls/workspace/" .. opts.root_dir,
       }
     end
 
@@ -85,13 +80,10 @@ function find_root(buf)
     table.insert(parents, 1, parent)
     if parent:len() <= cwd:len() then n = 2 end
   end
-  local separator = vim.loop.os_uname().version:match("Windows") and "\\"
-    or "/"
-
   for _ = 1, 2 do
     for _, parent in ipairs(parents) do
       for _, pattern in ipairs(patterns) do
-        local p = parent .. separator .. pattern
+        local p = parent .. "/" .. pattern
         if vim.fn.filereadable(p) == 1 then return parent end
       end
     end
