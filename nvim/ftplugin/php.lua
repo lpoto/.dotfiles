@@ -6,7 +6,7 @@ if vim.g[vim.bo.filetype] or vim.api.nvim_set_var(vim.bo.filetype, true) then
   return
 end
 
-require("lsp"):attach({
+vim.lsp.attach({
   name = "phpactor",
   root_patterns = {
     ".git",
@@ -15,4 +15,4 @@ require("lsp"):attach({
     "vendor",
   },
 })
-require("lsp"):attach("phpcbf")
+vim.lsp.attach("phpcbf")

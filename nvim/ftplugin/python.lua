@@ -6,4 +6,4 @@ if vim.g[vim.bo.filetype] or vim.api.nvim_set_var(vim.bo.filetype, true) then
   return
 end
 
-require("lsp"):attach("autopep8", "pyright", "flake8")
+vim.lsp.attach("autopep8", "pyright", "flake8")
