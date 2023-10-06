@@ -7,9 +7,14 @@ A collection of LSP related configurations
 Keymaps:
 
   - "K"         -  Show the definition of symbol under the cursor
-  - "<C-k>"     -  Show the diagnostics of the line under the cursor
-  - "gd"        -  Go to the definition of symbol under cursor
-  - "gr"        -  Show references to the symbol under the cursor
+
+  - "gd"        -  Go to the definitions of symbol under cursor
+  - "gi"        -  Go to the implementations of symbol under cursor
+  - "gr"        -  Go to the references to the symbol under the cursor
+
+  - "<leader>e" -  Show the diagnostics of the line under the cursor
+
+  - "<leader>a" -  Show code actions for the current position
   - "<leader>r" -  Rename symbol under cursor
 
   - "<leader>f" - format the current buffer or visual selection
@@ -53,9 +58,13 @@ end
 
 function M.set_lsp_keymaps(opts)
   vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
-  vim.keymap.set("n", "<C-k>", M.open_diagnostic_float, opts)
   vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+  vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
   vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
+
+  vim.keymap.set("n", "<leader>e", M.open_diagnostic_float, opts)
+  vim.keymap.set({ "n", "v" }, "<leader>a", vim.lsp.buf.code_action, opts)
+
   vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, opts)
 
   vim.keymap.set({ "n", "v" }, "<leader>f", vim.lsp.buf.format, opts)
