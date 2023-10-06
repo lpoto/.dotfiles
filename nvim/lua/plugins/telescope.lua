@@ -20,6 +20,7 @@ Keymaps:
 
  - "<leader>d"   - show diagnostics
  - "gd"          - LSP definitions
+ - "gi"          - LSP implementations
  - "gr"          - LSP references
 
  - "<leader>gl"  - git commits
@@ -75,6 +76,7 @@ M.keys = {
 
   { "<leader>d", builtin("diagnostics"), mode = "n" },
   { "gd", builtin("lsp_definitions"), mode = "n" },
+  { "gi", builtin("lsp_implementations"), mode = "n" },
   { "gr", builtin("lsp_references"), mode = "n" },
 
   { "<leader>gg", builtin("git_status"), mode = "n" },
