@@ -72,4 +72,56 @@ function init_null_ls()
   })
 end
 
+vim.lsp.buf.update_format_opts = function(opts)
+  if not package.loaded["null-ls"] then return opts end
+  if
+    type(opts.bufnr) ~= "number" or not vim.api.nvim_buf_is_valid(opts.bufnr)
+  then
+    opts.bufnr = vim.api.nvim_get_current_buf()
+  end
+  local mode = vim.fn.mode():lower()
+  local method = nil
+  if vim.startswith(mode, "n") then
+    method = require("null-ls.methods").internal.FORMATTING
+  elseif vim.startswith(mode, "v") then
+    method = require("null-ls.methods").internal.RANGE_FORMATTING
+  else
+    return opts
+  end
+  local filetype = vim.api.nvim_buf_get_option(opts.bufnr, "filetype")
+  local available = require("null-ls.sources").get_available(filetype, method)
+  if next(available or {}) then
+    local names = vim.tbl_filter(
+      function(o) return type(o) == "table" and type(o.name) == "string" end,
+      available
+    )
+    names = vim.tbl_map(function(o) return o.name end, names)
+    opts.name = "null-ls"
+    opts.filter = function(client)
+      return type(client) == "table" and client.name == opts.name
+    end
+    opts.callback = function()
+      if next(names) then
+        vim.defer_fn(function()
+          if type(vim.g.display_message) == "function" then
+            vim.g.display_message({
+              message = "formatted with: " .. table.concat(names, ", "),
+              title = "null-ls",
+            })
+          else
+            vim.notify(
+              "formatted with: " .. table.concat(names, ", "),
+              vim.log.levels.DEBUG,
+              {
+                title = "null-ls",
+              }
+            )
+          end
+        end, 100)
+      end
+    end
+  end
+  return opts
+end
+
 return M

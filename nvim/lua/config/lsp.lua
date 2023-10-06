@@ -206,4 +206,59 @@ function M.add_attach_condition(opts)
   return true
 end
 
+local old_format = vim.lsp.buf.format
+
+vim.lsp.buf.format = function(opts)
+  if type(opts) ~= "table" then opts = {} end
+  if type(opts.async) ~= "boolean" then opts.async = false end
+  if type(opts.filter) == "function" or type(opts.name) == "string" then
+    return old_format(opts)
+  end
+  if type(vim.lsp.buf.update_format_opts) == "function" then
+    local ok, opts2 = pcall(vim.lsp.buf.update_format_opts, opts)
+    if ok and type(opts2) == "table" then opts = opts2 end
+  end
+  if type(opts.filter) ~= "function" and type(opts.name) ~= "string" then
+    local found = false
+    opts.filter = function(client)
+      if
+        not found
+        and type(client) == "table"
+        and type(client.server_capabilities) == "table"
+        and client.server_capabilities.documentFormattingProvider
+      then
+        opts.callback = function()
+          if client.name then
+            if type(vim.g.display_message) == "function" then
+              vim.g.display_message({
+                message = "formatted with: " .. client.name,
+                title = "lsp",
+              })
+            else
+              vim.notify(
+                "formatted with: " .. client.name,
+                vim.log.levels.DEBUG,
+                {
+                  title = "lsp",
+                }
+              )
+            end
+          end
+        end
+        found = true
+        return true
+      end
+      return false
+    end
+  end
+  local r = old_format(opts)
+  if type(opts.callback) == "function" then
+    local ok, e = pcall(opts.callback)
+    if not ok then
+      vim.notify(e, vim.log.levels.ERROR, { title = "lsp.buf.format" })
+    end
+  end
+  return r
+end
+
 return M.init()
