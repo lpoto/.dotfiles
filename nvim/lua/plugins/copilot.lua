@@ -5,6 +5,7 @@
 https://github.com/zbirenbaum/copilot.lua
 
 -----------------------------------------------------------------------------]]
+
 local M = {
   "zbirenbaum/copilot.lua",
   event = { "BufRead", "BufNewFile" },

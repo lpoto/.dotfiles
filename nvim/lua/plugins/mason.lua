@@ -14,6 +14,7 @@ Commands:
   - :MasonUninstallAll        - Uninstalls all packages
   - :MasonLog                 - Open the log file
 -----------------------------------------------------------------------------]]
+
 local M = {
   "williamboman/mason.nvim",
   -- NOTE: Don't set it as optional so the path to installed binaries

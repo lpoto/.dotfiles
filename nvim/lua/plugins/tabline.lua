@@ -5,6 +5,7 @@
 https://github.com/lpoto/tabline.nvim
 
 -----------------------------------------------------------------------------]]
+
 local M = {
   "lpoto/tabline.nvim",
   event = "User LazyVimStarted",

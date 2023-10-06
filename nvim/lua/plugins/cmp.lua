@@ -10,6 +10,7 @@ This also includes the vsnip plugin intergrated with cmp,
 and autopairs, that autocompletes the matching braces, quotes, etc.
 
 -----------------------------------------------------------------------------]]
+
 local M = {
   "hrsh7th/nvim-cmp",
   tag = "v0.0.1",

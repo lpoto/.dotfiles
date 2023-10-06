@@ -29,6 +29,7 @@ Keymaps:
 
  Use <C-q> in a telescope prompt to send the results to quickfix.
 -----------------------------------------------------------------------------]]
+
 local M = {
   "nvim-telescope/telescope.nvim",
   tag = "0.1.3",

@@ -14,6 +14,7 @@ Keymaps:
 
   - "<leader>f" - format the current buffer or visual selection
 -----------------------------------------------------------------------------]]
+
 local M = {}
 
 ---Attach a tool as a LSP client. These tools will be added to the
