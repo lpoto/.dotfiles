@@ -16,12 +16,30 @@ vim.lsp.add_attach_condition({
     local null_ls = require("null-ls")
     local source = nil
     for _, k in ipairs({ "formatting", "diagnostics", "completion" }) do
-      source = null_ls.builtins[k][opts.name]
-      if source then break end
+      local ok = pcall(require, "null-ls.builtins." .. k .. "." .. opts.name)
+      if ok then
+        source = null_ls.builtins[k][opts.name]
+        if source then break end
+      end
     end
     if not source then return {
       missing = { opts.name },
     } end
+    if
+      type(source) == "table"
+      and type(source._opts) == "table"
+      and type(source._opts.command) == "string"
+    then
+      if
+        vim.fn.executable(
+          vim.trim(vim.fn.split(vim.trim(source._opts.command), " ")[1])
+        ) ~= 1
+      then
+        return {
+          non_executable = { opts.name },
+        }
+      end
+    end
     require("null-ls.sources").register({
       sources = { source },
     })
