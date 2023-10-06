@@ -24,6 +24,7 @@ local M = {
 }
 
 local set_confirm_keymap
+local set_close_keymap
 
 function M.config()
   local _, cmp = pcall(require, "cmp")
@@ -53,12 +54,12 @@ function M.config()
     mapping = cmp.mapping.preset.insert({
       ["<TAB>"] = cmp.mapping.select_next_item(),
       ["<S-TAB>"] = cmp.mapping.select_prev_item(),
-      ["<C-x>"] = cmp.mapping.close(),
       ["<C-d>"] = cmp.mapping.scroll_docs(4),
       ["<C-u>"] = cmp.mapping.scroll_docs(-4),
     }),
   })
   set_confirm_keymap()
+  set_close_keymap()
 end
 
 --- If copilot suggestion is visible and cmp has no selected entry,
@@ -88,6 +89,29 @@ function set_confirm_keymap()
       return true
     end
     return "<CR>"
+  end, { expr = true, remap = true })
+end
+
+--- If cmp is visible, <C-x> will close cmp, otherwise if
+--- copilot suggestion is visible, <C-x> will dismiss
+--- suggestion, otherwise <C-x> will just do its default
+--- behavior.
+function set_close_keymap()
+  vim.keymap.set("i", "<C-x>", function()
+    local ok, cmp = pcall(require, "cmp")
+    if ok then
+      if cmp.visible() then
+        cmp.close()
+        return true
+      end
+    end
+    local suggestion
+    ok, suggestion = pcall(require, "copilot.suggestion")
+    if ok and suggestion.is_visible() then
+      suggestion.dismiss()
+      return true
+    end
+    return "<C-x>"
   end, { expr = true, remap = true })
 end
 

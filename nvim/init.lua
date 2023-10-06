@@ -28,6 +28,7 @@ for _, k in ipairs({
   "highlights",
   "keymaps",
   "commands",
+  "lsp",
   "lazy",
 }) do
   local ok, e = pcall(require, "config." .. k)

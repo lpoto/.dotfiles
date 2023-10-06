@@ -2,7 +2,7 @@
 -------------------------------------------------------------------------------
 --                                                                          LSP
 --[[===========================================================================
-A collection of LSP related plugins and configurations.
+A collection of LSP related configurations
 
 Keymaps:
 
@@ -16,7 +16,12 @@ Keymaps:
 -----------------------------------------------------------------------------]]
 local M = {}
 
+---Attach a tool as a LSP client. These tools will be added to the
+---lsp server based on the functions provided to
+---`vim.lsp.add_attach_condition`.
+---
 ---@param ...table|string
+---@diagnostic disable-next-line
 vim.lsp.attach = function(...)
   for _, opts in ipairs({ select(1, ...) }) do
     local ok, e = pcall(M.attach, opts)
@@ -28,7 +33,14 @@ vim.lsp.attach = function(...)
   end
 end
 
----@param opts table
+---Add a function used during vim.lsp.attach. The function receives
+---the table containing the tool configs and should return a table
+---with possible fields:
+---    - attached: string or table of strings of tools that were attached
+---    - missing: string or table of strings of tools that were not found
+---    - non_executable: string or table of strings of non-executable tools
+---@param opts {priority: number, fn: fun(opts, buf, ft): table?}
+---@diagnostic disable-next-line
 vim.lsp.add_attach_condition = function(opts)
   return M.add_attach_condition(opts)
 end
@@ -194,22 +206,4 @@ function M.add_attach_condition(opts)
   return true
 end
 
-M.init()
-
-local cur_dir = vim.fs.dirname(debug.getinfo(1, "S").source:sub(2))
-local submodules = {}
-
-for file in vim.fs.dir(cur_dir, { depth = 1 }) do
-  if type(file) == "string" and file ~= "init.lua" then
-    local extension = vim.fn.fnamemodify(file, ":e")
-    local tail = vim.fn.fnamemodify(file, ":r")
-    if extension == "lua" then
-      local ok, v = pcall(require, "plugins.lsp." .. tail)
-      if ok and (type(v) == "table" or type(v) == "string") then
-        table.insert(submodules, v)
-      end
-    end
-  end
-end
-
-return submodules
+return M.init()
