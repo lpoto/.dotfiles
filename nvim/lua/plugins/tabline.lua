@@ -1,19 +1,16 @@
 --=============================================================================
 -------------------------------------------------------------------------------
---                                                                 BUFFERS.NVIM
+--                                                                 TABLINE.NVIM
 --[[===========================================================================
-https://github.com/lpoto/buffers.nvim
+https://github.com/lpoto/tabline.nvim
 
-Keep only a limited number of buffers loaded and listed.
-
-Commands:
-
-  :Buffers clean  - Clean unloaded and unlisted buffers
 -----------------------------------------------------------------------------]]
-local M = {
-  "lpoto/buffers.nvim",
-  opts = {},
-  event = { "BufRead", "BufNewFile" },
-}
 
+local M = {
+  "lpoto/tabline.nvim",
+  event = "User LazyVimStarted",
+  opts = {
+    hide_statusline = true,
+  },
+}
 return M

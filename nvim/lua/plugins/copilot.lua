@@ -5,6 +5,7 @@
 https://github.com/zbirenbaum/copilot.lua
 
 -----------------------------------------------------------------------------]]
+
 local M = {
   "zbirenbaum/copilot.lua",
   event = { "BufRead", "BufNewFile" },
@@ -27,7 +28,6 @@ function M.config()
           -- NOTE: accept is mapped to <CR> in
           -- the cmp.lua plugin config.
           accept = false,
-          dismiss = "<C-x>",
           next = "<C-k>",
           prev = "<C-j>",
         },

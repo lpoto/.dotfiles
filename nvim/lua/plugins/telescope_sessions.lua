@@ -12,6 +12,7 @@ Keymaps:
   - <leader>s - same as :Sessions
 
 -----------------------------------------------------------------------------]]
+
 local M = {
   "lpoto/telescope-sessions.nvim",
   event = "VimLeavePre",

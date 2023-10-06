@@ -29,6 +29,7 @@ Keymaps:
 
  Use <C-q> in a telescope prompt to send the results to quickfix.
 -----------------------------------------------------------------------------]]
+
 local M = {
   "nvim-telescope/telescope.nvim",
   tag = "0.1.3",
@@ -231,20 +232,4 @@ function attach_marks_mappings(_, map)
   return true
 end
 
-local cur_dir = vim.fs.dirname(debug.getinfo(1, "S").source:sub(2))
-local modules = { M }
-
-for file in vim.fs.dir(cur_dir, { depth = 1 }) do
-  if type(file) == "string" and file ~= "init.lua" then
-    local extension = vim.fn.fnamemodify(file, ":e")
-    local tail = vim.fn.fnamemodify(file, ":r")
-    if extension == "lua" then
-      local ok, v = pcall(require, "plugins.telescope." .. tail)
-      if ok and (type(v) == "table" or type(v) == "string") then
-        table.insert(modules, v)
-      end
-    end
-  end
-end
-
-return modules
+return M

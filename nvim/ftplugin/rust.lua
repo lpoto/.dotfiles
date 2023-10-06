@@ -6,8 +6,8 @@ if vim.g[vim.bo.filetype] or vim.api.nvim_set_var(vim.bo.filetype, true) then
   return
 end
 
-require("abstract.lsp"):attach("rustfmt")
-require("abstract.lsp"):attach({
+vim.lsp.attach("rustfmt")
+vim.lsp.attach({
   name = "rust_analyzer",
   settings = {
     ["rust-analyzer"] = {

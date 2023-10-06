@@ -7,6 +7,7 @@ https://github.com/nvim-treesitter/nvim-treesitter
 Treesitter interface for Neovim. Provides inproved
 highlights, ...
 -----------------------------------------------------------------------------]]
+
 local M = {
   "nvim-treesitter/nvim-treesitter",
   tag = "v0.9.1",

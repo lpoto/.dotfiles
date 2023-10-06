@@ -12,6 +12,7 @@ commands:
 keymaps:
   - "<leader>u" - show undo tree
 -----------------------------------------------------------------------------]]
+
 local M = {
   "debugloop/telescope-undo.nvim",
   cmd = "Undo",
