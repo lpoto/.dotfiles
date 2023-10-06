@@ -60,11 +60,6 @@ vim.keymap.set("n", "<leader>yy", '"+yy')
 vim.keymap.set({ "n", "v" }, "<leader>p", '"+p')
 vim.keymap.set({ "n", "v" }, "<leader>P", '"+P')
 
---  set q: q/ and q? to no-op, as they interfere a lot
-vim.keymap.set("n", "q:", "<nop>")
-vim.keymap.set("n", "q/", "<nop>")
-vim.keymap.set("n", "q?", "<nop>")
-
 for i = 1, 9 do
   vim.keymap.set("n", "<localleader>" .. i, i .. "gt")
 end
