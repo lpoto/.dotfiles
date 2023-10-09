@@ -17,7 +17,7 @@ fi
 echo "==> Checking prerequisites ..."
 echo
 do_exit=false
-for cmd in make automake autoconf pkg-config gcc; do
+for cmd in git make automake autoconf pkg-config gcc; do
   if ! command -v $cmd >/dev/null 2>&1; then
     echo "==> ERROR: '$cmd' is not installed."
     do_exit=true
