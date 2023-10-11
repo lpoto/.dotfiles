@@ -164,7 +164,6 @@ function M.attach(opts)
 end
 
 function M.__attach(opts)
-  opts = vim.tbl_deep_extend("force", opts or {}, vim.g[opts.name] or {})
   local buffer = opts.buffer or vim.api.nvim_get_current_buf()
   local filetype = opts.filetype
     or vim.api.nvim_buf_get_option(buffer, "filetype")
