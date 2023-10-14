@@ -16,15 +16,15 @@ Commands:
 -----------------------------------------------------------------------------]]
 
 local M = {
-  "williamboman/mason.nvim",
+  'williamboman/mason.nvim',
   -- NOTE: Don't set it as optional so the path to installed binaries
   -- is added to the PATH environment variable on startup.
   lazy = false,
   opts = {
-    ui = { border = "rounded" },
+    ui = { border = 'rounded' },
   },
 }
 
-function M.build() vim.cmd("MasonUpdate") end
+function M.build() vim.cmd 'MasonUpdate' end
 
 return M

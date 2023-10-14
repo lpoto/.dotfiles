@@ -12,15 +12,15 @@ and autopairs, that autocompletes the matching braces, quotes, etc.
 -----------------------------------------------------------------------------]]
 
 local M = {
-  "hrsh7th/nvim-cmp",
-  tag = "v0.0.1",
-  event = { "BufRead", "BufNewFile" },
+  'hrsh7th/nvim-cmp',
+  tag = 'v0.0.1',
+  event = { 'BufRead', 'BufNewFile' },
   dependencies = {
-    "hrsh7th/cmp-nvim-lsp",
-    "hrsh7th/cmp-path",
-    "hrsh7th/cmp-buffer",
-    "L3MON4d3/LuaSnip",
-    "saadparwaiz1/cmp_luasnip",
+    'hrsh7th/cmp-nvim-lsp',
+    'hrsh7th/cmp-path',
+    'hrsh7th/cmp-buffer',
+    'L3MON4d3/LuaSnip',
+    'saadparwaiz1/cmp_luasnip',
   },
 }
 
@@ -28,37 +28,37 @@ local set_confirm_keymap
 local set_close_keymap
 
 function M.config()
-  local _, cmp = pcall(require, "cmp")
-  if type(cmp) ~= "table" then return end
-  cmp.setup({
+  local _, cmp = pcall(require, 'cmp')
+  if type(cmp) ~= 'table' then return end
+  cmp.setup {
     completion = {
-      completeopt = "menu,menuone,noinsert,noselect",
+      completeopt = 'menu,menuone,noinsert,noselect',
     },
     snippet = {
-      expand = function(args) require("luasnip").lsp_expand(args.body) end,
+      expand = function(args) require 'luasnip'.lsp_expand(args.body) end,
     },
     sources = {
-      { name = "nvim_lsp" },
-      { name = "luasnip" },
-      { name = "path" },
-      { name = "buffer" },
+      { name = 'nvim_lsp' },
+      { name = 'luasnip' },
+      { name = 'path' },
+      { name = 'buffer' },
     },
     window = {
-      completion = cmp.config.window.bordered({
-        winhighlight = "NormalFloat:WinSeparator,FloatBorder:WinSeparator",
-      }),
-      documentation = cmp.config.window.bordered({
-        winhighlight = "NormalFloat:WinSeparator,FloatBorder:WinSeparator",
-      }),
+      completion = cmp.config.window.bordered {
+        winhighlight = 'NormalFloat:WinSeparator,FloatBorder:WinSeparator',
+      },
+      documentation = cmp.config.window.bordered {
+        winhighlight = 'NormalFloat:WinSeparator,FloatBorder:WinSeparator',
+      },
     },
     preselect = cmp.PreselectMode.None,
-    mapping = cmp.mapping.preset.insert({
-      ["<TAB>"] = cmp.mapping.select_next_item(),
-      ["<S-TAB>"] = cmp.mapping.select_prev_item(),
-      ["<C-d>"] = cmp.mapping.scroll_docs(4),
-      ["<C-u>"] = cmp.mapping.scroll_docs(-4),
-    }),
-  })
+    mapping = cmp.mapping.preset.insert {
+      ['<TAB>'] = cmp.mapping.select_next_item(),
+      ['<S-TAB>'] = cmp.mapping.select_prev_item(),
+      ['<C-d>'] = cmp.mapping.scroll_docs(4),
+      ['<C-u>'] = cmp.mapping.scroll_docs(-4),
+    },
+  }
   set_confirm_keymap()
   set_close_keymap()
 end
@@ -69,12 +69,12 @@ end
 --- the first cmp entry, otherwise <CR> will just do
 --- its default behavior.
 function set_confirm_keymap()
-  vim.keymap.set("i", "<CR>", function()
-    local ok, suggestion = pcall(require, "copilot.suggestion")
-    if not ok then return "<CR>" end
+  vim.keymap.set('i', '<CR>', function()
+    local ok, suggestion = pcall(require, 'copilot.suggestion')
+    if not ok then return '<CR>' end
     local cmp
-    ok, cmp = pcall(require, "cmp")
-    if not ok then return "<CR>" end
+    ok, cmp = pcall(require, 'cmp')
+    if not ok then return '<CR>' end
     if
       cmp
       and (
@@ -82,14 +82,14 @@ function set_confirm_keymap()
         or cmp.visible() and (not suggestion or not suggestion.is_visible())
       )
     then
-      vim.defer_fn(function() cmp.confirm({ select = true }) end, 5)
+      vim.defer_fn(function() cmp.confirm { select = true } end, 5)
       return true
     end
     if suggestion and suggestion.is_visible() then
       vim.defer_fn(function() suggestion.accept() end, 5)
       return true
     end
-    return "<CR>"
+    return '<CR>'
   end, { expr = true, remap = true })
 end
 
@@ -98,8 +98,8 @@ end
 --- suggestion, otherwise <C-x> will just do its default
 --- behavior.
 function set_close_keymap()
-  vim.keymap.set("i", "<C-x>", function()
-    local ok, cmp = pcall(require, "cmp")
+  vim.keymap.set('i', '<C-x>', function()
+    local ok, cmp = pcall(require, 'cmp')
     if ok then
       if cmp.visible() then
         cmp.close()
@@ -107,12 +107,12 @@ function set_close_keymap()
       end
     end
     local suggestion
-    ok, suggestion = pcall(require, "copilot.suggestion")
+    ok, suggestion = pcall(require, 'copilot.suggestion')
     if ok and suggestion.is_visible() then
       suggestion.dismiss()
       return true
     end
-    return "<C-x>"
+    return '<C-x>'
   end, { expr = true, remap = true })
 end
 

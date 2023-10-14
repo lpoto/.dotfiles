@@ -7,8 +7,8 @@ https://github.com/lpoto/tabline.nvim
 -----------------------------------------------------------------------------]]
 
 local M = {
-  "lpoto/tabline.nvim",
-  event = "User LazyVimStarted",
+  'lpoto/tabline.nvim',
+  event = 'User LazyVimStarted',
   opts = {
     hide_statusline = true,
   },
