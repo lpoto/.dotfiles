@@ -33,7 +33,7 @@ Keymaps:
 
 local M = {
   "nvim-telescope/telescope.nvim",
-  tag = "0.1.3",
+  tag = "0.1.4",
   cmd = "Telescope",
   dependencies = {
     "nvim-lua/plenary.nvim",
