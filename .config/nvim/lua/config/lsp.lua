@@ -222,6 +222,7 @@ end
 
 local old_format = vim.lsp.buf.format
 
+---@diagnostic disable-next-line
 vim.lsp.buf.format = function(opts)
   if type(opts) ~= "table" then opts = {} end
   if type(opts.async) ~= "boolean" then opts.async = false end

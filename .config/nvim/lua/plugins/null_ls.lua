@@ -72,6 +72,7 @@ function init_null_ls()
   })
 end
 
+---@diagnostic disable-next-line
 vim.lsp.buf.update_format_opts = function(opts)
   if not package.loaded["null-ls"] then return opts end
   if
