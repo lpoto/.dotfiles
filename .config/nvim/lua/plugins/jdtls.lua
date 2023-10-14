@@ -32,12 +32,14 @@ vim.lsp.add_attach_condition({
 
     local client_id = require("jdtls").start_or_attach(opts)
     local attach_jdtls_to_buf = function(buf)
-      if type(buf) ~= "number" or not vim.api.nvim_buf_is_valid(buf) then
+      if
+        type(buf) ~= "number"
+        or not vim.api.nvim_buf_is_valid(buf)
+        or vim.api.nvim_buf_get_option(buf, "buftype") ~= ""
+        or vim.api.nvim_buf_get_option(buf, "filetype") ~= "java"
+      then
         return
       end
-      local ft = vim.api.nvim_buf_get_option(buf, "filetype")
-      local name = vim.api.nvim_buf_get_name(buf)
-      if ft ~= "java" or not name:match(opts.root_dir) then return end
       local client = vim.lsp.get_client_by_id(client_id)
       if client then vim.lsp.buf_attach_client(buf, client_id) end
     end

@@ -1,8 +1,3 @@
-.storage/
-.build/
-libevent*
-tmp/
 nvim/plugin/
 nvim/after/
-github-copilot
 .luarc.json

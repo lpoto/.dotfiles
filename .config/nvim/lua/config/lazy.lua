@@ -57,7 +57,7 @@ function get_lazy_options()
     defaults = {
       lazy = true,
     },
-    lockfile = vim.fs.dirname(vim.fn.stdpath("config")) .. "/.lazy.lock.json",
+    lockfile = vim.fn.stdpath("config") .. "/.lazy.lock.json",
     ui = {
       border = "rounded",
     },
