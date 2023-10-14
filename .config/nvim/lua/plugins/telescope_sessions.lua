@@ -14,28 +14,28 @@ Keymaps:
 -----------------------------------------------------------------------------]]
 
 local M = {
-  "lpoto/telescope-sessions.nvim",
-  event = "VimLeavePre",
-  cmd = "Sessions",
+  'lpoto/telescope-sessions.nvim',
+  event = 'VimLeavePre',
+  cmd = 'Sessions',
 }
 
 M.keys = {
   {
-    "<leader>s",
-    function() require("telescope").extensions.sessions.sessions() end,
-    mode = "n",
+    '<leader>s',
+    function() require 'telescope'.extensions.sessions.sessions() end,
+    mode = 'n',
   },
 }
 
 function M.config()
   vim.api.nvim_create_user_command(
-    "Sessions",
-    function() require("telescope").extensions.sessions.sessions() end,
+    'Sessions',
+    function() require 'telescope'.extensions.sessions.sessions() end,
     {}
   )
-  local ok, telescope = pcall(require, "telescope")
+  local ok, telescope = pcall(require, 'telescope')
   if not ok then return end
-  telescope.setup({
+  telescope.setup {
     extensions = {
       sessions = {
         layout_config = {
@@ -43,8 +43,8 @@ function M.config()
         },
       },
     },
-  })
-  telescope.load_extension("sessions")
+  }
+  telescope.load_extension 'sessions'
 end
 
 return M

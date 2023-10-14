@@ -18,36 +18,36 @@ local ensure_lazy, get_lazy_options
 local function load_lazy(lazy_path)
   ensure_lazy(lazy_path)
   vim.opt.runtimepath:prepend(lazy_path)
-  local ok, lazy = pcall(require, "lazy")
-  if ok then lazy.setup("plugins", get_lazy_options()) end
+  local ok, lazy = pcall(require, 'lazy')
+  if ok then lazy.setup('plugins', get_lazy_options()) end
 end
 
 function ensure_lazy(lazy_path)
   if not vim.loop.fs_stat(lazy_path) then
-    print("Lazy.nvim not found, installing...")
+    print 'Lazy.nvim not found, installing...'
     ---@type table
     local cmd = {
-      "git",
-      "clone",
-      "--filter=blob:none",
-      "https://github.com/folke/lazy.nvim.git",
-      "--branch=stable",
+      'git',
+      'clone',
+      '--filter=blob:none',
+      'https://github.com/folke/lazy.nvim.git',
+      '--branch=stable',
       lazy_path,
     }
-    print("Running: " .. table.concat(cmd, " "))
+    print('Running: ' .. table.concat(cmd, ' '))
     local ok, err = pcall(vim.fn.system, cmd)
     if not ok then
       vim.notify(
-        "Error installing Lazy.nvim: " .. err,
+        'Error installing Lazy.nvim: ' .. err,
         vim.log.levels.INFO,
-        { title = "Lazy" }
+        { title = 'Lazy' }
       )
       return
     end
     if not vim.loop.fs_stat(lazy_path) then
-      print("[ERROR] Failed installing Lazy.nvim!")
+      print '[ERROR] Failed installing Lazy.nvim!'
     else
-      print("Lazy.nvim installed!")
+      print 'Lazy.nvim installed!'
     end
   end
 end
@@ -57,13 +57,13 @@ function get_lazy_options()
     defaults = {
       lazy = true,
     },
-    lockfile = vim.fn.stdpath("config") .. "/.lazy.lock.json",
+    lockfile = vim.fn.stdpath 'config' .. '/.lazy.lock.json',
     ui = {
-      border = "rounded",
+      border = 'rounded',
     },
-    root = vim.fn.stdpath("data") .. "/lazy",
+    root = vim.fn.stdpath 'data' .. '/lazy',
     dev = {
-      dir = vim.fn.stdpath("data") .. "/lazy",
+      dir = vim.fn.stdpath 'data' .. '/lazy',
     },
     checker = {
       enabled = true,
@@ -73,7 +73,7 @@ function get_lazy_options()
       enabled = false,
     },
     diff = {
-      cmd = "terminal_git",
+      cmd = 'terminal_git',
     },
     performance = {
       cache = {
@@ -84,10 +84,10 @@ function get_lazy_options()
           --"gzip",
           --"matchit",
           --"matchparen",
-          "netrwPlugin",
-          "tarPlugin",
-          "tohtml",
-          "tutor",
+          'netrwPlugin',
+          'tarPlugin',
+          'tohtml',
+          'tutor',
           --"zipPlugin",
         },
       },
@@ -96,4 +96,4 @@ function get_lazy_options()
   }
 end
 
-load_lazy(vim.fn.stdpath("data") .. "/lazy/lazy.nvim")
+load_lazy(vim.fn.stdpath 'data' .. '/lazy/lazy.nvim')
