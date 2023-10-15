@@ -100,9 +100,13 @@ function M.attach(opts)
   if type(opts) ~= 'table' or type(opts.name) ~= 'string' then
     error 'Invalid options for attaching LSP client'
   end
+  local buf = vim.api.nvim_get_current_buf()
   if not M.__logs then M.__logs = {} end
   vim.defer_fn(function()
-    local t = M.__attach(opts)
+    local t = nil
+    vim.api.nvim_buf_call(buf, function()
+      t = M.__attach(opts, buf)
+    end)
     if type(t) ~= 'table' or not next(t) then return end
     local attached = t.attached
     if type(attached) == 'string' then attached = { attached } end
@@ -159,21 +163,17 @@ function M.attach(opts)
   end, 50)
 end
 
-function M.__attach(opts)
+function M.__attach(opts, buffer)
   opts = vim.tbl_deep_extend(
     'force',
     opts or {},
     vim.g[opts.name .. '_config'] or {}
   )
-  local buffer = opts.buffer or vim.api.nvim_get_current_buf()
-  local filetype = opts.filetype
-    or vim.api.nvim_buf_get_option(buffer, 'filetype')
-
   if type(opts.name) ~= 'string' then return end
   for _, o in pairs(vim.tbl_values(M.__attach_conditions or {})) do
     if type(o) == 'table' and type(o.fn) == 'function' then
       local f = o.fn
-      local ok, v = pcall(f, opts, buffer, filetype)
+      local ok, v = pcall(f, opts, buffer)
       if not ok then
         vim.notify(
           'Error attaching ' .. opts.name .. ': ' .. v,

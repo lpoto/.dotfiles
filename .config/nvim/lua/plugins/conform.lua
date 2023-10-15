@@ -10,14 +10,15 @@ Keymaps:
 
 local M = {
   'stevearc/conform.nvim',
-  cmd = 'ConformInfo',
 }
 
 vim.lsp.add_attach_condition {
   priority = 25,
-  fn = function(opts, _, filetype)
+  fn = function(opts, buf)
+    local filetype = vim.api.nvim_buf_get_option(buf, 'filetype')
     local ok = pcall(require, 'conform.formatters.' .. opts.name)
     if not ok then
+      print 'WHAT'
       return {
         missing = { opts.name },
       }
@@ -69,7 +70,8 @@ local default_format_callback = function(err)
   end, formatters)
   if not next(formatters) then return end
   vim.defer_fn(function()
-    local s = #formatters > 1 and vim.inspect(formatters) or formatters[1]
+    local s = #formatters > 1 and table.concat(formatters, ', ') or formatters
+      [1]
     if type(vim.g.display_message) == 'function' then
       vim.g.display_message {
         message = 'formatted with: ' .. s,
@@ -82,7 +84,7 @@ local default_format_callback = function(err)
         { title = 'Conform' }
       )
     end
-  end, 100)
+  end, 10)
 end
 
 local function format(opts, callback)
