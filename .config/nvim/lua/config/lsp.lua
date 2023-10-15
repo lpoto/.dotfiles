@@ -16,8 +16,6 @@ Keymaps:
 
   - "<leader>a" -  Show code actions for the current position
   - "<leader>r" -  Rename symbol under cursor
-
-  - "<leader>f" - format the current buffer or visual selection
 -----------------------------------------------------------------------------]]
 
 local M = {}
@@ -66,8 +64,6 @@ function M.set_lsp_keymaps(opts)
   vim.keymap.set({ 'n', 'v' }, '<leader>a', vim.lsp.buf.code_action, opts)
 
   vim.keymap.set('n', '<leader>r', vim.lsp.buf.rename, opts)
-
-  vim.keymap.set({ 'n', 'v' }, '<leader>f', vim.lsp.buf.format, opts)
 end
 
 function M.set_lsp_handlers()
@@ -104,9 +100,13 @@ function M.attach(opts)
   if type(opts) ~= 'table' or type(opts.name) ~= 'string' then
     error 'Invalid options for attaching LSP client'
   end
+  local buf = vim.api.nvim_get_current_buf()
   if not M.__logs then M.__logs = {} end
   vim.defer_fn(function()
-    local t = M.__attach(opts)
+    local t = nil
+    vim.api.nvim_buf_call(buf, function()
+      t = M.__attach(opts, buf)
+    end)
     if type(t) ~= 'table' or not next(t) then return end
     local attached = t.attached
     if type(attached) == 'string' then attached = { attached } end
@@ -163,21 +163,17 @@ function M.attach(opts)
   end, 50)
 end
 
-function M.__attach(opts)
+function M.__attach(opts, buffer)
   opts = vim.tbl_deep_extend(
     'force',
     opts or {},
     vim.g[opts.name .. '_config'] or {}
   )
-  local buffer = opts.buffer or vim.api.nvim_get_current_buf()
-  local filetype = opts.filetype
-    or vim.api.nvim_buf_get_option(buffer, 'filetype')
-
   if type(opts.name) ~= 'string' then return end
   for _, o in pairs(vim.tbl_values(M.__attach_conditions or {})) do
     if type(o) == 'table' and type(o.fn) == 'function' then
       local f = o.fn
-      local ok, v = pcall(f, opts, buffer, filetype)
+      local ok, v = pcall(f, opts, buffer)
       if not ok then
         vim.notify(
           'Error attaching ' .. opts.name .. ': ' .. v,
@@ -218,62 +214,6 @@ function M.add_attach_condition(opts)
     function(a, b) return a.priority > b.priority end
   )
   return true
-end
-
-local old_format = vim.lsp.buf.format
-
----@diagnostic disable-next-line
-vim.lsp.buf.format = function(opts)
-  if type(opts) ~= 'table' then opts = {} end
-  if type(opts.async) ~= 'boolean' then opts.async = false end
-  if type(opts.filter) == 'function' or type(opts.name) == 'string' then
-    return old_format(opts)
-  end
-  if type(vim.lsp.buf.update_format_opts) == 'function' then
-    local ok, opts2 = pcall(vim.lsp.buf.update_format_opts, opts)
-    if ok and type(opts2) == 'table' then opts = opts2 end
-  end
-  if type(opts.filter) ~= 'function' and type(opts.name) ~= 'string' then
-    local found = false
-    opts.filter = function(client)
-      if
-        not found
-        and type(client) == 'table'
-        and type(client.server_capabilities) == 'table'
-        and client.server_capabilities.documentFormattingProvider
-      then
-        opts.callback = function()
-          if client.name then
-            if type(vim.g.display_message) == 'function' then
-              vim.g.display_message {
-                message = 'formatted with: ' .. client.name,
-                title = 'LSP',
-              }
-            else
-              vim.notify(
-                'formatted with: ' .. client.name,
-                vim.log.levels.DEBUG,
-                {
-                  title = 'LSP',
-                }
-              )
-            end
-          end
-        end
-        found = true
-        return true
-      end
-      return false
-    end
-  end
-  local r = old_format(opts)
-  if type(opts.callback) == 'function' then
-    local ok, e = pcall(opts.callback)
-    if not ok then
-      vim.notify(e, vim.log.levels.ERROR, { title = 'lsp.buf.format' })
-    end
-  end
-  return r
 end
 
 return M.init()

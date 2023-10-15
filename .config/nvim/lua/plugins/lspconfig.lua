@@ -13,7 +13,7 @@ local M = {
 local root_fn
 vim.lsp.add_attach_condition {
   priority = 50,
-  fn = function(server, bufnr, filetype)
+  fn = function(server, bufnr)
     local ok, _ =
       pcall(require, 'lspconfig.server_configurations.' .. server.name)
     if not ok then
@@ -36,7 +36,6 @@ vim.lsp.add_attach_condition {
     if server.root_dir == nil and type(server.root_patterns) == 'table' then
       server.root_dir = root_fn(server.root_patterns)
     end
-    if type(server.filetypes) == nil then server.filetypes = { filetype } end
 
     lsp.setup(server)
     local config = require 'lspconfig.configs'[server.name]
