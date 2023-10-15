@@ -98,9 +98,6 @@ local function format(opts, callback)
     end
   end
   if not next(formatted_with) then formatted_with = nil end
-
-
-  print(vim.inspect(formatted_with))
   require 'conform'.format(opts, callback)
 end
 
