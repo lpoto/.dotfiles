@@ -12,7 +12,7 @@ Keymaps:
   - "gi"        -  Go to the implementations of symbol under cursor
   - "gr"        -  Go to the references to the symbol under the cursor
 
-  - "<leader>e" -  Show the diagnostics of the line under the cursor
+  - "<leader>d" -  Show the diagnostics of the line under the cursor
 
   - "<leader>a" -  Show code actions for the current position
   - "<leader>r" -  Rename symbol under cursor
@@ -29,10 +29,8 @@ local M = {}
 vim.lsp.attach = function(...)
   for _, opts in ipairs { select(1, ...) } do
     local ok, e = pcall(M.attach, opts)
-    if not ok then
-      vim.notify(e, vim.log.levels.ERROR, {
-        title = 'LSP',
-      })
+    if not ok and e then
+      vim.notify(e, vim.log.levels.ERROR)
     end
   end
 end
@@ -89,7 +87,7 @@ end
 function M.open_diagnostic_float()
   local n, _ = vim.diagnostic.open_float()
   if not n then
-    vim.notify('No diagnostics found', vim.log.levels.WARN, { title = 'LSP' })
+    vim.notify('No diagnostics found', vim.log.levels.WARN)
   end
 end
 
@@ -157,7 +155,7 @@ function M.attach(opts)
           .. ']'
         l = vim.log.levels.WARN
       end
-      if s:len() > 0 then vim.notify(s, l, { title = 'LSP' }) end
+      if s:len() > 0 then vim.notify(s, l) end
       M.__logs = {}
     end, 100)
   end, 50)
@@ -175,12 +173,8 @@ function M.__attach(opts, buffer)
       local f = o.fn
       local ok, v = pcall(f, opts, buffer)
       if not ok then
-        vim.notify(
-          'Error attaching ' .. opts.name .. ': ' .. v,
-          vim.log.levels.WARN,
-          {
-            title = 'LSP',
-          }
+        vim.notify('Error attaching ' .. opts.name .. ': ' .. v,
+          vim.log.levels.WARN
         )
       end
       if

@@ -58,9 +58,7 @@ local default_format_callback = function(err)
   local formatters = formatted_with or {}
   formatted_with = nil
   if err ~= nil then
-    vim.notify(err, vim.log.levels.WARN, {
-      title = 'Conform',
-    })
+    vim.notify(err, vim.log.levels.WARN)
     return
   end
   formatters = vim.tbl_filter(function(n)
@@ -78,11 +76,7 @@ local default_format_callback = function(err)
         title = 'Conform',
       }
     else
-      vim.notify(
-        'formatted with: ' .. s,
-        vim.log.levels.DEBUG,
-        { title = 'Conform' }
-      )
+      vim.notify('formatted with: ' .. s, vim.log.levels.DEBUG)
     end
   end, 10)
 end

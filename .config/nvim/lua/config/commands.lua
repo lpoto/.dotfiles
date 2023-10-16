@@ -48,8 +48,7 @@ vim.api.nvim_create_user_command('Quickfix', function(opts)
       vim.api.nvim_exec2('cclose', {})
       vim.notify(
         'There is nothing to display in the quickfix window',
-        vim.log.levels.WARN,
-        { title = 'Quickfix' }
+        vim.log.levels.WARN
       )
     end
     if enter ~= true then vim.fn.win_gotoid(winid) end
