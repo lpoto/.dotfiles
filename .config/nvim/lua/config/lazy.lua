@@ -39,8 +39,7 @@ function ensure_lazy(lazy_path)
     if not ok then
       vim.notify(
         'Error installing Lazy.nvim: ' .. err,
-        vim.log.levels.INFO,
-        { title = 'Lazy' }
+        vim.log.levels.INFO
       )
       return
     end

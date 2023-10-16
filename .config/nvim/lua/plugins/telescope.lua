@@ -56,8 +56,7 @@ local function builtin(name, opts, log_if_no_results)
     then
       vim.notify(
         '[telescope.builtin.' .. name .. '] Not results found ',
-        vim.log.levels.WARN,
-        { title = 'Telescope' }
+        vim.log.levels.WARN
       )
     end
   end
@@ -71,7 +70,6 @@ M.keys = {
   { '<leader>c',  builtin 'resume',              mode = 'n' },
   { '<leader>m',  builtin 'marks',               mode = 'n' },
   { '<leader>h',  builtin 'help_tags',           mode = 'n' },
-  { '<leader>d',  builtin 'diagnostics',         mode = 'n' },
   { 'gd',         builtin 'lsp_definitions',     mode = 'n' },
   { 'gi',         builtin 'lsp_implementations', mode = 'n' },
   { 'gr',         builtin 'lsp_references',      mode = 'n' },
@@ -79,6 +77,16 @@ M.keys = {
   { '<leader>gl', builtin 'git_commits',         mode = 'n' },
   { '<leader>gS', builtin 'git_stash',           mode = 'n' },
   { '<leader>gb', builtin 'git_branches',        mode = 'n' },
+  {
+    '<leader>d',
+    function()
+      local n, _ = vim.diagnostic.open_float()
+      if not n then
+        builtin 'diagnostics' ()
+      end
+    end,
+    mode = 'n'
+  },
 }
 
 local default_mappings

@@ -13,6 +13,7 @@ local find_root
 vim.lsp.add_attach_condition {
   priority = 100,
   fn = function(opts, bufnr)
+    local ret = {}
     if type(opts) ~= 'table' or opts.name ~= 'jdtls' then return end
 
     if type(opts.root_dir) ~= 'string' then
@@ -21,7 +22,7 @@ vim.lsp.add_attach_condition {
     if opts.cmd == nil then
       local exe = vim.fn.exepath 'jdtls'
       if not exe or exe:len() == 0 then
-        return { non_executable = { 'jdtls' } }
+        ret.non_executable = { 'jdtls' }
       end
       opts.cmd = {
         exe,
@@ -52,7 +53,8 @@ vim.lsp.add_attach_condition {
       attach_jdtls_to_buf(v)
     end
 
-    return { attached = { opts.name } }
+    ret.attached = { 'jdtls' }
+    return ret
   end,
 }
 

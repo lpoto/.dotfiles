@@ -50,11 +50,7 @@ local M = {
       map('n', '<leader>gu', gitsigns.undo_stage_hunk)
       map('n', '<leader>gr', gitsigns.reset_buffer)
       if not vim.g.gitsigns_logged then
-        vim.notify(
-          'Attached gitsigns',
-          vim.log.levels.INFO,
-          { title = 'Git' }
-        )
+        vim.notify('Attached gitsigns', vim.log.levels.INFO)
         vim.g.gitsigns_logged = true
       end
     end,
@@ -121,7 +117,9 @@ local shell_augroup = 'AbstractShellAugroup'
 ---@param on_error nil|function(exit_code: number)
 function shell.fetch_git_data(callback, on_error)
   on_error = on_error
-    or function(_) vim.notify('Could not fetch git data', 'warn', 'core') end
+    or function(_)
+      vim.notify('Could not fetch git data', vim.log.levels.WARN)
+    end
   local remote = ''
   vim.fn.jobstart('git remote show', {
     detach = false,

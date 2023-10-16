@@ -48,11 +48,13 @@ vim.lsp.add_attach_condition {
       executable = cmd:gsub('^%s*(.-)%s*$', '%1')
       executable = vim.fn.split(executable)[1]
     end
+    local ret = {}
     if executable ~= nil and vim.fn.executable(executable) ~= 1 then
-      return { non_executable = { server.name } }
+      ret.non_executable = { server.name }
     end
     config.launch(bufnr)
-    return { attached = { server.name } }
+    ret.attached = { server.name }
+    return ret
   end,
 }
 

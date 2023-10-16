@@ -262,10 +262,7 @@ for _, groups in pairs(hl) do
     if not ok then
       vim.notify(
         'Error setting highlight ' .. group .. ': ' .. e,
-        vim.log.levels.ERROR,
-        {
-          title = 'Highlights',
-        }
+        vim.log.levels.ERROR
       )
     end
   end

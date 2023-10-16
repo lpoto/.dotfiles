@@ -24,7 +24,6 @@ end
 -- Require all the default config files, including lazy.nvim that loads plugins
 for _, k in ipairs {
   'options',
-  'notify',
   'highlights',
   'keymaps',
   'commands',

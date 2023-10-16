@@ -9,7 +9,7 @@ Commands:
               (<CR> - load session, <C-d> - delete session)
 
 Keymaps:
-  - <leader>s - same as :Sessions
+  - <leader>s - same as :Sessions (<CR> in the starting screen)
 
 -----------------------------------------------------------------------------]]
 
@@ -19,13 +19,20 @@ local M = {
   cmd = 'Sessions',
 }
 
-M.keys = {
-  {
-    '<leader>s',
-    function() require 'telescope'.extensions.sessions.sessions() end,
-    mode = 'n',
-  },
-}
+function M.init()
+  vim.keymap.set('n', '<leader>s', function()
+    require 'telescope'.extensions.sessions.sessions()
+  end)
+  if vim.bo.filetype == '' and
+    vim.bo.buftype == '' and
+    vim.api.nvim_buf_get_name(0) == '' and
+    vim.api.nvim_get_current_line() == ''
+  then
+    vim.keymap.set('n', '<CR>', function()
+      require 'telescope'.extensions.sessions.sessions()
+    end, { buffer = 0 })
+  end
+end
 
 function M.config()
   vim.api.nvim_create_user_command(
