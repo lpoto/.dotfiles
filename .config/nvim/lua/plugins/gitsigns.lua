@@ -121,7 +121,9 @@ local shell_augroup = 'AbstractShellAugroup'
 ---@param on_error nil|function(exit_code: number)
 function shell.fetch_git_data(callback, on_error)
   on_error = on_error
-    or function(_) vim.notify('Could not fetch git data', 'warn', 'core') end
+    or function(_)
+      vim.notify('Could not fetch git data', vim.log.levels.WARN)
+    end
   local remote = ''
   vim.fn.jobstart('git remote show', {
     detach = false,
