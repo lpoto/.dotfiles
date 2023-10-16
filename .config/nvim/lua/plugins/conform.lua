@@ -18,7 +18,6 @@ vim.lsp.add_attach_condition {
     local filetype = vim.api.nvim_buf_get_option(buf, 'filetype')
     local ok = pcall(require, 'conform.formatters.' .. opts.name)
     if not ok then
-      print 'WHAT'
       return {
         missing = { opts.name },
       }
