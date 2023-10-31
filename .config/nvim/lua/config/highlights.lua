@@ -94,7 +94,7 @@ hl.base = {
   Include = { link = 'Keyword' },
   Repeat = { link = 'Keyword' },
   Label = { link = 'Keyword' },
-  Operator = { fg = colors.operator, italic = true },
+  Operator = { fg = colors.operator },
 
   PreProc = { fg = colors.macro, italic = true },
   Macro = { link = 'PreProc' },

@@ -8,7 +8,7 @@ https://github.com/lpoto/tabline.nvim
 
 local M = {
   'lpoto/tabline.nvim',
-  event = 'User LazyVimStarted',
+  event = { 'BufRead', 'BufNewFile' },
   opts = {
     hide_statusline = true,
   },
