@@ -10,7 +10,6 @@ local M = {
   cmd = { 'LspInfo', 'LspStart', 'LspLog' },
 }
 
-local root_fn
 vim.lsp.add_attach_condition {
   priority = 50,
   fn = function(server, bufnr)
@@ -33,10 +32,6 @@ vim.lsp.add_attach_condition {
       local has_cmp, cmp = pcall(require, 'cmp_nvim_lsp')
       if has_cmp then server.capabilities = cmp.default_capabilities() end
     end
-    if server.root_dir == nil and type(server.root_patterns) == 'table' then
-      server.root_dir = root_fn(server.root_patterns)
-    end
-
     lsp.setup(server)
     local config = require 'lspconfig.configs'[server.name]
     if type(config) ~= 'table' then return { missing = { server.name } } end
@@ -57,24 +52,5 @@ vim.lsp.add_attach_condition {
     return ret
   end,
 }
-
-function root_fn(patterns, default, opts)
-  return function()
-    if type(opts) ~= 'table' then opts = {} end
-    if type(opts.path) ~= 'string' then opts.path = vim.fn.expand '%:p:h' end
-    local f = nil
-    if type(patterns) == 'table' and next(patterns) then
-      f = vim.fs.find(
-        patterns,
-        vim.tbl_extend('force', { upward = true }, opts)
-      )
-    end
-    if type(f) ~= 'table' or not next(f) then
-      if type(default) == 'string' then return default end
-      return vim.fn.getcwd()
-    end
-    return vim.fs.dirname(f[1])
-  end
-end
 
 return M

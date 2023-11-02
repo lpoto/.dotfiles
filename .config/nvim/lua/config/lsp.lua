@@ -20,8 +20,8 @@ Keymaps:
 
 local M = {}
 
----Attach a tool as a LSP client. These tools will be added to the
----lsp server based on the functions provided to
+---Attach tools as LSP clients. These tools will be added to the
+---lsp server based on the functions provided in
 ---`vim.lsp.add_attach_condition`.
 ---
 ---@param ...table|string

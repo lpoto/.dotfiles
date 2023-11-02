@@ -8,7 +8,9 @@ end
 
 vim.lsp.attach {
   name = 'lua_ls',
-  root_patterns = { '.git', '.editorconfig' },
+  root_dir = function()
+    return vim.fs.find({ '.git', '.editorconfig' }, {})[0] or vim.fn.getcwd()
+  end,
   settings = {
     Lua = {
       runtime = {
