@@ -10,6 +10,10 @@ local M = {
   cmd = { 'LspInfo', 'LspStart', 'LspLog' },
 }
 
+function M.config()
+  require 'lspconfig.ui.windows'.default_options.border = 'single'
+end
+
 vim.lsp.add_attach_condition {
   priority = 50,
   fn = function(server, bufnr)

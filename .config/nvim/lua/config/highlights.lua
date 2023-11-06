@@ -81,6 +81,7 @@ hl.base = {
   FloatTile = { link = 'Title' },
   NormalFloat = { link = 'Normal' },
   FloatBorder = { link = 'WinSeparator' },
+  LspInfoBorder = { link = 'FloatBorder' },
 
   Type = { fg = colors.type, italic = true },
 
