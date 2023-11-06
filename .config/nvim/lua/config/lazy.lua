@@ -23,7 +23,7 @@ local function load_lazy(lazy_path)
 end
 
 function ensure_lazy(lazy_path)
-  if not vim.loop.fs_stat(lazy_path) then
+  if not vim.uv.fs_stat(lazy_path) then
     print 'Lazy.nvim not found, installing...'
     ---@type table
     local cmd = {
@@ -43,7 +43,7 @@ function ensure_lazy(lazy_path)
       )
       return
     end
-    if not vim.loop.fs_stat(lazy_path) then
+    if not vim.uv.fs_stat(lazy_path) then
       print '[ERROR] Failed installing Lazy.nvim!'
     else
       print 'Lazy.nvim installed!'

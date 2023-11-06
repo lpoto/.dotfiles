@@ -33,7 +33,6 @@ Keymaps:
 
 local M = {
   'nvim-telescope/telescope.nvim',
-  tag = '0.1.4',
   cmd = 'Telescope',
   dependencies = {
     'nvim-lua/plenary.nvim',
@@ -48,9 +47,9 @@ local function builtin(name, opts, log_if_no_results)
     telescope_builtin[name](opts)
     if
       log_if_no_results == true
-      and vim.api.nvim_buf_get_option(
-        vim.api.nvim_get_current_buf(),
-        'filetype'
+      and vim.api.nvim_get_option_value(
+        'filetype',
+        { buf = vim.api.nvim_get_current_buf() }
       )
       ~= 'TelescopePrompt'
     then
@@ -181,7 +180,7 @@ function default_mappings()
       -- open quickfix in a telescope window
       ['<C-q>'] = function()
         actions.send_to_qflist(vim.fn.bufnr())
-        vim.cmd 'Quickfix open'
+        vim.cmd 'Quickfix open enter'
       end,
       ['<Tab>'] = actions.move_selection_next,
       ['<S-Tab>'] = actions.move_selection_previous,
@@ -226,7 +225,7 @@ function attach_marks_mappings(_, map)
     if not ok then
       local err
       ok, err = pcall(vim.api.nvim_buf_del_mark, 0, mark)
-      if not ok then
+      if not ok and type(err) == 'string' then
         vim.notify(err, vim.log.levels.WARN)
         return
       end

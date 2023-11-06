@@ -15,7 +15,7 @@ local M = {
 vim.lsp.add_attach_condition {
   priority = 25,
   fn = function(opts, buf)
-    local filetype = vim.api.nvim_buf_get_option(buf, 'filetype')
+    local filetype = vim.api.nvim_get_option_value('filetype', { buf = buf })
     local ok = pcall(require, 'conform.formatters.' .. opts.name)
     if not ok then
       return {

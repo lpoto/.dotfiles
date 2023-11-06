@@ -36,8 +36,8 @@ vim.lsp.add_attach_condition {
       if
         type(buf) ~= 'number'
         or not vim.api.nvim_buf_is_valid(buf)
-        or vim.api.nvim_buf_get_option(buf, 'buftype') ~= ''
-        or vim.api.nvim_buf_get_option(buf, 'filetype') ~= 'java'
+        or vim.api.nvim_get_option_value('buftype', { buf = buf }) ~= ''
+        or vim.api.nvim_get_option_value('filetype', { buf = buf }) ~= 'java'
       then
         return
       end
@@ -81,7 +81,7 @@ function find_root(buf)
       if n == 0 then break end
       n = n - 1
     end
-    if parent:len() <= 2 or parent == vim.loop.os_homedir() then break end
+    if parent:len() <= 2 or parent == vim.uv.os_homedir() then break end
     table.insert(parents, 1, parent)
     if parent:len() <= cwd:len() then n = 2 end
   end

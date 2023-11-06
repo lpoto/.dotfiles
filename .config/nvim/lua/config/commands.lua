@@ -27,9 +27,9 @@ vim.api.nvim_create_user_command('Quickfix', function(opts)
   if
     #vim.tbl_filter(
       function(winid)
-        return vim.api.nvim_buf_get_option(
-          vim.api.nvim_win_get_buf(winid),
-          'buftype'
+        return vim.api.nvim_get_option_value(
+          'buftype',
+          { buf = vim.api.nvim_win_get_buf(winid) }
         ) == 'quickfix'
       end,
       vim.api.nvim_list_wins()
@@ -89,14 +89,16 @@ vim.api.nvim_create_user_command('Messages', function()
     end
     pcall(vim.api.nvim_buf_set_name, buf, 'Messages')
     vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
-    vim.api.nvim_buf_set_option(buf, 'buftype', '')
-    vim.api.nvim_buf_set_option(buf, 'bufhidden', 'wipe')
-    vim.api.nvim_buf_set_option(buf, 'filetype', 'messages')
-    vim.api.nvim_buf_set_option(buf, 'swapfile', false)
-    vim.api.nvim_buf_set_option(buf, 'buflisted', false)
-    vim.api.nvim_buf_set_option(buf, 'modified', false)
-    vim.api.nvim_buf_set_option(buf, 'modifiable', false)
-    vim.api.nvim_buf_set_option(buf, 'readonly', true)
+
+    vim.api.nvim_set_option_value('buftype', '', { buf = buf })
+    vim.api.nvim_set_option_value('bufhidden', 'wipe', { buf = buf })
+    vim.api.nvim_set_option_value('filetype', 'messages', { buf = buf })
+    vim.api.nvim_set_option_value('swapfile', false, { buf = buf })
+    vim.api.nvim_set_option_value('buflisted', false, { buf = buf })
+    vim.api.nvim_set_option_value('modified', false, { buf = buf })
+    vim.api.nvim_set_option_value('modifiable', false, { buf = buf })
+    vim.api.nvim_set_option_value('readonly', true, { buf = buf })
+
     vim.keymap.set({ 'n', 'v' }, '<Esc>', ':bwipe!<CR>', { buffer = buf })
     vim.keymap.set({ 'n' }, 'q', ':bwipe!<CR>', { buffer = buf })
   end)

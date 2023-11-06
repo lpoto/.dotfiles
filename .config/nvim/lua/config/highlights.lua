@@ -7,6 +7,7 @@ local hl = {}
 
 local colors = {
   normal = '#c9d1d9',
+  normal2 = '#b4babf',
   title = '#79b8ff',
   whitespace = '#1f2124',
   visual = '#163356',
@@ -250,6 +251,7 @@ hl.gitsigns = {
 hl.cmp = {
   CmpDocumentation = { link = 'NormalFloat' },
   CmpDocumentationBorder = { link = 'FloatBorder' },
+  CmpItemAbbr = { fg = colors.normal2, bg = 'NONE' },
   CmpItemAbbrDeprecated = { fg = colors.comment, strikethrough = true },
   CmpItemAbbrMatch = { fg = colors.variable },
   CmpItemAbbrDefault = { link = 'Normal' },

@@ -13,14 +13,11 @@ and autopairs, that autocompletes the matching braces, quotes, etc.
 
 local M = {
   'hrsh7th/nvim-cmp',
-  tag = 'v0.0.1',
   event = { 'BufRead', 'BufNewFile' },
   dependencies = {
     'hrsh7th/cmp-nvim-lsp',
     'hrsh7th/cmp-path',
     'hrsh7th/cmp-buffer',
-    'L3MON4d3/LuaSnip',
-    'saadparwaiz1/cmp_luasnip',
   },
 }
 
@@ -35,11 +32,10 @@ function M.config()
       completeopt = 'menu,menuone,noinsert,noselect',
     },
     snippet = {
-      expand = function(args) require 'luasnip'.lsp_expand(args.body) end,
+      expand = function(args) vim.snippet.expand(args.body) end,
     },
     sources = {
       { name = 'nvim_lsp' },
-      { name = 'luasnip' },
       { name = 'path' },
       { name = 'buffer' },
     },
@@ -102,14 +98,18 @@ function set_close_keymap()
     local ok, cmp = pcall(require, 'cmp')
     if ok then
       if cmp.visible() then
-        cmp.close()
+        vim.schedule(function()
+          cmp.close()
+        end)
         return true
       end
     end
     local suggestion
     ok, suggestion = pcall(require, 'copilot.suggestion')
     if ok and suggestion.is_visible() then
-      suggestion.dismiss()
+      vim.schedule(function()
+        suggestion.dismiss()
+      end)
       return true
     end
     return '<C-x>'
