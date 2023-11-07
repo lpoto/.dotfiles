@@ -60,6 +60,9 @@ local function builtin(name, opts, log_if_no_results)
     end
   end
 end
+local function builtin_l(name, opts)
+  return builtin(name, opts, true)
+end
 
 M.keys = {
   { '<leader>n',  builtin 'find_files',          mode = 'n' },
@@ -69,6 +72,7 @@ M.keys = {
   { '<leader>c',  builtin 'resume',              mode = 'n' },
   { '<leader>m',  builtin 'marks',               mode = 'n' },
   { '<leader>h',  builtin 'help_tags',           mode = 'n' },
+  { '<leader>q',  builtin_l 'quickfix',          mode = 'n' },
   { 'gd',         builtin 'lsp_definitions',     mode = 'n' },
   { 'gi',         builtin 'lsp_implementations', mode = 'n' },
   { 'gr',         builtin 'lsp_references',      mode = 'n' },
@@ -180,7 +184,7 @@ function default_mappings()
       -- open quickfix in a telescope window
       ['<C-q>'] = function()
         actions.send_to_qflist(vim.fn.bufnr())
-        vim.cmd 'Quickfix open enter'
+        builtin_l 'quickfix' ()
       end,
       ['<Tab>'] = actions.move_selection_next,
       ['<S-Tab>'] = actions.move_selection_previous,
