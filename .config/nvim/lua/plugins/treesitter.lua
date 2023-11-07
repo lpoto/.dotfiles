@@ -10,6 +10,7 @@ highlights, ...
 
 local M = {
   'nvim-treesitter/nvim-treesitter',
+  tag = 'v0.9.1',
   event = 'VeryLazy',
   cmd = { 'TSUpdate', 'TSInstall', 'TSUpdateSync', 'TSInstallSync' },
 }

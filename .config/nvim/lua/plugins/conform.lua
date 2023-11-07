@@ -40,8 +40,14 @@ local default_format_opts = {
   filter = function(client)
     if
       type(client) == 'table'
-      and type(client.server_capabilities) == 'table'
-      and client.server_capabilities.documentFormattingProvider
+      and (type(client.server_capabilities) == 'table'
+        and client.server_capabilities.documentFormattingProvider)
+      or (type(client.config) == 'table'
+        and type(client.config.capabilities) == 'table'
+        and type(client.config.capabilities.textDocument) == 'table'
+        and client.config.capabilities.textDocument.formatting
+      )
+
     then
       if formatted_with == nil then
         formatted_with = {}
