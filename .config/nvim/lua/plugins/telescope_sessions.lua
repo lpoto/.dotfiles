@@ -2,14 +2,14 @@
 -------------------------------------------------------------------------------
 --                                                      TELESCOPE-SESSIONS.NVIM
 --[[===========================================================================
-https://github.com/lpotot/telescope-sessions.nvim
+https://github.com/lpoto/telescope-sessions.nvim
 
 Commands:
   - :Sessions - Display all available sessions
               (<CR> - load session, <C-d> - delete session)
 
 Keymaps:
-  - <leader>s - same as :Sessions (<CR> in the starting screen)
+  - <leader>s - same as :Sessions
 
 -----------------------------------------------------------------------------]]
 
@@ -28,9 +28,16 @@ function M.init()
     vim.api.nvim_buf_get_name(0) == '' and
     vim.api.nvim_get_current_line() == ''
   then
-    vim.keymap.set('n', '<CR>', function()
-      require 'telescope'.extensions.sessions.sessions()
-    end, { buffer = 0 })
+    if require 'telescope'.extensions.sessions.actions
+      .get_available_sessions_count() > 0 then
+      vim.schedule(function()
+        require 'telescope'.extensions.sessions.sessions {
+          initial_mode = 'normal',
+        }
+      end)
+    else
+      vim.notify('No sessions available', vim.log.levels.INFO)
+    end
   end
 end
 

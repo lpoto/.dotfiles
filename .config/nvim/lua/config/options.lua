@@ -120,6 +120,17 @@ vim.api.nvim_create_autocmd({ 'WinLeave' }, {
     end
   end,
 })
+-------------- Set showmode true in empty buftypes and false in other buftypes.
+vim.api.nvim_create_autocmd('BufEnter', {
+  group = vim.api.nvim_create_augroup('ShowMode', { clear = true }),
+  callback = function()
+    if vim.bo.buftype ~= '' then
+      vim.opt.showmode = false
+    else
+      vim.opt.showmode = true
+    end
+  end,
+})
 --------------------------------------------------------- Highlight yanked text
 vim.api.nvim_create_autocmd('TextYankPost', {
   group = vim.api.nvim_create_augroup('HighlightYank', { clear = true }),
