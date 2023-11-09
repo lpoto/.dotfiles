@@ -35,6 +35,11 @@ function M.config()
       filetypes = {
         ['*'] = true,
       },
+      server_opts_overrides = {
+        on_attach = function(c)
+          c.server_capabilities.documentFormattingProvider = false
+        end
+      }
     }
   end, 250)
 end

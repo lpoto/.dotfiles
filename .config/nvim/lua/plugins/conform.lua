@@ -32,34 +32,69 @@ vim.lsp.add_attach_condition {
   end,
 }
 
-local formatted_with = nil
-local default_format_opts = {
-  async = false,
-  lsp_fallback = true,
-  timeout_ms = 2000,
-  filter = function(client)
-    if
-      type(client) == 'table'
-      and (type(client.server_capabilities) == 'table'
-        and client.server_capabilities.documentFormattingProvider)
-      or (type(client.config) == 'table'
-        and type(client.config.capabilities) == 'table'
-        and type(client.config.capabilities.textDocument) == 'table'
-        and client.config.capabilities.textDocument.formatting
-      )
+local formatted_with, default_format_opts, default_format_callback
+local function format(opts, callback)
+  if type(opts) ~= 'table' then opts = {} end
+  opts = vim.tbl_extend('force', default_format_opts(opts), opts)
 
-    then
-      if formatted_with == nil then
-        formatted_with = {}
-      end
-      if not vim.tbl_contains(formatted_with, client.name) then
-        table.insert(formatted_with, client.name)
-      end
-      return true
+  if type(callback) ~= 'function' then callback = default_format_callback end
+
+  local buf = vim.api.nvim_get_current_buf()
+  local conform = require 'conform'
+  formatted_with = {}
+  for _, tbl in ipairs(conform.list_formatters(buf) or {}) do
+    if type(tbl) == 'table' and type(tbl.name) == 'string' then
+      table.insert(formatted_with, tbl.name)
     end
   end
+  if not next(formatted_with) then formatted_with = nil end
+  return require 'conform'.format(opts, callback)
+end
+
+M.keys = {
+  { '<leader>f', format, mode = { 'n', 'v' } }
 }
-local default_format_callback = function(err)
+
+function default_format_opts(opts)
+  if type(opts) ~= 'table' then opts = {} end
+  local method = 'textDocument/formatting'
+  if opts.range then
+    method = 'textDocument/rangeFormatting'
+  end
+  local potential_clients = vim.lsp.get_clients {
+    bufnr = opts.bufnr or vim.api.nvim_get_current_buf(),
+    method = method,
+  }
+  if type(potential_clients) ~= 'table' then potential_clients = {} end
+
+  return {
+    async = false,
+    lsp_fallback = true,
+    timeout_ms = 2000,
+    filter = function(client)
+      if type(client) ~= 'table' or
+        type(client.name) ~= 'string' or
+        not client.id
+      then
+        return false
+      end
+      for _, c in ipairs(potential_clients) do
+        if c.id == client.id then
+          if formatted_with == nil then
+            formatted_with = {}
+          end
+          if not vim.tbl_contains(formatted_with, client.name) then
+            table.insert(formatted_with, client.name)
+          end
+          return true
+        end
+      end
+      return false
+    end
+  }
+end
+
+function default_format_callback(err)
   local formatters = formatted_with or {}
   formatted_with = nil
   if err ~= nil then
@@ -76,34 +111,14 @@ local default_format_callback = function(err)
     local s = #formatters > 1 and table.concat(formatters, ', ') or formatters
       [1]
     if type(vim.g.display_message) == 'function' then
-      vim.g.display_message {
+      local ok, _ = pcall(vim.g.display_message, {
         message = 'formatted with: ' .. s,
         title = 'Conform',
-      }
-    else
-      vim.notify('formatted with: ' .. s, vim.log.levels.DEBUG)
+      })
+      if ok then return end
     end
+    vim.notify('formatted with: ' .. s, vim.log.levels.DEBUG)
   end, 10)
 end
-
-local function format(opts, callback)
-  opts = vim.tbl_extend('force', default_format_opts, opts or {})
-  if type(callback) ~= 'function' then callback = default_format_callback end
-
-  local buf = vim.api.nvim_get_current_buf()
-  local conform = require 'conform'
-  formatted_with = {}
-  for _, tbl in ipairs(conform.list_formatters(buf) or {}) do
-    if type(tbl) == 'table' and type(tbl.name) == 'string' then
-      table.insert(formatted_with, tbl.name)
-    end
-  end
-  if not next(formatted_with) then formatted_with = nil end
-  require 'conform'.format(opts, callback)
-end
-
-M.keys = {
-  { '<leader>f', format, mode = { 'n', 'v' } }
-}
 
 return M

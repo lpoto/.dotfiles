@@ -32,9 +32,13 @@ vim.lsp.add_attach_condition {
     end
 
     server.autostart = true
-    if server.capabilities == nil then
-      local has_cmp, cmp = pcall(require, 'cmp_nvim_lsp')
-      if has_cmp then server.capabilities = cmp.default_capabilities() end
+    local has_cmp, cmp = pcall(require, 'cmp_nvim_lsp')
+    if has_cmp then
+      server.capabilities = vim.tbl_extend(
+        'force',
+        cmp.default_capabilities(),
+        server.capabilities or {}
+      )
     end
     lsp.setup(server)
     local config = require 'lspconfig.configs'[server.name]
