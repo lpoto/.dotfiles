@@ -1,16 +1,12 @@
 --=============================================================================
 -------------------------------------------------------------------------------
---                                                                 TABLINE.NVIM
+--                                                       SESSIONS-DASBOARD.NVIM
 --[[===========================================================================
-https://github.com/lpoto/tabline.nvim
-
+https://github.com/lpoto/sessions-dashboard.nvim
 -----------------------------------------------------------------------------]]
 
-local M = {
-  'lpoto/tabline.nvim',
-  event = { 'BufRead', 'BufNewFile', 'BufNew' },
-  opts = {
-    hide_statusline = true,
-  },
+return {
+  'lpoto/sessions-dashboard.nvim',
+  config = true,
+  lazy = false,
 }
-return M
