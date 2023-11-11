@@ -9,6 +9,7 @@ end
 local ok, e = pcall(function()
   require 'config.options'
   require 'config.highlights'
+  require 'config.autocommands'
   require 'config.keymaps'
   require 'config.lsp'
   require 'config.lazy'
