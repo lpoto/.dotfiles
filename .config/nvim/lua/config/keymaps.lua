@@ -21,6 +21,8 @@ vim.keymap.set('n', 'N', 'Nzzzv')
 vim.keymap.set('n', 'J', "mzJ'z")
 vim.keymap.set('n', '<leader>k', '<cmd>cnext<CR>zzzv')
 vim.keymap.set('n', '<leader>j', '<cmd>cprev<CR>zzzv')
+
+vim.keymap.set('n', '<TAB>', '<C-I>zzzv')
 vim.keymap.set('n', '<S-TAB>', '<C-O>zzzv')
 
 --- Don't modify jumplist when jumping with { and }
@@ -35,13 +37,16 @@ vim.keymap.set(
   "<cmd>execute 'keepjumps norm! ' . v:count1 . '}'<CR>"
 )
 
-------------------------------------------------------------- UNDO BREAK POINTS
+----------------------------------------------------------------- UNDO AND REDO
 -- start a new undo chain with punctuations
 
 vim.keymap.set('i', ',', ',<c-g>u')
 vim.keymap.set('i', '.', '.<c-g>u')
 vim.keymap.set('i', '!', '!<c-g>u')
 vim.keymap.set('i', '?', '?<c-g>u')
+
+-- Redo with <leader>u
+vim.keymap.set('n', '<leader>u', '<C-r>')
 
 ---------------------------------------------------------------------- TERMINAL
 -- return to normal mode with <Esc>
