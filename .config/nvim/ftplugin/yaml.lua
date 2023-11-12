@@ -2,15 +2,17 @@
 -------------------------------------------------------------------------------
 --                                                                         YAML
 --=============================================================================
-if not vim.lsp.attach or vim.g['ftplugin_' .. vim.bo.filetype] then return end
-vim.g['ftplugin_' .. vim.bo.filetype] = true
 
-vim.lsp.attach 'prettier'
-vim.lsp.attach {
-  name = 'yamlls',
-  settings = {
-    yaml = {
-      keyOrdering = false,
-    },
-  },
-}
+vim.g[vim.bo.filetype] = function()
+  return {
+    formatter = 'prettier',
+    language_server = {
+      name = 'jamlls',
+      settings = {
+        yaml = {
+          keyOrdering = false,
+        },
+      },
+    }
+  }
+end

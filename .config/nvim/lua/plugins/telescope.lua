@@ -40,7 +40,36 @@ local M = {
   },
 }
 
-local function builtin(name, opts, log_if_no_results)
+local builtin_l, builtin
+function M.init()
+  vim.defer_fn(function()
+    vim.keymap.set('n', '<leader>n', builtin 'find_files')
+    vim.keymap.set('n', '<leader>o', builtin 'oldfiles')
+    vim.keymap.set('n', '<leader>l', builtin 'live_grep')
+    vim.keymap.set('n', '<leader>L', builtin 'grep_string')
+    vim.keymap.set('n', '<leader>c', builtin 'resume')
+    vim.keymap.set('n', '<leader>m', builtin 'marks')
+    vim.keymap.set('n', '<leader>h', builtin 'help_tags')
+    vim.keymap.set('n', '<leader>q', builtin_l 'quickfix')
+    vim.keymap.set('n', 'gd', builtin 'lsp_definitions')
+    vim.keymap.set('n', 'gi', builtin 'lsp_implementations')
+    vim.keymap.set('n', 'gr', builtin 'lsp_references')
+    vim.keymap.set('n', '<leader>gg', builtin 'git_status')
+    vim.keymap.set('n', '<leader>gl', builtin 'git_commits')
+    vim.keymap.set('n', '<leader>gS', builtin 'git_stash')
+    vim.keymap.set('n', '<leader>gb', builtin 'git_branches')
+    vim.keymap.set('n', '<leader>d',
+      function()
+        local n, _ = vim.diagnostic.open_float()
+        if not n then
+          builtin 'diagnostics' ()
+        end
+      end
+    )
+  end, 100)
+end
+
+function builtin(name, opts, log_if_no_results)
   return function()
     local ok, telescope_builtin = pcall(require, 'telescope.builtin')
     if not ok then return end
@@ -60,37 +89,10 @@ local function builtin(name, opts, log_if_no_results)
     end
   end
 end
-local function builtin_l(name, opts)
+
+function builtin_l(name, opts)
   return builtin(name, opts, true)
 end
-
-M.keys = {
-  { '<leader>n',  builtin 'find_files',          mode = 'n' },
-  { '<leader>o',  builtin 'oldfiles',            mode = 'n' },
-  { '<leader>l',  builtin 'live_grep',           mode = 'n' },
-  { '<leader>L',  builtin 'grep_string',         mode = 'n' },
-  { '<leader>c',  builtin 'resume',              mode = 'n' },
-  { '<leader>m',  builtin 'marks',               mode = 'n' },
-  { '<leader>h',  builtin 'help_tags',           mode = 'n' },
-  { '<leader>q',  builtin_l 'quickfix',          mode = 'n' },
-  { 'gd',         builtin 'lsp_definitions',     mode = 'n' },
-  { 'gi',         builtin 'lsp_implementations', mode = 'n' },
-  { 'gr',         builtin 'lsp_references',      mode = 'n' },
-  { '<leader>gg', builtin 'git_status',          mode = 'n' },
-  { '<leader>gl', builtin 'git_commits',         mode = 'n' },
-  { '<leader>gS', builtin 'git_stash',           mode = 'n' },
-  { '<leader>gb', builtin 'git_branches',        mode = 'n' },
-  {
-    '<leader>d',
-    function()
-      local n, _ = vim.diagnostic.open_float()
-      if not n then
-        builtin 'diagnostics' ()
-      end
-    end,
-    mode = 'n'
-  },
-}
 
 local default_mappings
 local attach_git_status_mappings

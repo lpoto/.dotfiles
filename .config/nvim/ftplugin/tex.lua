@@ -4,7 +4,6 @@
 --=============================================================================
 vim.bo.filetype = 'latex'
 
-if not vim.lsp.attach or vim.g['ftplugin_' .. vim.bo.filetype] then return end
-vim.g['ftplugin_' .. vim.bo.filetype] = true
-
-vim.lsp.attach 'latexindent'
+vim.g[vim.bo.filetype] = function()
+  return { language_server = 'latexindent' }
+end

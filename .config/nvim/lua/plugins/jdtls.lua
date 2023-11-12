@@ -9,56 +9,96 @@ local M = {
   'mfussenegger/nvim-jdtls',
 }
 
-local find_root
-vim.lsp.add_attach_condition {
-  priority = 100,
-  fn = function(opts, bufnr)
-    local ret = {}
-    if type(opts) ~= 'table' or opts.name ~= 'jdtls' then return end
+local cfg = {}
 
-    if type(opts.root_dir) ~= 'string' then
-      opts.root_dir = find_root(bufnr)
+function M.init()
+  cfg.set_up_autocommands()
+end
+
+function cfg.set_up_autocommands()
+  vim.api.nvim_create_autocmd('Filetype', {
+    group = vim.api.nvim_create_augroup('jdtls.Ft', { clear = true }),
+    callback = cfg.filetype_autocommand
+  })
+end
+
+function cfg.filetype_autocommand()
+  local buf = vim.api.nvim_get_current_buf()
+  local filetype = vim.bo.filetype
+  if vim.g[filetype .. '_jdtls_loaded'] then return end
+
+  vim.defer_fn(function()
+    if vim.api.nvim_get_current_buf() ~= buf or
+      vim.g[filetype .. '_jdtls_loaded'] then
+      return
     end
-    if opts.cmd == nil then
-      local exe = vim.fn.exepath 'jdtls'
-      if not exe or exe:len() == 0 then
-        ret.non_executable = { 'jdtls' }
+    vim.g[filetype .. '_jdtls_loaded'] = true
+
+    local opts = vim.g[filetype]
+    if type(opts) == 'function' then
+      local ok, v = pcall(opts)
+      if not ok then
+        return vim.api.nvim_err_writeln(
+          'Error in filetype config function: ' .. v
+        )
       end
-      opts.cmd = {
-        exe,
-        '-data',
-        vim.fn.stdpath 'cache' .. '/jdtls/workspace/' .. opts.root_dir,
-      }
+      opts = v
+      vim.g[filetype] = opts
     end
+    cfg.attach(buf, opts)
+  end, 200)
+end
 
-    local client_id = require 'jdtls'.start_or_attach(opts)
-    local attach_jdtls_to_buf = function(buf)
-      if
-        type(buf) ~= 'number'
-        or not vim.api.nvim_buf_is_valid(buf)
-        or vim.api.nvim_get_option_value('buftype', { buf = buf }) ~= ''
-        or vim.api.nvim_get_option_value('filetype', { buf = buf }) ~= 'java'
-      then
-        return
-      end
-      local client = vim.lsp.get_client_by_id(client_id)
-      if client then vim.lsp.buf_attach_client(buf, client_id) end
+function cfg.attach(bufnr, opts)
+  if type(opts) ~= 'table' then return end
+  local server = opts.server or opts.language_server
+  if type(server) == 'string' then server = { name = server } end
+  if type(server) ~= 'table' then return end
+  if server.name ~= 'jdtls' or type(vim.g.attached) == 'table' and
+    vim.tbl_contains(vim.g.attached, server.name) then
+    return
+  end
+
+  if type(server.root_dir) ~= 'string' then
+    server.root_dir = cfg.find_root(bufnr)
+  end
+  if server.cmd == nil then
+    local exe = vim.fn.exepath 'jdtls'
+    if not exe or exe:len() == 0 then
+      return cfg.add_to_not_attached(server.name)
     end
+    server.cmd = {
+      exe,
+      '-data',
+      vim.fn.stdpath 'cache' .. '/jdtls/workspace/' .. server.root_dir,
+    }
+  end
 
-    vim.api.nvim_create_autocmd('Filetype', {
-      pattern = 'java',
-      callback = function(o) attach_jdtls_to_buf(o.buf) end,
-    })
-    for _, v in ipairs(vim.api.nvim_list_bufs()) do
-      attach_jdtls_to_buf(v)
+  local client_id = require 'jdtls'.start_or_attach(server)
+  local attach_jdtls_to_buf = function(buf)
+    if
+      type(buf) ~= 'number'
+      or not vim.api.nvim_buf_is_valid(buf)
+      or vim.api.nvim_get_option_value('buftype', { buf = buf }) ~= ''
+      or vim.api.nvim_get_option_value('filetype', { buf = buf }) ~= 'java'
+    then
+      return
     end
+    local client = vim.lsp.get_client_by_id(client_id)
+    if client then vim.lsp.buf_attach_client(buf, client_id) end
+  end
 
-    ret.attached = { 'jdtls' }
-    return ret
-  end,
-}
+  vim.api.nvim_create_autocmd('Filetype', {
+    pattern = 'java',
+    callback = function(o) attach_jdtls_to_buf(o.buf) end,
+  })
+  for _, v in ipairs(vim.api.nvim_list_bufs()) do
+    attach_jdtls_to_buf(v)
+  end
+  cfg.add_to_attached(server.name)
+end
 
-function find_root(buf)
+function cfg.find_root(buf)
   if type(buf) ~= 'number' or not vim.api.nvim_buf_is_valid(buf) then
     buf = vim.api.nvim_get_current_buf()
   end
@@ -81,6 +121,7 @@ function find_root(buf)
       if n == 0 then break end
       n = n - 1
     end
+    ---@diagnostic disable-next-line
     if parent:len() <= 2 or parent == vim.uv.os_homedir() then break end
     table.insert(parents, 1, parent)
     if parent:len() <= cwd:len() then n = 2 end
@@ -95,6 +136,24 @@ function find_root(buf)
     table.insert(patterns, '.git')
   end
   return cwd
+end
+
+function cfg.add_to_attached(name)
+  local attached = vim.g.attached
+  if type(attached) ~= 'table' then
+    attached = {}
+  end
+  table.insert(attached, name)
+  vim.g.attached = attached
+end
+
+function cfg.add_to_not_attached(name)
+  local not_attached = vim.g.not_attached
+  if type(not_attached) ~= 'table' then
+    not_attached = {}
+  end
+  table.insert(not_attached, name)
+  vim.g.not_attached = not_attached
 end
 
 return M

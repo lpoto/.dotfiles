@@ -11,7 +11,6 @@ local ok, e = pcall(function()
   require 'config.highlights'
   require 'config.autocommands'
   require 'config.keymaps'
-  require 'config.lsp'
   require 'config.lazy'
 end)
 if not ok then

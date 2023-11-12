@@ -2,7 +2,5 @@
 -------------------------------------------------------------------------------
 --                                                                       PYTHON
 --=============================================================================
-if not vim.lsp.attach or vim.g['ftplugin_' .. vim.bo.filetype] then return end
-vim.g['ftplugin_' .. vim.bo.filetype] = true
 
-vim.lsp.attach 'pylsp'
+vim.g[vim.bo.filetype] = function() return { language_server = 'pylsp' } end
