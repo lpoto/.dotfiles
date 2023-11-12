@@ -14,9 +14,7 @@ local M = {
 
 function M.config()
   vim.defer_fn(function()
-    local ok, copilot = pcall(require, 'copilot')
-    if not ok then return end
-    copilot.setup {
+    require 'copilot'.setup {
       panel = {
         enabled = false,
       },

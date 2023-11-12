@@ -10,33 +10,33 @@ Keymaps:
 -----------------------------------------------------------------------------]]
 local M = {
   'stevearc/oil.nvim',
-  cmd = 'Oil'
-}
-
-M.opts = {
-  default_file_explorer = true,
-  delete_to_trash = true,
-  skip_confirm_for_simple_edits = true,
-  buf_options = {
-    buflisted = false,
-    bufhidden = 'wipe',
+  cmd = 'Oil',
+  opts = {
+    default_file_explorer = true,
+    delete_to_trash = true,
+    skip_confirm_for_simple_edits = true,
+    buf_options = {
+      buflisted = false,
+      bufhidden = 'wipe',
+    },
+    win_options = {
+      number = false,
+      relativenumber = false,
+    },
+    view_options = {
+      show_hidden = true,
+    },
+    columns = {},
+    keymaps = {
+      ['<BS>'] = 'actions.parent',
+      ['<leader>N'] = 'actions.open_cwd',
+      ['<C-n>'] = 'actions.open_cwd',
+    },
   },
-  win_options = {
-    number = false,
-    relativenumber = false,
-  },
-  view_options = {
-    show_hidden = true,
-  },
-  columns = {},
-  keymaps = {
-    ['<BS>'] = 'actions.parent',
-    ['<leader>N'] = 'actions.open_cwd',
-  },
-}
-
-M.keys = {
-  { '<leader>N', function() vim.cmd 'Oil' end, mode = 'n' },
+  keys = {
+    { '<leader>N', function() vim.cmd 'Oil' end, mode = 'n' },
+    { '<C-n>',     function() vim.cmd 'Oil' end, mode = 'n' },
+  }
 }
 
 local is_starting_screen

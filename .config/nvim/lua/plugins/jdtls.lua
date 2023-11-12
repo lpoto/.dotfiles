@@ -9,20 +9,20 @@ local M = {
   'mfussenegger/nvim-jdtls',
 }
 
-local cfg = {}
+local util = {}
 
 function M.init()
-  cfg.set_up_autocommands()
+  util.set_up_autocommands()
 end
 
-function cfg.set_up_autocommands()
+function util.set_up_autocommands()
   vim.api.nvim_create_autocmd('Filetype', {
     group = vim.api.nvim_create_augroup('jdtls.Ft', { clear = true }),
-    callback = cfg.filetype_autocommand
+    callback = util.filetype_autocommand
   })
 end
 
-function cfg.filetype_autocommand()
+function util.filetype_autocommand()
   local buf = vim.api.nvim_get_current_buf()
   local filetype = vim.bo.filetype
   if vim.g[filetype .. '_jdtls_loaded'] then return end
@@ -45,11 +45,11 @@ function cfg.filetype_autocommand()
       opts = v
       vim.g[filetype] = opts
     end
-    cfg.attach(buf, opts)
+    util.attach(buf, opts)
   end, 200)
 end
 
-function cfg.attach(bufnr, opts)
+function util.attach(bufnr, opts)
   if type(opts) ~= 'table' then return end
   local server = opts.server or opts.language_server
   if type(server) == 'string' then server = { name = server } end
@@ -60,12 +60,12 @@ function cfg.attach(bufnr, opts)
   end
 
   if type(server.root_dir) ~= 'string' then
-    server.root_dir = cfg.find_root(bufnr)
+    server.root_dir = util.find_root(bufnr)
   end
   if server.cmd == nil then
     local exe = vim.fn.exepath 'jdtls'
     if not exe or exe:len() == 0 then
-      return cfg.add_to_not_attached(server.name)
+      return util.add_to_not_attached(server.name)
     end
     server.cmd = {
       exe,
@@ -95,10 +95,10 @@ function cfg.attach(bufnr, opts)
   for _, v in ipairs(vim.api.nvim_list_bufs()) do
     attach_jdtls_to_buf(v)
   end
-  cfg.add_to_attached(server.name)
+  util.add_to_attached(server.name)
 end
 
-function cfg.find_root(buf)
+function util.find_root(buf)
   if type(buf) ~= 'number' or not vim.api.nvim_buf_is_valid(buf) then
     buf = vim.api.nvim_get_current_buf()
   end
@@ -138,7 +138,7 @@ function cfg.find_root(buf)
   return cwd
 end
 
-function cfg.add_to_attached(name)
+function util.add_to_attached(name)
   local attached = vim.g.attached
   if type(attached) ~= 'table' then
     attached = {}
@@ -147,7 +147,7 @@ function cfg.add_to_attached(name)
   vim.g.attached = attached
 end
 
-function cfg.add_to_not_attached(name)
+function util.add_to_not_attached(name)
   local not_attached = vim.g.not_attached
   if type(not_attached) ~= 'table' then
     not_attached = {}

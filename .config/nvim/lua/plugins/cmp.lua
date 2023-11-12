@@ -25,9 +25,10 @@ local set_confirm_keymap
 local set_close_keymap
 
 function M.config()
-  local _, cmp = pcall(require, 'cmp')
-  if type(cmp) ~= 'table' then return end
+  local cmp = require 'cmp'
+  ---@diagnostic disable-next-line: missing-fields
   cmp.setup {
+    ---@diagnostic disable-next-line: missing-fields
     completion = {
       completeopt = 'menu,menuone,noinsert,noselect',
     },

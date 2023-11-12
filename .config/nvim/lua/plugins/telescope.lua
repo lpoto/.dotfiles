@@ -40,72 +40,46 @@ local M = {
   },
 }
 
-local builtin_l, builtin
-function M.init()
-  vim.defer_fn(function()
-    vim.keymap.set('n', '<leader>n', builtin 'find_files')
-    vim.keymap.set('n', '<leader>o', builtin 'oldfiles')
-    vim.keymap.set('n', '<leader>l', builtin 'live_grep')
-    vim.keymap.set('n', '<leader>L', builtin 'grep_string')
-    vim.keymap.set('n', '<leader>c', builtin 'resume')
-    vim.keymap.set('n', '<leader>m', builtin 'marks')
-    vim.keymap.set('n', '<leader>h', builtin 'help_tags')
-    vim.keymap.set('n', '<leader>q', builtin_l 'quickfix')
-    vim.keymap.set('n', 'gd', builtin 'lsp_definitions')
-    vim.keymap.set('n', 'gi', builtin 'lsp_implementations')
-    vim.keymap.set('n', 'gr', builtin 'lsp_references')
-    vim.keymap.set('n', '<leader>gg', builtin 'git_status')
-    vim.keymap.set('n', '<leader>gl', builtin 'git_commits')
-    vim.keymap.set('n', '<leader>gS', builtin 'git_stash')
-    vim.keymap.set('n', '<leader>gb', builtin 'git_branches')
-    vim.keymap.set('n', '<leader>d',
-      function()
-        local n, _ = vim.diagnostic.open_float()
-        if not n then
-          builtin 'diagnostics' ()
-        end
-      end
-    )
-  end, 100)
-end
+local util = {}
 
-function builtin(name, opts, log_if_no_results)
-  return function()
-    local ok, telescope_builtin = pcall(require, 'telescope.builtin')
-    if not ok then return end
-    telescope_builtin[name](opts)
-    if
-      log_if_no_results == true
-      and vim.api.nvim_get_option_value(
-        'filetype',
-        { buf = vim.api.nvim_get_current_buf() }
-      )
-      ~= 'TelescopePrompt'
-    then
-      vim.notify(
-        '[telescope.builtin.' .. name .. '] Not results found ',
-        vim.log.levels.WARN
-      )
+function M.init()
+  for _, o in ipairs {
+    { 'n', '<leader>n',  'find_files' },
+    { 'n', '<leader>o',  'oldfiles' },
+    { 'n', '<leader>l',  'live_grep' },
+    { 'n', '<leader>L',  'grep_string' },
+    { 'n', '<leader>c',  'resume' },
+    { 'n', '<leader>m',  'marks' },
+    { 'n', '<leader>h',  'help_tags' },
+    { 'n', 'gd',         'lsp_definitions' },
+    { 'n', 'gi',         'lsp_implementations' },
+    { 'n', 'gr',         'lsp_references' },
+    { 'n', '<leader>gg', 'git_status' },
+    { 'n', '<leader>gl', 'git_commits' },
+    { 'n', '<leader>gS', 'git_stash' },
+    { 'n', '<leader>gb', 'git_branches', },
+    { 'n', '<leader>q',  'quickfix',           true },
+    { 'n', '<leader>d', function()
+      local n, _ = vim.diagnostic.open_float()
+      if not n then return 'diagnostics' end
+    end
+    },
+  } do
+    local s = o[3]
+    if type(s) == 'function' then s = s() end
+    if type(s) == 'string' then
+      vim.keymap.set(o[1], o[2], util.builtin(s, o[4]))
     end
   end
 end
 
-function builtin_l(name, opts)
-  return builtin(name, opts, true)
-end
-
-local default_mappings
-local attach_git_status_mappings
-local attach_marks_mappings
-
 function M.config()
-  local ok, telescope = pcall(require, 'telescope')
-  if not ok then return end
+  local telescope = require 'telescope'
   telescope.setup {
     defaults = {
       prompt_prefix = ' ',
       color_devicons = false,
-      mappings = default_mappings(),
+      mappings = util.default_mappings(),
       sorting_strategy = 'ascending',
       layout_strategy = 'horizontal',
       selection_strategy = 'row',
@@ -159,11 +133,11 @@ function M.config()
         no_ignore = true,
       },
       marks = {
-        attach_mappings = attach_marks_mappings,
+        attach_mappings = util.attach_marks_mappings,
         selection_strategy = 'row',
       },
       git_status = {
-        attach_mappings = attach_git_status_mappings,
+        attach_mappings = util.attach_git_status_mappings,
         file_ignore_patterns = {},
         selection_strategy = 'row',
         initial_mode = 'normal',
@@ -177,7 +151,7 @@ function M.config()
   })
 end
 
-function default_mappings()
+function util.default_mappings()
   local actions = require 'telescope.actions'
   return {
     i = {
@@ -186,7 +160,7 @@ function default_mappings()
       -- open quickfix in a telescope window
       ['<C-q>'] = function()
         actions.send_to_qflist(vim.fn.bufnr())
-        builtin_l 'quickfix' ()
+        util.builtin_l 'quickfix' ()
       end,
       ['<Tab>'] = actions.move_selection_next,
       ['<S-Tab>'] = actions.move_selection_previous,
@@ -206,7 +180,7 @@ function default_mappings()
   }
 end
 
-function attach_git_status_mappings(_, map)
+function util.attach_git_status_mappings(_, map)
   local actions = require 'telescope.actions'
   actions.select_default:replace(actions.git_staging_toggle)
   map('n', 'e', actions.file_edit)
@@ -221,7 +195,7 @@ function attach_git_status_mappings(_, map)
   return true
 end
 
-function attach_marks_mappings(_, map)
+function util.attach_marks_mappings(_, map)
   local state = require 'telescope.actions.state'
   map({ 'n', 'i' }, '<C-r>', function()
     local entry = state.get_selected_entry()
@@ -241,6 +215,30 @@ function attach_marks_mappings(_, map)
     vim.schedule(function() require 'telescope_builtin'.marks() end)
   end)
   return true
+end
+
+function util.builtin(name, log_if_no_results)
+  return function()
+    local telescope_builtin = require 'telescope.builtin'
+    telescope_builtin[name]()
+    if
+      log_if_no_results == true
+      and vim.api.nvim_get_option_value(
+        'filetype',
+        { buf = vim.api.nvim_get_current_buf() }
+      )
+      ~= 'TelescopePrompt'
+    then
+      vim.notify(
+        '[telescope.builtin.' .. name .. '] Not results found ',
+        vim.log.levels.WARN
+      )
+    end
+  end
+end
+
+function util.builtin_l(name)
+  return util.builtin(name, true)
 end
 
 return M

@@ -12,21 +12,21 @@ local M = {
   'stevearc/conform.nvim',
 }
 
-local cfg = {}
+local util = {}
 function M.init()
-  vim.keymap.set({ 'n', 'v' }, '<leader>f', cfg.format)
+  vim.keymap.set({ 'n', 'v' }, '<leader>f', util.format)
 
-  cfg.set_up_autocommands()
+  util.set_up_autocommands()
 end
 
-function cfg.set_up_autocommands()
+function util.set_up_autocommands()
   vim.api.nvim_create_autocmd('Filetype', {
     group = vim.api.nvim_create_augroup('conform.Ft', { clear = true }),
-    callback = cfg.filetype_autocommand
+    callback = util.filetype_autocommand
   })
 end
 
-function cfg.filetype_autocommand()
+function util.filetype_autocommand()
   local buf = vim.api.nvim_get_current_buf()
   local filetype = vim.bo.filetype
   if vim.g[filetype .. '_conform_loaded'] then return end
@@ -49,11 +49,11 @@ function cfg.filetype_autocommand()
       opts = v
       vim.g[filetype] = opts
     end
-    cfg.attach(buf, opts)
+    util.attach(buf, opts)
   end, 250)
 end
 
-function cfg.attach(buf, opts)
+function util.attach(buf, opts)
   if type(opts) ~= 'table' then return end
   local formatter = opts.formatter or opts.format
   if type(formatter) == 'string' then formatter = { name = formatter } end
@@ -66,7 +66,7 @@ function cfg.attach(buf, opts)
   local filetype = vim.api.nvim_get_option_value('filetype', { buf = buf })
   local ok = pcall(require, 'conform.formatters.' .. formatter.name)
   if not ok then
-    return cfg.add_to_not_attached(formatter.name)
+    return util.add_to_not_attached(formatter.name)
   end
   local conform = require 'conform'
   conform.setup {
@@ -101,14 +101,14 @@ function cfg.attach(buf, opts)
           end
         end
 
-        return cfg.add_to_attached(formatter.name)
+        return util.add_to_attached(formatter.name)
       end
     end
   end
-  return cfg.add_to_not_attached(formatter.name)
+  return util.add_to_not_attached(formatter.name)
 end
 
-function cfg.add_to_attached(name)
+function util.add_to_attached(name)
   local attached = vim.g.attached
   if type(attached) ~= 'table' then
     attached = {}
@@ -117,7 +117,7 @@ function cfg.add_to_attached(name)
   vim.g.attached = attached
 end
 
-function cfg.add_to_not_attached(name)
+function util.add_to_not_attached(name)
   local not_attached = vim.g.not_attached
   if type(not_attached) ~= 'table' then
     not_attached = {}
@@ -126,25 +126,25 @@ function cfg.add_to_not_attached(name)
   vim.g.not_attached = not_attached
 end
 
-function cfg.format(opts, callback)
+function util.format(opts, callback)
   if type(opts) ~= 'table' then opts = {} end
-  opts = vim.tbl_extend('force', cfg.default_format_opts(opts), opts)
+  opts = vim.tbl_extend('force', util.default_format_opts(opts), opts)
 
-  if type(callback) ~= 'function' then callback = cfg.default_format_callback end
+  if type(callback) ~= 'function' then callback = util.default_format_callback end
 
   local buf = vim.api.nvim_get_current_buf()
   local conform = require 'conform'
-  cfg.formatted_with = {}
+  util.formatted_with = {}
   for _, tbl in ipairs(conform.list_formatters(buf) or {}) do
     if type(tbl) == 'table' and type(tbl.name) == 'string' then
-      table.insert(cfg.formatted_with, tbl.name)
+      table.insert(util.formatted_with, tbl.name)
     end
   end
-  if not next(cfg.formatted_with) then cfg.formatted_with = nil end
+  if not next(util.formatted_with) then util.formatted_with = nil end
   return require 'conform'.format(opts, callback)
 end
 
-function cfg.default_format_opts(opts)
+function util.default_format_opts(opts)
   if type(opts) ~= 'table' then opts = {} end
   local method = 'textDocument/formatting'
   if opts.range then
@@ -169,11 +169,11 @@ function cfg.default_format_opts(opts)
       end
       for _, c in ipairs(potential_clients) do
         if c.id == client.id then
-          if cfg.formatted_with == nil then
-            cfg.formatted_with = {}
+          if util.formatted_with == nil then
+            util.formatted_with = {}
           end
-          if not vim.tbl_contains(cfg.formatted_with, client.name) then
-            table.insert(cfg.formatted_with, client.name)
+          if not vim.tbl_contains(util.formatted_with, client.name) then
+            table.insert(util.formatted_with, client.name)
           end
           return true
         end
@@ -183,9 +183,9 @@ function cfg.default_format_opts(opts)
   }
 end
 
-function cfg.default_format_callback(err)
-  local formatters = cfg.formatted_with or {}
-  cfg.formatted_with = nil
+function util.default_format_callback(err)
+  local formatters = util.formatted_with or {}
+  util.formatted_with = nil
   if err ~= nil then
     vim.notify(err, vim.log.levels.WARN)
     return

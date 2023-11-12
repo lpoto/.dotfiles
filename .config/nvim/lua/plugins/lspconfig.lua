@@ -25,30 +25,34 @@ local M = {
   cmd = { 'LspInfo', 'LspStart', 'LspLog' },
 }
 
-local cfg = {}
+local util = {}
 function M.config()
   require 'lspconfig.ui.windows'.default_options.border = 'single'
 end
 
 function M.init()
-  cfg.set_up_autocommands()
-  cfg.set_lsp_keymaps()
-  cfg.set_lsp_handlers()
+  util.set_up_autocommands()
+  util.set_lsp_keymaps()
+  util.set_lsp_handlers()
 end
 
-function cfg.set_lsp_keymaps(opts)
-  vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
-  vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
-  vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
-  vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
-
-  vim.keymap.set('n', '<leader>d', vim.diagnostic.open_float, opts)
-  vim.keymap.set({ 'n', 'v' }, '<leader>a', vim.lsp.buf.code_action, opts)
-
-  vim.keymap.set('n', '<leader>r', vim.lsp.buf.rename, opts)
+function util.set_lsp_keymaps(opts)
+  for _, o in ipairs {
+    { 'n', 'K',         vim.lsp.buf.hover },
+    { 'n', 'gd',        vim.lsp.buf.definition },
+    { 'n', 'gi',        vim.lsp.buf.implementation },
+    { 'n', 'gr',        vim.lsp.buf.references },
+    { 'n', '<leader>d', vim.diagnostic.open_float },
+    { 'n', '<leader>a', vim.lsp.buf.code_action },
+    { 'n', '<leader>r', vim.lsp.buf.rename },
+  } do
+    if vim.fn.mapcheck(o[2]) == 0 then
+      vim.keymap.set(o[1], o[2], o[3], opts)
+    end
+  end
 end
 
-function cfg.set_lsp_handlers()
+function util.set_lsp_handlers()
   if M.handlers_set then return end
   M.handlers_set = true
   local border = 'single'
@@ -68,14 +72,14 @@ function cfg.set_lsp_handlers()
   }
 end
 
-function cfg.set_up_autocommands()
+function util.set_up_autocommands()
   vim.api.nvim_create_autocmd('Filetype', {
     group = vim.api.nvim_create_augroup('lspconfig.Ft', { clear = true }),
-    callback = cfg.filetype_autocommand
+    callback = util.filetype_autocommand
   })
 end
 
-function cfg.filetype_autocommand()
+function util.filetype_autocommand()
   local buf = vim.api.nvim_get_current_buf()
   local filetype = vim.bo.filetype
   if vim.g[filetype .. '_lspconfig_loaded'] then return end
@@ -99,14 +103,14 @@ function cfg.filetype_autocommand()
         opts = v
         vim.g[filetype] = opts
       end
-      cfg.attach(buf, opts)
+      util.attach(buf, opts)
     end
     attach()
-    cfg.log_attached(100)
+    util.log_attached(100)
   end, 350)
 end
 
-function cfg.attach(bufnr, opts)
+function util.attach(bufnr, opts)
   if type(opts) ~= 'table' then return end
   local server = opts.language_server or opts.server
   if type(server) == 'string' then server = { name = server } end
@@ -119,7 +123,7 @@ function cfg.attach(bufnr, opts)
   local lsp = ok and require 'lspconfig'[server.name]
 
   if not ok or not lsp then
-    return cfg.add_to_not_attached(server.name)
+    return util.add_to_not_attached(server.name)
   end
 
   ---@type table
@@ -165,10 +169,10 @@ function cfg.attach(bufnr, opts)
   local config = require 'lspconfig.configs'[server.name]
   config.launch(bufnr)
 
-  cfg.add_to_attached(server.name)
+  util.add_to_attached(server.name)
 end
 
-function cfg.log_attached(delay)
+function util.log_attached(delay)
   if type(delay) ~= 'number' then delay = 500 end
   local attached = vim.g.attached
   local not_attached = vim.g.not_attached
@@ -200,7 +204,7 @@ function cfg.log_attached(delay)
   end, delay)
 end
 
-function cfg.add_to_attached(name)
+function util.add_to_attached(name)
   local attached = vim.g.attached
   if type(attached) ~= 'table' then
     attached = {}
@@ -209,7 +213,7 @@ function cfg.add_to_attached(name)
   vim.g.attached = attached
 end
 
-function cfg.add_to_not_attached(name)
+function util.add_to_not_attached(name)
   local not_attached = vim.g.not_attached
   if type(not_attached) ~= 'table' then
     not_attached = {}
