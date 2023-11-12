@@ -53,8 +53,6 @@ function util.set_lsp_keymaps(opts)
 end
 
 function util.set_lsp_handlers()
-  if M.handlers_set then return end
-  M.handlers_set = true
   local border = 'single'
   vim.lsp.handlers['textDocument/hover'] =
     vim.lsp.with(vim.lsp.handlers.hover, {
@@ -82,14 +80,14 @@ end
 function util.filetype_autocommand()
   local buf = vim.api.nvim_get_current_buf()
   local filetype = vim.bo.filetype
-  if vim.g[filetype .. '_lspconfig_loaded'] then return end
+  local loaded = filetype .. '_lspconfig_loaded'
+  if vim.g[loaded] then return end
 
   vim.defer_fn(function()
-    if vim.api.nvim_get_current_buf() ~= buf
-      or vim.g[filetype .. '_lspconfig_loaded'] then
+    if vim.api.nvim_get_current_buf() ~= buf or vim.g[loaded] then
       return
     end
-    vim.g[filetype .. '_lspconfig_loaded'] = true
+    vim.g[loaded] = true
 
     local function attach()
       local opts = vim.g[filetype]

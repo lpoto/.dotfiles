@@ -25,14 +25,15 @@ end
 function util.filetype_autocommand()
   local buf = vim.api.nvim_get_current_buf()
   local filetype = vim.bo.filetype
-  if vim.g[filetype .. '_jdtls_loaded'] then return end
+  local loaded = filetype .. '_jdtls_loaded'
+  if vim.g[loaded] then return end
 
   vim.defer_fn(function()
     if vim.api.nvim_get_current_buf() ~= buf or
-      vim.g[filetype .. '_jdtls_loaded'] then
+      vim.g[loaded] then
       return
     end
-    vim.g[filetype .. '_jdtls_loaded'] = true
+    vim.g[loaded] = true
 
     local opts = vim.g[filetype]
     if type(opts) == 'function' then

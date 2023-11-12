@@ -2,25 +2,23 @@
 -------------------------------------------------------------------------------
 --                                                                          LUA
 --=============================================================================
+if vim.g[vim.bo.filetype] then return end
 
 vim.g[vim.bo.filetype] = function()
   return {
     language_server = {
       name = 'lua_ls',
-      root_dir = function()
-        return vim.fs.find(
-          { '.git', '.editorconfig' },
-          {}
-        )[0] or vim.fn.getcwd()
-      end,
       settings = {
         Lua = {
           runtime = {
             version = 'LuaJIT',
-            path = vim.tbl_extend('force', vim.split(package.path, ':'), {
-              'lua/?.lua',
-              'lua/?/init.lua',
-            }),
+            path = vim.tbl_extend(
+              'force',
+              vim.split(package.path, ':'),
+              {
+                'lua/?.lua',
+                'lua/?/init.lua',
+              }),
           },
           diagnostics = {
             globals = { 'vim' },
@@ -40,6 +38,12 @@ vim.g[vim.bo.filetype] = function()
           },
         },
       },
+      root_dir = function()
+        return vim.fs.find(
+          { '.git', '.editorconfig' },
+          {}
+        )[0] or vim.fn.getcwd()
+      end,
     }
   }
 end
