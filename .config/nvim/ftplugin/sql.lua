@@ -2,8 +2,10 @@
 -------------------------------------------------------------------------------
 --                                                                          SQL
 --=============================================================================
-if vim.g[vim.bo.filetype] or vim.api.nvim_set_var(vim.bo.filetype, true) then
-  return
-end
+if vim.g[vim.bo.filetype] then return end
 
-vim.lsp.attach 'pg_format'
+vim.g[vim.bo.filetype] = function()
+  return {
+    formatter = 'pg_format'
+  }
+end

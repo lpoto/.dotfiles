@@ -13,13 +13,8 @@ local M = {
   tag = 'v0.9.1',
   event = 'VeryLazy',
   cmd = { 'TSUpdate', 'TSInstall', 'TSUpdateSync', 'TSInstallSync' },
-}
-
-function M.config()
-  local ok, treesitter = pcall(require, 'nvim-treesitter.configs')
-  if not ok then return end
-  treesitter.setup {
-    -- Parsers will be installed when entering the matching filetype.
+  main = 'nvim-treesitter.configs',
+  opts = {
     auto_install = true,
     sync_install = true,
     ignore_install = {},
@@ -37,12 +32,11 @@ function M.config()
       keymaps = {
         init_selection = '<CR>',
         node_incremental = '<CR>',
-        --scope_incremental = "<CR>",
         node_decremental = '<BS>',
       },
-    },
+    }
   }
-end
+}
 
 --NOTE: install mandatory parsers on build
 function M.build()

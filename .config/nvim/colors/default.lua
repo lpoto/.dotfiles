@@ -1,12 +1,53 @@
 --=============================================================================
---                                                                   HIGHLIGHTS
+--                                                                       COLORS
 --[[===========================================================================
-Set up custom highlights, as a custom colorscheme.
+Set up a custom colorscheme.
 -----------------------------------------------------------------------------]]
-local hl = {}
 
-local colors = {
+local M = {}
+
+function M.init()
+  if M.__initialized then return M end
+  M.__initialized = true
+
+  M.set_scheme_options()
+  M.hl.load()
+  return M
+end
+
+function M.set_scheme_options()
+  local ok, e = pcall(function()
+    vim.o.background = 'dark'
+    vim.o.termguicolors = true
+    vim.t_Co = 256
+    vim.cmd 'let &t_8f = "\\<Esc>[38;2;%lu;%lu;%lum"'
+    vim.cmd 'let &t_8b = "\\<Esc>[48;2;%lu;%lu;%lum"'
+  end)
+  if not ok then
+    error('Could not set colorscheme options: ' .. e)
+  end
+end
+
+M.hl = {}
+
+function M.hl.load()
+  for _, groups in pairs(M.hl or {}) do
+    if type(groups) == 'table' then
+      for group, attributes in pairs(groups) do
+        if type(group) == 'string' and type(attributes) == 'table' then
+          local ok, e = pcall(vim.api.nvim_set_hl, 0, group, attributes)
+          if not ok then
+            error('Could not set highlight ' .. group .. ': ' .. e)
+          end
+        end
+      end
+    end
+  end
+end
+
+M.colors = {
   normal = '#c9d1d9',
+  normal2 = '#b4babf',
   title = '#79b8ff',
   whitespace = '#1f2124',
   visual = '#163356',
@@ -42,51 +83,52 @@ local colors = {
   },
 }
 
-hl.base = {
-  Normal = { fg = colors.normal, bg = 'NONE' },
+M.hl.base = {
+  Normal = { fg = M.colors.normal, bg = 'NONE' },
   NormalNC = { link = 'Normal' },
   NormalSB = { link = 'Normal' },
   Conceal = { link = 'Normal' },
 
-  Whitespace = { fg = colors.whitespace, bg = 'NONE' },
+  Whitespace = { fg = M.colors.whitespace, bg = 'NONE' },
   NonText = { link = 'Whitespace' },
   EndOfBuffer = { link = 'Whitespace' },
 
-  Visual = { bg = colors.visual },
+  Visual = { bg = M.colors.visual },
   VisualNOS = { link = 'Visual' },
   MatchParen = { link = 'Visual' },
   Search = { link = 'Visual' },
 
-  VertSplit = { fg = colors.separator, bg = 'NONE' },
+  VertSplit = { fg = M.colors.separator, bg = 'NONE' },
   WinSeparator = { link = 'VertSplit' },
 
   LineNr = { link = 'WinSeparator' },
-  SignColumn = { bg = 'NONE', fg = colors.normal },
+  SignColumn = { bg = 'NONE', fg = M.colors.normal },
 
   StatusLine = { link = 'WinSeparator' },
   StatusLineNC = { link = 'StatusLine' },
 
-  TabLine = { fg = colors.tabline, bg = 'NONE', italic = true },
-  TabLineSel = { fg = colors.title, bg = 'NONE' },
+  TabLine = { fg = M.colors.tabline, bg = 'NONE', italic = true },
+  TabLineSel = { fg = M.colors.title, bg = 'NONE' },
   TabLineFill = { link = 'WinSeparator' },
 
-  CursorLine = { bg = colors.cursorline },
-  CursorLineNr = { italic = true, fg = colors.normal },
+  CursorLine = { bg = M.colors.cursorline },
+  CursorLineNr = { italic = true, fg = M.colors.normal },
   CursorLineSign = { link = 'CursorLineNr' },
-  Folded = { bg = 'NONE', fg = colors.blue },
+  Folded = { bg = 'NONE', fg = M.colors.blue },
   FoldColumn = { link = 'Folded' },
 
-  Title = { fg = colors.title, bg = 'NONE', italic = true },
+  Title = { fg = M.colors.title, bg = 'NONE', italic = true },
 
   FloatTile = { link = 'Title' },
   NormalFloat = { link = 'Normal' },
   FloatBorder = { link = 'WinSeparator' },
+  LspInfoBorder = { link = 'FloatBorder' },
 
-  Type = { fg = colors.type, italic = true },
+  Type = { fg = M.colors.type, italic = true },
 
-  Tag = { fg = colors.tag },
+  Tag = { fg = M.colors.tag },
 
-  Keyword = { fg = colors.keyword },
+  Keyword = { fg = M.colors.keyword },
   Statement = { link = 'Keyword' },
   Conditional = { link = 'Keyword' },
   PreCondit = { link = 'Keyword' },
@@ -94,25 +136,25 @@ hl.base = {
   Include = { link = 'Keyword' },
   Repeat = { link = 'Keyword' },
   Label = { link = 'Keyword' },
-  Operator = { fg = colors.operator },
+  Operator = { fg = M.colors.operator },
 
-  PreProc = { fg = colors.macro, italic = true },
+  PreProc = { fg = M.colors.macro, italic = true },
   Macro = { link = 'PreProc' },
 
-  Constant = { fg = colors.constant },
-  Variable = { fg = colors.variable },
-  Special = { fg = colors.special },
+  Constant = { fg = M.colors.constant },
+  Variable = { fg = M.colors.variable },
+  Special = { fg = M.colors.special },
   SpecialKey = { link = 'Special' },
   Directory = { link = 'Special' },
 
-  String = { fg = colors.string },
-  Character = { fg = colors.symbol, italic = true },
-  Number = { fg = colors.symbol, italic = true },
-  Boolean = { fg = colors.symbol, italic = true },
+  String = { fg = M.colors.string },
+  Character = { fg = M.colors.symbol, italic = true },
+  Number = { fg = M.colors.symbol, italic = true },
+  Boolean = { fg = M.colors.symbol, italic = true },
 
-  Comment = { fg = colors.comment, italic = true },
+  Comment = { fg = M.colors.comment, italic = true },
 
-  Function = { fg = colors.func },
+  Function = { fg = M.colors.func },
 
   Identifier = { link = 'Normal' },
   Delimiter = { link = 'Identifier' },
@@ -121,26 +163,26 @@ hl.base = {
   Italic = { italic = true },
   Bold = { bold = true },
 
-  Todo = { fg = colors.hint, italic = true, bold = true },
+  Todo = { fg = M.colors.hint, italic = true, bold = true },
 
   Pmenu = { link = 'Normal' },
   PmenuSel = { link = 'Visual' },
   PmenuSbar = { bg = 'NONE' },
-  PmenuThumb = { bg = colors.whitespace },
+  PmenuThumb = { bg = M.colors.whitespace },
 }
 
-hl.diagnostics = {
-  LspReferenceText = { bg = colors.reference },
+M.hl.diagnostics = {
+  LspReferenceText = { bg = M.colors.reference },
   LspReferenceRead = { link = 'LspReferenceText' },
   LspReferenceWrite = { link = 'LspReferenceText' },
-  LspDiagnosticsDefaultError = { fg = colors.error },
-  LspDiagnosticsDefaultWarning = { fg = colors.warning },
-  LspDiagnosticsDefaultInformation = { fg = colors.info },
-  LspDiagnosticsDefaultHint = { fg = colors.hint },
-  LspDiagnosticsVirtualTextError = { fg = colors.error, italic = true },
-  LspDiagnosticsVirtualTextWarning = { fg = colors.warning, italic = true },
-  LspDiagnosticsVirtualTextInformation = { fg = colors.info, italic = true },
-  LspDiagnosticsVirtualTextHint = { fg = colors.hint, italic = true },
+  LspDiagnosticsDefaultError = { fg = M.colors.error },
+  LspDiagnosticsDefaultWarning = { fg = M.colors.warning },
+  LspDiagnosticsDefaultInformation = { fg = M.colors.info },
+  LspDiagnosticsDefaultHint = { fg = M.colors.hint },
+  LspDiagnosticsVirtualTextError = { fg = M.colors.error, italic = true },
+  LspDiagnosticsVirtualTextWarning = { fg = M.colors.warning, italic = true },
+  LspDiagnosticsVirtualTextInformation = { fg = M.colors.info, italic = true },
+  LspDiagnosticsVirtualTextHint = { fg = M.colors.hint, italic = true },
   LspDiagnosticsUnderlineError = { undercurl = true },
   LspDiagnosticsUnderlineWarning = { undercurl = true },
   LspDiagnosticsUnderlineInformation = { undercurl = true },
@@ -165,22 +207,22 @@ hl.diagnostics = {
   MoreMsg = { link = 'DiagnosticInfo' },
 }
 
-hl.diff = {
-  DiffAdd = { fg = colors.green },
-  DiffChange = { fg = colors.yellow },
-  DiffDelete = { fg = colors.red },
-  DiffText = { fg = colors.normal },
+M.hl.diff = {
+  DiffAdd = { fg = M.colors.green },
+  DiffChange = { fg = M.colors.yellow },
+  DiffDelete = { fg = M.colors.red },
+  DiffText = { fg = M.colors.normal },
   diffAdded = { link = 'DiffAdd' },
   diffChanged = { link = 'DiffChange' },
   diffRemoved = { link = 'DiffDelete' },
-  diffOldFile = { fg = colors.yellow },
-  diffNewFile = { fg = colors.blue },
-  diffFile = { fg = colors.variable },
-  diffLine = { fg = colors.normal },
-  diffIndexLine = { fg = colors.symbol },
+  diffOldFile = { fg = M.colors.yellow },
+  diffNewFile = { fg = M.colors.blue },
+  diffFile = { fg = M.colors.variable },
+  diffLine = { fg = M.colors.normal },
+  diffIndexLine = { fg = M.colors.symbol },
 }
 
-hl.treesitter = {
+M.hl.treesitter = {
   ['@function'] = { link = 'Function' },
   ['@method'] = { link = 'Function' },
   ['@function.builtin'] = { link = 'Macro' },
@@ -207,7 +249,7 @@ hl.treesitter = {
   ['@keyword.function'] = { link = 'Keyword' },
   ['@namespace'] = { link = 'Identifier' },
   ['@operator'] = { link = 'Operator' },
-  ['@parameter'] = { fg = colors.func_param },
+  ['@parameter'] = { fg = M.colors.func_param },
   ['@punctDelimiter'] = { link = 'Identifier' },
   ['@punctBracket'] = { link = 'Identifier' },
   ['@punctSpecial'] = { link = 'Identifier' },
@@ -230,40 +272,31 @@ hl.treesitter = {
   ['@variable.go'] = { link = 'Identifier' },
 }
 
-hl.telescope = {
+M.hl.telescope = {
   TelescopeBorder = { link = 'WinSeparator' },
   TelescopeTitle = { link = 'Title' },
   TelescopePromptPrefix = { link = 'Constant' },
   TelescopeMatching = { link = 'Constant' },
-  TelescopeMultiSelection = { fg = colors.comment },
-  TelescopeSelection = { bg = colors.visual },
+  TelescopeMultiSelection = { fg = M.colors.comment },
+  TelescopeSelection = { bg = M.colors.visual },
 }
 
-hl.gitsigns = {
-  GitSignsAdd = { fg = colors.dimmed.green },
-  GitSignsChange = { fg = colors.dimmed.blue },
-  GitSignsDelete = { fg = colors.dimmed.red },
+M.hl.gitsigns = {
+  GitSignsAdd = { fg = M.colors.dimmed.green },
+  GitSignsChange = { fg = M.colors.dimmed.blue },
+  GitSignsDelete = { fg = M.colors.dimmed.red },
   GitSignsCurrentLineBlame = { link = 'WinSeparator' },
 }
 
-hl.cmp = {
+M.hl.cmp = {
   CmpDocumentation = { link = 'NormalFloat' },
   CmpDocumentationBorder = { link = 'FloatBorder' },
-  CmpItemAbbrDeprecated = { fg = colors.comment, strikethrough = true },
-  CmpItemAbbrMatch = { fg = colors.variable },
+  CmpItemAbbr = { fg = M.colors.normal2, bg = 'NONE' },
+  CmpItemAbbrDeprecated = { fg = M.colors.comment, strikethrough = true },
+  CmpItemAbbrMatch = { fg = M.colors.variable },
   CmpItemAbbrDefault = { link = 'Normal' },
   CmpItemAbbrMatchFuzzy = { link = 'CmpItemAbbrMatch' },
   CmpItemMenuDefault = { link = 'CmpItemAbbrDefault' },
 }
 
-for _, groups in pairs(hl) do
-  for group, attributes in pairs(groups) do
-    local ok, e = pcall(vim.api.nvim_set_hl, 0, group, attributes)
-    if not ok then
-      vim.notify(
-        'Error setting highlight ' .. group .. ': ' .. e,
-        vim.log.levels.ERROR
-      )
-    end
-  end
-end
+return M.init()
