@@ -44,32 +44,29 @@ local util = {}
 
 function M.init()
   for _, o in ipairs {
-    { 'n', '<leader>n',  'find_files' },
-    { 'n', '<leader>o',  'oldfiles' },
-    { 'n', '<leader>l',  'live_grep' },
-    { 'n', '<leader>L',  'grep_string' },
-    { 'n', '<leader>c',  'resume' },
-    { 'n', '<leader>m',  'marks' },
-    { 'n', '<leader>h',  'help_tags' },
-    { 'n', 'gd',         'lsp_definitions' },
-    { 'n', 'gi',         'lsp_implementations' },
-    { 'n', 'gr',         'lsp_references' },
-    { 'n', '<leader>gg', 'git_status' },
-    { 'n', '<leader>gl', 'git_commits' },
-    { 'n', '<leader>gS', 'git_stash' },
-    { 'n', '<leader>gb', 'git_branches', },
-    { 'n', '<leader>q',  'quickfix',           true },
+    { 'n', '<leader>n',  util.builtin 'find_files' },
+    { 'n', '<leader>o',  util.builtin 'oldfiles' },
+    { 'n', '<leader>l',  util.builtin 'live_grep' },
+    { 'n', '<leader>L',  util.builtin 'grep_string' },
+    { 'n', '<leader>c',  util.builtin 'resume' },
+    { 'n', '<leader>m',  util.builtin 'marks' },
+    { 'n', '<leader>h',  util.builtin 'help_tags' },
+    { 'n', 'gd',         util.builtin 'lsp_definitions' },
+    { 'n', 'gi',         util.builtin 'lsp_implementations' },
+    { 'n', 'gr',         util.builtin 'lsp_references' },
+    { 'n', '<leader>gg', util.builtin 'git_status' },
+    { 'n', '<leader>gl', util.builtin 'git_commits' },
+    { 'n', '<leader>gS', util.builtin 'git_stash' },
+    { 'n', '<leader>gb', util.builtin 'git_branches', },
+    { 'n', '<leader>q',  util.builtin('quickfix', true) },
     { 'n', '<leader>d', function()
-      local n, _ = vim.diagnostic.open_float()
-      if not n then return 'diagnostics' end
+      if not vim.diagnostic.open_float() then
+        util.builtin 'diagnostics' ()
+      end
     end
     },
   } do
-    local s = o[3]
-    if type(s) == 'function' then s = s() end
-    if type(s) == 'string' then
-      vim.keymap.set(o[1], o[2], util.builtin(s, o[4]))
-    end
+    vim.keymap.set(unpack(o))
   end
 end
 
