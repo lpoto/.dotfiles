@@ -5,7 +5,8 @@
 https://github.com/stevearc/oil.nvim
 
 Keymaps:
- - "<leader>N"   - file browser relative to current file
+ - "<leader>b"   - file browser relative to current file
+ - "<leader>B"   - file browser relative to current working directory
 
 -----------------------------------------------------------------------------]]
 local M = {
@@ -29,11 +30,18 @@ local M = {
     columns = {},
     keymaps = {
       ['<BS>'] = 'actions.parent',
-      ['<leader>N'] = 'actions.open_cwd',
-      ['<C-n>'] = 'actions.open_cwd',
+      ['<leader>b'] = 'actions.open_cwd',
     },
   },
   keys = {
+    { '<leader>b', function() vim.cmd 'Oil' end, mode = 'n' },
+    {
+      '<leader>B',
+      function()
+        vim.cmd('Oil ' .. vim.fn.getcwd())
+      end,
+      mode = 'n'
+    },
     { '<leader>N', function() vim.cmd 'Oil' end, mode = 'n' },
     { '<C-n>',     function() vim.cmd 'Oil' end, mode = 'n' },
   }

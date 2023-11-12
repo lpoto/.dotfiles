@@ -13,8 +13,8 @@ vim.g.maplocalleader = ';'
 -- increase the size of a window with +, decrease with -
 -- resize all windows to same width with "<ctrl> + w"
 
-vim.keymap.set('n', '+', '<cmd>vertical resize +5<CR>')
-vim.keymap.set('n', '-', '<cmd>vertical resize -5<CR>')
+vim.keymap.set('n', '+', '<cmd>vertical resize +10<CR>')
+vim.keymap.set('n', '-', '<cmd>vertical resize -10<CR>')
 
 -- Switch window with <leader>w
 vim.keymap.set('n', '<leader>w', '<cmd>wincmd w<cr>')
