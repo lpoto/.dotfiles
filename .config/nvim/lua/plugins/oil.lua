@@ -34,16 +34,10 @@ local M = {
     },
   },
   keys = {
-    { '<leader>b', function() vim.cmd 'Oil' end, mode = 'n' },
-    {
-      '<leader>B',
-      function()
-        vim.cmd('Oil ' .. vim.fn.getcwd())
-      end,
-      mode = 'n'
-    },
-    { '<leader>N', function() vim.cmd 'Oil' end, mode = 'n' },
-    { '<C-n>',     function() vim.cmd 'Oil' end, mode = 'n' },
+    { '<leader>b', function() vim.cmd 'Oil' end },
+    { '<leader>B', function() vim.cmd('Oil ' .. vim.fn.getcwd()) end },
+    { '<leader>N', function() vim.cmd 'Oil' end },
+    { '<C-n>',     function() vim.cmd 'Oil' end },
   }
 }
 
