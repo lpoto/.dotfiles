@@ -73,28 +73,17 @@ function util.attach(bufnr, opts)
       vim.fn.stdpath 'cache' .. '/jdtls/workspace/' .. server.root_dir,
     }
   end
-
-  local client_id = require 'jdtls'.start_or_attach(server)
-  local attach_jdtls_to_buf = function(buf)
-    if
-      type(buf) ~= 'number'
-      or not vim.api.nvim_buf_is_valid(buf)
-      or vim.api.nvim_get_option_value('buftype', { buf = buf }) ~= ''
-      or vim.api.nvim_get_option_value('filetype', { buf = buf }) ~= 'java'
-    then
-      return
-    end
-    local client = vim.lsp.get_client_by_id(client_id)
-    if client then vim.lsp.buf_attach_client(buf, client_id) end
-  end
-
+  server.autostart = true
+  local group = vim.api.nvim_create_augroup('StartJdtls', { clear = true })
   vim.api.nvim_create_autocmd('Filetype', {
+    group = group,
     pattern = 'java',
-    callback = function(o) attach_jdtls_to_buf(o.buf) end,
+    callback = function()
+      require 'jdtls'.start_or_attach(server)
+    end,
   })
-  for _, v in ipairs(vim.api.nvim_list_bufs()) do
-    attach_jdtls_to_buf(v)
-  end
+  vim.api.nvim_exec_autocmds('Filetype', { group = group })
+
   util.add_to_attached(server.name)
 end
 
