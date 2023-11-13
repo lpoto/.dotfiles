@@ -8,31 +8,13 @@ Keymaps:
  - "<leader>b"   - file browser relative to current file
  - "<leader>B"   - file browser relative to current working directory
 
+ - "<C-q>"       - (in oil buffer) open quickfix list with all files in oil
+                   buffer
+
 -----------------------------------------------------------------------------]]
 local M = {
   'stevearc/oil.nvim',
   cmd = 'Oil',
-  opts = {
-    default_file_explorer = true,
-    delete_to_trash = true,
-    skip_confirm_for_simple_edits = true,
-    buf_options = {
-      buflisted = false,
-      bufhidden = 'wipe',
-    },
-    win_options = {
-      number = false,
-      relativenumber = false,
-    },
-    view_options = {
-      show_hidden = true,
-    },
-    columns = {},
-    keymaps = {
-      ['<BS>'] = 'actions.parent',
-      ['<leader>b'] = 'actions.open_cwd',
-    },
-  },
   keys = {
     { '<leader>b', function() vim.cmd 'Oil' end },
     { '<leader>B', function() vim.cmd('Oil ' .. vim.fn.getcwd()) end },
@@ -40,10 +22,32 @@ local M = {
     { '<C-n>',     function() vim.cmd 'Oil' end },
   }
 }
+local util = {}
 
-local is_starting_screen
+M.opts = {
+  default_file_explorer = true,
+  delete_to_trash = true,
+  skip_confirm_for_simple_edits = true,
+  buf_options = {
+    buflisted = false,
+    bufhidden = 'wipe',
+  },
+  win_options = {
+    number = false,
+    relativenumber = false,
+  },
+  view_options = {
+    show_hidden = true,
+  },
+  columns = {},
+  keymaps = {
+    ['<BS>'] = 'actions.parent',
+    ['<C-q>'] = function() return util.oil_entries_to_quickfix() end
+  },
+}
+
 function M.init()
-  if is_starting_screen() then
+  if util.is_starting_screen() then
     vim.cmd(
       'Oil ' ..
       (vim.fn.argc() == 1 and vim.fn.argv(0) or vim.fn.getcwd())
@@ -51,7 +55,7 @@ function M.init()
   end
 end
 
-function is_starting_screen()
+function util.is_starting_screen()
   return (
       vim.fn.argc() == 0 or
       vim.fn.argc() == 1 and
@@ -62,6 +66,32 @@ function is_starting_screen()
     vim.api.nvim_buf_line_count(0) == 0 and
     vim.api.nvim_get_option_value('buftype', { buf = 0 }) == '' and
     vim.api.nvim_get_option_value('filetype', { buf = 0 }) == ''
+end
+
+function util.oil_entries_to_quickfix()
+  if vim.bo.filetype ~= 'oil' then return end
+  local oil = require 'oil'
+  local entries = {}
+  for i = 1, vim.fn.line '$' do
+    local ok, entry = pcall(oil.get_entry_on_line, 0, i)
+    if ok then
+      table.insert(entries, entry)
+    end
+  end
+  entries = vim.tbl_filter(function(entry)
+    return type(entry) == 'table' and
+      entry.type == 'file'
+      and type(entry.name) == 'string'
+  end, entries)
+  local dir = oil.get_current_dir()
+  entries = vim.tbl_map(
+    function(entry) return { filename = dir .. entry.name } end,
+    entries)
+  if #entries == 0 then return end
+  vim.fn.setqflist(entries)
+  local ok, tb = pcall(require, 'telescope.builtin')
+  if ok then return tb.quickfix() end
+  return vim.cmd 'copen'
 end
 
 return M
