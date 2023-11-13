@@ -46,7 +46,7 @@ function util.set_lsp_keymaps(opts)
     { 'n', '<leader>a', vim.lsp.buf.code_action },
     { 'n', '<leader>r', vim.lsp.buf.rename },
   } do
-    if vim.fn.mapcheck(o[2]) == 0 then
+    if vim.tbl_contains({ '', nil, 0 }, vim.fn.mapcheck(o[2])) then
       vim.keymap.set(o[1], o[2], o[3], opts)
     end
   end
