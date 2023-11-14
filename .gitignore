@@ -1,3 +1,2 @@
-**/nvim/plugin/**
-**/nvim/after/**
+**/after/**
 .luarc.json

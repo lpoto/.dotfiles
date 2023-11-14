@@ -1,7 +1,8 @@
 --=============================================================================
--------------------------------------------------------------------------------
---                                                                 AUTOCOMMANDS
+--                                                          PLUGIN-AUTOCOMMANDS
 --=============================================================================
+if vim.g.did_acmds or vim.api.nvim_set_var('did_acmds', true) then return end
+
 
 ---------------- Set relative number and cursorline only for the active window,
 ------------------------------------- and disable them when leaving the window.

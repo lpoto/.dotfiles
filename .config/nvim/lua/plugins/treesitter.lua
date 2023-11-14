@@ -1,8 +1,6 @@
 --=============================================================================
--------------------------------------------------------------------------------
---                                                              NVIM-TREESITTER
+--                           https://github.com/nvim-treesitter/nvim-treesitter
 --[[===========================================================================
-https://github.com/nvim-treesitter/nvim-treesitter
 
 Treesitter interface for Neovim. Provides inproved
 highlights, ...

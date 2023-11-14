@@ -1,8 +1,6 @@
 --=============================================================================
--------------------------------------------------------------------------------
---                                                                   MASON.NVIM
+--                                   https://github.com/williamboman/mason.nvim
 --[[===========================================================================
-https://github.com/williamboman/mason.nvim
 
 Package manager for neovim.
 Easily install and manage lsp servers and formatters.

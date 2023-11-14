@@ -1,8 +1,7 @@
 --=============================================================================
--------------------------------------------------------------------------------
---                                                                     NVIM-CMP
+--                                          https://github.com/hrsh7th/nvim-cmp
 --[[===========================================================================
-https://github.com/hrsh7th/nvim-cmp
+
 A completion engine plugin. Completion sources are installed from
 external repositories, cmp-nvim-lsp,...
 

@@ -1,8 +1,6 @@
 --=============================================================================
--------------------------------------------------------------------------------
---                                                                 CONFORM.NVIM
+--                                     https://github.com/stevearc/conform.nvim
 --[[===========================================================================
-https://github.com/stevearc/conform.nvim
 
 Keymaps:
   <leader>f  - Format the current buffer (or visual selection)

@@ -1,14 +1,10 @@
 --=============================================================================
--------------------------------------------------------------------------------
---                                                                    LAZY NVIM
---[[===========================================================================
-
-Ensure that Lazy.nvim (https://github.com/folke/lazy.nvim) is installed, then
-set it up and load the plugins.
-
------------------------------------------------------------------------------]]
+--                                           https://github.com/folke/lazy.nvim
+--=============================================================================
+if vim.g.did_lazy or vim.api.nvim_set_var('did_lazy', true) then return end
 
 local M = {
+  plugins_root = 'plugins',
   path = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 }
 
@@ -22,7 +18,7 @@ function M.init()
   vim.opt.runtimepath:prepend(M.path)
   local ok, lazy = pcall(require, 'lazy')
   if ok then
-    lazy.setup('plugins', M.get_lazy_options())
+    lazy.setup(M.plugins_root, M.get_lazy_options())
   end
   return M
 end

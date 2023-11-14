@@ -1,8 +1,6 @@
 --=============================================================================
--------------------------------------------------------------------------------
---                                                               TELESCOPE.NVIM
+--                             https://github.com/nvim-telescope/telescope.nvim
 --[[===========================================================================
-https://github.com/nvim-telescope/telescope.nvim
 
 Telescope is a highly extendable fuzzy finder over lists.
 Items are shown in a popup with a prompt to search over.
@@ -23,11 +21,6 @@ Keymaps:
  - "gi"          - LSP implementations
  - "gr"          - LSP references
 
- - "<leader>gl"  - git commits
- - "<leader>gb"  - git branches
- - "<leader>gS"  - git stash
- - "<leader>gg"  - git status
-
  Use <C-q> in a telescope prompt to send the results to quickfix.
 -----------------------------------------------------------------------------]]
 
@@ -44,21 +37,17 @@ local util = {}
 
 function M.init()
   for _, o in ipairs {
-    { 'n', '<leader>n',  util.builtin 'find_files' },
-    { 'n', '<leader>o',  util.builtin 'oldfiles' },
-    { 'n', '<leader>l',  util.builtin 'live_grep' },
-    { 'n', '<leader>L',  util.builtin 'grep_string' },
-    { 'n', '<leader>c',  util.builtin 'resume' },
-    { 'n', '<leader>m',  util.builtin 'marks' },
-    { 'n', '<leader>h',  util.builtin 'help_tags' },
-    { 'n', 'gd',         util.builtin 'lsp_definitions' },
-    { 'n', 'gi',         util.builtin 'lsp_implementations' },
-    { 'n', 'gr',         util.builtin 'lsp_references' },
-    { 'n', '<leader>gg', util.builtin 'git_status' },
-    { 'n', '<leader>gl', util.builtin 'git_commits' },
-    { 'n', '<leader>gS', util.builtin 'git_stash' },
-    { 'n', '<leader>gb', util.builtin 'git_branches', },
-    { 'n', '<leader>q',  util.builtin('quickfix', true) },
+    { 'n', '<leader>n', util.builtin 'find_files' },
+    { 'n', '<leader>o', util.builtin 'oldfiles' },
+    { 'n', '<leader>l', util.builtin 'live_grep' },
+    { 'n', '<leader>L', util.builtin 'grep_string' },
+    { 'n', '<leader>c', util.builtin 'resume' },
+    { 'n', '<leader>m', util.builtin 'marks' },
+    { 'n', '<leader>h', util.builtin 'help_tags' },
+    { 'n', 'gd',        util.builtin 'lsp_definitions' },
+    { 'n', 'gi',        util.builtin 'lsp_implementations' },
+    { 'n', 'gr',        util.builtin 'lsp_references' },
+    { 'n', '<leader>q', util.builtin('quickfix', true) },
     { 'n', '<leader>d', function()
       if not vim.diagnostic.open_float() then
         util.builtin 'diagnostics' ()
