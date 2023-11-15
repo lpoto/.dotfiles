@@ -70,24 +70,17 @@ for i = 1, 9 do
   vim.keymap.set('n', '<localleader>' .. i, i .. 'gt')
 end
 
---=============================================================================
--------------------------------------------------------------------------------
---                                                                USER COMMANDS
---=============================================================================
-
-------- Add custom commands for writing and quitting, so there is no annoyance
--------- when misstyping
-for _, key in ipairs { 'W', 'Wq', 'WQ', 'WqA', 'Wqa', 'WQa', 'WQA' } do
+----------- Abrreviate misstyped w, q, wq, wa, qa and wqa commands to lowercase
+-- so that there is no annoyance when misspelling them
+for _, key in ipairs
+{
+  'W', 'Wa', 'WA', 'Q', 'Qa', 'QA', 'WQ', 'Wq', 'Wqa', 'WqA', 'WQA', 'WQa',
+}
+do
   vim.api.nvim_create_user_command(key, key:lower(), {
-    bang = true,
-    bar = true,
-    complete = 'file',
     nargs = '*',
-  })
-end
-for _, key in ipairs { 'Q', 'Qa', 'QA' } do
-  vim.api.nvim_create_user_command(key, key:lower(), {
-    bang = true,
+    complete = 'file',
     bar = true,
+    bang = true,
   })
 end

@@ -11,8 +11,10 @@ local M = {
   tag = 'v0.9.1',
   event = 'VeryLazy',
   cmd = { 'TSUpdate', 'TSInstall', 'TSUpdateSync', 'TSInstallSync' },
-  main = 'nvim-treesitter.configs',
-  opts = {
+}
+
+function M.config()
+  require 'nvim-treesitter.configs'.setup {
     auto_install = true,
     sync_install = true,
     ignore_install = {},
@@ -34,7 +36,10 @@ local M = {
       },
     }
   }
-}
+  vim.opt.foldlevelstart = 99
+  vim.opt.foldmethod = 'expr'
+  vim.opt.foldexpr = 'nvim_treesitter#foldexpr()'
+end
 
 --NOTE: install mandatory parsers on build
 function M.build()
