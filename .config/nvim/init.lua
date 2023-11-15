@@ -7,12 +7,15 @@ end
 
 vim.cmd.colorscheme 'default'
 
-vim.opt.splitbelow = true -- open new window below in normal split
-vim.opt.splitright = true --open new window on the right in vertical split
+vim.g.mapleader = ' '      -- set <leader> key to <Space>
+vim.g.maplocalleader = ';' -- set <localleader> key to ';'
 
-vim.opt.swapfile = false  -- load buffers without creating swap files
-vim.opt.backup = false    -- do not automatically save
-vim.opt.undofile = true   -- allow undo after reoppening the file
+vim.opt.splitbelow = true  -- open new window below in normal split
+vim.opt.splitright = true  --open new window on the right in vertical split
+
+vim.opt.swapfile = false   -- load buffers without creating swap files
+vim.opt.backup = false     -- do not automatically save
+vim.opt.undofile = true    -- allow undo after reoppening the file
 vim.opt.undodir = vim.fn.stdpath 'data' .. '/undo'
 
 vim.opt.tabstop = 4        -- set the width of a tab to 4

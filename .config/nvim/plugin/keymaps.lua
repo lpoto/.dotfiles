@@ -3,12 +3,6 @@
 --=============================================================================
 if vim.g.did_keys or vim.api.nvim_set_var('did_keys', true) then return end
 
---------------------------------------------------------- LEADER / LOCAL LEADER
--- set <leader> to <Space> and <localleader> to ;
-
-vim.g.mapleader = ' '
-vim.g.maplocalleader = ';'
-
 --------------------------------------------------------------- WINDOW MANAGING
 -- increase the size of a window with +, decrease with -
 -- resize all windows to same width with "<ctrl> + w"
