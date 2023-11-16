@@ -94,6 +94,8 @@ function M.config()
         '%.target/',
         '%.settings/',
         '%.build/',
+        'generated/',
+        'generated-sources/',
         '^build/',
         'dist/',
         '%.dist/',

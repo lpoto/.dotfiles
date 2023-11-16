@@ -7,7 +7,7 @@ vim.g[vim.bo.filetype] = function()
   return {
     formatter = 'prettier',
     language_server = {
-      name = 'jamlls',
+      name = 'yamlls',
       settings = {
         yaml = {
           keyOrdering = false,

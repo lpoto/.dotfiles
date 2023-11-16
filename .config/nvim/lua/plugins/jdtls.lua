@@ -86,6 +86,9 @@ function util.attach(bufnr, opts)
 end
 
 function util.find_root(buf)
+  if type(vim.g.jdtls_root) == 'string' and vim.fn.isdirectory(vim.g.jdtls_root) == 1 then
+    return vim.g.jdtls_root
+  end
   if type(buf) ~= 'number' or not vim.api.nvim_buf_is_valid(buf) then
     buf = vim.api.nvim_get_current_buf()
   end
