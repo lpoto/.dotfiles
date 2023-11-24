@@ -16,7 +16,8 @@ Keymaps:
  - "<leader>m"   - marks
  - "<leader>h"   - Search help tags
 
- - "<leader>d"   - show diagnostics
+ - "<leader>d"   - show document diagnostics
+ - "<leader>D"   - show workspace diagnostics
  - "gd"          - LSP definitions
  - "gi"          - LSP implementations
  - "gr"          - LSP references
@@ -48,9 +49,10 @@ function M.init()
     { 'n', 'gi',        util.builtin 'lsp_implementations' },
     { 'n', 'gr',        util.builtin 'lsp_references' },
     { 'n', '<leader>q', util.builtin('quickfix', true) },
+    { 'n', '<leader>D', util.builtin 'diagnostics' },
     { 'n', '<leader>d', function()
       if not vim.diagnostic.open_float() then
-        util.builtin 'diagnostics' ()
+        util.builtin 'diagnostics' { bufnr = 0 }
       end
     end
     },
@@ -206,9 +208,10 @@ function util.attach_marks_mappings(_, map)
 end
 
 function util.builtin(name, log_if_no_results)
-  return function()
+  return function(opts)
+    if type(opts) ~= 'table' then opts = {} end
     local telescope_builtin = require 'telescope.builtin'
-    telescope_builtin[name]()
+    telescope_builtin[name](opts)
     if
       log_if_no_results == true
       and vim.api.nvim_get_option_value(

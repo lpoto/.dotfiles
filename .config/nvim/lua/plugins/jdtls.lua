@@ -57,21 +57,14 @@ function util.attach(bufnr, opts)
     return
   end
 
-  if type(server.root_dir) ~= 'string' then
-    server.root_dir = util.find_root(bufnr)
-  end
   if server.cmd == nil then
     local exe = vim.fn.exepath 'jdtls'
     if not exe or exe:len() == 0 then
       return util.add_to_not_attached(server.name)
     end
-    server.cmd = {
-      exe,
-      '-data',
-      vim.fn.stdpath 'cache' .. '/jdtls/workspace/' .. server.root_dir,
-    }
   end
-  server.autostart = true
+  server = util.get_jdtls_config(bufnr, server)
+
   local group = vim.api.nvim_create_augroup('StartJdtls', { clear = true })
   vim.api.nvim_create_autocmd('Filetype', {
     group = group,
@@ -85,6 +78,25 @@ function util.attach(bufnr, opts)
   util.add_to_attached(server.name)
 end
 
+function util.get_jdtls_config(bufnr, opts)
+  if type(opts) ~= 'table' then opts = {} end
+  if type(opts.root_dir) ~= 'string' then
+    opts.root_dir = util.find_root(bufnr)
+  end
+  if opts.autostart == nil then opts.autostart = true end
+  if opts.cmd == nil then
+    opts.cmd = {
+      vim.fn.exepath 'jdtls',
+      '-data',
+      vim.fn.stdpath 'cache' .. '/jdtls/workspace/' .. opts.root_dir,
+    }
+  end
+  if type(vim.g.jdtls_config) == 'table' then
+    opts = vim.tbl_deep_extend('force', opts, vim.g.jdtls_config)
+  end
+  return opts
+end
+
 function util.find_root(buf)
   if type(vim.g.jdtls_root) == 'string' and vim.fn.isdirectory(vim.g.jdtls_root) == 1 then
     return vim.g.jdtls_root
@@ -92,40 +104,52 @@ function util.find_root(buf)
   if type(buf) ~= 'number' or not vim.api.nvim_buf_is_valid(buf) then
     buf = vim.api.nvim_get_current_buf()
   end
-  local patterns = {
-    'mvn',
-    'pom.xml',
-    'settings.gradle',
-    'settings.gradle.kts',
-    'gradlew',
-    'build.gradle',
-    'build.gradle.kts',
-    'build.xml',
+  local pattern_kinds = {
+    {
+      'pom.xml'
+    },
+    {
+      'settings.gradle',
+      'settings.gradle.kts',
+      'gradlew',
+      'build.gradle',
+      'build.gradle.kts',
+      'build.xml'
+    },
+    {
+      '.git',
+    }
   }
-  local path = vim.api.nvim_buf_get_name(buf)
-  local cwd = vim.fn.getcwd()
-  local parents = {}
-  local n = nil
-  for parent in vim.fs.parents(path) do
-    if type(n) == 'number' then
-      if n == 0 then break end
-      n = n - 1
-    end
-    ---@diagnostic disable-next-line
-    if parent:len() <= 2 or parent == vim.uv.os_homedir() then break end
-    table.insert(parents, 1, parent)
-    if parent:len() <= cwd:len() then n = 2 end
-  end
-  for _ = 1, 2 do
-    for _, parent in ipairs(parents) do
+  ---@diagnostic disable-next-line
+  local home_dir = vim.uv.os_homedir()
+  local file = vim.api.nvim_buf_get_name(buf)
+
+  for _, patterns in ipairs(pattern_kinds) do
+    local ok, dir = pcall(vim.fs.dirname, file)
+    local found_dir = nil
+
+    while ok and
+      type(dir) == 'string' and
+      vim.fn.isdirectory(dir) == 1 and
+      dir:len() > home_dir:len() and
+      dir ~= found_dir
+    do
+      local found = false
       for _, pattern in ipairs(patterns) do
-        local p = parent .. '/' .. pattern
-        if vim.fn.filereadable(p) == 1 then return parent end
+        local p = dir .. '/' .. pattern
+        if vim.fn.isdirectory(p) == 1 or vim.fn.filereadable(p) == 1 then
+          found_dir, found = dir, true
+          break
+        end
       end
+      if found_dir and not found then break end
+      ok, dir = pcall(vim.fs.dirname, dir)
     end
-    table.insert(patterns, '.git')
+    if found_dir then
+      return found_dir
+    end
   end
-  return cwd
+  return vim.fn.getcwd()
 end
 
 function util.add_to_attached(name)
