@@ -53,4 +53,4 @@ vim.opt.wrap = false          -- do not wrap lines
 vim.opt.scrolloff = 8         -- keep 8 lines above and below cursor
 vim.opt.title = false         -- do not change the terminal title
 vim.opt.list = true           -- show whitespace characters
-vim.opt.listchars = { tab = '│ ', multispace = '. ', leadmultispace = '│ ' }
+vim.opt.listchars = { tab = '┊ ', multispace = '· ', leadmultispace = '┊ ' }

@@ -3,16 +3,16 @@
 --=============================================================================
 if vim.g.did_acmds or vim.api.nvim_set_var('did_acmds', true) then return end
 
+local group = vim.api.nvim_create_augroup('PluginAutocmmds', { clear = true })
+
 
 ---------------- Set relative number and cursorline only for the active window,
 ------------------------------------- and disable them when leaving the window.
-local relativenumber_augroup =
-  vim.api.nvim_create_augroup('RelativeNumberAugroup', { clear = true })
 
 vim.api.nvim_create_autocmd(
   { 'VimEnter', 'WinEnter', 'BufWinEnter', 'TermOpen' },
   {
-    group = relativenumber_augroup,
+    group = group,
     callback = function()
       if vim.wo.number then
         if vim.bo.buftype ~= '' then
@@ -29,7 +29,7 @@ vim.api.nvim_create_autocmd(
   }
 )
 vim.api.nvim_create_autocmd({ 'WinLeave' }, {
-  group = relativenumber_augroup,
+  group = group,
   callback = function()
     if vim.wo.number then
       vim.wo.relativenumber = false
@@ -37,9 +37,11 @@ vim.api.nvim_create_autocmd({ 'WinLeave' }, {
     end
   end,
 })
+
 -------------- Set showmode true in empty buftypes and false in other buftypes.
+
 vim.api.nvim_create_autocmd('BufEnter', {
-  group = vim.api.nvim_create_augroup('ShowMode', { clear = true }),
+  group = group,
   callback = function()
     if vim.bo.buftype ~= '' then
       vim.opt.showmode = false
@@ -48,9 +50,11 @@ vim.api.nvim_create_autocmd('BufEnter', {
     end
   end,
 })
+
 --------------------------------------------------------- Highlight yanked text
+
 vim.api.nvim_create_autocmd('TextYankPost', {
-  group = vim.api.nvim_create_augroup('HighlightYank', { clear = true }),
+  group = group,
   callback = function()
     local ok, hl = pcall(require, 'vim.highlight')
     if ok then
@@ -59,6 +63,22 @@ vim.api.nvim_create_autocmd('TextYankPost', {
         timeout = 35,
       }
     end
+  end,
+})
+
+----------------------------------- Set multispace lischars based on shiftwidth
+
+vim.api.nvim_create_autocmd({ 'Filetype' }, {
+  group = group,
+  callback = function()
+    local sw = vim.o.shiftwidth
+    local s  = '·'
+    if sw > 1 then s = '┊' .. string.rep(' ', sw - 1) end
+    vim.opt_local.listchars:append {
+      multispace = ' · ',
+      leadmultispace = s,
+      tab = '┊ ',
+    }
   end,
 })
 
@@ -84,7 +104,7 @@ local function shada_autocmd(write, read)
   end
 end
 vim.api.nvim_create_autocmd('DirChanged', {
-  group = vim.api.nvim_create_augroup('ShadaGroup', { clear = true }),
+  group = group,
   callback = function()
     vim.schedule(function()
       shada_autocmd(true, true)
