@@ -136,9 +136,7 @@ function M.config()
   }
   require 'telescope'.load_extension 'fzf'
 
-  vim.api.nvim_exec_autocmds('User', {
-    pattern = 'TelescopeLoaded',
-  })
+  util.create_overrides()
 end
 
 function util.default_mappings()
@@ -205,6 +203,10 @@ function util.attach_marks_mappings(_, map)
     vim.schedule(function() require 'telescope_builtin'.marks() end)
   end)
   return true
+end
+
+function util.create_overrides()
+  vim.cmd.copen = util.builtin 'quickfix'
 end
 
 function util.builtin(name, log_if_no_results)

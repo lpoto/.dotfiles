@@ -3,7 +3,7 @@
 --[[===========================================================================
 
 Commands:
-  :DB (or :Db) - Open the DBEE drawer
+  :DBee (or :Dbee) - Open the DBEE drawer
 -----------------------------------------------------------------------------]]
 
 local M = {
@@ -44,16 +44,21 @@ function util.set_up_dbee()
     local sources = require 'dbee.sources'
     util.__config.sources = {
       sources.EnvSource:new 'DBEE_CONNECTIONS',
-      sources.FileSource:new(vim.fn.stdpath 'data' .. '/dbee/persistence.json'),
+      sources.FileSource:new(
+        vim.fn.stdpath 'data' .. '/dbee/persistence.json'
+      ),
     }
-
     local old_post_hook = util.__config.ui.post_open_hook
     local old_pre_hook = util.__config.ui.pre_open_hook
     util.__config.ui.post_open_hook = function()
       if type(old_post_hook) == 'function' then
         old_post_hook()
       end
-      vim.wo.cursorline = true
+      local wins = vim.api.nvim_list_wins()
+      if #wins ~= 3 then return end
+      for _, w in ipairs(wins) do
+        vim.api.nvim_set_option_value('cursorline', true, { win = w })
+      end
     end
     util.__config.ui.pre_open_hook = function()
       util.set_up_dbee()

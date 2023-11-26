@@ -70,27 +70,19 @@ end
 function util.oil_entries_to_quickfix()
   if vim.bo.filetype ~= 'oil' then return end
   local oil = require 'oil'
+  local dir = oil.get_current_dir()
+
   local entries = {}
   for i = 1, vim.fn.line '$' do
-    local ok, entry = pcall(oil.get_entry_on_line, 0, i)
-    if ok then
-      table.insert(entries, entry)
+    local entry = oil.get_entry_on_line(0, i)
+    if entry and entry.type == 'file' then
+      table.insert(entries, { filename = dir .. entry.name })
     end
   end
-  entries = vim.tbl_filter(function(entry)
-    return type(entry) == 'table' and
-      entry.type == 'file'
-      and type(entry.name) == 'string'
-  end, entries)
-  local dir = oil.get_current_dir()
-  entries = vim.tbl_map(
-    function(entry) return { filename = dir .. entry.name } end,
-    entries)
   if #entries == 0 then return end
+
   vim.fn.setqflist(entries)
-  local ok, tb = pcall(require, 'telescope.builtin')
-  if ok then return tb.quickfix() end
-  return vim.cmd 'copen'
+  return vim.cmd.copen()
 end
 
 return M
