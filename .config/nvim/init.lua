@@ -1,7 +1,7 @@
 --=============================================================================
 --                                                                    NVIM-INIT
 --=============================================================================
-if not pcall(function() assert(type(vim.snippet) == 'table') end) then
+if not pcall(function() assert(vim.version().minor >= 10) end) then
   return print 'This configuration requires NVIM v0.10.0 or newer.'
 end
 
@@ -29,7 +29,7 @@ vim.opt.shortmess = vim.opt.shortmess + 'c' -- don't give ins-completion-menu
 vim.opt.completeopt = 'menu,menuone,noselect'
 
 vim.opt.smartcase = true -- override ignorecase option
-vim.opt.hlsearch = false -- stop highlighting for hlsearch option
+vim.opt.hlsearch = false -- don't highlight search results
 vim.opt.incsearch = true
 
 vim.opt.path = '.,,**'        -- search down into subfolders

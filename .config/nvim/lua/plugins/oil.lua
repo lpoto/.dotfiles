@@ -41,7 +41,7 @@ M.opts = {
   columns = {},
   keymaps = {
     ['<BS>'] = 'actions.parent',
-    ['<C-q>'] = function() return util.oil_entries_to_quickfix() end
+    ['<C-q>'] = 'actions.send_to_qflist'
   },
 }
 
@@ -65,24 +65,6 @@ function util.is_starting_screen()
     vim.api.nvim_buf_line_count(0) == 0 and
     vim.api.nvim_get_option_value('buftype', { buf = 0 }) == '' and
     vim.api.nvim_get_option_value('filetype', { buf = 0 }) == ''
-end
-
-function util.oil_entries_to_quickfix()
-  if vim.bo.filetype ~= 'oil' then return end
-  local oil = require 'oil'
-  local dir = oil.get_current_dir()
-
-  local entries = {}
-  for i = 1, vim.fn.line '$' do
-    local entry = oil.get_entry_on_line(0, i)
-    if entry and entry.type == 'file' then
-      table.insert(entries, { filename = dir .. entry.name })
-    end
-  end
-  if #entries == 0 then return end
-
-  vim.fn.setqflist(entries)
-  return vim.cmd.copen()
 end
 
 return M

@@ -38,10 +38,8 @@ vim.g[vim.bo.filetype] = function()
         },
       },
       root_dir = function()
-        return vim.fs.find(
-          { '.git', '.editorconfig' },
-          {}
-        )[0] or vim.fn.getcwd()
+        return vim.fs.find({ '.git', '.editorconfig' }, {})[0]
+          or vim.fn.getcwd()
       end,
     }
   }

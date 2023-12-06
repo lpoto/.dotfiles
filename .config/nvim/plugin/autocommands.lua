@@ -68,17 +68,19 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 
 ----------------------------------- Set multispace lischars based on shiftwidth
 
-vim.api.nvim_create_autocmd({ 'Filetype' }, {
+vim.api.nvim_create_autocmd({ 'BufWinEnter' }, {
   group = group,
   callback = function()
-    local sw = vim.o.shiftwidth
-    local s  = '·'
-    if sw > 1 then s = '┊' .. string.rep(' ', sw - 1) end
-    vim.opt_local.listchars:append {
-      multispace = ' · ',
-      leadmultispace = s,
-      tab = '┊ ',
-    }
+    vim.schedule(function()
+      local sw = vim.o.shiftwidth
+      local s  = '·'
+      if sw > 1 then s = '┊' .. string.rep(' ', sw - 1) end
+      vim.opt_local.listchars:append {
+        multispace = ' · ',
+        leadmultispace = s,
+        tab = '┊ ',
+      }
+    end)
   end,
 })
 

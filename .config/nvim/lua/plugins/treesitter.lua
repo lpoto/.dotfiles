@@ -13,6 +13,10 @@ local M = {
   cmd = { 'TSUpdate', 'TSInstall', 'TSUpdateSync', 'TSInstallSync' },
 }
 
+function M.init()
+  vim.opt.foldlevelstart = 99
+end
+
 function M.config()
   require 'nvim-treesitter.configs'.setup {
     auto_install = true,
@@ -36,7 +40,6 @@ function M.config()
       },
     }
   }
-  vim.opt.foldlevelstart = 99
   vim.opt.foldmethod = 'expr'
   vim.opt.foldexpr = 'nvim_treesitter#foldexpr()'
 end

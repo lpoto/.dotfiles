@@ -53,15 +53,16 @@ end
 
 function util.attach(buf, opts)
   if type(opts) ~= 'table' then return end
-  local formatter = opts.formatter or opts.format
-  if type(formatter) == 'string' then formatter = { name = formatter } end
-  if type(formatter) ~= 'table' then return end
+  local filetype = vim.api.nvim_get_option_value('filetype', { buf = buf })
+  opts = opts.formatter or opts.format
+  local formatter = util.expand_config(filetype, opts)
+  if not formatter then return end
+
   if type(vim.g.attached) == 'table' and
     vim.tbl_contains(vim.g.attached, formatter.name) then
     return
   end
 
-  local filetype = vim.api.nvim_get_option_value('filetype', { buf = buf })
   local ok = pcall(require, 'conform.formatters.' .. formatter.name)
   if not ok then
     return util.add_to_not_attached(formatter.name)
@@ -104,6 +105,21 @@ function util.attach(buf, opts)
     end
   end
   return util.add_to_not_attached(formatter.name)
+end
+
+function util.expand_config(filetype, opts)
+  if type(opts) ~= 'table' then opts = { name = opts } end
+  local g_opts = vim.g[filetype .. '_formatter']
+    or vim.g[filetype .. '_format']
+  if type(g_opts) == 'string' then
+    opts = { name = g_opts }
+  elseif type(g_opts) == 'table' then
+    opts = vim.tbl_deep_extend('force', opts, g_opts)
+  end
+  if type(opts.name) ~= 'string' then
+    return
+  end
+  return opts
 end
 
 function util.add_to_attached(name)

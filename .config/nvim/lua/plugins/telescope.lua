@@ -50,15 +50,19 @@ function M.init()
     { 'n', 'gr',        util.builtin 'lsp_references' },
     { 'n', '<leader>q', util.builtin('quickfix', true) },
     { 'n', '<leader>D', util.builtin 'diagnostics' },
-    { 'n', '<leader>d', function()
-      if not vim.diagnostic.open_float() then
-        util.builtin 'diagnostics' { bufnr = 0 }
-      end
-    end
+    {
+      'n',
+      '<leader>d',
+      function()
+        if not vim.diagnostic.open_float() then
+          util.builtin 'diagnostics' { bufnr = 0 }
+        end
+      end,
     },
   } do
     vim.keymap.set(unpack(o))
   end
+  util.autocmds()
 end
 
 function M.config()
@@ -135,8 +139,6 @@ function M.config()
     },
   }
   require 'telescope'.load_extension 'fzf'
-
-  util.create_overrides()
 end
 
 function util.default_mappings()
@@ -146,10 +148,7 @@ function util.default_mappings()
       -- NOTE: when a telescope window is opened, use ctrl + q to
       -- send the current results to a quickfix window, then immediately
       -- open quickfix in a telescope window
-      ['<C-q>'] = function()
-        actions.send_to_qflist(vim.fn.bufnr())
-        util.builtin_l 'quickfix' ()
-      end,
+      ['<C-q>'] = actions.send_to_qflist,
       ['<Tab>'] = actions.move_selection_next,
       ['<S-Tab>'] = actions.move_selection_previous,
     },
@@ -199,19 +198,41 @@ function util.attach_marks_mappings(_, map)
       end
     end
     local picker = state.get_current_picker(vim.api.nvim_get_current_buf())
-    if type(picker) == 'table' then picker:close_existing_pickers() end
-    vim.schedule(function() require 'telescope_builtin'.marks() end)
+    if type(picker) == 'table' then
+      picker:close_existing_pickers()
+    end
+    vim.schedule(function()
+      require 'telescope_builtin'.marks()
+    end)
   end)
   return true
 end
 
-function util.create_overrides()
-  vim.cmd.copen = util.builtin 'quickfix'
+function util.autocmds()
+  vim.api.nvim_create_autocmd('QuickFixCmdPost', {
+    group = vim.api.nvim_create_augroup('TelescopeQuickFix', { clear = true }),
+    callback = function()
+      vim.schedule(function()
+        for _, b in ipairs(vim.api.nvim_list_bufs()) do
+          if
+            vim.api.nvim_get_option_value('buftype', { buf = b })
+            == 'quickfix'
+            and vim.fn.bufwinid(b) ~= -1
+          then
+            return
+          end
+        end
+        return util.builtin('quickfix', true)()
+      end)
+    end,
+  })
 end
 
 function util.builtin(name, log_if_no_results)
   return function(opts)
-    if type(opts) ~= 'table' then opts = {} end
+    if type(opts) ~= 'table' then
+      opts = {}
+    end
     local telescope_builtin = require 'telescope.builtin'
     telescope_builtin[name](opts)
     if

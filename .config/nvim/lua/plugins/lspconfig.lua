@@ -108,13 +108,16 @@ end
 
 function util.attach(bufnr, opts)
   if type(opts) ~= 'table' then return end
-  local server = opts.language_server or opts.server
-  if type(server) == 'string' then server = { name = server } end
-  if type(server) ~= 'table' then return end
+  opts = opts.language_server or opts.server
+  local filetype = vim.api.nvim_get_option_value('filetype', { buf = bufnr })
+  local server = util.expand_config(filetype, opts)
+  if not server then return end
+
   if type(vim.g.attached) == 'table' and
     vim.tbl_contains(vim.g.attached, server.name) then
     return
   end
+
   local ok = pcall(require, 'lspconfig.server_configurations.' .. server.name)
   local lsp = ok and require 'lspconfig'[server.name]
 
@@ -125,7 +128,6 @@ function util.attach(bufnr, opts)
   ---@type table
   local client = (vim.lsp.get_clients { name = server.name } or {})[1]
 
-  local filetype = vim.api.nvim_get_option_value('filetype', { buf = bufnr })
   server.filetypes = server.filetypes or { filetype }
 
   if type(client) == 'table' and
@@ -166,6 +168,22 @@ function util.attach(bufnr, opts)
   config.launch(bufnr)
 
   util.add_to_attached(server.name)
+end
+
+function util.expand_config(filetype, opts)
+  if type(opts) ~= 'table' then opts = { name = opts } end
+
+  local g_opts = vim.g[filetype .. '_language_server']
+    or vim.g[filetype .. '_server']
+  if type(g_opts) == 'string' then
+    opts = { name = g_opts }
+  elseif type(g_opts) == 'table' then
+    opts = vim.tbl_deep_extend('force', opts, g_opts)
+  end
+  if type(opts.name) ~= 'string' then
+    return
+  end
+  return opts
 end
 
 function util.log_attached(delay)
