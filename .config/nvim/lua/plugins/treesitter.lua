@@ -7,22 +7,20 @@ highlights, ...
 -----------------------------------------------------------------------------]]
 
 local M = {
-  'nvim-treesitter/nvim-treesitter',
-  tag = 'v0.9.1',
-  event = 'VeryLazy',
-  cmd = { 'TSUpdate', 'TSInstall', 'TSUpdateSync', 'TSInstallSync' },
+  "nvim-treesitter/nvim-treesitter",
+  tag = "v0.9.1",
+  event = "VeryLazy",
+  cmd = { "TSUpdate", "TSInstall", "TSUpdateSync", "TSInstallSync" },
 }
 
-function M.init()
-  vim.opt.foldlevelstart = 99
-end
+function M.init() vim.opt.foldlevelstart = 99 end
 
 function M.config()
-  require 'nvim-treesitter.configs'.setup {
+  require("nvim-treesitter.configs").setup {
     auto_install = true,
     sync_install = true,
     ignore_install = {},
-    ensure_installed = { 'c', 'lua', 'vim', 'vimdoc' },
+    ensure_installed = { "c", "lua", "vim", "vimdoc" },
     modules = {},
     highlight = {
       enable = true,
@@ -34,32 +32,32 @@ function M.config()
     incremental_selection = {
       enable = true,
       keymaps = {
-        init_selection = '<CR>',
-        node_incremental = '<CR>',
-        node_decremental = '<BS>',
+        init_selection = "<CR>",
+        node_incremental = "<CR>",
+        node_decremental = "<BS>",
       },
-    }
+    },
   }
-  vim.opt.foldmethod = 'expr'
-  vim.opt.foldexpr = 'nvim_treesitter#foldexpr()'
+  vim.opt.foldmethod = "expr"
+  vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
 end
 
 --NOTE: install mandatory parsers on build
 function M.build()
   local ensure_installed = {
-    'c',
-    'lua',
-    'vim',
-    'vimdoc',
-    'markdown',
-    'markdown_inline',
-    'bash',
-    'gitcommit',
-    'git_config',
-    'git_rebase',
-    'gitattributes',
+    "c",
+    "lua",
+    "vim",
+    "vimdoc",
+    "markdown",
+    "markdown_inline",
+    "bash",
+    "gitcommit",
+    "git_config",
+    "git_rebase",
+    "gitattributes",
   }
-  vim.cmd('TSUpdateSync ' .. table.concat(ensure_installed, ' '))
+  vim.cmd("TSUpdateSync " .. table.concat(ensure_installed, " "))
 end
 
 return M

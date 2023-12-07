@@ -5,14 +5,14 @@ if vim.g[vim.bo.filetype] then return end
 
 vim.g[vim.bo.filetype] = function()
   return {
-    formatter = 'prettier',
+    formatter = "prettier",
     language_server = {
-      name = 'yamlls',
+      name = "yamlls",
       settings = {
         yaml = {
           keyOrdering = false,
         },
       },
-    }
+    },
   }
 end

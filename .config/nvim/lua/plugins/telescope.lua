@@ -6,31 +6,32 @@ Telescope is a highly extendable fuzzy finder over lists.
 Items are shown in a popup with a prompt to search over.
 
 Keymaps:
- - "<leader>n"   - find files
- - "<leader>o"   - old files
- - "<leader>l"   - live grep
- - "<leader>L"   - live grep word under cursor
+ - "<leader><Space>"   - find files
+ - "<leader>o"         - old files
+ - "<leader>l"         - live grep
+ - "<leader>L"         - live grep word under cursor
 
- - "<leader>c"   - continue previous picker
+ - "<leader>c"         - continue previous picker
 
- - "<leader>m"   - marks
- - "<leader>h"   - Search help tags
+ - "<leader>m"         - marks
+ - "<leader>h"         - Search help tags
 
- - "<leader>d"   - show document diagnostics
- - "<leader>D"   - show workspace diagnostics
- - "gd"          - LSP definitions
- - "gi"          - LSP implementations
- - "gr"          - LSP references
+ - "<leader>d"         - show document diagnostics
+ - "<leader>D"         - show workspace diagnostics
+ - "gd"                - LSP definitions
+ - "gi"                - LSP implementations
+ - "gr"                - LSP references
 
  Use <C-q> in a telescope prompt to send the results to quickfix.
 -----------------------------------------------------------------------------]]
 
 local M = {
-  'nvim-telescope/telescope.nvim',
-  cmd = 'Telescope',
+  "nvim-telescope/telescope.nvim",
+  event = "VeryLazy",
   dependencies = {
-    'nvim-lua/plenary.nvim',
-    { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
+    "nvim-lua/plenary.nvim",
+    { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+    "nvim-telescope/telescope-ui-select.nvim",
   },
 }
 
@@ -38,24 +39,24 @@ local util = {}
 
 function M.init()
   for _, o in ipairs {
-    { 'n', '<leader>n', util.builtin 'find_files' },
-    { 'n', '<leader>o', util.builtin 'oldfiles' },
-    { 'n', '<leader>l', util.builtin 'live_grep' },
-    { 'n', '<leader>L', util.builtin 'grep_string' },
-    { 'n', '<leader>c', util.builtin 'resume' },
-    { 'n', '<leader>m', util.builtin 'marks' },
-    { 'n', '<leader>h', util.builtin 'help_tags' },
-    { 'n', 'gd',        util.builtin 'lsp_definitions' },
-    { 'n', 'gi',        util.builtin 'lsp_implementations' },
-    { 'n', 'gr',        util.builtin 'lsp_references' },
-    { 'n', '<leader>q', util.builtin('quickfix', true) },
-    { 'n', '<leader>D', util.builtin 'diagnostics' },
+    { "n", "<leader><Space>", util.builtin "find_files" },
+    { "n", "<leader>o", util.builtin "oldfiles" },
+    { "n", "<leader>l", util.builtin "live_grep" },
+    { "n", "<leader>L", util.builtin "grep_string" },
+    { "n", "<leader>c", util.builtin "resume" },
+    { "n", "<leader>m", util.builtin "marks" },
+    { "n", "<leader>h", util.builtin "help_tags" },
+    { "n", "gd", util.builtin "lsp_definitions" },
+    { "n", "gi", util.builtin "lsp_implementations" },
+    { "n", "gr", util.builtin "lsp_references" },
+    { "n", "<leader>q", util.builtin("quickfix", true) },
+    { "n", "<leader>D", util.builtin "diagnostics" },
     {
-      'n',
-      '<leader>d',
+      "n",
+      "<leader>d",
       function()
         if not vim.diagnostic.open_float() then
-          util.builtin 'diagnostics' { bufnr = 0 }
+          util.builtin "diagnostics" { bufnr = 0 }
         end
       end,
     },
@@ -66,18 +67,18 @@ function M.init()
 end
 
 function M.config()
-  local telescope = require 'telescope'
+  local telescope = require "telescope"
   telescope.setup {
     defaults = {
-      prompt_prefix = ' ',
+      prompt_prefix = " ",
       color_devicons = false,
       mappings = util.default_mappings(),
-      sorting_strategy = 'ascending',
-      layout_strategy = 'horizontal',
-      selection_strategy = 'row',
+      sorting_strategy = "ascending",
+      layout_strategy = "horizontal",
+      selection_strategy = "row",
       layout_config = {
         horizontal = {
-          prompt_position = 'top',
+          prompt_position = "top",
           preview_width = 0.55,
           results_width = 0.8,
         },
@@ -89,32 +90,32 @@ function M.config()
         preview_cutoff = 120,
       },
       file_ignore_patterns = {
-        'plugged/',
-        '%.undo/',
-        '%.storage/',
-        '%.data/',
-        '%.local/',
-        '%.git/',
-        'node_modules/',
-        'target/',
-        '%.target/',
-        '%.settings/',
-        '%.build/',
-        'generated/',
-        'generated-sources/',
-        '^build/',
-        'dist/',
-        '%.dist/',
-        '%.angular/',
-        '__pycache__/',
-        'github.copilot/',
-        '%.project$',
-        '%.classpath$',
-        '%.factorypath$',
-        '%.jar$',
-        '%.class$',
-        '%.dll$',
-        '%.jnilib$',
+        "plugged/",
+        "%.undo/",
+        "%.storage/",
+        "%.data/",
+        "%.local/",
+        "%.git/",
+        "node_modules/",
+        "target/",
+        "%.target/",
+        "%.settings/",
+        "%.build/",
+        "generated/",
+        "generated-sources/",
+        "^build/",
+        "dist/",
+        "%.dist/",
+        "%.angular/",
+        "__pycache__/",
+        "github.copilot/",
+        "%.project$",
+        "%.classpath$",
+        "%.factorypath$",
+        "%.jar$",
+        "%.class$",
+        "%.dll$",
+        "%.jnilib$",
       },
     },
     pickers = {
@@ -128,38 +129,44 @@ function M.config()
       },
       marks = {
         attach_mappings = util.attach_marks_mappings,
-        selection_strategy = 'row',
+        selection_strategy = "row",
       },
       git_status = {
         attach_mappings = util.attach_git_status_mappings,
         file_ignore_patterns = {},
-        selection_strategy = 'row',
-        initial_mode = 'normal',
+        selection_strategy = "row",
+        initial_mode = "normal",
+      },
+    },
+    extensions = {
+      ["ui-select"] = {
+        require("telescope.themes").get_dropdown {},
       },
     },
   }
-  require 'telescope'.load_extension 'fzf'
+  require("telescope").load_extension "ui-select"
+  require("telescope").load_extension "fzf"
 end
 
 function util.default_mappings()
-  local actions = require 'telescope.actions'
+  local actions = require "telescope.actions"
   return {
     i = {
       -- NOTE: when a telescope window is opened, use ctrl + q to
       -- send the current results to a quickfix window, then immediately
       -- open quickfix in a telescope window
-      ['<C-q>'] = actions.send_to_qflist,
-      ['<Tab>'] = actions.move_selection_next,
-      ['<S-Tab>'] = actions.move_selection_previous,
+      ["<C-q>"] = actions.send_to_qflist,
+      ["<Tab>"] = actions.move_selection_next,
+      ["<S-Tab>"] = actions.move_selection_previous,
     },
     n = {
-      ['<Tab>'] = actions.move_selection_next,
-      ['<S-Tab>'] = actions.move_selection_previous,
-      ['<leader>j'] = function(bufnr)
+      ["<Tab>"] = actions.move_selection_next,
+      ["<S-Tab>"] = actions.move_selection_previous,
+      ["<leader>j"] = function(bufnr)
         actions.move_selection_next(bufnr)
         actions.toggle_selection(bufnr)
       end,
-      ['<leader>k'] = function(bufnr)
+      ["<leader>k"] = function(bufnr)
         actions.toggle_selection(bufnr)
         actions.move_selection_previous(bufnr)
       end,
@@ -168,61 +175,57 @@ function util.default_mappings()
 end
 
 function util.attach_git_status_mappings(_, map)
-  local actions = require 'telescope.actions'
+  local actions = require "telescope.actions"
   actions.select_default:replace(actions.git_staging_toggle)
-  map('n', 'e', actions.file_edit)
-  map('i', '<C-e>', actions.file_edit)
-  map('i', '<Tab>', actions.move_selection_next)
-  map('n', '<Tab>', actions.move_selection_next)
-  map('i', '<S-Tab>', actions.move_selection_previous)
-  map('n', '<S-Tab>', actions.move_selection_previous)
-  map('n', 's', actions.git_staging_toggle)
-  map('i', '<C-s>', actions.git_staging_toggle)
-  map('n', '<C-s>', actions.git_staging_toggle)
+  map("n", "e", actions.file_edit)
+  map("i", "<C-e>", actions.file_edit)
+  map("i", "<Tab>", actions.move_selection_next)
+  map("n", "<Tab>", actions.move_selection_next)
+  map("i", "<S-Tab>", actions.move_selection_previous)
+  map("n", "<S-Tab>", actions.move_selection_previous)
+  map("n", "s", actions.git_staging_toggle)
+  map("i", "<C-s>", actions.git_staging_toggle)
+  map("n", "<C-s>", actions.git_staging_toggle)
   return true
 end
 
 function util.attach_marks_mappings(_, map)
-  local state = require 'telescope.actions.state'
-  map({ 'n', 'i' }, '<C-r>', function()
+  local state = require "telescope.actions.state"
+  map({ "n", "i" }, "<C-r>", function()
     local entry = state.get_selected_entry()
-    local display = vim.split(entry.display, ' ')
+    local display = vim.split(entry.display, " ")
     local mark = display[1]
     local ok, _ = pcall(vim.api.nvim_del_mark, mark)
     if not ok then
       local err
       ok, err = pcall(vim.api.nvim_buf_del_mark, 0, mark)
-      if not ok and type(err) == 'string' then
+      if not ok and type(err) == "string" then
         vim.notify(err, vim.log.levels.WARN)
         return
       end
     end
     local picker = state.get_current_picker(vim.api.nvim_get_current_buf())
-    if type(picker) == 'table' then
-      picker:close_existing_pickers()
-    end
-    vim.schedule(function()
-      require 'telescope_builtin'.marks()
-    end)
+    if type(picker) == "table" then picker:close_existing_pickers() end
+    vim.schedule(function() require("telescope_builtin").marks() end)
   end)
   return true
 end
 
 function util.autocmds()
-  vim.api.nvim_create_autocmd('QuickFixCmdPost', {
-    group = vim.api.nvim_create_augroup('TelescopeQuickFix', { clear = true }),
+  vim.api.nvim_create_autocmd("QuickFixCmdPost", {
+    group = vim.api.nvim_create_augroup("TelescopeQuickFix", { clear = true }),
     callback = function()
       vim.schedule(function()
         for _, b in ipairs(vim.api.nvim_list_bufs()) do
           if
-            vim.api.nvim_get_option_value('buftype', { buf = b })
-            == 'quickfix'
+            vim.api.nvim_get_option_value("buftype", { buf = b })
+              == "quickfix"
             and vim.fn.bufwinid(b) ~= -1
           then
             return
           end
         end
-        return util.builtin('quickfix', true)()
+        return util.builtin("quickfix", true)()
       end)
     end,
   })
@@ -230,29 +233,25 @@ end
 
 function util.builtin(name, log_if_no_results)
   return function(opts)
-    if type(opts) ~= 'table' then
-      opts = {}
-    end
-    local telescope_builtin = require 'telescope.builtin'
+    if type(opts) ~= "table" then opts = {} end
+    local telescope_builtin = require "telescope.builtin"
     telescope_builtin[name](opts)
     if
       log_if_no_results == true
       and vim.api.nvim_get_option_value(
-        'filetype',
-        { buf = vim.api.nvim_get_current_buf() }
-      )
-      ~= 'TelescopePrompt'
+          "filetype",
+          { buf = vim.api.nvim_get_current_buf() }
+        )
+        ~= "TelescopePrompt"
     then
       vim.notify(
-        '[telescope.builtin.' .. name .. '] Not results found ',
+        "[telescope.builtin." .. name .. "] Not results found ",
         vim.log.levels.WARN
       )
     end
   end
 end
 
-function util.builtin_l(name)
-  return util.builtin(name, true)
-end
+function util.builtin_l(name) return util.builtin(name, true) end
 
 return M

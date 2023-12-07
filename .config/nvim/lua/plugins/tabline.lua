@@ -3,7 +3,7 @@
 --=============================================================================
 
 return {
-  'lpoto/tabline.nvim',
-  event = { 'BufRead', 'BufNewFile', 'BufNew' },
+  "lpoto/tabline.nvim",
+  event = { "BufRead", "BufNewFile", "BufNew" },
   opts = {},
 }

@@ -3,10 +3,10 @@
 --=============================================================================
 
 return {
-  'NMAC427/guess-indent.nvim',
-  event = { 'BufRead', 'BufNewFile', 'BufNew' },
+  "NMAC427/guess-indent.nvim",
+  event = { "BufRead", "BufNewFile", "BufNew" },
   opts = {
     auto_cmd = true,
-    override_editorconfig = false
+    override_editorconfig = false,
   },
 }

@@ -7,31 +7,31 @@ local java_root
 vim.g[vim.bo.filetype] = function()
   return {
     language_server = {
-      name = 'jdtls',
-      root_dir = java_root
-    }
+      name = "jdtls",
+      root_dir = java_root,
+    },
   }
 end
 
 function java_root()
-  local pattern_kinds = { { 'pom.xml' }, { 'build.xml' }, { '.git', } }
+  local pattern_kinds = { { "pom.xml" }, { "build.xml" }, { ".git" } }
   ---@diagnostic disable-next-line
   local home_dir = vim.uv.os_homedir()
   local file = vim.api.nvim_buf_get_name(0)
   for _, patterns in ipairs(pattern_kinds) do
     local ok, dir = pcall(vim.fs.dirname, file)
     local found_dir = nil
-    while ok and
-      type(dir) == 'string' and
-      vim.fn.isdirectory(dir) == 1 and
-      dir:len() > home_dir:len() and
-      dir ~= found_dir
+    while
+      ok
+      and type(dir) == "string"
+      and vim.fn.isdirectory(dir) == 1
+      and dir:len() > home_dir:len()
+      and dir ~= found_dir
     do
       local found = false
       for _, pattern in ipairs(patterns) do
-        local p = dir .. '/' .. pattern
-        if vim.fn.isdirectory(p) == 1 or
-          vim.fn.filereadable(p) == 1 then
+        local p = dir .. "/" .. pattern
+        if vim.fn.isdirectory(p) == 1 or vim.fn.filereadable(p) == 1 then
           found_dir, found = dir, true
           break
         end
