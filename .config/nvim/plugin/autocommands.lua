@@ -89,7 +89,7 @@ vim.api.nvim_create_autocmd({ "BufWinEnter" }, {
 local function shada_autocmd(write, read)
   if write then pcall(vim.api.nvim_exec2, "wshada!", {}) end
   local tail = ((vim.fn.expand "%:p:h") .. ".shada"):gsub("/", "%%")
-  local file = vim.fn.stdpath "data" .. "/shada/" .. tail
+  local file = vim.fn.stdpath "state" .. "/shada/" .. tail
   vim.opt.shada = {
     "!",
     "'100",

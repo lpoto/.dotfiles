@@ -150,7 +150,7 @@ function util.format(opts, callback)
   if not next(util.formatted_with) then util.formatted_with = nil end
 
   local line_count = vim.api.nvim_buf_line_count(buf)
-  if line_count > 1000 and not vim.fn.mode():lower():find("v") then
+  if line_count > 1000 and not vim.fn.mode():lower():find "v" then
     local c = vim.fn.confirm(
       "The file has "
         .. line_count

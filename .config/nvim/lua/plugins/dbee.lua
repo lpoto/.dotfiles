@@ -8,16 +8,16 @@ Commands:
 
 local M = {
   "kndndrj/nvim-dbee",
-  tag = "v0.0.0",
+  tag = "v0.1.2",
   dependencies = {
     "MunifTanjim/nui.nvim",
   },
   cmd = { "DBee", "Dbee" },
 }
 
-local util = {}
-
 function M.build() require("dbee").install() end
+
+local layout = {}
 
 function M.config()
   local config = require("dbee.config").default
@@ -29,7 +29,12 @@ function M.config()
       v.icon = ""
     end
   end
-  util.set_up_dbee()
+  require("dbee").setup {
+    result = {
+      page_size = 20,
+    },
+    window_layout = layout,
+  }
   for _, v in ipairs(M.cmd or {}) do
     vim.api.nvim_create_user_command(
       v,
@@ -39,42 +44,46 @@ function M.config()
   end
 end
 
-function util.set_up_dbee()
-  if not util.__config then
-    util.__config = require("dbee.config").default
-    local sources = require "dbee.sources"
-    local data = vim.fn.stdpath "data"
-    util.__config.sources = {
-      sources.EnvSource:new "DBEE_CONNECTIONS",
-      sources.FileSource:new(data .. "/dbee/persistence.json"),
-    }
-    local old_post_hook = util.__config.ui.post_open_hook
-    local old_pre_hook = util.__config.ui.pre_open_hook
-    util.__config.ui.post_open_hook = function()
-      if type(old_post_hook) == "function" then old_post_hook() end
-      local wins = vim.api.nvim_list_wins()
-      if #wins ~= 3 then return end
-      for _, w in ipairs(wins) do
-        vim.api.nvim_set_option_value("cursorline", true, { win = w })
-      end
-    end
-    util.__config.ui.pre_open_hook = function()
-      util.set_up_dbee()
-      if type(old_pre_hook) == "function" then old_pre_hook() end
-    end
-  end
-  local w = math.min(80, math.floor(vim.o.columns / 2.5))
-  local h = math.min(28, math.floor(vim.o.lines / 2.5))
+function layout:new()
+  local o = {
+    egg = nil,
+    windows = {},
+  }
+  setmetatable(o, self)
+  self.__index = self
+  return o
+end
 
-  local cfg = vim.tbl_deep_extend("force", util.__config, {
-    ui = {
-      window_commands = {
-        drawer = "to " .. w .. "vsplit",
-        result = "bo " .. h .. "split",
-      },
-    },
-  })
-  require("dbee").setup(cfg)
+function layout:open(uis)
+  local tools = require "dbee.layouts.tools"
+  self.egg = tools.save()
+  self.windows = {}
+  tools.make_only(0)
+  local editor_win = vim.api.nvim_get_current_win()
+  table.insert(self.windows, editor_win)
+  uis.editor:show(editor_win)
+  vim.cmd "bo 23split"
+  local win = vim.api.nvim_get_current_win()
+  table.insert(self.windows, win)
+  uis.result:show(win)
+  vim.cmd "to 50vsplit"
+  win = vim.api.nvim_get_current_win()
+  table.insert(self.windows, win)
+  uis.drawer:show(win)
+  vim.cmd "belowright 10split"
+  win = vim.api.nvim_get_current_win()
+  table.insert(self.windows, win)
+  uis.call_log:show(win)
+  vim.api.nvim_set_current_win(editor_win)
+end
+
+function layout:close()
+  local tools = require "dbee.layouts.tools"
+  for _, win in ipairs(self.windows) do
+    pcall(vim.api.nvim_win_close, win, false)
+  end
+  tools.restore(self.egg)
+  self.egg = nil
 end
 
 return M

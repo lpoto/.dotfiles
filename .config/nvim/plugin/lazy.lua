@@ -55,8 +55,8 @@ function M.get_lazy_options()
       lazy = true,
     },
     root = vim.fn.stdpath "data" .. "/lazy",
-    lockfile = vim.fn.stdpath "config" .. "/.lazy.lock.json",
-    state = vim.fn.stdpath "data" .. "/lazy/state.json",
+    lockfile = vim.fn.stdpath "config" .. "/.lazy_lock.json",
+    state = vim.fn.stdpath "state" .. "/lazy.json",
     ui = {
       border = "rounded",
     },
