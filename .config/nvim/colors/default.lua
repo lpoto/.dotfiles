@@ -43,7 +43,9 @@ end
 
 M.colors = {
   normal = "#c9d1d9",
-  normal2 = "#b4babf",
+  variable = "#c9d1d9",
+  field = "#c9d1d9",
+  abbr = "#9caab8",
   title = "#79b8ff",
   whitespace = "#27292e",
   visual = "#163356",
@@ -54,7 +56,6 @@ M.colors = {
   comment = "#687078",
   keyword = "#f97583",
   macro = "#9492f0",
-  variable = "#79b8ff",
   special = "#79b8ff",
   constant = "#79b8ff",
   string = "#9ecbff",
@@ -63,6 +64,7 @@ M.colors = {
   func_param = "#e1e4e8",
   reference = "#265459",
   tag = "#55c2b7",
+  label = "#55c2b7",
   operator = "#94a3b3",
   error = "#f97583",
   warning = "#cca700",
@@ -84,6 +86,8 @@ M.hl.base = {
   NormalNC = { link = "Normal" },
   NormalSB = { link = "Normal" },
   Conceal = { link = "Normal" },
+
+  Field = { fg = M.colors.field },
 
   Whitespace = { fg = M.colors.whitespace, bg = "NONE" },
   NonText = { link = "Whitespace" },
@@ -124,14 +128,17 @@ M.hl.base = {
 
   Tag = { fg = M.colors.tag },
 
+  Label = { fg = M.colors.label },
+
   Keyword = { fg = M.colors.keyword },
   Statement = { link = "Keyword" },
   Conditional = { link = "Keyword" },
+  Storageclass = { link = "Keyword" },
   PreCondit = { link = "Keyword" },
   Define = { link = "Keyword" },
   Include = { link = "Keyword" },
   Repeat = { link = "Keyword" },
-  Label = { link = "Keyword" },
+  Exception = { link = "Keyword" },
   Operator = { fg = M.colors.operator },
 
   PreProc = { fg = M.colors.macro, italic = true },
@@ -146,6 +153,7 @@ M.hl.base = {
   String = { fg = M.colors.string },
   Character = { fg = M.colors.symbol, italic = true },
   Number = { fg = M.colors.symbol, italic = true },
+  Float = { link = "Number" },
   Boolean = { fg = M.colors.symbol, italic = true },
 
   Comment = { fg = M.colors.comment, italic = true },
@@ -222,15 +230,13 @@ M.hl.treesitter = {
   ["@function"] = { link = "Function" },
   ["@method"] = { link = "Function" },
   ["@function.builtin"] = { link = "Macro" },
-  ["@property"] = { link = "Function" },
 
   ["@function.macro"] = { link = "Macro" },
   ["@constant.macro"] = { link = "Macro" },
   ["@lsp.type.macro"] = { link = "Macro" },
 
-  ["@label"] = { link = "Variable" },
-
   ["@constructor"] = { link = "Variable" },
+  ["@constructor.lua"] = { link = "Field" },
 
   ["@note"] = { link = "Todo" },
   ["@warning"] = { link = "Warning" },
@@ -239,11 +245,11 @@ M.hl.treesitter = {
   ["@constant"] = { link = "Constant" },
   ["@constant.comment"] = { link = "Keyword" },
 
-  ["@field"] = { link = "Identifier" },
+  ["@namespace"] = { link = "Constant" },
+
   ["@include"] = { link = "Include" },
   ["@keyword"] = { link = "Keyword" },
   ["@keyword.function"] = { link = "Keyword" },
-  ["@namespace"] = { link = "Identifier" },
   ["@operator"] = { link = "Operator" },
   ["@parameter"] = { fg = M.colors.func_param },
   ["@punctDelimiter"] = { link = "Identifier" },
@@ -254,18 +260,33 @@ M.hl.treesitter = {
   ["@string.regex"] = { link = "Variable" },
   ["@string.escape"] = { link = "Keyword" },
   ["@type"] = { link = "Type" },
+  ["@type.builtin"] = { link = "Type" },
   ["@variable"] = { link = "Variable" },
   ["@variable.builtin"] = { link = "Variable" },
-  ["@tag"] = { link = "Tag" },
   ["@tag.delimiter"] = { link = "Identifier" },
   ["@text"] = { link = "Normal" },
   ["@text.reference"] = { link = "Keyword" },
 
-  ["@constant.html"] = { link = "Tag" },
-  ["@field.yaml"] = { link = "Tag" },
-  ["@field.json"] = { link = "Tag" },
+  ["@number"] = { link = "Number" },
+  ["@float"] = { link = "Float" },
 
   ["@variable.go"] = { link = "Identifier" },
+
+  ["@conditional"] = { link = "Conditional" },
+  ["@storageclass"] = { link = "Storageclass" },
+  ["@repeat"] = { link = "Repeat" },
+  ["@exception"] = { link = "Exception" },
+
+  ["@field"] = { link = "Field" },
+  ["@property"] = { link = "Field" },
+  ["@lsp.type.property"] = { link = "Field" },
+
+  ["@tag"] = { link = "Tag" },
+  ["@label"] = { link = "Label" },
+  ["@field.yaml"] = { link = "Label" },
+  ["@property.css"] = { link = "Label" },
+  ["@property.scss"] = { link = "Label" },
+  ["@variable.scss"] = { link = "Keyword" },
 }
 
 M.hl.telescope = {
@@ -287,7 +308,7 @@ M.hl.gitsigns = {
 M.hl.cmp = {
   CmpDocumentation = { link = "NormalFloat" },
   CmpDocumentationBorder = { link = "FloatBorder" },
-  CmpItemAbbr = { fg = M.colors.normal2, bg = "NONE" },
+  CmpItemAbbr = { fg = M.colors.abbr, bg = "NONE" },
   CmpItemAbbrDeprecated = { fg = M.colors.comment, strikethrough = true },
   CmpItemAbbrMatch = { fg = M.colors.variable },
   CmpItemAbbrDefault = { link = "Normal" },

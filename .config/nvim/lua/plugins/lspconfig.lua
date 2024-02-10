@@ -63,7 +63,7 @@ function util.set_lsp_handlers()
   vim.diagnostic.config {
     float = { border = border },
     virtual_text = true,
-    underline = { severity = "Error" },
+    underline = { severity = vim.diagnostic.severity.ERROR },
     severity_sort = true,
   }
 end

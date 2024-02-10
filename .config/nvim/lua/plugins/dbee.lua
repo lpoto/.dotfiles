@@ -8,7 +8,7 @@ Commands:
 
 local M = {
   "kndndrj/nvim-dbee",
-  tag = "v0.1.2",
+  tag = "v0.1.3",
   dependencies = {
     "MunifTanjim/nui.nvim",
   },
@@ -29,9 +29,13 @@ function M.config()
       v.icon = ""
     end
   end
+
   require("dbee").setup {
     result = {
       page_size = 20,
+    },
+    drawer = {
+      disable_help = true,
     },
     window_layout = layout,
   }
@@ -70,10 +74,12 @@ function layout:open(uis)
   win = vim.api.nvim_get_current_win()
   table.insert(self.windows, win)
   uis.drawer:show(win)
-  vim.cmd "belowright 10split"
-  win = vim.api.nvim_get_current_win()
-  table.insert(self.windows, win)
-  uis.call_log:show(win)
+  -- NOTE: don't show call log
+  --
+  --vim.cmd "belowright 10split"
+  --win = vim.api.nvim_get_current_win()
+  --table.insert(self.windows, win)
+  --uis.call_log:show(win)
   vim.api.nvim_set_current_win(editor_win)
 end
 

@@ -82,7 +82,6 @@ function util.attach(buf, opts)
           local f = server.on_attach
           if not f then
             server.on_attach = function(c)
-              print(c.name)
               if type(c) == "table" then
                 if type(c.server_capabilities) ~= "table" then
                   c.server_capabilities = {}

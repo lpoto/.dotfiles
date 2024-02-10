@@ -76,24 +76,20 @@ end, { expr = true })
 
 ----------- Abrreviate misstyped w, q, wq, wa, qa and wqa commands to lowercase
 -- so that there is no annoyance when misspelling them
-for _, key in ipairs {
-  "W",
-  "Wa",
-  "WA",
-  "Q",
-  "Qa",
-  "QA",
-  "WQ",
-  "Wq",
-  "Wqa",
-  "WqA",
-  "WQA",
-  "WQa",
-} do
-  vim.api.nvim_create_user_command(key, key:lower(), {
-    nargs = "*",
-    complete = "file",
-    bar = true,
-    bang = true,
-  })
-end
+vim.cmd.cnoreabbrev("W  ", "w")
+vim.cmd.cnoreabbrev("Q  ", "q")
+vim.cmd.cnoreabbrev("Wq  ", "wq")
+vim.cmd.cnoreabbrev("WQ  ", "wq")
+vim.cmd.cnoreabbrev("wQ  ", "wq")
+vim.cmd.cnoreabbrev("Wa  ", "wa")
+vim.cmd.cnoreabbrev("WA  ", "wa")
+vim.cmd.cnoreabbrev("wA  ", "wa")
+vim.cmd.cnoreabbrev("Qa  ", "qa")
+vim.cmd.cnoreabbrev("aA  ", "qa")
+vim.cmd.cnoreabbrev("QA  ", "qa")
+vim.cmd.cnoreabbrev("wqA  ", "wqa")
+vim.cmd.cnoreabbrev("wQa  ", "wqa")
+vim.cmd.cnoreabbrev("Wqa  ", "wqa")
+vim.cmd.cnoreabbrev("WQa  ", "wqa")
+vim.cmd.cnoreabbrev("WqA  ", "wqa")
+vim.cmd.cnoreabbrev("WQA  ", "wqa")

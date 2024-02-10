@@ -16,8 +16,9 @@ Keymaps:
  - "<leader>m"         - marks
  - "<leader>h"         - Search help tags
 
- - "<leader>d"         - show document diagnostics
+ - "<leader>d"         - show document diagnostics, or on current line
  - "<leader>D"         - show workspace diagnostics
+ - "<leader>e"         - show workspace errors
  - "gd"                - LSP definitions
  - "gi"                - LSP implementations
  - "gr"                - LSP references
@@ -49,8 +50,9 @@ function M.init()
     { "n", "gd", util.builtin "lsp_definitions" },
     { "n", "gi", util.builtin "lsp_implementations" },
     { "n", "gr", util.builtin "lsp_references" },
-    { "n", "<leader>q", util.builtin("quickfix", true) },
+    { "n", "<leader>q", util.builtin("quickfix", { log = true }) },
     { "n", "<leader>D", util.builtin "diagnostics" },
+    { "n", "<leader>e", util.builtin("diagnostics", { severity = "ERROR" }) },
     {
       "n",
       "<leader>d",
@@ -206,7 +208,7 @@ function util.attach_marks_mappings(_, map)
     end
     local picker = state.get_current_picker(vim.api.nvim_get_current_buf())
     if type(picker) == "table" then picker:close_existing_pickers() end
-    vim.schedule(function() require("telescope_builtin").marks() end)
+    vim.schedule(function() require("telescope.builtin").marks() end)
   end)
   return true
 end
@@ -231,13 +233,17 @@ function util.autocmds()
   })
 end
 
-function util.builtin(name, log_if_no_results)
+function util.builtin(name, o)
+  if type(o) ~= "table" then o = {} end
+  local log = o.log
+  o.log = nil
   return function(opts)
     if type(opts) ~= "table" then opts = {} end
+    opts = vim.tbl_extend("force", o, opts)
     local telescope_builtin = require "telescope.builtin"
     telescope_builtin[name](opts)
     if
-      log_if_no_results == true
+      log == true
       and vim.api.nvim_get_option_value(
           "filetype",
           { buf = vim.api.nvim_get_current_buf() }

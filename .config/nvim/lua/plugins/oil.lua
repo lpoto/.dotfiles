@@ -13,6 +13,7 @@ Keymaps:
 
 local M = {
   "stevearc/oil.nvim",
+  tag = "v2.6.1",
   cmd = "Oil",
   keys = {
     { "<leader>b", function() vim.cmd "Oil" end },
