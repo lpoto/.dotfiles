@@ -31,6 +31,11 @@ function M.config()
   end
 
   require("dbee").setup {
+    sources = {
+      require("dbee.sources").FileSource:new(
+        vim.fn.stdpath "data" .. "/dbee/persistence.json"
+      ),
+    },
     result = {
       page_size = 20,
     },
