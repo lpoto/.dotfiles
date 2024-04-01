@@ -17,6 +17,9 @@ local M = {
   },
 }
 
+local set_close_keymap
+local set_confirm_keymap
+
 function M.config()
   local cmp = require "cmp"
   ---@diagnostic disable-next-line: missing-fields
@@ -47,13 +50,64 @@ function M.config()
       ["<S-TAB>"] = cmp.mapping.select_prev_item(),
       ["<C-d>"] = cmp.mapping.scroll_docs(4),
       ["<C-u>"] = cmp.mapping.scroll_docs(-4),
-      ["<CR>"] = cmp.mapping.confirm {
-        select = true,
-        behavior = cmp.ConfirmBehavior.Replace,
-      },
-      ["<C-x>"] = cmp.mapping.close(),
     },
   }
+  set_confirm_keymap()
+  set_close_keymap()
+end
+
+--- If copilot suggestion is visible and cmp has no selected entry,
+--- <CR> will accept suggestion, otherwise if there is no
+--- copilot suggestion and cmp is visible, <CR> will select
+--- the first cmp entry, otherwise <CR> will just do
+--- its default behavior.
+function set_confirm_keymap()
+  vim.keymap.set("i", "<CR>", function()
+    local has_suggestion, suggestion = pcall(require, "copilot.suggestion")
+    local ok, cmp = pcall(require, "cmp")
+    if not ok then return "<CR>" end
+    if
+      cmp.visible()
+      and (
+        cmp.get_selected_entry() ~= nil
+        or not has_suggestion
+        or not suggestion.is_visible()
+      )
+    then
+      print("ENTRY", vim.inspect(cmp.get_selected_entry()))
+      print("IS NIL", cmp.get_selected_entry() == nil)
+      vim.defer_fn(function() cmp.confirm { select = true } end, 5)
+      return true
+    end
+    if has_suggestion and suggestion.is_visible() then
+      vim.defer_fn(function() suggestion.accept() end, 5)
+      return true
+    end
+    return "<CR>"
+  end, { expr = true })
+end
+
+--- If cmp is visible, <C-x> will close cmp, otherwise if
+--- copilot suggestion is visible, <C-x> will dismiss
+--- suggestion, otherwise <C-x> will just do its default
+--- behavior.
+function set_close_keymap()
+  vim.keymap.set("i", "<C-x>", function()
+    local ok, cmp = pcall(require, "cmp")
+    if ok then
+      if cmp.visible() then
+        vim.schedule(function() cmp.close() end)
+        return true
+      end
+    end
+    local suggestion
+    ok, suggestion = pcall(require, "copilot.suggestion")
+    if ok and suggestion.is_visible() then
+      vim.schedule(function() suggestion.dismiss() end)
+      return true
+    end
+    return "<C-x>"
+  end, { expr = true })
 end
 
 return M

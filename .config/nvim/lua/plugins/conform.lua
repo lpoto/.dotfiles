@@ -65,7 +65,7 @@ function util.attach(buf, opts)
   opts.format = nil
 
   local ok = pcall(require, "conform.formatters." .. formatter.name)
-  if not ok then return util.add_to_not_attached(formatter.name) end
+  if not ok then return end
   local conform = require "conform"
   conform.setup {
     lsp_fallback = true,
@@ -96,12 +96,10 @@ function util.attach(buf, opts)
             vim.g[filetype] = opts
           end
         end
-
-        return util.add_to_attached(formatter.name)
+        return
       end
     end
   end
-  return util.add_to_not_attached(formatter.name)
 end
 
 function util.expand_config(filetype, opts)
@@ -114,20 +112,6 @@ function util.expand_config(filetype, opts)
   end
   if type(opts.name) ~= "string" then return end
   return opts
-end
-
-function util.add_to_attached(name)
-  local attached = vim.g.attached
-  if type(attached) ~= "table" then attached = {} end
-  table.insert(attached, name)
-  vim.g.attached = attached
-end
-
-function util.add_to_not_attached(name)
-  local not_attached = vim.g.not_attached
-  if type(not_attached) ~= "table" then not_attached = {} end
-  table.insert(not_attached, name)
-  vim.g.not_attached = not_attached
 end
 
 function util.format(opts, callback)
@@ -149,7 +133,7 @@ function util.format(opts, callback)
   if not next(util.formatted_with) then util.formatted_with = nil end
 
   local line_count = vim.api.nvim_buf_line_count(buf)
-  if line_count > 1000 and not vim.fn.mode():lower():find "v" then
+  if line_count > 2000 and not vim.fn.mode():lower():find "v" then
     local c = vim.fn.confirm(
       "The file has "
         .. line_count

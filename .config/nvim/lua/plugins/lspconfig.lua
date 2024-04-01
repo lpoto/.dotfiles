@@ -100,7 +100,6 @@ function util.filetype_autocommand()
       util.attach(buf, opts)
     end
     attach()
-    util.log_attached(100)
   end, 350)
 end
 
@@ -123,7 +122,7 @@ function util.attach(bufnr, opts)
   local ok = pcall(require, "lspconfig.server_configurations." .. server.name)
   local lsp = ok and require("lspconfig")[server.name]
 
-  if not ok or not lsp then return util.add_to_not_attached(server.name) end
+  if not ok or not lsp then return end
 
   ---@type table
   local client = (vim.lsp.get_clients { name = server.name } or {})[1]
@@ -165,8 +164,6 @@ function util.attach(bufnr, opts)
   lsp.setup(server)
   local config = require("lspconfig.configs")[server.name]
   config.launch(bufnr)
-
-  util.add_to_attached(server.name)
 end
 
 function util.expand_config(filetype, opts)
@@ -181,51 +178,6 @@ function util.expand_config(filetype, opts)
   end
   if type(opts.name) ~= "string" then return end
   return opts
-end
-
-function util.log_attached(delay)
-  if type(delay) ~= "number" then delay = 500 end
-  local attached = vim.g.attached
-  local not_attached = vim.g.not_attached
-  if
-    (type(attached) ~= "table" or not next(attached))
-    and (type(not_attached) ~= "table" or not next(not_attached))
-  then
-    return
-  end
-  vim.defer_fn(function()
-    attached = vim.g.attached
-    not_attached = vim.g.not_attached
-    vim.g.attached = nil
-    vim.g.not_attached = nil
-
-    local l = vim.log.levels.INFO
-    local s = ""
-    if type(attached) == "table" and next(attached) then
-      s = "Attached: [" .. table.concat(attached, ", ") .. "]"
-    end
-    if type(not_attached) == "table" and next(not_attached) then
-      if s:len() > 0 then s = s .. ", " end
-      s = s .. "Failed to attach: [" .. table.concat(not_attached, ", ") .. "]"
-      l = vim.log.levels.WARN
-    end
-    if s:len() > 0 then vim.notify(s, l) end
-    M.__logs = {}
-  end, delay)
-end
-
-function util.add_to_attached(name)
-  local attached = vim.g.attached
-  if type(attached) ~= "table" then attached = {} end
-  table.insert(attached, name)
-  vim.g.attached = attached
-end
-
-function util.add_to_not_attached(name)
-  local not_attached = vim.g.not_attached
-  if type(not_attached) ~= "table" then not_attached = {} end
-  table.insert(not_attached, name)
-  vim.g.not_attached = not_attached
 end
 
 return M
