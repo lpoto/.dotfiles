@@ -9,8 +9,7 @@ highlights, ...
 local M = {
   "nvim-treesitter/nvim-treesitter",
   tag = "v0.9.2",
-  event = "VeryLazy",
-  cmd = { "TSUpdate", "TSInstall", "TSUpdateSync", "TSInstallSync" },
+  lazy = false,
 }
 
 function M.init() vim.opt.foldlevelstart = 99 end
