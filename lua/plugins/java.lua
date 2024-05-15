@@ -37,7 +37,7 @@ function M.config()
       enable = false,
     },
     jdk = {
-      auto_install = true,
+      auto_install = false,
     },
     notifications = {
       dap = false,
