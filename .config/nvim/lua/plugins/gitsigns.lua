@@ -5,6 +5,7 @@
 return {
   "lewis6991/gitsigns.nvim",
   event = { "BufRead", "BufNewFile" },
+  tag = "v0.9.0",
   opts = {
     signcolumn = false,
     numhl = true,

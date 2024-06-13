@@ -8,6 +8,7 @@ Keymaps:
 
 local M = {
   "stevearc/conform.nvim",
+  tag = "v5.9.0"
 }
 
 local util = {}
@@ -136,14 +137,14 @@ function util.format(opts, callback)
   if line_count > 2000 and not vim.fn.mode():lower():find "v" then
     local c = vim.fn.confirm(
       "The file has "
-        .. line_count
-        .. " lines. Are you sure you want to format?",
+      .. line_count
+      .. " lines. Are you sure you want to format?",
       "&Yes\n&No",
       2
     )
     if c ~= 1 then return end
   end
-  return require("conform").format(opts, callback)
+  return require "conform".format(opts, callback)
 end
 
 function util.default_format_opts(opts)
