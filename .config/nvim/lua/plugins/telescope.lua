@@ -16,9 +16,8 @@ Keymaps:
  - "<leader>m"         - marks
  - "<leader>h"         - Search help tags
 
- - "<leader>d"         - show document diagnostics, or on current line
- - "<leader>D"         - show workspace diagnostics
- - "<leader>e"         - show workspace errors
+ - "<leader>e"         - show document diagnostics, or on current line
+ - "<leader>E"         - show workspace diagnostics
  - "gd"                - LSP definitions
  - "gi"                - LSP implementations
  - "gr"                - LSP references
@@ -51,11 +50,10 @@ function M.init()
     { "n", "gi", util.builtin "lsp_implementations" },
     { "n", "gr", util.builtin "lsp_references" },
     { "n", "<leader>q", util.builtin("quickfix", { log = true }) },
-    { "n", "<leader>D", util.builtin "diagnostics" },
-    { "n", "<leader>e", util.builtin("diagnostics", { severity = "ERROR" }) },
+    { "n", "<leader>E", util.builtin "diagnostics" },
     {
       "n",
-      "<leader>d",
+      "<leader>e",
       function()
         if not vim.diagnostic.open_float() then
           util.builtin "diagnostics" { bufnr = 0 }

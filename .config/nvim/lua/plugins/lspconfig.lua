@@ -12,7 +12,7 @@ Keymaps:
   - "gi"        -  Go to the implementations of symbol under cursor
   - "gr"        -  Go to the references to the symbol under the cursor
 
-  - "<leader>d" -  Show the diagnostics of the line under the cursor
+  - "<leader>e" -  Show the diagnostics of the line under the cursor
 
   - "<leader>a" -  Show code actions for the current position
   - "<leader>r" -  Rename symbol under cursor
@@ -40,7 +40,7 @@ function util.set_lsp_keymaps(opts)
     { "n", "gd", vim.lsp.buf.definition },
     { "n", "gi", vim.lsp.buf.implementation },
     { "n", "gr", vim.lsp.buf.references },
-    { "n", "<leader>d", vim.diagnostic.open_float },
+    { "n", "<leader>e", vim.diagnostic.open_float },
     { { "n", "v" }, "<leader>a", vim.lsp.buf.code_action },
     { "n", "<leader>r", vim.lsp.buf.rename },
   } do
