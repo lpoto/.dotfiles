@@ -116,7 +116,7 @@ function util.open(element)
     table.insert(opts, "console")
     table.insert(opts, "scopes")
     table.insert(opts, "step over")
-    table.insert(opts, "step in")
+    table.insert(opts, "step into")
     table.insert(opts, "step out")
   end
   table.insert(opts, "toggle breakpoint")

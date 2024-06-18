@@ -14,9 +14,6 @@ local M = {
   tag = "v0.1.6",
   dependencies = {
     "MunifTanjim/nui.nvim",
-    {
-      "MattiasMTS/cmp-dbee",
-    },
   },
   cmd = { "DBee", "Dbee" },
 }
@@ -35,26 +32,6 @@ function M.config()
   end
 
   local dbee = require "dbee";
-  local dbee_open = dbee.open;
-  ---@diagnostic disable-next-line: duplicate-set-field
-  dbee.open = function()
-    dbee_open()
-    -- NOTE: Set up cmp completion after
-    -- opening dbee
-    local ok, cmp = pcall(require, "cmp")
-    if ok then
-      require "cmp-dbee".setup()
-      local cmp_config = cmp.get_config()
-      local sources = cmp_config.sources or {}
-      for _, v in ipairs(sources) do
-        if v.name == "cmp-dbee" then
-          return
-        end
-      end
-      table.insert(sources, { name = "cmp-dbee" })
-      cmp_config.sources = sources
-    end
-  end
 
   dbee.setup {
     sources = {

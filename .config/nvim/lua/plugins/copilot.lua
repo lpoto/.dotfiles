@@ -46,6 +46,7 @@ function M.config()
         {
           name = "copilot",
           keyword_length = 0,
+          priority = 9,
           max_item_count = 1,
         })
       cmp_config.sources = sources
