@@ -61,12 +61,14 @@ function M.config()
       texthl = "Keyword"
     })
   dap.listeners.before.attach.dapui_config = function()
+    util.did_run = true
     util.open "console"
   end
   dap.listeners.before.continue.dapui_config = function()
     util.open "console"
   end
   dap.listeners.before.launch.dapui_config = function()
+    util.did_run = true
     util.open "console"
   end
 end
@@ -75,16 +77,22 @@ function util.open(element)
   local dap, dapui = require "dap", require "dapui"
   local configs = dap.configurations;
 
+  local is_running = dap.session() ~= nil
+
   if vim.bo.filetype:find "^dapui_" then
     vim.fn.execute "normal q"
   end
 
-  -- not equal
-  if type(configs) ~= "table" or not configs[vim.bo.filetype] then
-    vim.notify(
-      "No DAP configuration found for " .. vim.bo.filetype,
-      vim.log.levels.WARN)
-    return
+  if not is_running then
+    -- TODO: Instead of only allowing running running configs
+    -- of the same filetype as current buffer, I should allow
+    -- running all configurations (that may be run from anywhere)
+    if type(configs) ~= "table" or not configs[vim.bo.filetype] then
+      vim.notify(
+        "No DAP configuration found for " .. vim.bo.filetype,
+        vim.log.levels.WARN)
+      return
+    end
   end
 
   local function on_select(el)
@@ -109,11 +117,12 @@ function util.open(element)
       })
     end)
   end
-  local is_running = dap.session() ~= nil
 
   local opts = { "continue" }
-  if is_running then
+  if util.did_run or is_running then
     table.insert(opts, "console")
+  end
+  if is_running then
     table.insert(opts, "scopes")
     table.insert(opts, "step over")
     table.insert(opts, "step into")
