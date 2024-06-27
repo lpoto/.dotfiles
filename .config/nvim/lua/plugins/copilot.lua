@@ -13,6 +13,7 @@ local M = {
   "zbirenbaum/copilot.lua",
   dependencies = {
     "JosefLitos/cmp-copilot",
+    { "CopilotC-Nvim/CopilotChat.nvim", branch = "canary" }
   }
 }
 
@@ -32,6 +33,9 @@ function M.config()
         end,
       },
     }
+    require "CopilotChat".setup()
+
+
     local ok, cmp = pcall(require, "cmp")
     if ok then
       require "cmp_copilot".setup()
