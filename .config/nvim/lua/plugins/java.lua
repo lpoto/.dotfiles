@@ -3,23 +3,31 @@
 --=============================================================================
 local M = {
   "nvim-java/nvim-java",
-  dependencies = {
-    "nvim-java/lua-async-await",
-    "nvim-java/nvim-java-refactor",
-    "nvim-java/nvim-java-core",
-    "nvim-java/nvim-java-test",
-    "nvim-java/nvim-java-dap",
-    "MunifTanjim/nui.nvim",
-  },
+  tag = "v1.7.0",
   ft = { "java" },
 }
 
+local util = {}
+
 function M.config()
+  util.fix_missing_hover_capabilities()
+
   require "java".setup {
     jdk = {
       auto_install = false,
     },
   }
+end
+
+--- clientHoverProvider = true causes the hover capability
+--- to stop working, so we remove that option
+function util.fix_missing_hover_capabilities()
+  local jdtls_config = require "java-core.ls.servers.jdtls.config"
+  local opts = jdtls_config.get_config()
+  opts.init_options.extendedClientCapabilities.clientHoverProvider = nil
+  jdtls_config.get_config = function()
+    return opts
+  end
 end
 
 return M
