@@ -11,7 +11,7 @@ NOTE: Also registers a dbee cmp source when the drawer opens
 
 local M = {
   "kndndrj/nvim-dbee",
-  tag = "v0.1.6",
+  tag = "v0.1.9",
   dependencies = {
     "MunifTanjim/nui.nvim",
   },
