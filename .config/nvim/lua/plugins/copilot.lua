@@ -12,8 +12,7 @@ local M = {
   event = { "BufRead", "BufNewFile" },
   "zbirenbaum/copilot.lua",
   dependencies = {
-    "JosefLitos/cmp-copilot",
-    { "CopilotC-Nvim/CopilotChat.nvim", branch = "canary" }
+    "JosefLitos/cmp-copilot"
   }
 }
 
@@ -33,8 +32,6 @@ function M.config()
         end,
       },
     }
-    require "CopilotChat".setup()
-
 
     local ok, cmp = pcall(require, "cmp")
     if ok then
@@ -50,7 +47,7 @@ function M.config()
         {
           name = "copilot",
           keyword_length = 0,
-          priority = 9,
+          priority = 1,
           max_item_count = 1,
         })
       cmp_config.sources = sources

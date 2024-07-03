@@ -37,8 +37,6 @@ function M.config()
       },
     },
   }
-  vim.opt.foldmethod = "expr"
-  vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
 end
 
 --NOTE: install mandatory parsers on build

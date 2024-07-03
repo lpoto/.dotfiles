@@ -44,9 +44,9 @@ function M.config()
       size = 20
     } },
     icons = {
-      collapsed = "-",
+      collapsed = " ",
       current_frame = "*",
-      expanded = "-"
+      expanded = " "
     },
   }
   vim.fn.sign_define("DapBreakpoint",
