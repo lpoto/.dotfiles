@@ -4,6 +4,6 @@
 
 return {
   "lpoto/tabline.nvim",
-  event = { "BufRead", "BufNewFile", "BufNew" },
+  lazy = false,
   opts = {},
 }

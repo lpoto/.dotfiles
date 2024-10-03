@@ -20,6 +20,7 @@ Keymaps:
 
 local M = {
   "neovim/nvim-lspconfig",
+  tag = "v1.0.0",
   cmd = { "LspInfo", "LspStart", "LspLog" },
 }
 

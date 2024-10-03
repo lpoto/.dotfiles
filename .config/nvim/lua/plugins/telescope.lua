@@ -41,17 +41,17 @@ local util = {}
 function M.init()
   for _, o in ipairs {
     { "n", "<leader><Space>", util.builtin "find_files" },
-    { "n", "<leader>o", util.builtin "oldfiles" },
-    { "n", "<leader>l", util.builtin "live_grep" },
-    { "n", "<leader>L", util.builtin "grep_string" },
-    { "n", "<leader>c", util.builtin "resume" },
-    { "n", "<leader>m", util.builtin "marks" },
-    { "n", "<leader>h", util.builtin "help_tags" },
-    { "n", "gd", util.builtin "lsp_definitions" },
-    { "n", "gi", util.builtin "lsp_implementations" },
-    { "n", "gr", util.builtin "lsp_references" },
-    { "n", "<leader>q", util.builtin("quickfix", { log = true }) },
-    { "n", "<leader>E", util.builtin "diagnostics" },
+    { "n", "<leader>o",       util.builtin "oldfiles" },
+    { "n", "<leader>l",       util.builtin "live_grep" },
+    { "n", "<leader>L",       util.builtin "grep_string" },
+    { "n", "<leader>c",       util.builtin "resume" },
+    { "n", "<leader>m",       util.builtin "marks" },
+    { "n", "<leader>h",       util.builtin "help_tags" },
+    { "n", "gd",              util.builtin "lsp_definitions" },
+    { "n", "gi",              util.builtin "lsp_implementations" },
+    { "n", "gr",              util.builtin "lsp_references" },
+    { "n", "<leader>q",       util.builtin("quickfix", { log = true }) },
+    { "n", "<leader>E",       util.builtin "diagnostics" },
     {
       "n",
       "<leader>e",
@@ -72,6 +72,8 @@ function M.config()
   telescope.setup {
     defaults = {
       prompt_prefix = " ",
+      dynamic_preview_title = true,
+      path_display = util.path_display,
       color_devicons = false,
       mappings = util.default_mappings(),
       sorting_strategy = "ascending",
@@ -80,8 +82,8 @@ function M.config()
       layout_config = {
         horizontal = {
           prompt_position = "top",
-          preview_width = 0.55,
-          results_width = 0.8,
+          preview_width = 0.5,
+          results_width = 1,
         },
         vertical = {
           mirror = false,
@@ -141,12 +143,12 @@ function M.config()
     },
     extensions = {
       ["ui-select"] = {
-        require("telescope.themes").get_dropdown {},
+        require "telescope.themes".get_dropdown {},
       },
     },
   }
-  require("telescope").load_extension "ui-select"
-  require("telescope").load_extension "fzf"
+  require "telescope".load_extension "ui-select"
+  require "telescope".load_extension "fzf"
 end
 
 function util.default_mappings()
@@ -159,18 +161,15 @@ function util.default_mappings()
       ["<C-q>"] = actions.send_to_qflist,
       ["<Tab>"] = actions.move_selection_next,
       ["<S-Tab>"] = actions.move_selection_previous,
+      ["<C-s>"] = actions.toggle_selection,
+      ["<C-a>"] = actions.toggle_all,
     },
     n = {
+      ["s"] = actions.toggle_selection,
+      ["<C-s>"] = actions.toggle_all,
+      ["<C-a>"] = actions.select_all,
       ["<Tab>"] = actions.move_selection_next,
       ["<S-Tab>"] = actions.move_selection_previous,
-      ["<leader>j"] = function(bufnr)
-        actions.move_selection_next(bufnr)
-        actions.toggle_selection(bufnr)
-      end,
-      ["<leader>k"] = function(bufnr)
-        actions.toggle_selection(bufnr)
-        actions.move_selection_previous(bufnr)
-      end,
     },
   }
 end
@@ -207,7 +206,7 @@ function util.attach_marks_mappings(_, map)
     end
     local picker = state.get_current_picker(vim.api.nvim_get_current_buf())
     if type(picker) == "table" then picker:close_existing_pickers() end
-    vim.schedule(function() require("telescope.builtin").marks() end)
+    vim.schedule(function() require "telescope.builtin".marks() end)
   end)
   return true
 end
@@ -220,7 +219,7 @@ function util.autocmds()
         for _, b in ipairs(vim.api.nvim_list_bufs()) do
           if
             vim.api.nvim_get_option_value("buftype", { buf = b })
-              == "quickfix"
+            == "quickfix"
             and vim.fn.bufwinid(b) ~= -1
           then
             return
@@ -244,10 +243,10 @@ function util.builtin(name, o)
     if
       log == true
       and vim.api.nvim_get_option_value(
-          "filetype",
-          { buf = vim.api.nvim_get_current_buf() }
-        )
-        ~= "TelescopePrompt"
+        "filetype",
+        { buf = vim.api.nvim_get_current_buf() }
+      )
+      ~= "TelescopePrompt"
     then
       vim.notify(
         "[telescope.builtin." .. name .. "] Not results found ",
@@ -255,6 +254,25 @@ function util.builtin(name, o)
       )
     end
   end
+end
+
+function util.path_display(_, path)
+  local width = vim.api.nvim_win_get_width(0) - 3
+  local path_parts = {}
+  for part in string.gmatch(path, "[^/]+") do
+    table.insert(path_parts, part)
+  end
+
+  local i = 1
+  while path:len() > width do
+    if i + 1 >= #path_parts then
+      break
+    end
+    path_parts[i] = path_parts[i]:sub(1, 1)
+    path = table.concat(path_parts, "/")
+    i = i + 1
+  end
+  return path
 end
 
 function util.builtin_l(name) return util.builtin(name, true) end
