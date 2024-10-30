@@ -59,6 +59,21 @@ function M.get_lazy_options()
     state = vim.fn.stdpath "state" .. "/lazy.json",
     ui = {
       border = "rounded",
+      icons = {
+        cmd = "⌘",
+        config = "🛠",
+        event = "📅",
+        ft = "📂",
+        init = "⚙",
+        keys = "🗝",
+        plugin = "🔌",
+        runtime = "💻",
+        require = "🌙",
+        source = "📄",
+        start = "🚀",
+        task = "📌",
+        lazy = "💤 ",
+      },
     },
     dev = {
       ---@diagnostic disable-next-line

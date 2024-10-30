@@ -1,4 +1,5 @@
 --=============================================================================
+--
 --                             https://github.com/nvim-telescope/telescope.nvim
 --[[===========================================================================
 
@@ -75,6 +76,7 @@ function M.config()
       dynamic_preview_title = true,
       path_display = util.path_display,
       color_devicons = false,
+      disable_devicons = true,
       mappings = util.default_mappings(),
       sorting_strategy = "ascending",
       layout_strategy = "horizontal",
@@ -134,12 +136,6 @@ function M.config()
         attach_mappings = util.attach_marks_mappings,
         selection_strategy = "row",
       },
-      git_status = {
-        attach_mappings = util.attach_git_status_mappings,
-        file_ignore_patterns = {},
-        selection_strategy = "row",
-        initial_mode = "normal",
-      },
     },
     extensions = {
       ["ui-select"] = {
@@ -172,21 +168,6 @@ function util.default_mappings()
       ["<S-Tab>"] = actions.move_selection_previous,
     },
   }
-end
-
-function util.attach_git_status_mappings(_, map)
-  local actions = require "telescope.actions"
-  actions.select_default:replace(actions.git_staging_toggle)
-  map("n", "e", actions.file_edit)
-  map("i", "<C-e>", actions.file_edit)
-  map("i", "<Tab>", actions.move_selection_next)
-  map("n", "<Tab>", actions.move_selection_next)
-  map("i", "<S-Tab>", actions.move_selection_previous)
-  map("n", "<S-Tab>", actions.move_selection_previous)
-  map("n", "s", actions.git_staging_toggle)
-  map("i", "<C-s>", actions.git_staging_toggle)
-  map("n", "<C-s>", actions.git_staging_toggle)
-  return true
 end
 
 function util.attach_marks_mappings(_, map)
