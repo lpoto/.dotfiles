@@ -8,7 +8,7 @@ local M = {
 }
 
 function M.config()
-  require "java".setup {
+  require("java").setup {
     jdk = {
       auto_install = false,
     },

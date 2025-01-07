@@ -23,50 +23,52 @@ function M.config()
   local dap, dapui = require "dap", require "dapui"
   dapui.setup {
     controls = {
-      enabled = false
+      enabled = false,
     },
-    layouts = { {
-      elements = { {
-        id = "scopes",
-        size = 0.75
-      }, {
-        id = "breakpoints",
-        size = 0.25
-      } },
-      position = "left",
-      size = 50
-    }, {
-      elements = { {
-        id = "console",
-        size = 1
-      } },
-      position = "bottom",
-      size = 20
-    } },
+    layouts = {
+      {
+        elements = {
+          {
+            id = "scopes",
+            size = 0.75,
+          },
+          {
+            id = "breakpoints",
+            size = 0.25,
+          },
+        },
+        position = "left",
+        size = 50,
+      },
+      {
+        elements = { {
+          id = "console",
+          size = 1,
+        } },
+        position = "bottom",
+        size = 20,
+      },
+    },
     icons = {
       collapsed = " ",
       current_frame = "*",
-      expanded = " "
+      expanded = " ",
     },
   }
-  vim.fn.sign_define("DapBreakpoint",
-    {
-      text = "B",
-      texthl = "Keyword"
-    })
-  vim.fn.sign_define("DapStopped",
-    {
-      text = "B",
-      linehl = "Constant",
-      texthl = "Keyword"
-    })
+  vim.fn.sign_define("DapBreakpoint", {
+    text = "B",
+    texthl = "Keyword",
+  })
+  vim.fn.sign_define("DapStopped", {
+    text = "B",
+    linehl = "Constant",
+    texthl = "Keyword",
+  })
   dap.listeners.before.attach.dapui_config = function()
     util.did_run = true
     util.open "console"
   end
-  dap.listeners.before.continue.dapui_config = function()
-    util.open "console"
-  end
+  dap.listeners.before.continue.dapui_config = function() util.open "console" end
   dap.listeners.before.launch.dapui_config = function()
     util.did_run = true
     util.open "console"
@@ -75,13 +77,11 @@ end
 
 function util.open(element)
   local dap, dapui = require "dap", require "dapui"
-  local configs = dap.configurations;
+  local configs = dap.configurations
 
   local is_running = dap.session() ~= nil
 
-  if vim.bo.filetype:find "^dapui_" then
-    vim.fn.execute "normal q"
-  end
+  if vim.bo.filetype:find "^dapui_" then vim.fn.execute "normal q" end
 
   if not is_running then
     -- TODO: Instead of only allowing running running configs
@@ -90,7 +90,8 @@ function util.open(element)
     if type(configs) ~= "table" or not configs[vim.bo.filetype] then
       vim.notify(
         "No DAP configuration found for " .. vim.bo.filetype,
-        vim.log.levels.WARN)
+        vim.log.levels.WARN
+      )
       return
     end
   end
@@ -119,9 +120,7 @@ function util.open(element)
   end
 
   local opts = { "continue" }
-  if util.did_run or is_running then
-    table.insert(opts, "console")
-  end
+  if util.did_run or is_running then table.insert(opts, "console") end
   if is_running then
     table.insert(opts, "scopes")
     table.insert(opts, "step over")
@@ -132,11 +131,7 @@ function util.open(element)
   table.insert(opts, "breakpoints")
 
   if element == nil then
-    vim.ui.select(
-      opts,
-      { prompt = "[DAP] Choose action: " },
-      on_select
-    )
+    vim.ui.select(opts, { prompt = "[DAP] Choose action: " }, on_select)
   else
     on_select(element)
   end

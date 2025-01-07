@@ -10,7 +10,7 @@ vim.g[vim.bo.filetype] = function()
       settings = {
         ["rust-analyzer"] = {
           cargo = {
-            features = "all"
+            features = "all",
           },
           checkOnSave = {
             command = "clippy",

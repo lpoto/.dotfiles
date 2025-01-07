@@ -7,7 +7,7 @@ end
 
 vim.cmd.colorscheme "default" -- load colorscheme from ./colors/default.lua
 
-vim.hl = vim.highlight
+vim.hl = vim.hl or vim.highlight
 
 vim.g.mapleader = " " -- set <leader> key to <Space>
 vim.g.maplocalleader = ";" -- set <localleader> key to ';'

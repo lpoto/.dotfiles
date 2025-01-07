@@ -29,6 +29,6 @@ vim.g[vim.bo.filetype] = function()
         end
         return root_dir or cwd
       end,
-    }
+    },
   }
 end
