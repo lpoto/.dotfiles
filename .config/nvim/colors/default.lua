@@ -45,6 +45,7 @@ M.colors = {
   normal = "#c9d1d9",
   variable = "#c9d1d9",
   field = "#c9d1d9",
+  parameter = "#b9d7fa",
   abbr = "#9caab8",
   title = "#79b8ff",
   whitespace = "#27292e",
@@ -147,6 +148,7 @@ M.hl.base = {
 
   Constant = { fg = M.colors.constant },
   Variable = { fg = M.colors.variable },
+  Parameter = { fg = M.colors.parameter },
   Special = { fg = M.colors.special },
   SpecialKey = { link = "Special" },
   Directory = { link = "Special" },
@@ -280,8 +282,6 @@ M.hl.treesitter = {
   ["@number"] = { link = "Number" },
   ["@float"] = { link = "Float" },
 
-  ["@variable.go"] = { link = "Identifier" },
-
   ["@conditional"] = { link = "Conditional" },
   ["@storageclass"] = { link = "Storageclass" },
   ["@repeat"] = { link = "Repeat" },
@@ -297,6 +297,11 @@ M.hl.treesitter = {
   ["@property.css"] = { link = "Label" },
   ["@property.scss"] = { link = "Label" },
   ["@variable.scss"] = { link = "Keyword" },
+
+  ["@variable.go"] = { link = "Variable" },
+  ["@variable.python"] = { link = "Variable" },
+  ["@variable.parameter.python"] = { link = "Parameter" },
+  ["@variable.member.go"] = { link = "Parameter" },
 }
 
 M.hl.telescope = {

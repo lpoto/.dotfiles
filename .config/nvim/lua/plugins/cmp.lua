@@ -30,8 +30,8 @@ function M.config()
     },
     sources = {
       { name = "nvim_lsp", priority = 10, max_item_count = 20 },
-      { name = "path",     priority = 10, max_item_count = 5 },
-      { name = "buffer",   priority = 0,  max_item_count = 5 },
+      { name = "path", priority = 10, max_item_count = 5 },
+      { name = "buffer", priority = 0, max_item_count = 5 },
     },
     window = {
       completion = cmp.config.window.bordered {
@@ -51,7 +51,7 @@ function M.config()
       ["<S-TAB>"] = cmp.mapping.select_prev_item(),
       ["<C-d>"] = cmp.mapping.scroll_docs(4),
       ["<C-u>"] = cmp.mapping.scroll_docs(-4),
-      ["<C-x>"] = cmp.mapping.close()
+      ["<C-x>"] = cmp.mapping.close(),
     },
     sorting = {
       priority_weight = 2.0,
@@ -61,7 +61,7 @@ function M.config()
         cmp.config.compare.recently_used,
         cmp.config.compare.order,
       },
-    }
+    },
   }
 end
 

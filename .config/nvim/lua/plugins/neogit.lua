@@ -6,27 +6,28 @@ local util = {}
 local M = {
   "NeogitOrg/neogit",
   dependencies = {
-    "sindrets/diffview.nvim"
+    "nvim-lua/plenary.nvim",
+    "sindrets/diffview.nvim",
   },
   cmd = { "G", "Git", "Neogit" },
   keys = {
-    { "<leader>g", function() util.open() end }
-  }
+    { "<leader>g", function() util.open() end },
+  },
 }
 
 function M.config()
-  require "neogit".setup {
+  require("neogit").setup {
     disable_signs = true,
     kind = "tab",
     mappings = {
       finder = {
         ["<tab>"] = "Next",
         ["<s-tab>"] = "Previous",
-      }
+      },
     },
     commit_editor = {
       kind = "tab",
-      show_staged_diff = false
+      show_staged_diff = false,
     },
     commit_view = {
       kind = "tab",
@@ -59,26 +60,20 @@ function M.config()
   }
 end
 
-function M.init()
-  util.create_user_command()
-end
+function M.init() util.create_user_command() end
 
 function util.create_user_command()
   for _, key in pairs { "Git", "G" } do
-    vim.api.nvim_create_user_command(key, function(o)
-      util.open(o)
-    end, {
+    vim.api.nvim_create_user_command(key, function(o) util.open(o) end, {
       nargs = "*",
       desc = "Open Neogit",
-      complete = function(arglead)
-        return require "neogit".complete(arglead)
-      end,
+      complete = function(arglead) return require("neogit").complete(arglead) end,
     })
   end
 end
 
 function util.open(o)
-  vim.cmd(":keepjumps Neogit " .. (((o or {}).args) or ""))
+  vim.cmd(":keepjumps Neogit " .. ((o or {}).args or ""))
   util.create_user_command()
 end
 

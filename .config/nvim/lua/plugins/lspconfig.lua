@@ -20,7 +20,7 @@ Keymaps:
 
 local M = {
   "neovim/nvim-lspconfig",
-  tag = "v1.0.0",
+  tag = "v1.3.0",
   cmd = { "LspInfo", "LspStart", "LspLog" },
 }
 
@@ -120,8 +120,7 @@ function util.attach(bufnr, opts)
   opts.language_server = server
   opts.server = nil
 
-  local ok = pcall(require, "lspconfig.server_configurations." .. server.name)
-  local lsp = ok and require("lspconfig")[server.name]
+  local ok, lsp = pcall(function() return require("lspconfig")[server.name] end)
 
   if not ok or not lsp then return end
 
