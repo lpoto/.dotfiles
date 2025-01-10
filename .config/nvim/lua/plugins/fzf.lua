@@ -47,7 +47,7 @@ return {
       "<leader>e",
       function()
         if not vim.diagnostic.open_float() then
-          builtin "diagnostics_document"
+          builtin "diagnostics_document"()
         end
       end,
     },
