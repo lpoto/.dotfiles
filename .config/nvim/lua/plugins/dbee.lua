@@ -13,7 +13,7 @@ local M = {
   "kndndrj/nvim-dbee",
   tag = "v0.1.9",
   dependencies = {
-    "MunifTanjim/nui.nvim",
+    { "MunifTanjim/nui.nvim", tag = "0.3.0" },
   },
   cmd = { "DBee", "Dbee" },
 }

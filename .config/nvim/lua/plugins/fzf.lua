@@ -29,6 +29,7 @@ local function builtin(p)
 end
 return {
   "ibhagwan/fzf-lua",
+  commit = "54d505c",
   event = "VeryLazy",
   keys = {
     { "<leader><space>", builtin "files" },

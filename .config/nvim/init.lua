@@ -1,8 +1,14 @@
 --=============================================================================
 --                                                                    NVIM-INIT
 --=============================================================================
-if not pcall(function() assert(vim.version().minor >= 10) end) then
-  return print "This configuration requires NVIM v0.10.0 or newer."
+if
+  not pcall(function()
+    assert(vim.version().minor == 10)
+    assert(vim.version().major == 0)
+  end)
+then
+  print "This configuration requires NVIM v0.10.x"
+  return
 end
 
 vim.cmd.colorscheme "default" -- load colorscheme from ./colors/default.lua

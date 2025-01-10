@@ -4,6 +4,7 @@
 
 return {
   "lpoto/tabline.nvim",
+  tag = "v0.0.1",
   lazy = false,
   opts = {},
 }

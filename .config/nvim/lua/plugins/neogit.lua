@@ -5,9 +5,10 @@
 local util = {}
 local M = {
   "NeogitOrg/neogit",
+  commit = "a1fc4e5",
   dependencies = {
-    "nvim-lua/plenary.nvim",
-    "sindrets/diffview.nvim",
+    { "nvim-lua/plenary.nvim", tag = "v0.1.4" },
+    { "sindrets/diffview.nvim", commit = "4516612" },
   },
   cmd = { "G", "Git", "Neogit" },
   keys = {

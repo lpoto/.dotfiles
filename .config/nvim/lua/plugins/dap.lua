@@ -9,7 +9,11 @@ Keymaps:
 
 local M = {
   "mfussenegger/nvim-dap",
-  dependencies = { "rcarriga/nvim-dap-ui", "nvim-neotest/nvim-nio" },
+  tag = "0.9.0",
+  dependencies = {
+    { "rcarriga/nvim-dap-ui", tag = "v4.0.0" },
+    { "nvim-neotest/nvim-nio", tag = "v1.10.0" },
+  },
   cmd = { "DapToggleBreakpoint", "DapContinue" },
 }
 
