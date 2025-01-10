@@ -38,12 +38,15 @@ end
 function util.set_lsp_keymaps(opts)
   for _, o in ipairs {
     { "n", "K", vim.lsp.buf.hover },
-    { "n", "gd", vim.lsp.buf.definition },
-    { "n", "gi", vim.lsp.buf.implementation },
-    { "n", "gr", vim.lsp.buf.references },
-    { "n", "<leader>e", vim.diagnostic.open_float },
     { { "n", "v" }, "<leader>a", vim.lsp.buf.code_action },
-    { "n", "<leader>r", vim.lsp.buf.rename },
+    --
+    -- NOTE: These keymaps are set by fzf-lua
+    --
+    --{ "n", "gd", vim.lsp.buf.definition },
+    --{ "n", "gi", vim.lsp.buf.implementation },
+    --{ "n", "gr", vim.lsp.buf.references },
+    --{ "n", "<leader>e", vim.diagnostic.open_float },
+    --{ "n", "<leader>r", vim.lsp.buf.rename },
   } do
     if vim.tbl_contains({ "", nil, 0 }, vim.fn.mapcheck(o[2])) then
       vim.keymap.set(o[1], o[2], o[3], opts)

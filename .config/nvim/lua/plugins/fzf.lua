@@ -29,6 +29,7 @@ local function builtin(p)
 end
 return {
   "ibhagwan/fzf-lua",
+  event = "VeryLazy",
   keys = {
     { "<leader><space>", builtin "files" },
     { "<leader>o", builtin "oldfiles" },
@@ -40,7 +41,7 @@ return {
     { "gd", builtin "lsp_definitions" },
     { "gi", builtin "lsp_implementations" },
     { "gr", builtin "lsp_references" },
-    { "<leader>a", builtin "lsp_code_actions" },
+    --{ "<leader>a", builtin "lsp_code_actions" },
     { "<leader>q", builtin "quickfix" },
     { "<leader>E", builtin "diagnostics_workspace" },
     {
@@ -52,20 +53,29 @@ return {
       end,
     },
   },
-  opts = {
-    keymap = {
-      fzf = {
-        ["ctrl-q"] = "select-all+accept",
+  config = function()
+    local fzf = require "fzf-lua"
+    fzf.setup {
+      keymap = {
+        fzf = {
+          ["ctrl-q"] = "select-all+accept",
+        },
+        builtin = {
+          ["<C-d>"] = "preview-page-down",
+          ["<C-u>"] = "preview-page-up",
+        },
       },
-      builtin = {
-        ["<C-d>"] = "preview-page-down",
-        ["<C-u>"] = "preview-page-up",
+      files = {
+        no_header = true,
       },
-    },
-    files = {
-      no_header = true,
-    },
-  },
+    }
+    fzf.register_ui_select {
+      winopts = {
+        width = 0.4,
+        height = 0.4,
+      },
+    }
+  end,
   init = function()
     vim.cmd "let $FZF_DEFAULT_OPTS = '--bind tab:down,shift-tab:up --cycle'"
   end,
