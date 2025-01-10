@@ -9,6 +9,6 @@ vim.opt.softtabstop = 2
 vim.g[vim.bo.filetype] = function()
   return {
     formatter = "prettier",
-    language_server = "tsserver",
+    language_server = "ts_ls",
   }
 end

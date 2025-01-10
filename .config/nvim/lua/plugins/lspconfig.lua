@@ -162,8 +162,11 @@ function util.attach(bufnr, opts)
   end
 
   lsp.setup(server)
-  local config = require("lspconfig.configs")[server.name]
-  config.launch(bufnr)
+  local config
+  ok, config = pcall(
+    function() return require("lspconfig.configs")[server.name] end
+  )
+  if ok and config then config.launch(bufnr) end
 end
 
 function util.expand_config(filetype, opts)
