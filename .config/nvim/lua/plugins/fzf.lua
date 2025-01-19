@@ -66,9 +66,6 @@ return {
           ["<C-u>"] = "preview-page-up",
         },
       },
-      files = {
-        no_header = true,
-      },
     }
     fzf.register_ui_select {
       winopts = {
