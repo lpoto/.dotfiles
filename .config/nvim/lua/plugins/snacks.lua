@@ -1,0 +1,72 @@
+--=============================================================================
+--                                         https://github.com/folke/snacks.nvim
+--=============================================================================
+local function picker(name, config)
+  return function() require("snacks.picker")[name](config) end
+end
+
+return {
+  "folke/snacks.nvim",
+  event = "VeryLazy",
+  tag = "v2.20.0",
+  opts = {
+    picker = {
+      ui_select = true,
+      icons = {
+        files = {
+          enabled = false,
+        },
+      },
+      win = {
+        input = {
+          keys = {
+            ["<CR>"] = { "confirm", mode = { "n", "i" } },
+            ["<Down>"] = { "list_down", mode = { "n", "i" } },
+            ["<Up>"] = { "list_up", mode = { "n", "i" } },
+            ["<Esc>"] = { "close", mode = { "n", "i" } },
+            ["<c-p>"] = { "select_and_prev", mode = { "n", "i" } },
+            ["<c-n>"] = { "select_and_next", mode = { "n", "i" } },
+            ["<TAB>"] = { "list_down", mode = { "n", "i" } },
+            ["<S-TAB>"] = { "list_up", mode = { "n", "i" } },
+          },
+        },
+        list = {
+          keys = {
+            ["<CR>"] = "confirm",
+            ["<Down>"] = "list_down",
+            ["<Esc>"] = "close",
+            ["<c-p>"] = { "select_and_prev", mode = { "n", "x" } },
+            ["<c-n>"] = { "select_and_next", mode = { "n", "x" } },
+            ["<Up>"] = "list_up",
+            ["<TAB>"] = "list_down",
+            ["<S-TAB>"] = "list_up",
+          },
+        },
+      },
+    },
+  },
+  keys = {
+    { "<leader><space>", picker "smart" },
+    { "<leader>n", picker "files" },
+    { "<leader>l", picker "grep" },
+    { "<leader>L", picker "grep_word" },
+    { "<leader>c", picker "resume" },
+    { "<leader>m", picker "marks" },
+    { "<leader>h", picker "help" },
+    { "gd", picker "lsp_definitions" },
+    { "gi", picker "lsp_implementations" },
+    { "gr", picker "lsp_references" },
+    { "gt", picker "lsp_type_definitions" },
+    { "<leader>a", picker "lsp_code_actions" },
+    { "<leader>q", picker "qflist" },
+    { "<leader>E", picker "diagnostics" },
+    {
+      "<leader>e",
+      function()
+        if not vim.diagnostic.open_float() then
+          picker "diagnostics_buffer"()
+        end
+      end,
+    },
+  },
+}

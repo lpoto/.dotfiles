@@ -326,9 +326,27 @@ M.hl.cmp = {
   CmpItemAbbr = { fg = M.colors.abbr, bg = "NONE" },
   CmpItemAbbrDeprecated = { fg = M.colors.comment, strikethrough = true },
   CmpItemAbbrMatch = { fg = M.colors.variable },
-  CmpItemAbbrDefault = { link = "Normal" },
+  CmpItemAbbrDefault = { link = "Pmenu" },
   CmpItemAbbrMatchFuzzy = { link = "CmpItemAbbrMatch" },
   CmpItemMenuDefault = { link = "CmpItemAbbrDefault" },
+
+  BlinkCmpMenu = { link = "NormalFloat" },
+  BlinkCmpMenuBorder = { link = "FloatBorder" },
+  BlinkCmpDocSeparator = { link = "FloatBorder" },
+  BlinkCmpMenuSelection = { link = "PmenuSel" },
+  BlinkCmpScrollBarThumb = { link = "PmenuThumb" },
+  BlinkCmpDoc = { link = "NormalFloat" },
+  BlinkCmpDocBorder = { link = "FloatBorder" },
+  BlinkCmpSignatureHelp = { link = "NormalFloat" },
+  BlinkCmpSignatureHelpBorder = { link = "FloatBorder" },
+  BlinkCmpSignatureHelpActiveParameter = {
+    link = "LspSignatureActiveParameter",
+  },
+  BlinkCmpLabel = { link = "Pmenu" },
+  BlinkCmpLabelMatch = { fg = M.colors.variable },
+  BlinkCmpSource = { link = "NonText" },
+  BlinkCmpGhostText = { link = "NonText" },
+  BlinkCmpDocCursorLine = { link = "CursorLine" },
 }
 
 return M.init()
