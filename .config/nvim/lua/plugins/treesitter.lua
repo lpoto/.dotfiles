@@ -47,6 +47,7 @@ function M.build()
     "vim",
     "vimdoc",
     "markdown",
+    "regex",
     "markdown_inline",
     "bash",
     "gitcommit",

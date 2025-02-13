@@ -8,9 +8,18 @@ end
 return {
   "folke/snacks.nvim",
   event = "VeryLazy",
-  tag = "v2.20.0",
+  commit = "32803e1",
   opts = {
+    lazygit = { enabled = true },
+    bigfile = { enabled = true },
+    input = { enabled = false },
+    notifier = { enabled = true },
+    image = {
+      enabled = true,
+      force = true,
+    },
     picker = {
+      enabled = true,
       ui_select = true,
       icons = {
         files = {
@@ -68,5 +77,6 @@ return {
         end
       end,
     },
+    { "<leader>g", function() require("snacks").lazygit() end },
   },
 }
