@@ -49,6 +49,7 @@ M.colors = {
   abbr = "#9caab8",
   title = "#79b8ff",
   whitespace = "#27292e",
+  nonText = "#57677d",
   visual = "#163356",
   separator = "#444c56",
   tabline = "#7f98a3",
@@ -92,7 +93,7 @@ M.hl.base = {
   Field = { fg = M.colors.field },
 
   Whitespace = { fg = M.colors.whitespace, bg = "NONE" },
-  NonText = { link = "Whitespace" },
+  NonText = { fg = M.colors.nonText, bg = "NONE" },
   EndOfBuffer = { link = "Whitespace" },
 
   Visual = { bg = M.colors.visual },

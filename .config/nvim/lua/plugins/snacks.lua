@@ -11,9 +11,9 @@ return {
   commit = "32803e1",
   opts = {
     lazygit = { enabled = true },
-    bigfile = { enabled = true },
-    input = { enabled = false },
     notifier = { enabled = true },
+    input = { enabled = false },
+    bigfile = { enabled = true },
     image = {
       enabled = true,
       force = true,
@@ -56,6 +56,7 @@ return {
   },
   keys = {
     { "<leader><space>", picker "smart" },
+    { "<leader>o", picker "smart" },
     { "<leader>n", picker "files" },
     { "<leader>l", picker "grep" },
     { "<leader>L", picker "grep_word" },
@@ -78,5 +79,6 @@ return {
       end,
     },
     { "<leader>g", function() require("snacks").lazygit() end },
+    { "<leader>G", function() require("snacks").git.blame_line() end },
   },
 }
