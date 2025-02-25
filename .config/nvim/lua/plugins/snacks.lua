@@ -67,7 +67,6 @@ return {
     { "gi", picker "lsp_implementations" },
     { "gr", picker "lsp_references" },
     { "gt", picker "lsp_type_definitions" },
-    { "<leader>a", picker "lsp_code_actions" },
     { "<leader>q", picker "qflist" },
     { "<leader>E", picker "diagnostics" },
     {

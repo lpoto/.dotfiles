@@ -40,6 +40,7 @@ function util.set_lsp_keymaps(opts)
     { "n", "K", vim.lsp.buf.hover },
     { { "n", "v" }, "<leader>a", vim.lsp.buf.code_action },
     { "n", "<leader>r", vim.lsp.buf.rename },
+    { "n", "<leader>a", vim.lsp.buf.code_action },
     --
     -- NOTE: These keymaps are set by fzf-lua
     --
