@@ -155,10 +155,13 @@ function util.attach(bufnr, opts)
       end
     end
   end
-  server.autostart = true
-  local has_cmp, cmp = pcall(require, "blink.cmp")
+  local has_cmp, cmp = pcall(require, "cmp_nvim_lsp")
   if has_cmp then
-    server.capabilities = cmp.get_lsp_capabilities(server.capabilities)
+    server.capabilities = vim.tbl_extend(
+      "force",
+      cmp.default_capabilities(),
+      server.capabilities or {}
+    )
   end
 
   lsp.setup(server)
