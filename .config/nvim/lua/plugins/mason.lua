@@ -15,7 +15,7 @@ Commands:
 
 local M = {
   "williamboman/mason.nvim",
-  commit = "e2f7f90",
+  tag = "v1.11.0",
   -- NOTE: Don't set it as optional so the path to installed binaries
   -- is added to the PATH environment variable on startup.
   lazy = false,

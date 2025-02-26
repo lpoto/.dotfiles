@@ -7,13 +7,16 @@ end
 
 return {
   "folke/snacks.nvim",
-  event = "VeryLazy",
-  commit = "32803e1",
+  lazy = false,
+  tag = "v2.22.0",
+  priority = 1000,
   opts = {
     lazygit = { enabled = true },
     notifier = { enabled = true },
-    input = { enabled = false },
     bigfile = { enabled = true },
+    terminal = { enabled = false },
+    input = { enabled = false },
+    toggle = { enabled = false },
     image = {
       enabled = true,
       force = true,

@@ -3,7 +3,7 @@
 --=============================================================================
 local M = {
   "nvim-java/nvim-java",
-  tag = "v2.0.2",
+  tag = "v2.1.1",
   dependencies = {
     { "nvim-java/nvim-java-core", tag = "v1.10.0" },
     { "nvim-java/nvim-java-dap", tag = "v1.0.0" },

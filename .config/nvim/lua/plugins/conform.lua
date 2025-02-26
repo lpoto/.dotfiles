@@ -8,7 +8,7 @@ Keymaps:
 
 local M = {
   "stevearc/conform.nvim",
-  tag = "v8.4.0",
+  tag = "v9.0.0",
 }
 
 local util = {}

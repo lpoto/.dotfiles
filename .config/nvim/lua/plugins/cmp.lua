@@ -9,7 +9,7 @@ external repositories, cmp-nvim-lsp,...
 
 local M = {
   "hrsh7th/nvim-cmp",
-  commit = "5a11682",
+  tag = "v0.0.2",
   event = { "BufRead", "BufNewFile" },
   dependencies = {
     { "hrsh7th/cmp-nvim-lsp", commit = "99290b3" },
