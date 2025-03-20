@@ -3,7 +3,7 @@
 --=============================================================================
 local M = {
   "nvim-java/nvim-java",
-  tag = "v2.1.1",
+  commit = "e552f06",
   dependencies = {
     { "nvim-java/nvim-java-core", tag = "v1.10.0" },
     { "nvim-java/nvim-java-dap", tag = "v1.0.0" },
@@ -17,6 +17,12 @@ function M.config()
   require("java").setup {
     jdk = {
       auto_install = false,
+    },
+    jdtls = {
+      version = "v1.44.0",
+    },
+    spring_boot_tools = {
+      enable = false
     },
   }
 end
