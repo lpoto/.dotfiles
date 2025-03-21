@@ -61,3 +61,4 @@ vim.opt.title = false -- do not change the terminal title
 vim.opt.list = true -- show whitespace characters
 vim.opt.listchars =
   { tab = "┊ ", multispace = "· ", leadmultispace = "┊ " }
+vim.opt.exrc = true -- Automatically execute .nvim.lua, .nvimrc, and .exrc
