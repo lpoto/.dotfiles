@@ -3,6 +3,22 @@
 --=============================================================================
 if vim.g.did_keys or vim.api.nvim_set_var("did_keys", true) then return end
 
+--------------------------------------------------------------------------- LSP
+
+vim.keymap.set("n", "K", vim.lsp.buf.hover)
+vim.keymap.set("n", "gd", vim.lsp.buf.definition)
+vim.keymap.set("n", "gt", vim.lsp.buf.type_definition)
+vim.keymap.set("n", "gi", vim.lsp.buf.implementation)
+vim.keymap.set("n", "gr", vim.lsp.buf.references)
+vim.keymap.set({ "n", "v" }, "<leader>a", vim.lsp.buf.code_action)
+vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename)
+vim.keymap.set(
+  { "n", "v" },
+  "<leader>f",
+  function(...) vim.lsp.buf.format(...) end
+)
+vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float)
+
 --------------------------------------------------------------- WINDOW MANAGING
 -- increase the size of a window with +, decrease with -
 -- resize all windows to same width with "<ctrl> + w"

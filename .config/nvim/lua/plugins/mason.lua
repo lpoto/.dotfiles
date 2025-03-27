@@ -20,11 +20,7 @@ local M = {
   -- is added to the PATH environment variable on startup.
   lazy = false,
   opts = {
-    ui = { border = "rounded" },
-    registries = {
-      "github:nvim-java/mason-registry",
-      "github:mason-org/mason-registry",
-    },
+    ui = { border = vim.o.winborder },
   },
 }
 

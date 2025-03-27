@@ -19,7 +19,7 @@ return {
   keys = {
     { "<leader>b", function() vim.cmd "Oil" end },
     { "<leader>B", function() vim.cmd("Oil " .. vim.fn.getcwd()) end },
-    { "<C-n>", function() vim.cmd "Oil" end },
+    { "<C-n>",     function() vim.cmd "Oil" end },
   },
   opts = {
     default_file_explorer = true,
@@ -48,10 +48,10 @@ return {
       (
         vim.fn.argc() == 0
         or vim.fn.argc() == 1
-          and vim.fn.isdirectory(
-              vim.fn.expand(vim.fn.argv(0) --[[@as string]])
-            )
-            == 1
+        and vim.fn.isdirectory(
+          vim.fn.expand(vim.fn.argv(0) --[[@as string]])
+        )
+        == 1
       )
       and #vim.api.nvim_list_bufs() == 1
       and vim.api.nvim_buf_line_count(0) == 0

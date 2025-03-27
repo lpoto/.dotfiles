@@ -176,7 +176,9 @@ M.hl.base = {
   Pmenu = { link = "Normal" },
   PmenuSel = { link = "Visual" },
   PmenuSbar = { bg = "NONE" },
+  PmenuKind = { link = "Constant" },
   PmenuThumb = { bg = M.colors.whitespace },
+  PmenuExtra = { link = "Comment" },
 }
 
 M.hl.diagnostics = {
@@ -322,15 +324,6 @@ M.hl.gitsigns = {
 }
 
 M.hl.cmp = {
-  CmpDocumentation = { link = "NormalFloat" },
-  CmpDocumentationBorder = { link = "FloatBorder" },
-  CmpItemAbbr = { fg = M.colors.abbr, bg = "NONE" },
-  CmpItemAbbrDeprecated = { fg = M.colors.comment, strikethrough = true },
-  CmpItemAbbrMatch = { fg = M.colors.variable },
-  CmpItemAbbrDefault = { link = "Pmenu" },
-  CmpItemAbbrMatchFuzzy = { link = "CmpItemAbbrMatch" },
-  CmpItemMenuDefault = { link = "CmpItemAbbrDefault" },
-
   BlinkCmpMenu = { link = "NormalFloat" },
   BlinkCmpMenuBorder = { link = "FloatBorder" },
   BlinkCmpDocSeparator = { link = "FloatBorder" },
@@ -344,7 +337,7 @@ M.hl.cmp = {
     link = "LspSignatureActiveParameter",
   },
   BlinkCmpLabel = { link = "Pmenu" },
-  BlinkCmpLabelMatch = { fg = M.colors.variable },
+  BlinkCmpLabelMatch = { link = "Parameter" },
   BlinkCmpSource = { link = "NonText" },
   BlinkCmpGhostText = { link = "NonText" },
   BlinkCmpDocCursorLine = { link = "CursorLine" },
