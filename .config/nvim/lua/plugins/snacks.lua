@@ -1,8 +1,9 @@
 --=============================================================================
 --                                         https://github.com/folke/snacks.nvim
 --=============================================================================
+
 local function picker(name, config)
-  return function() require("snacks.picker")[name](config) end
+  return function() require "snacks.picker"[name](config) end
 end
 
 return {
@@ -59,28 +60,28 @@ return {
   },
   keys = {
     { "<leader><space>", picker "smart" },
-    { "<leader>o", picker "smart" },
-    { "<leader>n", picker "files" },
-    { "<leader>l", picker "grep" },
-    { "<leader>L", picker "grep_word" },
-    { "<leader>c", picker "resume" },
-    { "<leader>m", picker "marks" },
-    { "<leader>h", picker "help" },
-    { "gd", picker "lsp_definitions" },
-    { "gi", picker "lsp_implementations" },
-    { "gr", picker "lsp_references" },
-    { "gt", picker "lsp_type_definitions" },
-    { "<leader>q", picker "qflist" },
-    { "<leader>E", picker "diagnostics" },
+    { "<leader>o",       picker "smart" },
+    { "<leader>n",       picker "files" },
+    { "<leader>l",       picker "grep" },
+    { "<leader>L",       picker "grep_word" },
+    { "<leader>c",       picker "resume" },
+    { "<leader>m",       picker "marks" },
+    { "<leader>h",       picker "help" },
+    { "gd",              picker "lsp_definitions" },
+    { "gi",              picker "lsp_implementations" },
+    { "gr",              picker "lsp_references" },
+    { "gt",              picker "lsp_type_definitions" },
+    { "<leader>q",       picker "qflist" },
     {
       "<leader>e",
       function()
         if not vim.diagnostic.open_float() then
-          picker "diagnostics_buffer"()
+          picker "diagnostics_buffer" ()
         end
       end,
     },
-    { "<leader>g", function() require("snacks").lazygit() end },
-    { "<leader>G", function() require("snacks").git.blame_line() end },
+    { "<leader>E", picker "diagnostics" },
+    { "<leader>g", function() require "snacks".lazygit() end },
+    { "<leader>G", function() require "snacks".git.blame_line() end },
   },
 }

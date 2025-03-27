@@ -4,7 +4,7 @@
 if vim.g.did_lazy or vim.api.nvim_set_var("did_lazy", true) then return end
 
 local M = {
-  plugins_root = "plugins",
+  plugins_module = "plugins",
   path = vim.fn.stdpath "data" .. "/lazy/lazy.nvim",
 }
 
@@ -17,7 +17,7 @@ function M.init()
   M.ensure_lazy(M.path)
   vim.opt.runtimepath:prepend(M.path)
   local ok, lazy = pcall(require, "lazy")
-  if ok then lazy.setup(M.plugins_root, M.get_lazy_options()) end
+  if ok then lazy.setup(M.plugins_module, M.get_lazy_options()) end
   return M
 end
 
@@ -58,7 +58,7 @@ function M.get_lazy_options()
     lockfile = vim.fn.stdpath "config" .. "/.lazy_lock.json",
     state = vim.fn.stdpath "state" .. "/lazy.json",
     ui = {
-      border = "rounded",
+      border = vim.o.winborder,
       icons = {
         cmd = "⌘",
         config = "🛠",

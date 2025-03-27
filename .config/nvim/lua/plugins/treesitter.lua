@@ -1,10 +1,6 @@
 --=============================================================================
 --                           https://github.com/nvim-treesitter/nvim-treesitter
---[[===========================================================================
-
-Treesitter interface for Neovim. Provides inproved
-highlights, ...
------------------------------------------------------------------------------]]
+--=============================================================================
 
 local M = {
   "nvim-treesitter/nvim-treesitter",
@@ -15,7 +11,7 @@ local M = {
 function M.init() vim.opt.foldlevelstart = 99 end
 
 function M.config()
-  require("nvim-treesitter.configs").setup {
+  require "nvim-treesitter.configs".setup {
     auto_install = true,
     sync_install = true,
     ignore_install = {},

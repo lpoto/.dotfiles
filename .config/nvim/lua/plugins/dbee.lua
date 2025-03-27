@@ -18,10 +18,10 @@ local M = {
   cmd = { "DBee", "Dbee" },
 }
 
-function M.build() require("dbee").install() end
+function M.build() require "dbee".install() end
 
 function M.config()
-  local config = require("dbee.config").default
+  local config = require "dbee.config".default
   local candies = config.drawer.candies
   for k, v in pairs(candies) do
     if vim.tbl_contains({ "add", "edit", "remove" }, k) then
@@ -35,7 +35,7 @@ function M.config()
 
   dbee.setup {
     sources = {
-      require("dbee.sources").FileSource:new(
+      require "dbee.sources".FileSource:new(
         vim.fn.stdpath "data" .. "/dbee/persistence.json"
       ),
     },
@@ -45,7 +45,7 @@ function M.config()
     drawer = {
       disable_help = true,
     },
-    window_layout = require("dbee.layouts").Default:new {
+    window_layout = require "dbee.layouts".Default:new {
       result_height = 28,
       drawer_width = 50,
       call_log_height = 10,
