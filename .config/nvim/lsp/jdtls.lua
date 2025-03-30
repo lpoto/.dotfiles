@@ -82,7 +82,8 @@ function jdtls.get_config()
       advancedUpgradeGradleSupport = true,
       classFileContentsSupport = true,
       clientDocumentSymbolProvider = true,
-      clientHoverProvider = true,
+      -- Setting this to true seems to disable hover support
+      --clientHoverProvider = true,
       executeClientCommandSupport = true,
       extractInterfaceSupport = true,
       generateConstructorsPromptSupport = true,
