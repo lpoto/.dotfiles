@@ -11,7 +11,6 @@ local jdtls = { cache = {} }
 local util = {}
 
 local base_config = {
-  cmd = { "jdtls" },
   workspace_required = false,
   filetypes = {
     "java",
@@ -33,12 +32,24 @@ function jdtls.init()
   local config = jdtls.get_config()
   -- init an autocommand that decompiles a class file,
   -- so we may go to definition of external classes
-  jdtls.init_decompile_autocmd()
+  if config.cmd then
+    jdtls.init_decompile_autocmd()
+  end
   return config
 end
 
 function jdtls.get_config()
   local config = vim.tbl_extend("force", {}, base_config)
+
+  local equinox_jar_found, equinox_jar = pcall(jdtls.find_equinox_launcher)
+  if not equinox_jar_found then
+    return config
+  end
+  local jdtls_config_found, jdtls_config_path = pcall(jdtls.get_config_path)
+  if not jdtls_config_found then
+    return config
+  end
+
   config.cmd = {
     "java",
     "-Declipse.application=org.eclipse.jdt.ls.core.id1",
@@ -56,19 +67,22 @@ function jdtls.get_config()
 
     "--add-opens",
     "java.base/java.lang=ALL-UNNAMED",
-
-    "-javaagent:" .. jdtls.find_lombok_path(),
-
-    "-jar",
-    jdtls.find_equinox_launcher(),
-
-    "-configuration",
-    jdtls.get_config_path(),
-
-    "-data",
-    jdtls.get_workspace_path(),
   }
-  config.single_file_support = true
+
+  local has_lombok_jar, lombok_jar = pcall(jdtls.find_lombok_path)
+  if has_lombok_jar then
+    table.insert(config.cmd, "-javaagent:" .. lombok_jar)
+  end
+
+  table.insert(config.cmd, "-jar")
+  table.insert(config.cmd, equinox_jar)
+
+  table.insert(config.cmd, "-configuration")
+  table.insert(config.cmd, jdtls_config_path)
+
+  table.insert(config.cmd, "-data")
+  table.insert(config.cmd, jdtls.get_workspace_path())
+
   config.root_dir = util.find_root(config.root_markers)
 
   config.init_options = {
