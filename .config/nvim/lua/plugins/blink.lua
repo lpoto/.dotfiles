@@ -10,32 +10,19 @@ return {
     {
       "saghen/blink.compat",
       tag = "v2.5.0",
-      lazy = true,
       opts = {},
-    },
-    {
-      "MattiasMTS/cmp-dbee",
-      lazy = true,
-      ft = "sql",
-      opts = {}
     },
   },
   opts = {
     sources = {
       default = { "lsp", "path", "snippets", "buffer" },
-      per_filetype = {
-        sql = { "dbee", "buffer" },
-      },
-      providers = {
-        dbee = { name = "cmp-dbee", module = "blink.compat.source" }
-      }
     },
     cmdline = {
       enabled = false
     },
     completion = {
       keyword = { range = "full" },
-      accept = { auto_brackets = { enabled = false } },
+      accept = { auto_brackets = { enabled = true } },
       list = { selection = { preselect = false, auto_insert = true } },
       documentation = {
         auto_show = true,
