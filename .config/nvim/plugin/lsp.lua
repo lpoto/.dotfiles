@@ -53,9 +53,17 @@ vim.lsp.buf.format = function(opts)
     format_util.show_dbg_message "Format request failed, no matching language servers."
     return
   end
+  local client_names = {}
+  for _, client in ipairs(clients) do
+    table.insert(client_names, client.name)
+  end
+
   if opts.async == nil then
     opts.async = true
   end
+
+  format_util.show_dbg_message("Formatting with: " ..
+    table.concat(client_names, ", "))
 
   -- NOTE: First try to organize imports, and then
   -- format regardless of the results of organize imports action
@@ -66,10 +74,6 @@ vim.lsp.buf.format = function(opts)
     function()
       format_util.format(opts)
 
-      local client_names = {}
-      for _, client in ipairs(clients) do
-        table.insert(client_names, client.name)
-      end
       format_util.show_dbg_message("Formatted with: " ..
         table.concat(client_names, ", "))
     end)
@@ -142,7 +146,7 @@ function format_util.organize_imports(clients, method, opts, callback)
                     (new_result.result or new_result)
                   if
                     not new_err
-                    and format_util.result_has_edit_changes(new_res)
+                    and type(new_result.edit) == "table"
                   then
                     vim.lsp.util.apply_workspace_edit(new_res.edit, enc)
                     format_util.show_dbg_message(
@@ -153,7 +157,7 @@ function format_util.organize_imports(clients, method, opts, callback)
                 buf
               )
               return
-            elseif format_util.result_has_edit_changes(r) then
+            elseif type(r.edit) == "table" then
               vim.lsp.util.apply_workspace_edit(r.edit, enc)
               format_util.show_dbg_message(
                 "Organized imports with: " .. client.name)
@@ -169,41 +173,6 @@ function format_util.organize_imports(clients, method, opts, callback)
     end
   end
   callback()
-end
-
-function format_util.result_has_edit_changes(result)
-  if type(result) ~= "table"
-    or type(result.edit) ~= "table"
-    or type(result.edit.changes) ~= "table"
-  then
-    return false
-  end
-  local ok = false
-  for _, value in pairs(result.edit.changes) do
-    if type(value) == "table" then
-      local temp_ok = false
-      for _, change in pairs(value) do
-        if type(change) == "table"
-          and type(change.newText) == "string"
-          and change.newText:len() > 10
-          and change.newText:len() < 100000 then
-          temp_ok = true
-        else
-          temp_ok = false
-          break
-        end
-        ok = true
-      end
-      ok = temp_ok
-      if not ok then
-        break
-      end
-    else
-      ok = false
-      break
-    end
-  end
-  return ok
 end
 
 function format_util.show_dbg_message(message)

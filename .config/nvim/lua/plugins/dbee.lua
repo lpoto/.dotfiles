@@ -25,6 +25,7 @@ function M.config()
   local sources = require "dbee.sources"
   local layouts = require "dbee.layouts"
 
+  ---@diagnostic disable-next-line
   dbee.setup {
     sources = {
       sources.FileSource:new(
