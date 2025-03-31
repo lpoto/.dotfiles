@@ -6,9 +6,29 @@ return {
   "saghen/blink.cmp",
   tag = "v1.0.0",
   event = { "BufRead", "BufNewFile" },
+  dependencies = {
+    {
+      "saghen/blink.compat",
+      tag = "v2.5.0",
+      lazy = true,
+      opts = {},
+    },
+    {
+      "MattiasMTS/cmp-dbee",
+      lazy = true,
+      ft = "sql",
+      opts = {}
+    },
+  },
   opts = {
     sources = {
       default = { "lsp", "path", "snippets", "buffer" },
+      per_filetype = {
+        sql = { "dbee", "buffer" },
+      },
+      providers = {
+        dbee = { name = "cmp-dbee", module = "blink.compat.source" }
+      }
     },
     cmdline = {
       enabled = false
