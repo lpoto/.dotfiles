@@ -11,18 +11,19 @@ vim.lsp.enable = function(...)
   end
 end
 
-local show_dbg_message
-
 --- NOTE: Override default lsp format to
 --- perform organize imports action before formatting
-local format = vim.lsp.buf.format
+local format_util = {}
+
+format_util.format = vim.lsp.buf.format
+format_util.skip_organize_imports_clients = { "lua_ls" }
 
 ---@diagnostic disable-next-line
 vim.lsp.buf.format = function(opts)
   opts = opts or {}
 
   local buf = opts.bufnr or vim.api.nvim_get_current_buf()
-  local win = vim.fn.bufwinid(buf)
+  opts.bufnr = buf
   local range = opts.range
 
   local passed_multiple_ranges = (
@@ -46,91 +47,166 @@ vim.lsp.buf.format = function(opts)
     name = opts.name,
     method = method,
   }
-  local client_names = {}
   if opts.filter then clients = vim.tbl_filter(opts.filter, clients) end
 
   if #clients == 0 then
-    show_dbg_message "Format request failed, no matching language servers."
+    format_util.show_dbg_message "Format request failed, no matching language servers."
     return
   end
+  if opts.async == nil then
+    opts.async = true
+  end
+
+  -- NOTE: First try to organize imports, and then
+  -- format regardless of the results of organize imports action
+  format_util.organize_imports(
+    clients,
+    method,
+    opts,
+    function()
+      format_util.format(opts)
+
+      local client_names = {}
+      for _, client in ipairs(clients) do
+        table.insert(client_names, client.name)
+      end
+      format_util.show_dbg_message("Formatted with: " ..
+        table.concat(client_names, ", "))
+    end)
+end
+
+---@param clients vim.lsp.Client[]
+---@param method string
+---@param opts table
+---@param callback function
+function format_util.organize_imports(clients, method, opts, callback)
+  local ms = require "vim.lsp.protocol".Methods
+  local buf = opts.bufnr or vim.api.nvim_get_current_buf()
+  local win = vim.fn.bufwinid(buf)
 
   local mode = vim.api.nvim_get_mode().mode
-  if mode == "n" and method == ms.textDocument_formatting then
-    -- NOTE: When formatting the whole file in normal mode,
-    -- also try to automatically organize imports
-    for _, client in ipairs(clients) do
-      table.insert(client_names, client.name)
-
-      local enc = client.offset_encoding or "utf-16"
-      local params = vim.lsp.util.make_range_params(win, enc)
-      -- NOTE: We first check if client even supports
-      -- fetching code actions, if it does, we
-      -- try to fetch the organize imports action,
-      -- and if it is supported, we apply it.
-      if client:supports_method(ms.textDocument_codeAction, buf) then
-        -- NOTE: Do not allow async formatting if we do
-        -- sync organize imports first
-        opts.async = false
-
-        ---@diagnostic disable-next-line
-        params.context = {
-          only = { "source.organizeImports" },
-          diagnostics = {},
-        }
-        local ns_push = vim.lsp.diagnostic.get_namespace(client.id, false)
-        local ns_pull = vim.lsp.diagnostic.get_namespace(client.id, true)
-        local diagnostics = {}
-        local lnum = vim.api.nvim_win_get_cursor(win)[1] - 1
-        vim.list_extend(
-          diagnostics,
-          vim.diagnostic.get(buf, { namespace = ns_pull, lnum = lnum })
-        )
-        vim.list_extend(
-          diagnostics,
-          vim.diagnostic.get(buf, { namespace = ns_push, lnum = lnum })
-        )
-        params.context.diagnostics = vim.tbl_map(
-          function(d) return d.user_data.lsp end,
-          diagnostics
-        )
-        local result = client:request_sync(
-          ms.textDocument_codeAction,
-          params,
-          opts.timeout_ms,
-          buf
-        )
-        if type(result) == "table" and type(result.result) == "table" then
-          for _, r in pairs(result.result) do
+  if mode ~= "n" or method ~= ms.textDocument_formatting then
+    return callback()
+  end
+  for _, client in ipairs(clients) do
+    local enc = client.offset_encoding or "utf-16"
+    local params = vim.lsp.util.make_range_params(win, enc)
+    -- NOTE: We first check if client even supports
+    -- fetching code actions, if it does, we
+    -- try to fetch the organize imports action,
+    -- and if it is supported, we apply it.
+    if
+      (type(format_util.skip_organize_imports_clients) ~= "table"
+        or not vim.tbl_contains(format_util.skip_organize_imports_clients, client.name))
+      and client:supports_method(ms.textDocument_codeAction, buf) then
+      ---@diagnostic disable-next-line
+      params.context = {
+        only = { "source.organizeImports" },
+        diagnostics = {},
+      }
+      local ns_push = vim.lsp.diagnostic.get_namespace(client.id, false)
+      local ns_pull = vim.lsp.diagnostic.get_namespace(client.id, true)
+      local diagnostics = {}
+      local lnum = vim.api.nvim_win_get_cursor(win)[1] - 1
+      vim.list_extend(
+        diagnostics,
+        vim.diagnostic.get(buf, { namespace = ns_pull, lnum = lnum })
+      )
+      vim.list_extend(
+        diagnostics,
+        vim.diagnostic.get(buf, { namespace = ns_push, lnum = lnum })
+      )
+      params.context.diagnostics = vim.tbl_map(
+        function(d) return d.user_data.lsp end,
+        diagnostics
+      )
+      client:request(
+        ms.textDocument_codeAction,
+        params,
+        function(err, result)
+          local res = result and (result.result or result)
+          if err
+            or type(res) ~= "table" then
+            return callback()
+          end
+          for _, r in pairs(res) do
             if not r.edit and client:supports_method(ms.codeAction_resolve) then
               -- NOTE: The action did not directly return
               -- the edit section, so we first try to resolve it,
               -- to determine what should be edited
-              local new_result = client:request_sync(
+              client:request(
                 ms.codeAction_resolve,
                 r,
-                opts.timeout_ms,
+                function(new_err, new_result)
+                  local new_res = new_result and
+                    (new_result.result or new_result)
+                  if
+                    not new_err
+                    and format_util.result_has_edit_changes(new_res)
+                  then
+                    vim.lsp.util.apply_workspace_edit(new_res.edit, enc)
+                    format_util.show_dbg_message(
+                      "Organized imports with: " .. client.name)
+                  end
+                  callback()
+                end,
                 buf
               )
-              if
-                type(new_result) == "table"
-                and type(new_result.result) == "table"
-                and new_result.result.edit
-              then
-                vim.lsp.util.apply_workspace_edit(new_result.result.edit, enc)
-              end
-            else
-              if r.edit then vim.lsp.util.apply_workspace_edit(r.edit, enc) end
+              return
+            elseif format_util.result_has_edit_changes(r) then
+              vim.lsp.util.apply_workspace_edit(r.edit, enc)
+              format_util.show_dbg_message(
+                "Organized imports with: " .. client.name)
+              callback()
+              return
             end
           end
-        end
-      end
+          callback()
+        end,
+        buf
+      )
+      return
     end
   end
-  format(opts)
-  show_dbg_message("Formatted with: " .. table.concat(client_names, ", "))
+  callback()
 end
 
-show_dbg_message = function(message)
+function format_util.result_has_edit_changes(result)
+  if type(result) ~= "table"
+    or type(result.edit) ~= "table"
+    or type(result.edit.changes) ~= "table"
+  then
+    return false
+  end
+  local ok = false
+  for _, value in pairs(result.edit.changes) do
+    if type(value) == "table" then
+      local temp_ok = false
+      for _, change in pairs(value) do
+        if type(change) == "table"
+          and type(change.newText) == "string"
+          and change.newText:len() > 10
+          and change.newText:len() < 100000 then
+          temp_ok = true
+        else
+          temp_ok = false
+          break
+        end
+        ok = true
+      end
+      ok = temp_ok
+      if not ok then
+        break
+      end
+    else
+      ok = false
+      break
+    end
+  end
+  return ok
+end
+
+function format_util.show_dbg_message(message)
   if type(vim.g.display_message) == "function" then
     local ok, _ = pcall(vim.g.display_message, {
       message = message,
