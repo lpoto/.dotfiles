@@ -120,6 +120,9 @@ function jdtls.get_config()
     workspace = jdtls.get_workspace_path(),
   }
 
+  config.capabilities = vim.lsp.protocol.make_client_capabilities()
+  config.capabilities.textDocument.references = { dynamicRegistration = true }
+
   return config
 end
 
