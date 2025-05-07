@@ -29,6 +29,10 @@ local base_config = {
 }
 
 function jdtls.init()
+  if util.__did_init then
+    return
+  end
+  util.__did_init = true
   local config = jdtls.get_config()
   -- init an autocommand that decompiles a class file,
   -- so we may go to definition of external classes
@@ -127,6 +131,10 @@ function jdtls.get_config()
 end
 
 function jdtls.init_decompile_autocmd()
+  if util.__decompile_cmd_initialized then
+    return
+  end
+  util.__decompile_cmd_initialized = true
   local group = vim.api.nvim_create_augroup("JdtlsDecompile", { clear = true })
   vim.api.nvim_create_autocmd("BufReadCmd", {
     pattern = "jdt://*",

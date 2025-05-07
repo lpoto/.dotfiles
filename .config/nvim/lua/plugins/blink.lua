@@ -4,7 +4,7 @@
 
 return {
   "saghen/blink.cmp",
-  tag = "v1.0.0",
+  tag = "v1.2.0",
   event = { "BufRead", "BufNewFile" },
   dependencies = {
     {
@@ -16,12 +16,18 @@ return {
   opts = {
     sources = {
       default = { "lsp", "path", "snippets", "buffer" },
+      providers = {
+        lsp = { min_keyword_length = 0, max_items = 10, score_offset = 100 },
+        path = { min_keyword_length = 0, max_items = 10, score_offset = 90 },
+        buffer = { min_keyword_length = 1, max_items = 10, score_offset = 70 },
+        snippets = { min_keyword_length = 1, max_items = 10, score_offset = 80 },
+      },
     },
     cmdline = {
       enabled = false
     },
     completion = {
-      keyword = { range = "full" },
+      keyword = { range = "prefix" },
       accept = { auto_brackets = { enabled = true } },
       list = { selection = { preselect = false, auto_insert = true } },
       documentation = {
@@ -45,8 +51,12 @@ return {
       preset = "none",
       ["<Up>"] = { "select_prev", "fallback" },
       ["<Down>"] = { "select_next", "fallback" },
-      ["<S-TAB>"] = { "select_prev", "fallback" },
-      ["<TAB>"] = { "select_next", "fallback" },
+      ["<C-x>"] = { "cancel", "fallback" },
+      ["<S-TAB>"] = { "select_prev", "snippet_backward", "fallback" },
+      ["<C-p>"] = { "select_prev", "snippet_backward", "fallback" },
+      ["<TAB>"] = { "select_next", "snippet_forward", "fallback" },
+      ["<C-n>"] = { "select_next", "snippet_forward", "fallback" },
+      ["<C-y>"] = { "accept", "fallback" },
       ["<CR>"] = { "accept", "fallback" },
     },
   },

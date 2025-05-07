@@ -14,14 +14,12 @@ Commands:
 -----------------------------------------------------------------------------]]
 
 local M = {
-  "williamboman/mason.nvim",
-  tag = "v1.11.0",
+  "mason-org/mason.nvim",
+  tag = "v2.0.0",
   -- NOTE: Don't set it as optional so the path to installed binaries
   -- is added to the PATH environment variable on startup.
   lazy = false,
-  opts = {
-    ui = { border = vim.o.winborder },
-  },
+  opts = {}
 }
 
 function M.build() vim.cmd "MasonUpdate" end
