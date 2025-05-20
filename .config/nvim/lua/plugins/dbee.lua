@@ -38,7 +38,7 @@ function M.config()
       ),
     },
     result = {
-      page_size = 25,
+      page_size = 100,
     },
     drawer = {
       disable_help = true,

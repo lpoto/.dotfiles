@@ -16,7 +16,6 @@ end
 local format_util = {}
 
 format_util.format = vim.lsp.buf.format
-format_util.skip_organize_imports_clients = { "lua_ls" }
 
 ---@diagnostic disable-next-line
 vim.lsp.buf.format = function(opts)
@@ -100,8 +99,10 @@ function format_util.organize_imports(clients, method, opts, callback)
     -- try to fetch the organize imports action,
     -- and if it is supported, we apply it.
     if
-      (type(format_util.skip_organize_imports_clients) ~= "table"
-        or not vim.tbl_contains(format_util.skip_organize_imports_clients, client.name))
+      type(client) == "table"
+      and type(client.config) == "table"
+      ---@diagnostic disable-next-line
+      and client.config.organize_imports_before_format == true
       and client:supports_method(ms.textDocument_codeAction, buf) then
       ---@diagnostic disable-next-line
       params.context = {
