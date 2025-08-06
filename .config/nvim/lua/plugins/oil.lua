@@ -13,7 +13,8 @@ Keymaps:
 
 return {
   "stevearc/oil.nvim",
-  tag = "v2.15.0",
+  commit = "bbad9a7",
+  priority = 1000,
   lazy = false,
   cmd = "Oil",
   keys = {
@@ -21,29 +22,29 @@ return {
     { "<leader>B", function() vim.cmd("Oil " .. vim.fn.getcwd()) end },
     { "<C-n>",     function() vim.cmd "Oil" end },
   },
-  opts = {
-    default_file_explorer = true,
-    delete_to_trash = true,
-    skip_confirm_for_simple_edits = true,
-    buf_options = {
-      buflisted = false,
-      bufhidden = "wipe",
-    },
-    win_options = {
-      number = false,
-      relativenumber = false,
-    },
-    view_options = {
-      show_hidden = true,
-    },
-    columns = {},
-    keymaps = {
-      ["<BS>"] = "actions.parent",
-      ["<C-q>"] = "actions.send_to_qflist",
-    },
-  },
-  init = function()
-    -- NOTE: Open oil if opening neovim with no file
+  config = function()
+    local oil = require "oil"
+    oil.setup {
+      default_file_explorer = true,
+      delete_to_trash = true,
+      skip_confirm_for_simple_edits = true,
+      buf_options = {
+        buflisted = false,
+        bufhidden = "wipe",
+      },
+      win_options = {
+        number = false,
+        relativenumber = false,
+      },
+      view_options = {
+        show_hidden = true,
+      },
+      columns = {},
+      keymaps = {
+        ["<BS>"] = "actions.parent",
+        ["<C-q>"] = "actions.send_to_qflist",
+      },
+    }
     if
       (
         vim.fn.argc() == 0
@@ -58,9 +59,7 @@ return {
       and vim.api.nvim_get_option_value("buftype", { buf = 0 }) == ""
       and vim.api.nvim_get_option_value("filetype", { buf = 0 }) == ""
     then
-      vim.cmd(
-        "Oil " .. (vim.fn.argc() == 1 and vim.fn.argv(0) or vim.fn.getcwd())
-      )
+      oil.open()
     end
-  end,
+  end
 }

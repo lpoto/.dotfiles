@@ -1,10 +1,9 @@
 --=============================================================================
 --                                          https://github.com/saghen/blink.cmp
 --=============================================================================
-
 return {
   "saghen/blink.cmp",
-  tag = "v1.2.0",
+  tag = "v1.6.0",
   event = { "BufRead", "BufNewFile" },
   dependencies = {
     {
@@ -13,14 +12,31 @@ return {
       opts = {},
     },
   },
+  opts_extend = { "sources.default" },
   opts = {
     sources = {
       default = { "lsp", "path", "snippets", "buffer" },
       providers = {
-        lsp = { min_keyword_length = 0, max_items = 10, score_offset = 100 },
-        path = { min_keyword_length = 0, max_items = 10, score_offset = 90 },
-        buffer = { min_keyword_length = 1, max_items = 10, score_offset = 70 },
-        snippets = { min_keyword_length = 1, max_items = 10, score_offset = 80 },
+        lsp = {
+          min_keyword_length = 1,
+          max_items = 7,
+          score_offset = 100,
+        },
+        path = {
+          min_keyword_length = 1,
+          max_items = 10,
+          score_offset = 100,
+        },
+        snippets = {
+          min_keyword_length = 1,
+          max_items = 10,
+          score_offset = 80,
+        },
+        buffer = {
+          min_keyword_length = 1,
+          max_items = 10,
+          score_offset = 70,
+        },
       },
     },
     cmdline = {
@@ -37,6 +53,10 @@ return {
       ghost_text = {
         enabled = false,
       },
+      trigger = {
+        show_on_trigger_character = true,
+        show_on_blocked_trigger_characters = { "\n", "\t" }
+      }
     },
     snippets = {
       preset = "default",
@@ -59,6 +79,5 @@ return {
       ["<C-y>"] = { "accept", "fallback" },
       ["<CR>"] = { "accept", "fallback" },
     },
-  },
-  opts_extend = { "sources.default" },
+  }
 }

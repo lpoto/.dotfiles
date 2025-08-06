@@ -15,10 +15,11 @@ Commands:
 
 local M = {
   "mason-org/mason.nvim",
-  tag = "v2.0.0",
+  tag = "v2.0.1",
   -- NOTE: Don't set it as optional so the path to installed binaries
   -- is added to the PATH environment variable on startup.
   lazy = false,
+  priority = 1000,
   opts = {}
 }
 
