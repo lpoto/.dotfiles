@@ -4,7 +4,7 @@
 return {
   "saghen/blink.cmp",
   tag = "v1.6.0",
-  event = { "BufRead", "BufNewFile" },
+  event = { "InsertEnter" },
   dependencies = {
     {
       "saghen/blink.compat",

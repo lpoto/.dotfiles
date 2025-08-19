@@ -14,10 +14,15 @@ return {
   opts = {
     lazygit = { enabled = true },
     notifier = { enabled = true },
-    bigfile = { enabled = true },
     terminal = { enabled = false },
     input = { enabled = false },
     toggle = { enabled = false },
+    bigfile = {
+      enabled = true,
+      notify = true,
+      size = 2 * 1024 * 1024,
+      line_length = 100000,
+    },
     image = {
       enabled = true,
       force = true,
@@ -60,11 +65,10 @@ return {
   },
   keys = {
     { "<leader><space>", picker "smart" },
-    { "<leader>o",       picker "smart" },
     { "<leader>n",       picker "files" },
     { "<leader>l",       picker "grep" },
     { "<leader>L",       picker "grep_word" },
-    { "<leader>c",       picker "resume" },
+    { "<leader><cr>",    picker "resume" },
     { "<leader>m",       picker "marks" },
     { "<leader>h",       picker "help" },
     { "gd",              picker "lsp_definitions" },
