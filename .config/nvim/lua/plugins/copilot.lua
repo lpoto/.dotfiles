@@ -10,14 +10,15 @@ local M = {
     {
       "CopilotC-Nvim/CopilotChat.nvim",
       commit = "44f3758",
-      cmd = { "CopilotChat", "CopilotChatLoad" },
+      cmd = { "CopilotChat", "CopilotChatLoad", "CopilotChatPrompts" },
       opts = {
         model = "gpt-4.1",
       },
       keys = {
-        { "<leader>c", function() util.toggle_copilot_chat() end, mode = { "n" } },
-        { "<leader>C", function() util.load_copilot_chat() end,   mode = { "n" } },
-        { "<leader>c", function() util.load_copilot_chat() end,   mode = { "v" } }
+        { "<leader>c", function() util.toggle_copilot_chat() end,  mode = { "n" } },
+        { "<leader>C", function() util.toggle_copilot_chat() end,  mode = { "v" } },
+        { "<leader>C", function() util.load_copilot_chat() end,    mode = { "n" } },
+        { "<leader>c", function() util.show_copilot_prompts() end, mode = { "v" } }
       },
     },
     {
@@ -113,6 +114,10 @@ function util.is_copilot_chat_open()
     end
   end
   return false
+end
+
+function util.show_copilot_prompts()
+  vim.cmd "CopilotChatPrompts"
 end
 
 function util.toggle_copilot_chat()
