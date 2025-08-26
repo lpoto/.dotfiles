@@ -30,6 +30,9 @@ return {
     picker = {
       enabled = true,
       ui_select = true,
+      main = {
+        file = false,
+      },
       icons = {
         files = {
           enabled = false,

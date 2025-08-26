@@ -25,10 +25,12 @@ local M = {
 
 function M.build() require "dbee".install() end
 
+local get_dbee_layout
+
 function M.config()
+  -- TODO: The current ui for dbee is garbage, implement custom ui
   local dbee = require "dbee"
   local sources = require "dbee.sources"
-  local layouts = require "dbee.layouts"
 
   ---@diagnostic disable-next-line
   dbee.setup {
@@ -43,11 +45,7 @@ function M.config()
     drawer = {
       disable_help = true,
     },
-    window_layout = layouts.Default:new {
-      result_height = 28,
-      drawer_width = 50,
-      call_log_height = 10,
-    },
+    window_layout = get_dbee_layout()
   }
   for _, v in ipairs(M.cmd or {}) do
     vim.api.nvim_create_user_command(v, function() dbee.open() end, {})
@@ -65,6 +63,15 @@ function M.config()
     })
     cmp.add_filetype_source("sql", "dbee")
   end
+end
+
+get_dbee_layout = function()
+  local layouts = require "dbee.layouts"
+  return layouts.Default:new {
+    result_height = 28,
+    drawer_width = 50,
+    call_log_height = 10,
+  }
 end
 
 return M
