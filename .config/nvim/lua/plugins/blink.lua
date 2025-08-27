@@ -5,13 +5,6 @@ return {
   "saghen/blink.cmp",
   tag = "v1.6.0",
   event = { "InsertEnter" },
-  dependencies = {
-    {
-      "saghen/blink.compat",
-      tag = "v2.5.0",
-      opts = {},
-    },
-  },
   opts_extend = { "sources.default" },
   opts = {
     sources = {
