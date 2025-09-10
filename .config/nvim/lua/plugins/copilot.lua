@@ -12,7 +12,7 @@ local M = {
       commit = "44f3758",
       cmd = { "CopilotChat", "CopilotChatLoad", "CopilotChatPrompts" },
       opts = {
-        model = "gpt-4.1",
+        model = "gpt-5",
       },
       keys = {
         { "<leader>c", function() util.toggle_copilot_chat() end,  mode = { "n" } },
