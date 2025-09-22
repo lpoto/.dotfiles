@@ -79,6 +79,7 @@ return {
     { "gr",              picker "lsp_references" },
     { "gt",              picker "lsp_type_definitions" },
     { "<leader>q",       picker "qflist" },
+    { "B",       picker "buffers" },
     {
       "<leader>e",
       function()

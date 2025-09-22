@@ -26,11 +26,8 @@ local M = {
       commit = "b9fd522",
     },
     {
-      "fang2hou/blink-copilot",
-      commit = "41e91a6",
-      opts = {
-        debounce = 200,
-      }
+      "giuxtaposition/blink-cmp-copilot",
+      commit = "439cff7",
     },
   },
 }
@@ -38,7 +35,7 @@ local M = {
 function M.config()
   local copilot = require "copilot"
   copilot.setup {
-    suggestion = { enabled = false },
+    suggestion = { enabled = true },
     panel = { enabled = false },
   }
   local has_cmp, cmp = pcall(require, "blink.cmp")
@@ -54,7 +51,7 @@ function M.config()
       min_keyword_length = 0,
       max_items = 3,
       name = "copilot",
-      module = "blink-copilot",
+      module = "blink-cmp-copilot",
       enabled = function() return true end,
       async = true,
       override = {
