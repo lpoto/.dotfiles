@@ -9,7 +9,7 @@ end
 return {
   "folke/snacks.nvim",
   lazy = false,
-  tag = "v2.22.0",
+  tag = "v2.23.0",
   priority = 1000,
   opts = {
     lazygit = { enabled = true },
@@ -79,7 +79,7 @@ return {
     { "gr",              picker "lsp_references" },
     { "gt",              picker "lsp_type_definitions" },
     { "<leader>q",       picker "qflist" },
-    { "B",       picker "buffers" },
+    { "B",               picker "buffers" },
     {
       "<leader>e",
       function()

@@ -12,7 +12,7 @@ Keymaps:
 -----------------------------------------------------------------------------]]
 local M = {
   "stevearc/oil.nvim",
-  commit = "bbad9a7",
+  tag = "v2.15.0",
   priority = 1000,
   lazy = false,
   cmd = "Oil",

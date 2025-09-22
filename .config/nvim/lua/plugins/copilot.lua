@@ -5,14 +5,14 @@ local util = {}
 
 local M = {
   "zbirenbaum/copilot.lua",
-  commit = "0f2fd38",
+  commit = "8b9af0c",
   dependencies = {
     {
       "CopilotC-Nvim/CopilotChat.nvim",
-      commit = "44f3758",
+      tag = "v4.7.2",
       cmd = { "CopilotChat", "CopilotChatLoad", "CopilotChatPrompts" },
       opts = {
-        model = "gpt-5",
+        model = "gpt-5"
       },
       keys = {
         { "<leader>c", function() util.toggle_copilot_chat() end,  mode = { "n" } },
@@ -23,11 +23,11 @@ local M = {
     },
     {
       "nvim-lua/plenary.nvim",
-      commit = "b9fd522",
+      tag = "v0.1.4",
     },
     {
-      "giuxtaposition/blink-cmp-copilot",
-      commit = "439cff7",
+      "fang2hou/blink-copilot",
+      tag = "v1.4.1",
     },
   },
 }
@@ -35,8 +35,9 @@ local M = {
 function M.config()
   local copilot = require "copilot"
   copilot.setup {
-    suggestion = { enabled = true },
+    suggestion = { enabled = false },
     panel = { enabled = false },
+    nes = { enabled = false },
   }
   local has_cmp, cmp = pcall(require, "blink.cmp")
   if has_cmp then
@@ -51,7 +52,7 @@ function M.config()
       min_keyword_length = 0,
       max_items = 3,
       name = "copilot",
-      module = "blink-cmp-copilot",
+      module = "blink-copilot",
       enabled = function() return true end,
       async = true,
       override = {
