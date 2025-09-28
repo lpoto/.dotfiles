@@ -1,30 +1,10 @@
 --=============================================================================
 --                                    https://github.com/zbirenbaum/copilot.lua
 --=============================================================================
-local util = {}
-
 local M = {
   "zbirenbaum/copilot.lua",
   commit = "8b9af0c",
   dependencies = {
-    {
-      "CopilotC-Nvim/CopilotChat.nvim",
-      tag = "v4.7.2",
-      cmd = { "CopilotChat", "CopilotChatLoad", "CopilotChatPrompts" },
-      opts = {
-        model = "gpt-5"
-      },
-      keys = {
-        { "<leader>c", function() util.toggle_copilot_chat() end,  mode = { "n" } },
-        { "<leader>C", function() util.toggle_copilot_chat() end,  mode = { "v" } },
-        { "<leader>C", function() util.load_copilot_chat() end,    mode = { "n" } },
-        { "<leader>c", function() util.show_copilot_prompts() end, mode = { "v" } }
-      },
-    },
-    {
-      "nvim-lua/plenary.nvim",
-      tag = "v0.1.4",
-    },
     {
       "fang2hou/blink-copilot",
       tag = "v1.4.1",
@@ -93,50 +73,6 @@ function M.init()
       end)
     end,
   })
-end
-
-function util.close_copilot_chat()
-  if not util.is_copilot_chat_open() then
-    return false
-  end
-  vim.cmd "CopilotChatClose"
-  return true
-end
-
-function util.is_copilot_chat_open()
-  for _, win in ipairs(vim.api.nvim_list_wins()) do
-    local buf = vim.api.nvim_win_get_buf(win)
-    local filetype = vim.bo[buf].filetype
-    if filetype == "copilot-chat" then
-      return true
-    end
-  end
-  return false
-end
-
-function util.show_copilot_prompts()
-  vim.cmd "CopilotChatPrompts"
-end
-
-function util.toggle_copilot_chat()
-  if not util.close_copilot_chat() then
-    util.open_copilot_chat()
-  end
-end
-
-function util.open_copilot_chat()
-  vim.cmd "CopilotChat"
-end
-
-function util.load_copilot_chat()
-  local result = vim.fn.input "Copilot Chat Load: "
-  if result == nil or result == "" then
-    return
-  end
-  if not util.is_copilot_chat_open() then
-    util.open_copilot_chat()
-  end
-  vim.cmd("CopilotChatLoad " .. result)
 end
 
 return M

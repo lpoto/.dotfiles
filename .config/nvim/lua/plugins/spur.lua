@@ -11,7 +11,11 @@ M = {
       "makefile",
       "json",
       "dbee",
-    }
+      "copilot"
+    },
+    mappings = {
+      actions = { "<leader>s", mode = { "n" } },
+    },
   },
   dependencies = {
     {
