@@ -42,6 +42,28 @@ export GOPATH=$HOME/.go
 export GOBIN=$GOPATH/bin
 export PATH=$PATH:$GOBIN
 
+# --------------------------------------------------------------------- COPILOT
+
+copilot() {
+  command copilot \
+    --allow-tool 'shell(grep:*)' \
+    --allow-tool 'shell(find:*)' \
+    --allow-tool 'shell(fd:*)' \
+    --allow-tool 'shell(rg:*)' \
+    --allow-tool 'shell(tree:*)' \
+    --allow-tool 'shell(xargs:*)' \
+    --allow-tool 'shell(sed:*)' \
+    --allow-tool 'shell(awk:*)' \
+    --allow-tool 'shell(sort:*)' \
+    --allow-tool 'shell(uniq:*)' \
+    --allow-tool 'shell(head:*)' \
+    --allow-tool 'shell(tail:*)' \
+    --allow-tool 'shell(wc:*)' \
+    --allow-tool 'shell(diff:*)' \
+    --allow-tool 'shell(ps:*)' \
+    "$@"
+}
+
 # ------------------------------------------------------------------------ JAVA
 
 export set_java_version() {
@@ -58,8 +80,10 @@ export set_java_version() {
     local java_bin_path=${java_path}/bin/java
     local version_str=$("$java_bin_path" -version 2>&1)
     local full_version=$(echo "$version_str" | awk -F'"' '/version/ {print $2}')
-    local build_number=$(echo "$version_str" | awk -F'+' '/build/ {print $2; exit}' | awk -F'[- )]' '{print $1}')
-    local is_jdk=$(echo "$version_str" | grep -iq 'jdk\|development kit' && echo "jdk")
+    local build_number=$(echo "$version_str" \
+        | awk -F'+' '/build/ {print $2; exit}' | awk -F'[- )]' '{print $1}')
+    local is_jdk=$(echo "$version_str" \
+        | grep -iq 'jdk\|development kit' && echo "jdk")
     
     local full_version_with_build=""
     if [[ -n "$full_version" && -n "$build_number" ]]; then
