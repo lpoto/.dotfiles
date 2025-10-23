@@ -42,28 +42,6 @@ export GOPATH=$HOME/.go
 export GOBIN=$GOPATH/bin
 export PATH=$PATH:$GOBIN
 
-# --------------------------------------------------------------------- COPILOT
-
-copilot() {
-  command copilot \
-    --allow-tool 'shell(grep:*)' \
-    --allow-tool 'shell(find:*)' \
-    --allow-tool 'shell(fd:*)' \
-    --allow-tool 'shell(rg:*)' \
-    --allow-tool 'shell(tree:*)' \
-    --allow-tool 'shell(xargs:*)' \
-    --allow-tool 'shell(sed:*)' \
-    --allow-tool 'shell(awk:*)' \
-    --allow-tool 'shell(sort:*)' \
-    --allow-tool 'shell(uniq:*)' \
-    --allow-tool 'shell(head:*)' \
-    --allow-tool 'shell(tail:*)' \
-    --allow-tool 'shell(wc:*)' \
-    --allow-tool 'shell(diff:*)' \
-    --allow-tool 'shell(ps:*)' \
-    "$@"
-}
-
 # ------------------------------------------------------------------------ JAVA
 
 export set_java_version() {
