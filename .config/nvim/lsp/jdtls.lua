@@ -11,7 +11,6 @@ local jdtls = { cache = {} }
 local util = {}
 
 local base_config = {
-  workspace_required = false,
   filetypes = {
     "java",
   },
