@@ -9,7 +9,6 @@ MasonInstall lua-language-server
 return {
   cmd = { "lua-language-server" },
   filetypes = { "lua" },
-  workspace_required = false,
   root_markers = {
     ".git",
     ".editorconfig",

@@ -11,7 +11,6 @@ MasonInstall shellcheck
 return {
   cmd = { "bash-language-server", "start" },
   filetypes = { "bash", "sh", "zsh" },
-  workspace_required = false,
   root_markers = { ".git" },
   settings = {
     bashIde = {
