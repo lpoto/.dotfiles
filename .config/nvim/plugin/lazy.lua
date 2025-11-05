@@ -22,6 +22,8 @@ function M.init()
 end
 
 function M.ensure_lazy(lazy_path)
+  local tag = require "plugins.lazy".tag
+
   ---@diagnostic disable-next-line
   if not vim.uv.fs_stat(lazy_path) then
     print "Lazy.nvim not found, installing..."
@@ -31,7 +33,7 @@ function M.ensure_lazy(lazy_path)
       "clone",
       "--filter=blob:none",
       "https://github.com/folke/lazy.nvim.git",
-      "--branch=stable",
+      "--branch=" .. tag,
       lazy_path,
     }
     print("Running: " .. table.concat(cmd, " "))
