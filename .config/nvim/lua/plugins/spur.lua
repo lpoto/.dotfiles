@@ -7,8 +7,8 @@ M = {
   "lpoto/spur.nvim",
   opts = {
     extensions = {
-      "dap",
-      "makefile",
+      --"dap",
+      --"makefile",
       "json",
       "dbee",
       "codex"
@@ -18,16 +18,16 @@ M = {
     },
   },
   dependencies = {
-    {
-      "mfussenegger/nvim-dap",
-      cmd = { "DapToggleBreakpoint" },
-      tag = "0.10.0"
-    },
-    {
-      "theHamsta/nvim-dap-virtual-text",
-      commit = "fbdb48c",
-      opts = {}
-    },
+    --{
+    --  "mfussenegger/nvim-dap",
+    --  cmd = { "DapToggleBreakpoint" },
+    --  tag = "0.10.0"
+    --},
+    --{
+    --  "theHamsta/nvim-dap-virtual-text",
+    --  commit = "fbdb48c",
+    --  opts = {}
+    --},
     {
       "kndndrj/nvim-dbee",
       tag = "v0.1.9",
@@ -49,8 +49,8 @@ M = {
   keys = {
     { "<leader>s",  function() require "spur".select_job() end },
     { "<leader>o",  function() require "spur".toggle_output() end },
-    { "<leader>db", function() vim.cmd "DapToggleBreakpoint" end },
-    { "<leader>dc", function() vim.cmd "DapClearBreakpoints" end },
+    -- { "<leader>db", function() vim.cmd "DapToggleBreakpoint" end },
+    -- { "<leader>dc", function() vim.cmd "DapClearBreakpoints" end },
   },
 }
 
