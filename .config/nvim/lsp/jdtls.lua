@@ -37,6 +37,7 @@ function jdtls.init()
   -- so we may go to definition of external classes
   if config.cmd then
     jdtls.init_decompile_autocmd()
+    jdtls.init_user_commands()
   end
   return config
 end
@@ -126,7 +127,65 @@ function jdtls.get_config()
   config.capabilities = vim.lsp.protocol.make_client_capabilities()
   config.capabilities.textDocument.references = { dynamicRegistration = true }
 
+  config.settings = {
+    java = {
+      format = {
+        enabled = true,
+        settings = jdtls.detect_format_settings(config.root_dir)
+      },
+      sources = {
+        organizeImports = {
+          starThreshold = 5,
+          staticStarThreshold = 5,
+        },
+      },
+    }
+  }
+
   return config
+end
+
+function jdtls.detect_format_settings(root_dir)
+  local code_style_xml_files = {
+    "code-style.xml",
+    ".code-style.xml",
+    "style.xml",
+    ".style.xml",
+    "formatter.xml",
+    ".formatter.xml",
+    "formatting.xml",
+    ".formatting.xml",
+    "spotless.xml",
+    ".spotless.xml",
+  }
+  local dirs = {
+    root_dir,
+    vim.fs.joinpath(root_dir, ".config"),
+    vim.fs.joinpath(root_dir, "config"),
+    vim.fs.joinpath(vim.fn.stdpath "config", "jdtls")
+  }
+  for _, dir in ipairs(dirs) do
+    for _, filename in ipairs(code_style_xml_files) do
+      local ok, v = pcall(function()
+        local filepath = vim.fs.joinpath(dir, filename)
+        if vim.fn.filereadable(filepath) == 1 then
+          local xml = table.concat(vim.fn.readfile(filepath), "\n")
+          local profile = xml:match '<profile[^>]*name="([^"]+)"'
+
+          if type(profile) == "string" and profile ~= "" then
+            return {
+              url = "file://" .. filepath,
+              profile = profile,
+            }
+          end
+        end
+      end)
+      if ok and type(v) == "table" then
+        return v
+      end
+    end
+  end
+  return {}
 end
 
 function jdtls.init_decompile_autocmd()
@@ -161,15 +220,34 @@ function jdtls.init_decompile_autocmd()
   })
 end
 
+function jdtls.init_user_commands()
+  if type(vim.lsp.is_enabled) == "function" then
+    vim.api.nvim_create_user_command("JdtlsClearCache", function()
+      local cache_dir = vim.fn.stdpath "cache" .. "/jdtls"
+      if vim.fn.isdirectory(cache_dir) == 1 then
+        vim.fn.delete(cache_dir, "rf")
+        vim.notify("JDTLS cache cleared: " .. cache_dir, vim.log.levels.INFO)
+      else
+        vim.notify("No JDTLS cache found at: " .. cache_dir, vim.log.levels.WARN)
+      end
+      if vim.lsp.is_enabled "jdtls" then
+        vim.lsp.enable("jdtls", false)
+        vim.lsp.enable("jdtls", true)
+      end
+    end, {})
+  end
+end
+
 function jdtls.find_equinox_launcher()
   if jdtls.cache.__equinox_launcher_jar ~= nil then
     return jdtls.cache.__equinox_launcher_jar
   end
-  local plugins_dir = jdtls.get_jdtls_root() .. "/plugins"
-  local launcher_path = plugins_dir .. "/org.eclipse.equinox.launcher.jar"
+  local plugins_dir = vim.fs.joinpath(jdtls.get_jdtls_root(), "plugins")
+  local launcher_path = vim.fs.joinpath(plugins_dir,
+    "org.eclipse.equinox.launcher.jar")
   if vim.fn.filereadable(launcher_path) == 1 then return launcher_path end
   local files = vim.fn.glob(
-    plugins_dir .. "/org.eclipse.equinox.launcher_*.jar",
+    vim.fs.joinpath(plugins_dir, "org.eclipse.equinox.launcher_*.jar"),
     false,
     true
   )
@@ -182,21 +260,23 @@ end
 
 function jdtls.get_jdtls_root()
   if jdtls.cache.__jdtls_root ~= nil then return jdtls.cache.__jdtls_root end
-  jdtls.cache.__jdtls_root = jdtls.get_mason_packages_root() .. "/jdtls"
+  jdtls.cache.__jdtls_root = vim.fs.joinpath(jdtls.get_mason_packages_root(),
+    "jdtls")
   return jdtls.cache.__jdtls_root
 end
 
 function jdtls.find_lombok_path()
   if jdtls.cache.__lombok_jar ~= nil then return jdtls.cache.__lombok_jar end
   local mason_packages = jdtls.get_mason_packages_root()
-  local lombok_path = mason_packages .. "/lombok-nightly/lombok.jar"
+  local lombok_path = vim.fs.joinpath(mason_packages, "lombok-nightly",
+    "lombok.jar")
 
   if vim.fn.filereadable(lombok_path) == 1 then
     jdtls.cache.__lombok_jar = lombok_path
     return jdtls.cache.__lombok_jar
   end
   local jdtls_root = jdtls.get_jdtls_root()
-  lombok_path = jdtls_root .. "/lombok.jar"
+  lombok_path = vim.fs.joinpath(jdtls_root, "lombok.jar")
   if vim.fn.filereadable(lombok_path) == 1 then
     jdtls.cache.__lombok_jar = lombok_path
     return jdtls.cache.__lombok_jar
@@ -209,12 +289,12 @@ function jdtls.find_jdtls_config_dir()
     return jdtls.cache.__jdtls_config_dir
   end
   local jdtls_root = jdtls.get_jdtls_root()
-  local jdtls_config = jdtls_root .. "/config"
+  local jdtls_config = vim.fs.joinpath(jdtls_root, "config")
   if vim.fn.isdirectory(jdtls_config) == 1 then
     jdtls.cache.__jdtls_config_dir = jdtls_config
     return jdtls.cache.__jdtls_config_dir
   end
-  jdtls_config = jdtls_root .. "/config_mac"
+  jdtls_config = vim.fs.joinpath(jdtls_root, "config_mac")
   if vim.fn.isdirectory(jdtls_config) == 1 then
     jdtls.cache.__jdtls_config_dir = jdtls_config
     return jdtls.cache.__jdtls_config_dir
@@ -224,13 +304,15 @@ end
 
 function jdtls.get_mason_packages_root()
   if jdtls.cache.__mason_root ~= nil then return jdtls.cache.__mason_root end
-  jdtls.cache.__mason_root = vim.fn.stdpath "data" .. "/mason/packages"
+  jdtls.cache.__mason_root = vim.fs.joinpath(vim.fn.stdpath "data", "mason",
+    "packages")
   return jdtls.cache.__mason_root
 end
 
 function jdtls.get_config_path()
   if jdtls.cache.__config_path ~= nil then return jdtls.cache.__config_path end
-  jdtls.cache.__config_path = vim.fn.stdpath "cache" .. "/jdtls/config"
+  jdtls.cache.__config_path = vim.fs.joinpath(vim.fn.stdpath "cache", "jdtls",
+    "config")
   return jdtls.cache.__config_path
 end
 
@@ -242,9 +324,11 @@ function jdtls.get_workspace_path()
   local project_path_hash = string.gsub(project_path, "[/\\:+-]", "_")
 
   local nvim_cache_path = vim.fn.stdpath "cache"
-  jdtls.cache.__workspace_path = nvim_cache_path
-    .. "/jdtls/workspaces/"
-    .. project_path_hash
+  jdtls.cache.__workspace_path = vim.fs.joinpath(
+    nvim_cache_path,
+    "jdtls",
+    "workspaces",
+    project_path_hash)
   return jdtls.cache.__workspace_path
 end
 
@@ -275,8 +359,8 @@ function util.find_root(root_markers)
   local cwd = vim.fn.getcwd()
   for _, marker in ipairs(root_markers) do
     if
-      vim.fn.filereadable(cwd .. "/" .. marker) == 1
-      or vim.fn.isdirectory(cwd .. "/" .. marker) == 1
+      vim.fn.filereadable(vim.fs.joinpath(cwd, marker)) == 1
+      or vim.fn.isdirectory(vim.fs.joinpath(cwd, marker)) == 1
     then
       return cwd
     end

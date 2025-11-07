@@ -47,8 +47,8 @@ M = {
     }
   },
   keys = {
-    { "<leader>s",  function() require "spur".select_job() end },
-    { "<leader>o",  function() require "spur".toggle_output() end },
+    { "<leader>s", function() require "spur".select_job() end },
+    { "<leader>o", function() require "spur".toggle_output() end },
     -- { "<leader>db", function() vim.cmd "DapToggleBreakpoint" end },
     -- { "<leader>dc", function() vim.cmd "DapClearBreakpoints" end },
   },
