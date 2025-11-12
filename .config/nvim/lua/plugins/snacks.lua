@@ -102,6 +102,21 @@ function M.init()
       pcall(add_git_as_spur_job)
     end
   })
+  vim.api.nvim_create_autocmd("BufNew", {
+    callback = function(opts)
+      if vim.bo[opts.buf].buftype ~= "" then return end
+      vim.schedule(function()
+        if vim.bo[opts.buf].buftype == "quickfix" then
+          pcall(function()
+            local win = vim.fn.bufwinid(opts.buf)
+            vim.api.nvim_buf_delete(opts.buf, { force = true })
+            vim.api.nvim_win_close(win, true)
+          end)
+          picker "qflist" ()
+        end
+      end)
+    end
+  })
 end
 
 function add_git_as_spur_job()
