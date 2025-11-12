@@ -1,2 +1,5 @@
 **/after/**
 .luarc.json
+.codex/**
+!.codex/config.toml
+!.codex/AGENTS.md
