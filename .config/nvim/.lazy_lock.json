@@ -9,6 +9,6 @@
   "nvim-treesitter": { "branch": "master", "commit": "42fc28ba918343ebfd5565147a42a26580579482" },
   "oil.nvim": { "branch": "master", "commit": "975a77cce3c8cb742bc1b3629f4328f5ca977dad" },
   "snacks.nvim": { "branch": "main", "commit": "da230e3ca8146da4b73752daaf0a1d07d343c12d" },
-  "spur.nvim": { "branch": "main", "commit": "df1952e23fddc47564fb57dabd4bb2e429c8d9d9" },
+  "spur.nvim": { "branch": "main", "commit": "b4e6a9e9e4418d50e90a71206b17b981dce8431d" },
   "tabline.nvim": { "branch": "main", "commit": "190f708a3eadeb6acc511e9c33f028300216ad2c" }
 }
