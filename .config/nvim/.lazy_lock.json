@@ -1,7 +1,7 @@
 {
   "blink-copilot": { "branch": "main", "commit": "41e91a659bd9b8cba9ba2ea68a69b52ba5a9ebd8" },
   "blink.cmp": { "branch": "main", "commit": "327fff91fe6af358e990be7be1ec8b78037d2138" },
-  "copilot.lua": { "branch": "master", "commit": "8b9af0c3777f81e9f45059ff41fd1f93f492d9a7" },
+  "copilot.lua": { "branch": "master", "commit": "4383e05a47493d7ff77b058c0548129eb38ec7fb" },
   "guess-indent.nvim": { "branch": "main", "commit": "84a4987ff36798c2fc1169cbaff67960aed9776f" },
   "lazy.nvim": { "branch": "main", "commit": "e6a8824858757ca9cd4f5ae1a72d845fa5c46a39" },
   "mason.nvim": { "branch": "main", "commit": "197f6352c276bbc2d25541dfce00ec50d1a4e88f" },
@@ -9,6 +9,6 @@
   "nvim-treesitter": { "branch": "master", "commit": "42fc28ba918343ebfd5565147a42a26580579482" },
   "oil.nvim": { "branch": "master", "commit": "975a77cce3c8cb742bc1b3629f4328f5ca977dad" },
   "snacks.nvim": { "branch": "main", "commit": "da230e3ca8146da4b73752daaf0a1d07d343c12d" },
-  "spur.nvim": { "branch": "main", "commit": "7c199ef7aadcf752b9aae3fd10bf5417f4143b3e" },
+  "spur.nvim": { "branch": "main", "commit": "df1952e23fddc47564fb57dabd4bb2e429c8d9d9" },
   "tabline.nvim": { "branch": "main", "commit": "190f708a3eadeb6acc511e9c33f028300216ad2c" }
 }

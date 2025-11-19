@@ -11,7 +11,7 @@ M = {
       --"makefile",
       "json",
       "dbee",
-      "codex"
+      "copilot"
     },
     mappings = {
       actions = { "<leader>s", mode = { "n" } },
@@ -49,7 +49,7 @@ M = {
   keys = {
     { "<leader>s", function() require "spur".select_job() end },
     { "<leader>o", function() require "spur".toggle_output() end },
-    { "<leader>c", function() require "spur".select_job("[Codex]") end },
+    { "<leader>c", function() require "spur".select_job("[Copilot]") end },
     { "<leader>d", function() require "spur".select_job("[Database]") end },
     -- { "<leader>db", function() vim.cmd "DapToggleBreakpoint" end },
     -- { "<leader>dc", function() vim.cmd "DapClearBreakpoints" end },

@@ -3,7 +3,7 @@
 --=============================================================================
 local M = {
   "zbirenbaum/copilot.lua",
-  commit = "8b9af0c",
+  commit = "4383e05",
   dependencies = {
     {
       "fang2hou/blink-copilot",
@@ -28,7 +28,7 @@ function M.config()
     ---@diagnostic disable-next-line
     table.insert(require "blink.cmp.config".sources.default, "copilot")
     cmp.add_source_provider("copilot", {
-      score_offset = 95,
+      score_offset = 90,
       min_keyword_length = 0,
       max_items = 3,
       name = "copilot",
