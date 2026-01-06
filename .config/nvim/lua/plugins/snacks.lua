@@ -90,7 +90,6 @@ local M = {
     },
     { "<leader>E", picker "diagnostics" },
     { "<leader>g", function() require "snacks".lazygit() end },
-    { "<leader>G", function() require "snacks".git.blame_line() end },
   },
 }
 

@@ -79,7 +79,7 @@ M.colors = {
   red = "#f97583",
   dimmed = {
     blue = "#658aba",
-    green = "#569166",
+    green = "#578062",
     red = "#a15c62",
   },
 }
