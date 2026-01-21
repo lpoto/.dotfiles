@@ -3,7 +3,7 @@
 --=============================================================================
 local M = {
   "zbirenbaum/copilot.lua",
-  commit = "4383e05",
+  commit = "2d75114",
   dependencies = {
     {
       "fang2hou/blink-copilot",

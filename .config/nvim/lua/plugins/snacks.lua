@@ -9,7 +9,7 @@ end
 local M = {
   "folke/snacks.nvim",
   lazy = false,
-  tag = "v2.23.0",
+  tag = "v2.30.0",
   priority = 1000,
   opts = {
     lazygit = { enabled = true },
