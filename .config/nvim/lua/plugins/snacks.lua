@@ -13,7 +13,7 @@ local M = {
   priority = 1000,
   opts = {
     lazygit = { enabled = true },
-    notifier = { enabled = true },
+    notifier = { enabled = false },
     terminal = { enabled = false },
     input = { enabled = false },
     toggle = { enabled = false },
