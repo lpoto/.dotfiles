@@ -12,8 +12,8 @@ local M = {
   tag = "v2.30.0",
   priority = 1000,
   opts = {
-    lazygit = { enabled = true },
-    notifier = { enabled = true },
+    lazygit = { enabled = false },
+    notifier = { enabled = false },
     terminal = { enabled = false },
     input = { enabled = false },
     toggle = { enabled = false },
@@ -89,16 +89,14 @@ local M = {
       end,
     },
     { "<leader>E", picker "diagnostics" },
-    { "<leader>g", function() require "snacks".lazygit() end },
   },
 }
 
-local add_git_as_spur_job
 function M.init()
   vim.api.nvim_create_autocmd("User", {
     pattern = "SpurInit",
     callback = function()
-      pcall(add_git_as_spur_job)
+      --pcall(add_git_as_spur_job)
     end
   })
   vim.api.nvim_create_autocmd("BufNew", {
@@ -116,86 +114,6 @@ function M.init()
       end)
     end
   })
-end
-
-function add_git_as_spur_job()
-  local SpurJob = require "spur.core.job"
-  local SpurGitJob = setmetatable({}, { __index = SpurJob })
-  SpurGitJob.__index = SpurGitJob
-  SpurGitJob.__type = "SpurJob"
-  SpurGitJob.__subtype = "SpurGitJob"
-  SpurGitJob.__metatable = SpurGitJob
-
-  function SpurGitJob:new()
-    local opts = {
-      order = -90,
-      type = "lazygit",
-      job = {
-        cmd = "lazygit",
-        name = "[Git]",
-      }
-    }
-    local spur_job = SpurJob:new(opts)
-    local instance = setmetatable(spur_job, SpurGitJob)
-    ---@diagnostic disable-next-line
-    return instance
-  end
-
-  function SpurGitJob:is_running()
-    return false
-  end
-
-  function SpurGitJob:can_run()
-    return true
-  end
-
-  function SpurGitJob:run()
-    require "snacks".lazygit()
-  end
-
-  function SpurGitJob:__tostring()
-    return string.format("SpurGitJob(%s)", self:get_name())
-  end
-
-  local SpurJobHandler = require "spur.core.handler"
-  local SpurJobGitHandler = setmetatable({}, { __index = SpurJobHandler })
-  SpurJobGitHandler.__index = SpurJobGitHandler
-  SpurJobGitHandler.__type = "SpurHandler"
-  SpurJobGitHandler.__subtype = "SpurJobGitHandler"
-  SpurJobGitHandler.__metatable = SpurJobGitHandler
-
-  function SpurJobGitHandler:new()
-    local handler = SpurJobHandler:new()
-    local instance = setmetatable(handler, SpurJobGitHandler)
-    return instance
-  end
-
-  function SpurJobGitHandler:accepts_job(opts, action)
-    if type(opts) ~= "table" then
-      return false
-    end
-    if type(action) ~= "string" or action == "" then
-      return false
-    end
-    return opts.type == "lazygit"
-  end
-
-  function SpurJobGitHandler:create_job()
-    ---@diagnostic disable-next-line
-    return SpurGitJob:new()
-  end
-
-  function SpurJobGitHandler:__get_job_actions()
-    return { { label = "Run", value = "run" } }
-  end
-
-  local manager = require "spur.manager"
-  if not manager.is_initialized() then
-    manager.init()
-  end
-  local handler = SpurJobGitHandler:new()
-  manager.add_handler(handler)
-  manager.add_job { type = "lazygit" }
 end
 
 return M
