@@ -15,6 +15,6 @@
   "oil.nvim": { "branch": "master", "commit": "975a77cce3c8cb742bc1b3629f4328f5ca977dad" },
   "snacks.nvim": { "branch": "main", "commit": "a4e46becca45eb65c73a388634b1ce8aad629ae0" },
   "spring-boot.nvim": { "branch": "main", "commit": "218c0c26c14d99feca778e4d13f5ec3e8b1b60f0" },
-  "spur.nvim": { "branch": "main", "commit": "741606cfc301f6ac949b35cbbd55f7dcf94cfa6e" },
+  "spur.nvim": { "branch": "main", "commit": "35be31b5f56c0cfef4c36d73e06064fde4d8058a" },
   "tabline.nvim": { "branch": "main", "commit": "190f708a3eadeb6acc511e9c33f028300216ad2c" }
 }

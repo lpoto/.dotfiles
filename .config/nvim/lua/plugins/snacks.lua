@@ -27,6 +27,46 @@ local M = {
       enabled = true,
       force = true,
     },
+    zen = {
+      enabled = true,
+      center = true,
+      toggles = {
+        dim = false,
+      },
+      show = {
+        tabline = true,
+      },
+      on_open = function(_)
+        vim.cmd "cabbrev q! let b:quitting_bang = 1 <bar> q!"
+        vim.api.nvim_create_autocmd("QuitPre", {
+          group = vim.api.nvim_create_augroup("SnacksZenQuit", { clear = true }),
+          callback = function()
+            local count = 0
+            for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+              if vim.api.nvim_win_get_config(win).relative == "" then
+                count = count + 1
+              end
+            end
+            vim.b.quitting = count <= 1
+          end,
+        })
+      end,
+      on_close = function()
+        if vim.b.quitting == true then
+          vim.b.quitting = false
+          if vim.b.quitting_bang == 1 then
+            vim.b.quitting_bang = 0
+            vim.schedule(function()
+              vim.cmd "q!"
+            end)
+          else
+            vim.schedule(function()
+              vim.cmd "q"
+            end)
+          end
+        end
+      end,
+    },
     picker = {
       enabled = true,
       ui_select = true,
@@ -93,12 +133,6 @@ local M = {
 }
 
 function M.init()
-  vim.api.nvim_create_autocmd("User", {
-    pattern = "SpurInit",
-    callback = function()
-      --pcall(add_git_as_spur_job)
-    end
-  })
   vim.api.nvim_create_autocmd("BufNew", {
     callback = function(opts)
       if vim.bo[opts.buf].buftype ~= "" then return end
@@ -111,6 +145,41 @@ function M.init()
           end)
           picker "qflist" ()
         end
+      end)
+    end
+  })
+  vim.api.nvim_create_autocmd({ "BufEnter", "BufLeave", "WinLeave" }, {
+    callback = function()
+      if vim.api.nvim_win_get_config(0).relative ~= "" then
+        return
+      end
+      vim.schedule(function()
+        if vim.api.nvim_win_get_config(0).relative ~= "" then
+          return
+        end
+        local count = 0
+        for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+          if vim.api.nvim_win_get_config(win).relative ~= "" then
+            return
+          end
+          count = count + 1
+        end
+        if count ~= 1 then
+          return
+        end
+        -- TODO: More sophisticated
+        -- 1. Determine width dynamically based on line length
+        -- 2. Disable this for some filetypes
+        local max_width = math.min(120, vim.o.columns)
+        local col = math.max(0, math.floor(vim.o.columns - max_width) / 2)
+        local width = vim.o.columns - col
+        require "snacks".zen {
+          center = false,
+          win = {
+            col = col,
+            width = width
+          },
+        }
       end)
     end
   })
