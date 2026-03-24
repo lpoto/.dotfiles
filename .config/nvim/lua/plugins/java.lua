@@ -9,7 +9,7 @@ Handles JDTLS and Java development in Neovim.
 local M = {
   "nvim-java/nvim-java",
   ft = "java",
-  tag = "v4.0.4",
+  tag = "v4.1.0",
 }
 
 local register_dap_spur_actions

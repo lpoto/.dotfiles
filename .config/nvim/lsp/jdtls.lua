@@ -43,15 +43,7 @@ function jdtls.get_config()
             starThreshold = 5,
             staticStarThreshold = 5,
           },
-        },
-        errors = {
-          incompleteClasspath = {
-            severity = "ignore",
-          },
-        },
-        configuration = {
-          checkProjectSettingsExclusions = false,
-        },
+        }
       }
     }
   }

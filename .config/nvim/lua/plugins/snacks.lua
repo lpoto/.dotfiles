@@ -9,7 +9,7 @@ end
 local M = {
   "folke/snacks.nvim",
   lazy = false,
-  tag = "v2.30.0",
+  tag = "v2.31.0",
   priority = 1000,
   opts = {
     lazygit = { enabled = false },
@@ -52,19 +52,17 @@ local M = {
         })
       end,
       on_close = function()
-        if vim.b.quitting == true then
-          vim.b.quitting = false
-          if vim.b.quitting_bang == 1 then
-            vim.b.quitting_bang = 0
-            vim.schedule(function()
+        vim.schedule(function()
+          if vim.b.quitting == true then
+            vim.b.quitting = false
+            if vim.b.quitting_bang == 1 then
+              vim.b.quitting_bang = 0
               vim.cmd "q!"
-            end)
-          else
-            vim.schedule(function()
+            else
               vim.cmd "q"
-            end)
+            end
           end
-        end
+        end)
       end,
     },
     picker = {
@@ -167,13 +165,18 @@ function M.init()
         if count ~= 1 then
           return
         end
+        local snacks = require "snacks"
+        if type(snacks.zen.win) == "table" and not snacks.zen.win.closed then
+          return
+        end
+
         -- TODO: More sophisticated
         -- 1. Determine width dynamically based on line length
         -- 2. Disable this for some filetypes
         local max_width = math.min(120, vim.o.columns)
         local col = math.max(0, math.floor(vim.o.columns - max_width) / 2)
         local width = vim.o.columns - col
-        require "snacks".zen {
+        snacks.zen {
           center = false,
           win = {
             col = col,
