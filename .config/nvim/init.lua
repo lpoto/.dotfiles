@@ -3,11 +3,11 @@
 --=============================================================================
 if
   not pcall(function()
-    assert(vim.version().minor == 11)
+    assert(vim.version().minor == 12)
     assert(vim.version().major == 0)
   end)
 then
-  print "This configuration requires NVIM v0.11.x"
+  print "This configuration requires NVIM v0.12.x"
   return
 end
 

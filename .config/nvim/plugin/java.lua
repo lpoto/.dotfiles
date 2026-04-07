@@ -1,39 +1,65 @@
 --=============================================================================
---                                       https://github.com/nvim-java/nvim-java
+--                                                                         JAVA
 --[[===========================================================================
-
-Handles JDTLS and Java development in Neovim.
-
+--
+-- This file is responsible for setting up Java development environment
+-- in Neovim, using the java plugin. This uses JDTLS, that is mostly configured
+-- by the Java plugin, but has additional config in lsp/jdtls.lua.
+--
+-- On top of managing JDTLS, this also adds some features like running, testing
+-- or debugging Java applications.
+--
+-- NOTE: Integrates with spur.nvim plugin, and registers debug actions as
+-- spur jobs (Ex. when spring boot app is found, a job for starting that
+-- applications with a debugger will be added to spur manager).
+--
+--
+-- Relevant commands:
+--
+-- :Java*
+--
 -----------------------------------------------------------------------------]]
 
-local M = {
-  "nvim-java/nvim-java",
-  ft = "java",
-  tag = "v4.1.0",
+vim.pack.add {
+  {
+    src = "https://github.com/MunifTanjim/nui.nvim",
+    version = "0.4.0",
+  },
+  {
+    src = "https://github.com/nvim-java/nvim-java",
+    version = "v4.1.0",
+  }
 }
 
 local register_dap_spur_actions
-
-function M.config()
-  require "java".setup {
-    jdk = {
-      auto_install = false,
-    },
-    lombok = {
-      enable = true,
-    },
-    java_debug_adapter = {
-      enable = true,
-    },
-    java_test = {
-      enable = false,
-    },
-    spring_boot_tools = {
-      enable = false,
-    },
-  }
-  vim.defer_fn(register_dap_spur_actions, 500)
-end
+vim.api.nvim_create_autocmd({ "FileType" }, {
+  once = true,
+  pattern = { "java" },
+  callback = function()
+    require "java".setup {
+      jdk = {
+        auto_install = false,
+      },
+      lombok = {
+        enable = true,
+      },
+      java_debug_adapter = {
+        enable = true,
+      },
+      java_test = {
+        enable = false,
+      },
+      spring_boot_tools = {
+        enable = false,
+      },
+    }
+    --- NOTE: Try to register any found java jobs to spur
+    --- manager after a delay, with increasing backoff,
+    --- as it might take awhile for jdtls to starts
+    --- and provide the debug configurations in larger projects.
+    vim.defer_fn(register_dap_spur_actions, 500)
+  end
+})
 
 local did_register = false
 function register_dap_spur_actions(retries)
@@ -58,11 +84,11 @@ function register_dap_spur_actions(retries)
     if not ok then
       return
     end
-    local config = dap.configurations
+    local conf = dap.configurations
     local adapters = dap.adapters
-    if type(config) ~= "table"
-      or type(config.java) ~= "table"
-      or #config.java == 0
+    if type(conf) ~= "table"
+      or type(conf.java) ~= "table"
+      or #conf.java == 0
       or type(adapters) ~= "table"
       or type(adapters.java) ~= "function"
     then
@@ -75,9 +101,9 @@ function register_dap_spur_actions(retries)
       return
     end
     did_register = true
-    local java_configs_dup = dap.configurations.java
+    local java_configs_dup = conf.java
     local java_configs = {}
-    for _, conf in ipairs(java_configs_dup) do
+    for _, c in ipairs(java_configs_dup) do
       local is_dup = false
       for _, existing in ipairs(java_configs) do
         if vim.deep_equal(conf, existing) then
@@ -86,11 +112,13 @@ function register_dap_spur_actions(retries)
         end
       end
       if not is_dup then
-        if type(conf) == "table"
-          and type(conf.projectName) == "string"
-          and not conf.projectName:lower():find "pronet"
+        if type(c) == "table"
+          ---@diagnostic disable-next-line
+          and type(c.projectName) == "string"
+          ---@diagnostic disable-next-line
+          and not c.projectName:lower():find "pronet"
         then
-          table.insert(java_configs, conf)
+          table.insert(java_configs, c)
         end
       end
     end
@@ -111,14 +139,14 @@ function register_dap_spur_actions(retries)
       return pa:len() < pb:len()
     end)
     local order = 1
-    for _, conf in ipairs(java_configs) do
+    for _, c in ipairs(java_configs) do
       local job = {
         order = order,
         job = {
           cmd = "dap",
         },
         dap = {
-          configuration = conf,
+          configuration = c,
         }
       }
       order = order + 1
@@ -126,5 +154,3 @@ function register_dap_spur_actions(retries)
     end
   end)
 end
-
-return M;

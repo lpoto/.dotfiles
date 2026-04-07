@@ -1,7 +1,6 @@
 --=============================================================================
---                                                          PLUGIN-AUTOCOMMANDS
+--                                                         DEFAULT AUTOCOMMANDS
 --=============================================================================
-if vim.g.did_acmds or vim.api.nvim_set_var("did_acmds", true) then return end
 
 local group = vim.api.nvim_create_augroup("PluginAutocmmds", { clear = true })
 

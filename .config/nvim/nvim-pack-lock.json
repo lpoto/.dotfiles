@@ -1,0 +1,72 @@
+{
+  "plugins": {
+    "blink-copilot": {
+      "rev": "41e91a659bd9b8cba9ba2ea68a69b52ba5a9ebd8",
+      "src": "https://github.com/fang2hou/blink-copilot",
+      "version": "'v1.4.1'"
+    },
+    "blink.cmp": {
+      "rev": "78336bc89ee5365633bcf754d93df01678b5c08f",
+      "src": "https://github.com/saghen/blink.cmp",
+      "version": "'v1.10.2'"
+    },
+    "copilot.lua": {
+      "rev": "538f15c4eaad8661389a4a0d1ace2d6e079fac29",
+      "src": "https://github.com/zbirenbaum/copilot.lua",
+      "version": "'v2.0.1'"
+    },
+    "gitsigns.nvim": {
+      "rev": "0d797daee85366bc242580e352a4f62d67557b84",
+      "src": "https://github.com/lewis6991/gitsigns.nvim"
+    },
+    "guess-indent.nvim": {
+      "rev": "84a4987ff36798c2fc1169cbaff67960aed9776f",
+      "src": "https://github.com/nmac427/guess-indent.nvim",
+      "version": "'84a4987'"
+    },
+    "mason.nvim": {
+      "rev": "44d1e90e1f66e077268191e3ee9d2ac97cc18e65",
+      "src": "https://github.com/williamboman/mason.nvim",
+      "version": "'v2.2.1'"
+    },
+    "nui.nvim": {
+      "rev": "f535005e6ad1016383f24e39559833759453564e",
+      "src": "https://github.com/MunifTanjim/nui.nvim",
+      "version": "'0.4.0'"
+    },
+    "nvim-dap": {
+      "rev": "6a5bba0ddea5d419a783e170c20988046376090d",
+      "src": "https://github.com/mfussenegger/nvim-dap",
+      "version": "'0.10.0'"
+    },
+    "nvim-java": {
+      "rev": "61e18c47dcf237e29c9689201bf13c0708c288bc",
+      "src": "https://github.com/nvim-java/nvim-java",
+      "version": "'v4.1.0'"
+    },
+    "nvim-treesitter": {
+      "rev": "c82bf96f0a773d85304feeb695e1e23b2207ac35",
+      "src": "https://github.com/nvim-treesitter/nvim-treesitter",
+      "version": "'c82bf96'"
+    },
+    "oil.nvim": {
+      "rev": "975a77cce3c8cb742bc1b3629f4328f5ca977dad",
+      "src": "https://github.com/stevearc/oil.nvim",
+      "version": "'v2.15.0'"
+    },
+    "snacks.nvim": {
+      "rev": "e6fd58c82f2f3fcddd3fe81703d47d6d48fc7b9f",
+      "src": "https://github.com/folke/snacks.nvim",
+      "version": "'v2.31.0'"
+    },
+    "spur.nvim": {
+      "rev": "780b1ed478b703062a992bffed51f6faebdecdde",
+      "src": "https://github.com/lpoto/spur.nvim"
+    },
+    "tabline.nvim": {
+      "rev": "190f708a3eadeb6acc511e9c33f028300216ad2c",
+      "src": "https://github.com/lpoto/tabline.nvim",
+      "version": "'v0.0.1'"
+    }
+  }
+}

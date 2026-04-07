@@ -1,12 +1,31 @@
 --=============================================================================
---                                  https://github.com/lewish6991/gitsigns.nvim
---=============================================================================
+--                                                                     GITSIGNS
+--[[===========================================================================
+--
+-- Git signs for Neovim. Shows added, changed, and removed lines in the sign
+-- column, and can show inline blame information for the current line.
+-- Also provides some helpful line/chunk git actions.
+--
+-- NOTE: This is not used to cover all git actions,
+-- but mostly to provide some helpful git information in the buffers itself,
+-- while using other tools like lazygit for more complex git actions.
+--
+-- Relevant commands:
+--
+-- :Gitsigns      (all gitsigns actions)
+-- <leader>G      (current line actions)
+--
+-----------------------------------------------------------------------------]]
 
-return {
-  "lewis6991/gitsigns.nvim",
-  tag = "v2.0.0",
-  event = "VeryLazy",
-  opts = {
+vim.pack.add {
+  {
+    src = "https://github.com/lewis6991/gitsigns.nvim",
+    tag = "v2.1.0",
+  }
+}
+
+vim.schedule(function()
+  require "gitsigns".setup {
     signcolumn = false,
     numhl = true,
     current_line_blame = true,
@@ -19,12 +38,13 @@ return {
     auto_attach = true,
     attach_to_untracked = true,
     on_attach = function(b)
+      -- Create a custom command that shows available gitsigns actions
       vim.keymap.set(
         { "n", "v" },
         "<leader>G",
         function()
           local actions = {
-            { value = "blame",   name = "Blame" },
+            { value = "blame", name = "Blame" },
           }
           local possible_actions = require "gitsigns".get_actions();
           if type(possible_actions) == "table" then
@@ -62,5 +82,5 @@ return {
         end,
         { buffer = b, desc = "Git blame" })
     end
-  },
-}
+  }
+end)

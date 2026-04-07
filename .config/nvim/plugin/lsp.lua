@@ -1,15 +1,12 @@
--- NOTE: Override default lsp enable, so that
--- we may call the enable from ftplugin files
-local f = vim.lsp.enable
----@diagnostic disable-next-line
-vim.lsp.enable = function(...)
-  f(...)
-  if vim.bo.filetype ~= "" and vim.bobuftype ~= "" then
-    vim.api.nvim_exec_autocmds("FileType", {
-      group = "nvim.lsp.enable",
-    })
-  end
-end
+--=============================================================================
+--                                                            LSP CONFIGURATION
+--[[===========================================================================
+---
+--- Configures default LSP behavior, such as automatically enabling all
+--- language servers defined in the lsp directory,
+--- and improving the lsp formatting function.
+---
+-----------------------------------------------------------------------------]]
 
 local format_util = {}
 
