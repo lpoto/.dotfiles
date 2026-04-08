@@ -21,6 +21,9 @@ vim.api.nvim_create_autocmd({ "InsertEnter" }, {
   once = true,
   callback = function()
     require "blink-cmp".setup {
+      enabled = function()
+        return not vim.tbl_contains({ "bigfile", "oil" }, vim.bo.filetype);
+      end,
       sources = {
         default = { "lsp", "path", "snippets", "buffer" },
         providers = {

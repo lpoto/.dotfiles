@@ -72,3 +72,5 @@ vim.diagnostic.config {
   severity_sort = true,
   update_in_insert = false,
 }
+
+require "vim._core.ui2".enable {} -- Enable expirimental new ui for messaging

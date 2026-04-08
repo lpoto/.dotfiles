@@ -26,7 +26,9 @@ vim.api.nvim_create_autocmd("FileType", {
   callback = function(args)
     local bufnr = args.buf
     local ft = vim.bo[bufnr].filetype
-
+    if ft == "bigfile" or ft == "" then
+      return
+    end
     local l = vim.treesitter.language.get_lang(ft)
     if l then
       local ok = pcall(vim.treesitter.start, bufnr, ft)

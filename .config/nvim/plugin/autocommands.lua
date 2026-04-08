@@ -8,33 +8,37 @@ local group = vim.api.nvim_create_augroup("PluginAutocmmds", { clear = true })
 ------------------------------------- and disable them when leaving the window.
 
 vim.api.nvim_create_autocmd(
-  { "VimEnter", "WinEnter", "BufWinEnter", "TermOpen" },
+  { "WinEnter" },
   {
     group = group,
     callback = function()
-      if vim.wo.number then
-        if vim.bo.buftype ~= "" then
-          vim.wo.number = false
-          vim.wo.relativenumber = false
-          vim.wo.cursorline = false
-          return
+      local buftype = vim.bo.buftype
+      if buftype ~= "" and buftype ~= "terminal" then return end
+      local cur_win = vim.api.nvim_get_current_win()
+      local winids = vim.api.nvim_list_wins()
+      for _, id in ipairs(winids) do
+        local buf = vim.api.nvim_win_get_buf(id)
+        buftype = vim.bo[buf].buftype
+        if buftype == "" or buftype == "terminal" then
+          local config = vim.api.nvim_win_get_config(id)
+          if config.relative == "" then
+            if id == cur_win then
+              if vim.wo[id].number then
+                vim.wo[id].relativenumber = true
+              end
+              vim.wo[id].cursorline = true
+            else
+              if vim.wo[id].number then
+                vim.wo[id].relativenumber = false
+              end
+              vim.wo[id].cursorline = false
+            end
+          end
         end
-        vim.wo.number = true
-        vim.wo.relativenumber = true
-        vim.wo.cursorline = true
       end
     end,
   }
 )
-vim.api.nvim_create_autocmd({ "WinLeave" }, {
-  group = group,
-  callback = function()
-    if vim.wo.number then
-      vim.wo.relativenumber = false
-      vim.wo.cursorline = false
-    end
-  end,
-})
 
 -------------- Set showmode true in empty buftypes and false in other buftypes.
 
@@ -106,3 +110,10 @@ vim.api.nvim_create_autocmd("DirChanged", {
   end,
 })
 shada_autocmd(false, false)
+
+-------------------------------------------------------------- Messages command
+-- Add :Messages command that works same as g<
+
+vim.api.nvim_create_user_command("Messages", function()
+  vim.cmd "normal! g<"
+end, {})

@@ -14,4 +14,4 @@ vim.pack.add {
   }
 }
 
-require "tabline".setup()
+require "tabline".setup { sidebar = true }

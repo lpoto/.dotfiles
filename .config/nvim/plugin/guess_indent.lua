@@ -21,6 +21,22 @@ vim.pack.add {
 vim.api.nvim_create_autocmd({ "BufReadPre", "BufNewFile" }, {
   once = true,
   callback = function()
-    require "guess-indent".setup {}
+    require "guess-indent".setup {
+      filetype_exclude = {
+        "markdown",
+        "gitcommit",
+        "help",
+        "oil",
+        "mason",
+        "bigfile"
+      },
+      buftype_exclude = {
+        "terminal",
+        "prompt",
+        "nofile",
+        "help",
+        "quickfix",
+      },
+    }
   end
 })

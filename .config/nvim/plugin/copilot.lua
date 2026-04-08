@@ -34,6 +34,7 @@ autocmd_id = vim.api.nvim_create_autocmd("InsertEnter", {
         or filetype == ""
         or filetype == "oil"
         or filetype == "markdown"
+        or filetype:match "bigfile"
         or filetype:match "^copilot"
         or filetype:match "^git"
         or filetype:match "^snacks"
@@ -47,6 +48,15 @@ autocmd_id = vim.api.nvim_create_autocmd("InsertEnter", {
         suggestion = { enabled = false },
         panel = { enabled = false },
         nes = { enabled = false },
+        should_attach = function(buf_id, _)
+          if not vim.bo[buf_id].buflisted then
+            return false
+          end
+          if vim.bo[buf_id].buftype ~= "" then
+            return false
+          end
+          return vim.bo[buf_id].filetype ~= "bigfile"
+        end
       }
       local has_cmp, cmp = pcall(require, "blink.cmp")
       if has_cmp == true then
@@ -64,7 +74,13 @@ autocmd_id = vim.api.nvim_create_autocmd("InsertEnter", {
           max_items = 3,
           name = "copilot",
           module = "blink-copilot",
-          enabled = function() return true end,
+          enabled = function()
+            local ft = vim.bo.filetype
+            if ft == "bigfile" then
+              return false
+            end
+            return vim.bo.buftype == ""
+          end,
           async = true,
           override = {
             get_trigger_characters = function(_)
