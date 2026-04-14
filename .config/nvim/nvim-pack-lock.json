@@ -44,11 +44,6 @@
       "src": "https://github.com/nvim-java/nvim-java",
       "version": "'v4.1.0'"
     },
-    "nvim-treesitter": {
-      "rev": "c82bf96f0a773d85304feeb695e1e23b2207ac35",
-      "src": "https://github.com/nvim-treesitter/nvim-treesitter",
-      "version": "'c82bf96'"
-    },
     "oil.nvim": {
       "rev": "975a77cce3c8cb742bc1b3629f4328f5ca977dad",
       "src": "https://github.com/stevearc/oil.nvim",
@@ -67,6 +62,11 @@
       "rev": "190f708a3eadeb6acc511e9c33f028300216ad2c",
       "src": "https://github.com/lpoto/tabline.nvim",
       "version": "'v0.0.1'"
+    },
+    "tree-sitter-manager.nvim": {
+      "rev": "fa63bc63ae08b661843d9976a43becfbd3daf76c",
+      "src": "https://github.com/romus204/tree-sitter-manager.nvim",
+      "version": "'fa63bc6'"
     }
   }
 }
