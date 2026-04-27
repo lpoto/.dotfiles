@@ -30,12 +30,9 @@ vim.schedule(function()
   require "spur".setup {
     extensions = {
       "dap",
-      --"makefile",
       "terminal",
       "lazygit",
-      "lazysql",
-      "json",
-      "copilot"
+      "lazysql"
     },
     mappings = {
       actions = { key = "<leader>s", mode = { "n" } },

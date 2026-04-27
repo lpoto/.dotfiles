@@ -179,6 +179,7 @@ M.hl.base = {
   PmenuKind = { link = "Constant" },
   PmenuThumb = { bg = M.colors.whitespace },
   PmenuExtra = { link = "Comment" },
+  PmenuBorder = { link = "WinSeparator" }
 }
 
 M.hl.diagnostics = {
@@ -307,40 +308,11 @@ M.hl.treesitter = {
   ["@variable.member.go"] = { link = "Parameter" },
 }
 
-M.hl.telescope = {
-  TelescopeBorder = { link = "WinSeparator" },
-  TelescopeTitle = { link = "Title" },
-  TelescopePromptPrefix = { link = "Constant" },
-  TelescopeMatching = { link = "Constant" },
-  TelescopeMultiSelection = { fg = M.colors.comment },
-  TelescopeSelection = { bg = M.colors.visual },
-}
-
 M.hl.gitsigns = {
   GitSignsAdd = { fg = M.colors.dimmed.green },
   GitSignsChange = { fg = M.colors.dimmed.blue },
   GitSignsDelete = { fg = M.colors.dimmed.red },
   GitSignsCurrentLineBlame = { link = "WinSeparator" },
-}
-
-M.hl.cmp = {
-  BlinkCmpMenu = { link = "NormalFloat" },
-  BlinkCmpMenuBorder = { link = "FloatBorder" },
-  BlinkCmpDocSeparator = { link = "FloatBorder" },
-  BlinkCmpMenuSelection = { link = "PmenuSel" },
-  BlinkCmpScrollBarThumb = { link = "PmenuThumb" },
-  BlinkCmpDoc = { link = "NormalFloat" },
-  BlinkCmpDocBorder = { link = "FloatBorder" },
-  BlinkCmpSignatureHelp = { link = "NormalFloat" },
-  BlinkCmpSignatureHelpBorder = { link = "FloatBorder" },
-  BlinkCmpSignatureHelpActiveParameter = {
-    link = "LspSignatureActiveParameter",
-  },
-  BlinkCmpLabel = { link = "Pmenu" },
-  BlinkCmpLabelMatch = { link = "Parameter" },
-  BlinkCmpSource = { link = "NonText" },
-  BlinkCmpGhostText = { link = "NonText" },
-  BlinkCmpDocCursorLine = { link = "CursorLine" },
 }
 
 return M.init()

@@ -1,20 +1,5 @@
 {
   "plugins": {
-    "blink-copilot": {
-      "rev": "41e91a659bd9b8cba9ba2ea68a69b52ba5a9ebd8",
-      "src": "https://github.com/fang2hou/blink-copilot",
-      "version": "'v1.4.1'"
-    },
-    "blink.cmp": {
-      "rev": "78336bc89ee5365633bcf754d93df01678b5c08f",
-      "src": "https://github.com/saghen/blink.cmp",
-      "version": "'v1.10.2'"
-    },
-    "copilot.lua": {
-      "rev": "538f15c4eaad8661389a4a0d1ace2d6e079fac29",
-      "src": "https://github.com/zbirenbaum/copilot.lua",
-      "version": "'v2.0.1'"
-    },
     "gitsigns.nvim": {
       "rev": "0d797daee85366bc242580e352a4f62d67557b84",
       "src": "https://github.com/lewis6991/gitsigns.nvim"
@@ -64,9 +49,9 @@
       "version": "'v0.0.1'"
     },
     "tree-sitter-manager.nvim": {
-      "rev": "fa63bc63ae08b661843d9976a43becfbd3daf76c",
+      "rev": "33a94d022e3a5a500d878b784ba7fec61559c70a",
       "src": "https://github.com/romus204/tree-sitter-manager.nvim",
-      "version": "'fa63bc6'"
+      "version": "'33a94d0'"
     }
   }
 }

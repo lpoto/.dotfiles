@@ -16,7 +16,7 @@
 vim.pack.add {
   {
     src = "https://github.com/romus204/tree-sitter-manager.nvim",
-    version = "fa63bc6"
+    version = "33a94d0"
   }
 }
 

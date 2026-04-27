@@ -2,21 +2,6 @@
 --                                                              DEFAULT KEYMAPS
 --=============================================================================
 
---------------------------------------------------------------------------- LSP
-
-vim.keymap.set("n", "K", vim.lsp.buf.hover)
-vim.keymap.set("n", "gd", vim.lsp.buf.definition)
-vim.keymap.set("n", "gt", vim.lsp.buf.type_definition)
-vim.keymap.set("n", "gi", vim.lsp.buf.implementation)
-vim.keymap.set("n", "gr", vim.lsp.buf.references)
-vim.keymap.set({ "n", "v" }, "<leader>a", vim.lsp.buf.code_action)
-vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename)
-vim.keymap.set(
-  { "n", "v" },
-  "<leader>f",
-  function(...) vim.lsp.buf.format(...) end
-)
-vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float)
 
 --------------------------------------------------------------- WINDOW MANAGING
 -- increase the size of a window with +, decrease with -
@@ -77,17 +62,6 @@ for i = 1, 9 do
   vim.keymap.set("n", "<localleader>" .. i, i .. "gt")
 end
 
------------------------------------------------------------------------- PARENS
-
-vim.keymap.set("i", "<CR>", function()
-  ---@diagnostic disable-next-line
-  local line = vim.fn.getline "."
-  local col = vim.fn.col "."
-  ---@diagnostic disable-next-line
-  local next = line:sub(col, col)
-  if vim.tbl_contains({ "}", "]" }, next) then return "<CR><Esc>ko" end
-  return "<CR>"
-end, { expr = true })
 
 ----------- Abrreviate misstyped w, q, wq, wa, qa and wqa commands to lowercase
 -- so that there is no annoyance when misspelling them

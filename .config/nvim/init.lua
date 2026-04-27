@@ -61,10 +61,10 @@ vim.opt.title = false         -- do not change the terminal title
 vim.opt.list = true           -- show whitespace characters
 vim.opt.listchars =
 { tab = "┊ ", multispace = "· ", leadmultispace = "┊ " }
-vim.opt.fillchars = "eob: " -- hide ~ at end of buffer
-vim.opt.exrc = true         -- Automatically execute .nvim.lua, .nvimrc, .exrc
+vim.opt.fillchars = "eob: "   -- hide ~ at end of buffer
+vim.opt.exrc = true           -- Automatically execute .nvim.lua, .nvimrc, .exrc
 
-vim.o.winborder = "rounded" -- Set default border for floats
+vim.opt.winborder = "rounded" -- Set default border for floats
 vim.diagnostic.config {
   virtual_text = true,
   virtual_lines = false,
