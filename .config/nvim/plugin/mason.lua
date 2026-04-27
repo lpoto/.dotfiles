@@ -1,18 +1,17 @@
 --=============================================================================
 --                                                                        MASON
 --[[===========================================================================
---
--- Mason is a package manager that allows you to easily install and manage
--- external tools such as LSP servers, linters, ...
---
--- NOTE: Installs into its own directory (stdpath("data")/mason), and
--- adds them to path on startup,
--- so the binaries are always available inside Neovim.
---
--- Relevant commands:
---
--- :Mason     (mason window)
---
+
+Mason is a package manager that allows you to easily install and manage
+external tools such as LSP servers, linters, ...
+
+NOTE: Installs into its own directory (stdpath("data")/mason), and
+adds them to path on startup,
+so the binaries are always available inside Neovim.
+
+Relevant commands:
+- :Mason     (mason window)
+
 -----------------------------------------------------------------------------]]
 
 local config = {

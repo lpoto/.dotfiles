@@ -1,14 +1,14 @@
 --=============================================================================
 --                                                                 GUESS INDENT
 --[[===========================================================================
---
--- Some projects don't have .editorconfig file to define a specific
--- indentation style, but may still have a consistent indentation,
--- that may differ from the filetype's default configuration.
---
--- This plugins detects indentation style and configures relevant options
--- to match the existing style, but still preserves options from .editorconfig.
---
+
+Some projects don't have .editorconfig file to define a specific
+indentation style, but may still have a consistent indentation,
+that may differ from the filetype's default configuration.
+
+This plugins detects indentation style and configures relevant options
+to match the existing style, but still preserves options from .editorconfig.
+
 -----------------------------------------------------------------------------]]
 
 vim.pack.add {

@@ -1,13 +1,13 @@
 --=============================================================================
 --                                                                       SNACKS
 --[[===========================================================================
---
--- Configures a collection of smaller plugins (snacks), such
--- as a fuzzy finder and large file handling
---
--- NOTE: Configures a few keymaps for opening different pickers
--- for finding files, buffers, LSP definitions, diagnostics, etc.
---
+
+Configures a collection of smaller plugins (snacks), such
+as a fuzzy finder and large file handling
+
+NOTE: Configures a few keymaps for opening different pickers
+for finding files, buffers, LSP definitions, diagnostics, etc.
+
 -----------------------------------------------------------------------------]]
 
 vim.pack.add {

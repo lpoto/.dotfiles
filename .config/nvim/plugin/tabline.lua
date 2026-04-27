@@ -1,10 +1,10 @@
 --=============================================================================
 --                                                                      TABLINE
 --[[===========================================================================
---
--- Simplistic tabline that is always visible, shows all relevant
--- information and acts as statusline replacement.
---
+
+Simplistic tabline that is always visible, shows all relevant
+information and acts as statusline replacement.
+
 -----------------------------------------------------------------------------]]
 
 vim.pack.add {

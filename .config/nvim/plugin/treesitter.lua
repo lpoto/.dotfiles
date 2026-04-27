@@ -1,16 +1,15 @@
 --=============================================================================
 --                                                                   TREESITTER
 --[[===========================================================================
---
--- Configures nvim-treesitter manager, that provides configurations and queries
--- for treesitter parsers.
---
--- NOTE: requires tree-sitter CLI
---
--- Relevant commands:
---
--- :TSManager    (Open the interface for managing parsers)
---
+
+Configures nvim-treesitter manager, that provides configurations and queries
+for treesitter parsers.
+
+NOTE: requires tree-sitter CLI
+
+Relevant commands:
+- :TSManager    (Open the interface for managing parsers)
+
 -----------------------------------------------------------------------------]]
 
 vim.pack.add {

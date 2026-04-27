@@ -1,20 +1,19 @@
 --=============================================================================
 --                                                                     GITSIGNS
 --[[===========================================================================
---
--- Git signs for Neovim. Shows added, changed, and removed lines in the sign
--- column, and can show inline blame information for the current line.
--- Also provides some helpful line/chunk git actions.
---
--- NOTE: This is not used to cover all git actions,
--- but mostly to provide some helpful git information in the buffers itself,
--- while using other tools like lazygit for more complex git actions.
---
--- Relevant commands:
---
--- :Gitsigns      (all gitsigns actions)
--- <leader>G      (current line actions)
---
+
+Git signs for Neovim. Shows added, changed, and removed lines in the sign
+column, and can show inline blame information for the current line.
+Also provides some helpful line/chunk git actions.
+
+NOTE: This is not used to cover all git actions,
+but mostly to provide some helpful git information in the buffers itself,
+while using other tools like lazygit for more complex git actions.
+
+Relevant commands:
+- :Gitsigns      (all gitsigns actions)
+- <leader>G      (current line actions)
+
 -----------------------------------------------------------------------------]]
 
 vim.pack.add {

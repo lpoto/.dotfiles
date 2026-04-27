@@ -1,23 +1,22 @@
 --=============================================================================
 --                                                                         JAVA
 --[[===========================================================================
---
--- This file is responsible for setting up Java development environment
--- in Neovim, using the java plugin. This uses JDTLS, that is mostly configured
--- by the Java plugin, but has additional config in lsp/jdtls.lua.
---
--- On top of managing JDTLS, this also adds some features like running, testing
--- or debugging Java applications.
---
--- NOTE: Integrates with spur.nvim plugin, and registers debug actions as
--- spur jobs (Ex. when spring boot app is found, a job for starting that
--- applications with a debugger will be added to spur manager).
---
---
--- Relevant commands:
---
--- :Java*
---
+
+This file is responsible for setting up Java development environment
+in Neovim, using the java plugin. This uses JDTLS, that is mostly configured
+by the Java plugin, but has additional config in lsp/jdtls.lua.
+
+On top of managing JDTLS, this also adds some features like running, testing
+or debugging Java applications.
+
+NOTE: Integrates with spur.nvim plugin, and registers debug actions as
+spur jobs (Ex. when spring boot app is found, a job for starting that
+applications with a debugger will be added to spur manager).
+
+
+Relevant commands:
+- :Java*
+
 -----------------------------------------------------------------------------]]
 
 vim.pack.add {

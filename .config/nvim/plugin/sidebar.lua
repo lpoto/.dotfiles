@@ -1,13 +1,13 @@
 --=============================================================================
 --                                                                      SIDEBAR
 --[[===========================================================================
---
--- Adds a sidebar to the left side of the screen (when 1 window),
--- so the focused window is centered in the middle of the screen,
--- to avoid neck pain :).
---
--- It also shows some basic information about the current buffer.
---
+
+Adds a sidebar to the left side of the screen (when 1 window),
+so the focused window is centered in the middle of the screen,
+to avoid neck pain :).
+
+It also shows some basic information about the current buffer.
+
 -----------------------------------------------------------------------------]]
 
 local win = nil

@@ -1,22 +1,21 @@
 --=============================================================================
 --                                                                          OIL
 --[[===========================================================================
---
--- Oil is a file explorer that allows you to edit files and directories
--- in the same way,
--- and provides a familiar interface for navigating the file system.
---
--- This means the file tree can be edited just like any other buffer,
--- and all the usual editing commands will work as expected
--- (Ex. dd to delete a file, yy to copy, etc.).
---
--- Relevant commands:
---
--- :Oil              (Open Oil in the current file's directory)
--- <C-n>             (Open Oil in the current file's directory)
--- <leader>b         (Open Oil in the current file's directory)
--- <leader>B         (Open Oil in the current working directory)
---
+
+Oil is a file explorer that allows you to edit files and directories
+in the same way,
+and provides a familiar interface for navigating the file system.
+
+This means the file tree can be edited just like any other buffer,
+and all the usual editing commands will work as expected
+(Ex. dd to delete a file, yy to copy, etc.).
+
+Relevant commands:
+- :Oil              (Open Oil in the current file's directory)
+- <C-n>             (Open Oil in the current file's directory)
+- <leader>b         (Open Oil in the current file's directory)
+- <leader>B         (Open Oil in the current working directory)
+
 -----------------------------------------------------------------------------]]
 
 vim.pack.add {
