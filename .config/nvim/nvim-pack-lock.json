@@ -1,7 +1,7 @@
 {
   "plugins": {
     "gitsigns.nvim": {
-      "rev": "0d797daee85366bc242580e352a4f62d67557b84",
+      "rev": "851a051e2bd2caba97e23314c68d69f1b1cf5d19",
       "src": "https://github.com/lewis6991/gitsigns.nvim"
     },
     "guess-indent.nvim": {
@@ -10,48 +10,24 @@
       "version": "'84a4987'"
     },
     "mason.nvim": {
-      "rev": "44d1e90e1f66e077268191e3ee9d2ac97cc18e65",
+      "rev": "2a6940af80375532e5e9e7c1f2fc6319a1b7a69d",
       "src": "https://github.com/williamboman/mason.nvim",
-      "version": "'v2.2.1'"
-    },
-    "nui.nvim": {
-      "rev": "f535005e6ad1016383f24e39559833759453564e",
-      "src": "https://github.com/MunifTanjim/nui.nvim",
-      "version": "'0.4.0'"
-    },
-    "nvim-dap": {
-      "rev": "6a5bba0ddea5d419a783e170c20988046376090d",
-      "src": "https://github.com/mfussenegger/nvim-dap",
-      "version": "'0.10.0'"
-    },
-    "nvim-java": {
-      "rev": "61e18c47dcf237e29c9689201bf13c0708c288bc",
-      "src": "https://github.com/nvim-java/nvim-java",
-      "version": "'v4.1.0'"
+      "version": "'v2.3.1'"
     },
     "oil.nvim": {
-      "rev": "975a77cce3c8cb742bc1b3629f4328f5ca977dad",
+      "rev": "17c0a8faaf48298a0c0cfb0d757c0eaee4ff7a32",
       "src": "https://github.com/stevearc/oil.nvim",
-      "version": "'v2.15.0'"
+      "version": "'v2.16.0'"
     },
     "snacks.nvim": {
       "rev": "e6fd58c82f2f3fcddd3fe81703d47d6d48fc7b9f",
       "src": "https://github.com/folke/snacks.nvim",
       "version": "'v2.31.0'"
     },
-    "spur.nvim": {
-      "rev": "780b1ed478b703062a992bffed51f6faebdecdde",
-      "src": "https://github.com/lpoto/spur.nvim"
-    },
-    "tabline.nvim": {
-      "rev": "190f708a3eadeb6acc511e9c33f028300216ad2c",
-      "src": "https://github.com/lpoto/tabline.nvim",
-      "version": "'v0.0.1'"
-    },
     "tree-sitter-manager.nvim": {
-      "rev": "33a94d022e3a5a500d878b784ba7fec61559c70a",
+      "rev": "023590c8f068788a0513a4409bf37ff7f9d1deff",
       "src": "https://github.com/romus204/tree-sitter-manager.nvim",
-      "version": "'33a94d0'"
+      "version": "'v1.0.1'"
     }
   }
 }

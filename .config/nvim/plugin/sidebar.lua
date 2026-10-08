@@ -16,6 +16,8 @@ local width = nil
 local group_name = "Sidebar"
 local last_win = nil
 
+local MIN_WIDTH = 220
+
 local function close()
   if type(win) == "number" then
     if vim.api.nvim_win_is_valid(win) then
@@ -45,6 +47,9 @@ local function get_width()
   local ok, w = pcall(function()
     local min_center_width = get_min_center_width()
     local columns = vim.o.columns
+    if columns <= MIN_WIDTH then
+      return nil
+    end
     local third = math.floor(columns / 3)
     local w = math.min(third, math.floor((columns - min_center_width) / 2))
     if w < 20 then

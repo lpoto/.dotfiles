@@ -18,7 +18,7 @@ vim.pack.add {
 }
 
 require "snacks".setup {
-  lazygit = { enabled = false },
+  lazygit = { enabled = true },
   notifier = { enabled = false },
   terminal = { enabled = false },
   input = { enabled = false },
@@ -95,6 +95,7 @@ vim.keymap.set("n", "gd", picker "lsp_definitions")
 vim.keymap.set("n", "gi", picker "lsp_implementations")
 vim.keymap.set("n", "gr", picker "lsp_references")
 vim.keymap.set("n", "gt", picker "lsp_type_definitions")
+vim.keymap.set("n", "<leader>g", function() require "snacks".lazygit() end)
 vim.keymap.set("n", "<leader>E", picker "diagnostics")
 vim.keymap.set("n", "<leader>e", function()
   if not vim.diagnostic.open_float() then

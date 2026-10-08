@@ -16,7 +16,7 @@ Relevant commands:
 
 local config = {
   src = "https://github.com/williamboman/mason.nvim",
-  version = "v2.2.1"
+  version = "v2.3.1"
 }
 
 vim.api.nvim_create_autocmd("PackChanged", {
